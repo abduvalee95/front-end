@@ -1,0 +1,145 @@
+'use client';
+
+import { useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
+import { toast } from 'sonner';
+import { BookOpen, Loader2, PenLine } from 'lucide-react';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { courseService } from '@/services/courses';
+import { COURSES_KEYS } from '@/hooks/useCourses';
+import type { Course, CourseStatus } from '@/types/group';
+
+interface EditCourseModalProps {
+  course: Course;
+}
+
+export function EditCourseModal({ course }: EditCourseModalProps) {
+  const [open, setOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const queryClient = useQueryClient();
+
+  const [formData, setFormData] = useState({
+    title: course.title,
+    description: course.description || '',
+    price: course.price,
+    status: course.status,
+  });
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!formData.title.trim() || !formData.price) {
+      toast.error('Title and Price are required fields');
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      await courseService.updateCourse(course.id, {
+        title: formData.title,
+        description: formData.description || undefined,
+        price: formData.price,
+        status: formData.status,
+      });
+      toast.success('Course updated successfully');
+      setOpen(false);
+      queryClient.invalidateQueries({ queryKey: COURSES_KEYS.all });
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || 'Failed to update course');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger
+        render={
+          <Button variant="ghost" size="icon" className="size-8" title="Edit course">
+            <PenLine className="size-4" />
+          </Button>
+        }
+      />
+      <DialogContent className="sm:max-w-[480px]">
+        <DialogHeader>
+          <div className="mx-auto mb-4 flex size-12 items-center justify-center rounded-2xl bg-indigo-500/10 text-indigo-600">
+            <BookOpen className="size-6" />
+          </div>
+          <DialogTitle className="text-center text-xl">Edit Course</DialogTitle>
+          <DialogDescription className="text-center">
+            Update course details and availability status.
+          </DialogDescription>
+        </DialogHeader>
+        <form onSubmit={handleSubmit} className="space-y-4 pt-4">
+          <div className="space-y-2">
+            <Label htmlFor={`edit-ctitle-${course.id}`}>Course Title *</Label>
+            <Input
+              id={`edit-ctitle-${course.id}`}
+              value={formData.title}
+              onChange={(e) => setFormData((p) => ({ ...p, title: e.target.value }))}
+              disabled={isLoading}
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor={`edit-cdesc-${course.id}`}>Description</Label>
+            <Textarea
+              id={`edit-cdesc-${course.id}`}
+              value={formData.description}
+              onChange={(e) => setFormData((p) => ({ ...p, description: e.target.value }))}
+              disabled={isLoading}
+              className="resize-none"
+              rows={3}
+            />
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor={`edit-cprice-${course.id}`}>Price *</Label>
+              <Input
+                id={`edit-cprice-${course.id}`}
+                type="number"
+                value={formData.price}
+                onChange={(e) => setFormData((p) => ({ ...p, price: e.target.value }))}
+                disabled={isLoading}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor={`edit-cstatus-${course.id}`}>Status</Label>
+              <select
+                id={`edit-cstatus-${course.id}`}
+                value={formData.status}
+                onChange={(e) => setFormData((p) => ({ ...p, status: e.target.value as CourseStatus }))}
+                disabled={isLoading}
+                className="flex h-9 w-full rounded-lg border border-input bg-background px-3 text-sm text-foreground outline-none transition-colors focus:ring-2 focus:ring-ring"
+              >
+                <option value="ACTIVE">Active</option>
+                <option value="INACTIVE">Inactive</option>
+              </select>
+            </div>
+          </div>
+
+          <DialogFooter className="pt-4">
+            <Button type="button" variant="outline" onClick={() => setOpen(false)} disabled={isLoading} className="w-full sm:w-auto">
+              Cancel
+            </Button>
+            <Button type="submit" disabled={isLoading} className="w-full sm:w-auto">
+              {isLoading ? <><Loader2 className="mr-2 size-4 animate-spin" />Saving...</> : 'Save Changes'}
+            </Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
+  );
+}

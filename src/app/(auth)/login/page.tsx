@@ -1,0 +1,256 @@
+/**
+ * Login Page
+ * Enterprise SaaS Grade Authentication UI
+ */
+
+'use client';
+
+import { Suspense, useEffect, useState } from 'react';
+import Image from 'next/image';
+import { useSearchParams } from 'next/navigation';
+import { toast } from 'sonner';
+import {
+  BarChart3,
+  Eye,
+  EyeOff,
+  Loader2,
+  Lock,
+  Phone,
+  School,
+  ShieldCheck,
+  UsersRound,
+} from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { useAuth } from '@/hooks/useAuth';
+
+function LoginForm() {
+  const searchParams = useSearchParams();
+  const { login, isLoading } = useAuth();
+
+  const [phone, setPhone] = useState('');
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
+
+  useEffect(() => {
+    const error = searchParams.get('error');
+    if (error === 'session_expired') {
+      toast.error('Your session has expired. Please log in again.');
+    }
+  }, [searchParams]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!phone.trim()) {
+      toast.error('Please enter your phone number');
+      return;
+    }
+    if (!password) {
+      toast.error('Please enter your password');
+      return;
+    }
+
+    let formattedPhone = phone.trim().replace(/\s+/g, '');
+    if (!formattedPhone.startsWith('+')) {
+      if (formattedPhone.startsWith('0') && formattedPhone.length === 10) {
+        // User typed 0505... -> +996505...
+        formattedPhone = '+996' + formattedPhone.slice(1);
+      } else if (formattedPhone.length === 9) {
+        // User typed 505... -> +996505...
+        formattedPhone = '+996' + formattedPhone;
+      } else if (formattedPhone.startsWith('996')) {
+        // User typed 996505... -> +996505...
+        formattedPhone = '+' + formattedPhone;
+      } else {
+        // Fallback
+        formattedPhone = '+996' + formattedPhone;
+      }
+    }
+
+    login({ phone: formattedPhone, password, remember_me: rememberMe });
+  };
+
+  return (
+    <div className="relative min-h-screen overflow-hidden px-4 py-6 sm:px-6 lg:px-10">
+      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(115deg,rgba(255,255,255,0.86),rgba(255,255,255,0.54)_42%,rgba(3,203,231,0.10)_42.2%,rgba(3,203,231,0.10)_100%)] dark:bg-[linear-gradient(115deg,rgba(8,13,30,0.96),rgba(8,13,30,0.78)_42%,rgba(3,203,231,0.10)_42.2%,rgba(3,203,231,0.10)_100%)]" />
+      <div className="relative mx-auto grid min-h-[calc(100vh-3rem)] w-full max-w-6xl items-center gap-8 lg:grid-cols-[1.08fr_0.92fr]">
+        <section className="hidden lg:block">
+          <div className="max-w-xl">
+            <div className="mb-8 inline-flex items-center gap-3 rounded-full border border-primary/20 bg-white/70 px-4 py-2 text-xs font-semibold uppercase tracking-[0.22em] text-primary shadow-sm backdrop-blur dark:bg-white/5">
+              <ShieldCheck className="size-4" />
+              Organization access
+            </div>
+            <h1 className="max-w-[12ch] text-6xl font-black leading-[0.92] tracking-tight text-foreground">
+              Learning operations, tightened.
+            </h1>
+            <p className="mt-6 max-w-lg text-base leading-7 text-muted-foreground">
+              A quiet control room for Билим Нуру teams to monitor students, teachers,
+              CRM activity, and revenue without losing the thread of the school day.
+            </p>
+          </div>
+
+          <div className="mt-12 grid max-w-2xl grid-cols-3 gap-3">
+            {[
+              { label: 'Students', value: '1,284', icon: UsersRound },
+              { label: 'Active courses', value: '38', icon: School },
+              { label: 'Conversion', value: '64%', icon: BarChart3 },
+            ].map((item) => (
+              <div
+                key={item.label}
+                className="rounded-2xl border border-white/70 bg-white/68 p-4 shadow-[0_18px_60px_rgba(15,23,42,0.08)] backdrop-blur dark:border-white/10 dark:bg-white/5"
+              >
+                <item.icon className="mb-5 size-5 text-primary" />
+                <div className="text-2xl font-black tabular-nums text-foreground">{item.value}</div>
+                <div className="mt-1 text-xs font-medium text-muted-foreground">{item.label}</div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section className="mx-auto w-full max-w-[28rem]">
+          <div className="mb-7 text-center lg:text-left">
+            <div className="inline-flex size-20 items-center justify-center overflow-hidden rounded-[1.35rem] border border-white/80 bg-white shadow-[0_18px_45px_rgba(14,110,234,0.14)] dark:border-white/10 dark:bg-white/10">
+              <Image
+                src="/logo.svg"
+                alt="Bilim Nuru"
+                width={80}
+                height={80}
+                className="h-full w-full object-contain"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).style.display = 'none';
+                  (e.target as HTMLImageElement).parentElement!.innerHTML =
+                    '<span class="text-3xl font-black">BN</span>';
+                }}
+              />
+            </div>
+            <h2 className="mt-4 text-2xl font-black tracking-tight text-foreground">БИЛИМ НУРУ</h2>
+            <p className="mt-1 text-sm font-medium text-muted-foreground">
+              Окуу Борбору management console
+            </p>
+          </div>
+
+          <div className="rounded-[1.5rem] border border-white/80 bg-card/88 p-7 shadow-[0_24px_80px_rgba(15,23,42,0.12)] backdrop-blur-xl dark:border-white/10 dark:bg-card/78">
+            <div className="mb-6">
+              <h3 className="text-xl font-bold text-foreground">Welcome back</h3>
+              <p className="mt-1 text-sm text-muted-foreground">
+                Sign in with your organization credentials.
+              </p>
+            </div>
+
+            <form onSubmit={handleSubmit} className="space-y-5">
+              <div className="space-y-2">
+                <label htmlFor="phone" className="text-sm font-medium text-foreground">
+                  Phone Number
+                </label>
+                <div className="relative">
+                  <Phone className="absolute left-3 top-1/2 size-5 -translate-y-1/2 text-muted-foreground" />
+                  <Input
+                    id="phone"
+                    type="tel"
+                    placeholder="+996 505 00 44 11"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    className="pl-10"
+                    disabled={isLoading}
+                    autoComplete="tel"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <label htmlFor="password" className="text-sm font-medium text-foreground">
+                  Password
+                </label>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-1/2 size-5 -translate-y-1/2 text-muted-foreground" />
+                  <Input
+                    id="password"
+                    type={showPassword ? 'text' : 'password'}
+                    placeholder="Enter your password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="pl-10 pr-10"
+                    disabled={isLoading}
+                    autoComplete="current-password"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground transition-colors hover:text-foreground"
+                    tabIndex={-1}
+                    aria-label={showPassword ? 'Hide password' : 'Show password'}
+                  >
+                    {showPassword ? <EyeOff className="size-5" /> : <Eye className="size-5" />}
+                  </button>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between">
+                <label className="flex cursor-pointer items-center gap-2">
+                  <input
+                    type="checkbox"
+                    checked={rememberMe}
+                    onChange={(e) => setRememberMe(e.target.checked)}
+                    className="size-4 rounded border-border text-primary focus:ring-primary"
+                    disabled={isLoading}
+                  />
+                  <span className="text-sm text-muted-foreground">Remember me</span>
+                </label>
+                <a href="#" className="text-sm font-medium text-primary transition-colors hover:text-primary/80">
+                  Forgot password?
+                </a>
+              </div>
+
+              <Button
+                type="submit"
+                className="h-11 w-full bg-slate-950 text-white shadow-[0_16px_35px_rgba(15,23,42,0.22)] hover:bg-slate-800 dark:bg-primary dark:text-primary-foreground dark:hover:bg-primary/90"
+                size="lg"
+                disabled={isLoading}
+              >
+                {isLoading ? (
+                  <>
+                    <Loader2 className="mr-2 size-5 animate-spin" />
+                    Signing in...
+                  </>
+                ) : (
+                  'Sign in'
+                )}
+              </Button>
+            </form>
+
+            <div className="mt-6 rounded-2xl border border-primary/12 bg-primary/5 p-4 text-xs leading-5 text-muted-foreground">
+              Use the phone number assigned by your administrator. Session refresh is handled
+              automatically after sign in.
+            </div>
+          </div>
+
+          <p className="mt-7 text-center text-sm text-muted-foreground">
+            Don&apos;t have an account?{' '}
+            <a href="#" className="font-semibold text-primary transition-colors hover:text-primary/80">
+              Contact administrator
+            </a>
+          </p>
+        </section>
+      </div>
+    </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex min-h-screen items-center justify-center bg-background p-4">
+          <div className="flex flex-col items-center gap-4">
+            <Loader2 className="size-8 animate-spin text-primary" />
+            <p className="text-sm text-muted-foreground">Loading...</p>
+          </div>
+        </div>
+      }
+    >
+      <LoginForm />
+    </Suspense>
+  );
+}

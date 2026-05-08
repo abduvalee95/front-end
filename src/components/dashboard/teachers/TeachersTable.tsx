@@ -1,0 +1,376 @@
+'use client';
+
+import { useState, useCallback } from 'react';
+import { useTeachers, useToggleTeacherStatus } from '@/hooks/useTeachers';
+import type { TeacherProfile, TeacherStatus } from '@/types/teacher';
+import { format } from 'date-fns';
+import {
+  MoreHorizontal,
+  Pencil,
+  Power,
+  Plus,
+  Search,
+  RefreshCw,
+  GraduationCap,
+  AlertCircle,
+  ChevronLeft,
+  ChevronRight,
+} from 'lucide-react';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { Card, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { TeacherStatusBadge } from './TeacherStatusBadge';
+import { TeacherStatusConfirmDialog } from './TeacherStatusConfirmDialog';
+
+const COL_COUNT = 5;
+
+interface TeachersTableProps {
+  onEditClick: (teacher: TeacherProfile) => void;
+}
+
+export default function TeachersTable({
+  onEditClick,
+}: TeachersTableProps) {
+  const [page, setPage] = useState(1);
+  const [search, setSearch] = useState('');
+  const [statusFilter, setStatusFilter] = useState<TeacherStatus | ''>('');
+  const pageSize = 10;
+
+  const { data, isLoading, isError, refetch } = useTeachers({
+    page,
+    limit: pageSize,
+    search: search || undefined,
+    status: statusFilter || undefined,
+  });
+
+  const toggleStatus = useToggleTeacherStatus();
+  const [statusTarget, setStatusTarget] = useState<TeacherProfile | null>(null);
+
+  const handleStatusConfirm = useCallback(() => {
+    if (!statusTarget) return;
+    const newStatus: TeacherStatus =
+      statusTarget.status === 'ACTIVE' ? 'INACTIVE' : 'ACTIVE';
+    toggleStatus.mutate(
+      { id: statusTarget.id, status: newStatus },
+      { onSettled: () => setStatusTarget(null) },
+    );
+  }, [statusTarget, toggleStatus]);
+
+  const items = data?.items ?? [];
+  const meta = data?.meta;
+
+  const clearFilters = () => { setSearch(''); setStatusFilter(''); setPage(1); };
+
+  if (isError) {
+    return (
+      <div className="flex flex-col items-center justify-center py-24 gap-4 rounded-xl border bg-card">
+        <div className="size-12 rounded-xl bg-destructive/10 border border-destructive/20 flex items-center justify-center">
+          <AlertCircle className="size-5 text-destructive" />
+        </div>
+        <div className="text-center">
+          <p className="font-medium text-sm">Failed to load teachers</p>
+          <p className="text-muted-foreground text-xs mt-1">Check your connection and try again</p>
+        </div>
+        <Button variant="outline" size="sm" onClick={() => refetch()}>
+          <RefreshCw className="mr-2 size-3.5" />
+          Try Again
+        </Button>
+      </div>
+    );
+  }
+
+  return (
+    <>
+      <div className="space-y-4">
+        {/* Toolbar */}
+        <div className="flex flex-col sm:flex-row gap-3">
+          <div className="relative flex-1 max-w-sm">
+            <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground pointer-events-none" />
+            <Input
+              placeholder="Search teachers..."
+              value={search}
+              onChange={(e) => { setSearch(e.target.value); setPage(1); }}
+              className="pl-8"
+            />
+          </div>
+
+          <select
+            value={statusFilter}
+            onChange={(e) => { setStatusFilter(e.target.value as TeacherStatus | ''); setPage(1); }}
+            className="h-8 rounded-lg border border-input bg-background px-3 text-sm text-foreground outline-none focus:ring-2 focus:ring-ring transition-colors"
+          >
+            <option value="">All statuses</option>
+            <option value="ACTIVE">Active</option>
+            <option value="INACTIVE">Inactive</option>
+            <option value="ON_LEAVE">On Leave</option>
+          </select>
+
+          <Button variant="ghost" size="icon" onClick={() => refetch()} title="Refresh" className="size-8 shrink-0">
+            <RefreshCw className="size-4" />
+          </Button>
+        </div>
+
+        {/* Desktop table */}
+        <div className="hidden md:block rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="pl-4">Teacher</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead>Phone</TableHead>
+                <TableHead>Subjects</TableHead>
+                <TableHead>Joined</TableHead>
+                <TableHead className="text-right pr-4">Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {isLoading ? (
+                [0,1,2,3,4].map((i) => (
+                  <TableRow key={i}>
+                    <TableCell className="pl-4">
+                      <div className="flex items-center gap-3">
+                        <Skeleton className="size-8 rounded-lg shrink-0 bg-indigo-100/50 dark:bg-indigo-950/30" />
+                        <div className="space-y-1.5">
+                          <Skeleton className="h-3.5 w-32 bg-indigo-100/50 dark:bg-indigo-950/30" />
+                          <Skeleton className="h-3 w-24 bg-indigo-100/50 dark:bg-indigo-950/30" />
+                        </div>
+                      </div>
+                    </TableCell>
+                    {[0,1,2,3].map((j) => (
+                      <TableCell key={j}><Skeleton className="h-4 w-20 bg-indigo-100/50 dark:bg-indigo-950/30" /></TableCell>
+                    ))}
+                    <TableCell />
+                  </TableRow>
+                ))
+              ) : items.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={COL_COUNT + 1} className="py-24 text-center">
+                    <EmptyState
+                      hasFilters={!!(search || statusFilter)}
+                      onClear={clearFilters}
+                    />
+                  </TableCell>
+                </TableRow>
+              ) : (
+                items.map((teacher) => (
+                  <TableRow
+                    key={teacher.id}
+                    className="hover:bg-slate-50 transition-colors border-b border-slate-100 last:border-0"
+                  >
+                    <TableCell className="pl-4">
+                      <div className="flex items-center gap-3">
+                        <Avatar className="size-8">
+                          <AvatarFallback className="text-xs font-semibold edu-gradient-avatar">
+                            {teacher.user?.full_name?.charAt(0).toUpperCase() || 'T'}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div className="min-w-0">
+                          <p className="font-medium truncate">{teacher.user?.full_name}</p>
+                          <p className="text-xs text-muted-foreground truncate">{teacher.user?.email}</p>
+                        </div>
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <TeacherStatusBadge status={teacher.status} />
+                    </TableCell>
+                    <TableCell className="text-muted-foreground">
+                      {teacher.user?.phone || '—'}
+                    </TableCell>
+                    <TableCell className="text-muted-foreground truncate max-w-[200px]">
+                      {teacher.subjects?.join(', ') || '—'}
+                    </TableCell>
+                    <TableCell className="text-muted-foreground" suppressHydrationWarning>
+                      {format(new Date(teacher.created_at), 'MMM d, yyyy')}
+                    </TableCell>
+                    <TableCell className="text-right pr-4">
+                      <TeacherActionsMenu
+                        teacher={teacher}
+                        onEdit={() => onEditClick(teacher)}
+                        onToggleStatus={() => setStatusTarget(teacher)}
+                      />
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
+            </TableBody>
+          </Table>
+        </div>
+
+        {/* Mobile card stack */}
+        <div className="md:hidden space-y-3">
+          {isLoading ? (
+            [0,1,2,3].map((i) => (
+              <Card key={i}>
+                <CardContent className="p-4">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <Skeleton className="size-10 rounded-lg bg-indigo-100/50 dark:bg-indigo-950/30" />
+                      <div className="space-y-1.5">
+                        <Skeleton className="h-4 w-28 bg-indigo-100/50 dark:bg-indigo-950/30" />
+                        <Skeleton className="h-3 w-16 bg-indigo-100/50 dark:bg-indigo-950/30" />
+                      </div>
+                    </div>
+                    <Skeleton className="size-8 rounded-md bg-indigo-100/50 dark:bg-indigo-950/30" />
+                  </div>
+                </CardContent>
+              </Card>
+            ))
+          ) : items.length === 0 ? (
+            <EmptyState
+              hasFilters={!!(search || statusFilter)}
+              onClear={clearFilters}
+            />
+          ) : (
+            items.map((teacher) => (
+              <Card key={teacher.id} className="bg-white border-slate-200 shadow-sm hover:shadow-md transition-all duration-300">
+                <CardContent className="p-4">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3 min-w-0">
+                      <Avatar className="size-10 shrink-0">
+                        <AvatarFallback className="text-sm font-semibold edu-gradient-avatar">
+                          {teacher.user?.full_name?.charAt(0).toUpperCase() || 'T'}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="min-w-0">
+                        <p className="font-medium truncate">{teacher.user?.full_name}</p>
+                        <TeacherStatusBadge status={teacher.status} />
+                      </div>
+                    </div>
+                    <div>
+                      <TeacherActionsMenu
+                        teacher={teacher}
+                        onEdit={() => onEditClick(teacher)}
+                        onToggleStatus={() => setStatusTarget(teacher)}
+                      />
+                    </div>
+                  </div>
+                  <p className="mt-3 text-xs text-muted-foreground">
+                    Joined {format(new Date(teacher.created_at), 'MMM d, yyyy')} · {teacher.subjects?.join(', ') || 'No subjects'}
+                  </p>
+                </CardContent>
+              </Card>
+            ))
+          )}
+        </div>
+
+        {/* Pagination */}
+        {meta && meta.pages > 1 && (
+          <div className="flex items-center justify-between text-sm">
+            <p className="text-muted-foreground">
+              Showing page <span className="font-medium text-foreground">{page}</span> of{' '}
+              <span className="font-medium text-foreground">{meta.pages}</span> ·{' '}
+              <span className="font-medium text-foreground">{meta.total}</span> total
+            </p>
+            <div className="flex items-center gap-1">
+              <Button
+                variant="outline"
+                size="icon"
+                className="size-8"
+                disabled={page === 1}
+                onClick={() => setPage((p) => Math.max(1, p - 1))}
+              >
+                <ChevronLeft className="size-4" />
+              </Button>
+              <Button
+                variant="outline"
+                size="icon"
+                className="size-8"
+                disabled={page >= meta.pages}
+                onClick={() => setPage((p) => p + 1)}
+              >
+                <ChevronRight className="size-4" />
+              </Button>
+            </div>
+          </div>
+        )}
+      </div>
+
+      <TeacherStatusConfirmDialog
+        teacher={statusTarget}
+        isLoading={toggleStatus.isPending}
+        onConfirm={handleStatusConfirm}
+        onCancel={() => setStatusTarget(null)}
+      />
+    </>
+  );
+}
+
+function TeacherActionsMenu({
+  teacher,
+  onEdit,
+  onToggleStatus,
+}: {
+  teacher: TeacherProfile;
+  onEdit: () => void;
+  onToggleStatus: () => void;
+}) {
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger render={
+        <Button variant="ghost" size="icon" className="size-8 rounded-lg hover:bg-slate-100" aria-label="Actions">
+          <MoreHorizontal className="size-4 text-slate-500" />
+        </Button>
+      } />
+      <DropdownMenuContent align="end">
+        <DropdownMenuItem onClick={onEdit}>
+          <Pencil className="mr-2 size-4" />
+          Edit Profile
+        </DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem
+          onClick={onToggleStatus}
+          className={teacher.status === 'ACTIVE' ? 'text-destructive focus:text-destructive' : ''}
+        >
+          <Power className="mr-2 size-4" />
+          {teacher.status === 'ACTIVE' ? 'Deactivate' : 'Activate'}
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+}
+
+function EmptyState({
+  hasFilters,
+  onClear,
+}: {
+  hasFilters: boolean;
+  onClear: () => void;
+}) {
+  return (
+    <div className="flex flex-col items-center justify-center py-16 gap-3">
+      <div className="h-16 w-16 rounded-2xl bg-indigo-50 border border-indigo-100 flex items-center justify-center mb-4">
+        <GraduationCap className="h-8 w-8 text-indigo-500" />
+      </div>
+      <div className="text-center">
+        <h3 className="text-lg font-semibold">
+          {hasFilters ? 'No teachers found' : 'No teachers yet'}
+        </h3>
+        <p className="text-muted-foreground text-sm mt-1 text-center max-w-sm">
+          {hasFilters
+            ? 'Try adjusting your search or filters'
+            : 'Teachers will appear here once they are invited and their profiles are created.'}
+        </p>
+      </div>
+      {hasFilters && (
+        <Button variant="outline" size="sm" onClick={onClear}>Clear filters</Button>
+      )}
+    </div>
+  );
+}

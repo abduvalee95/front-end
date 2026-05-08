@@ -1,0 +1,150 @@
+'use client';
+
+import Image from 'next/image';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import {
+  LayoutDashboard,
+  Building2,
+  Users,
+  Settings,
+  LogOut,
+  ShieldCheck,
+  ChevronLeft,
+  ChevronRight,
+} from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { useState } from 'react';
+import { useAuth } from '@/hooks/useAuth';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+
+const navItems = [
+  {
+    group: 'Main',
+    items: [
+      { name: 'Dashboard', href: '/admin/dashboard', icon: LayoutDashboard },
+      { name: 'Organizations', href: '/admin/organizations', icon: Building2 },
+    ],
+  },
+  {
+    group: 'System',
+    items: [
+      { name: 'Users', href: '/admin/users', icon: Users },
+      { name: 'Settings', href: '/admin/settings', icon: Settings },
+    ],
+  },
+];
+
+interface SidebarNavProps {
+  onNavClick?: () => void;
+  isMobile?: boolean;
+}
+
+export function SidebarNav({ onNavClick, isMobile }: SidebarNavProps) {
+  const pathname = usePathname();
+  const [isCollapsed, setIsCollapsed] = useState(false);
+  const { logout, user } = useAuth();
+
+  const collapsed = isMobile ? false : isCollapsed;
+
+  return (
+    <aside className={cn(
+      "relative z-20 flex h-full flex-col border-r border-white/10 shadow-2xl transition-all duration-500 ease-in-out",
+      "bg-[linear-gradient(165deg,#07111f_0%,#0c2733_48%,#07111f_100%)] text-slate-200",
+      collapsed ? "w-[80px]" : "w-[280px]"
+    )}>
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_10%,rgba(3,203,231,0.28),transparent_18rem),radial-gradient(circle_at_90%_68%,rgba(0,236,129,0.16),transparent_16rem)]" />
+
+      <div className="relative mb-4 flex h-20 items-center px-6">
+        <div className="flex size-10 shrink-0 items-center justify-center">
+          <div className="flex size-10 items-center justify-center overflow-hidden rounded-xl border border-white/10 bg-white/10 shadow-lg backdrop-blur-md text-cyan-300">
+            <ShieldCheck className="size-6" />
+          </div>
+        </div>
+        {!collapsed && (
+          <div className="ml-4 animate-in fade-in slide-in-from-left-2 duration-300">
+            <h2 className="font-bold text-white text-lg leading-none tracking-tight">
+              SuperAdmin
+            </h2>
+            <p className="mt-1.5 text-[10px] font-medium uppercase tracking-[0.2em] text-cyan-200/80">Control Panel</p>
+          </div>
+        )}
+      </div>
+
+      <div className="scrollbar-hide relative flex-1 space-y-8 overflow-y-auto px-4 py-4">
+        {navItems.map((group) => (
+          <div key={group.group}>
+            {!collapsed && (
+              <h3 className="mb-4 px-4 text-[10px] font-bold uppercase tracking-[0.2em] text-cyan-200/55 animate-in fade-in duration-500">
+                {group.group}
+              </h3>
+            )}
+            <div className="space-y-1">
+              {group.items.map((item) => {
+                const isActive = pathname === item.href || pathname.startsWith(item.href + '/');
+                return (
+                  <Link
+                    key={item.name}
+                    href={item.href}
+                    onClick={onNavClick}
+                    className={cn(
+                      "flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 group relative",
+                      isActive 
+                        ? "border border-cyan-200/20 bg-white/12 text-white shadow-[0_18px_46px_rgba(3,203,231,0.12)] backdrop-blur-md before:absolute before:left-2 before:top-1/2 before:size-1.5 before:-translate-y-1/2 before:rounded-full before:bg-cyan-300"
+                        : "border border-transparent text-slate-300 hover:border-white/10 hover:bg-white/5 hover:text-white hover:backdrop-blur-sm"
+                    )}
+                    aria-label={item.name}
+                  >
+                    <item.icon className={cn(
+                      "size-5 shrink-0 transition-transform duration-300 group-hover:scale-110",
+                      isActive ? "text-cyan-100 drop-shadow-[0_0_8px_rgba(103,216,232,0.5)]" : "text-slate-400 group-hover:text-white"
+                    )} />
+                    {!collapsed && <span className="font-medium text-sm">{item.name}</span>}
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div className="relative border-t border-white/10 bg-black/22 p-4 backdrop-blur-md">
+        <div className="mb-2 flex items-center gap-3 px-3 py-4">
+          <Avatar className="size-10 shrink-0 rounded-xl border border-white/20 bg-gradient-to-tr from-cyan-500 to-emerald-400 font-bold text-white shadow-inner" size="lg">
+            {user?.avatar_url && <AvatarImage src={user.avatar_url} alt="Profile" />}
+            <AvatarFallback className="rounded-xl bg-transparent font-bold text-white">
+              {user?.full_name?.charAt(0) || 'S'}
+            </AvatarFallback>
+          </Avatar>
+          {!collapsed && (
+            <div className="min-w-0 animate-in fade-in duration-500">
+              <p className="truncate text-sm font-bold text-white">{user?.full_name || 'Super Admin'}</p>
+              <p className="truncate text-[10px] uppercase tracking-wider text-cyan-200/70">{user?.email || 'admin@platform.com'}</p>
+            </div>
+          )}
+        </div>
+
+        <div className="grid grid-cols-2 gap-2 mt-2">
+          {!isMobile && (
+            <button 
+              onClick={() => setIsCollapsed(!isCollapsed)}
+              className="flex items-center justify-center h-10 rounded-xl hover:bg-white/10 transition-colors border border-white/10 text-slate-300 hover:text-white backdrop-blur-sm"
+              title="Toggle Sidebar"
+              aria-label="Toggle sidebar"
+            >
+              {isCollapsed ? <ChevronRight className="size-4" /> : <ChevronLeft className="size-4" />}
+            </button>
+          )}
+          <button 
+            onClick={() => logout()}
+            className={cn("flex items-center justify-center h-10 rounded-xl bg-red-500/10 text-red-400 hover:bg-red-500/20 hover:text-red-300 transition-all border border-red-500/20 backdrop-blur-sm", isMobile ? "col-span-2" : "")}
+            title="Logout"
+            aria-label="Logout"
+          >
+            <LogOut className="size-4" />
+          </button>
+        </div>
+      </div>
+    </aside>
+  );
+}
