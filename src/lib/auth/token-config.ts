@@ -24,7 +24,7 @@ export const TOKEN_CONFIG: TokenConfig = {
 export const ACCESS_COOKIE_OPTIONS: CookieOptions = {
   httpOnly: true,
   secure: process.env.NODE_ENV === 'production',
-  sameSite: 'lax',
+  sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
   path: '/',
   maxAge: TOKEN_CONFIG.access.ttlSeconds,
 };
@@ -33,7 +33,7 @@ export const ACCESS_COOKIE_OPTIONS: CookieOptions = {
 export const REFRESH_COOKIE_OPTIONS: CookieOptions = {
   httpOnly: true,
   secure: process.env.NODE_ENV === 'production',
-  sameSite: 'lax',
+  sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
   path: '/',
   maxAge: TOKEN_CONFIG.refresh.ttlSeconds,
 };
@@ -42,7 +42,7 @@ export const REFRESH_COOKIE_OPTIONS: CookieOptions = {
 export const CLEAR_COOKIE_OPTIONS: CookieOptions = {
   httpOnly: true,
   secure: process.env.NODE_ENV === 'production',
-  sameSite: 'lax',
+  sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
   path: '/',
   maxAge: 0,
 };
