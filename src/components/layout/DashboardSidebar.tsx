@@ -90,8 +90,8 @@ export function DashboardSidebar() {
         "flex flex-col items-center pt-10 pb-6 px-4 relative transition-all duration-500",
         isCollapsed ? "px-2" : "px-4"
       )}>
-        <div className="flex size-14 items-center justify-center rounded-2xl bg-white shadow-xl mb-4 transition-transform hover:scale-105 shrink-0">
-          <Image src="/logo.svg" alt="Logo" width={32} height={32} className="object-contain" />
+        <div className="flex size-30 items-center justify-center rounded-2x  shadow-xl mb-4 transition-transform hover:scale-105 shrink-0">
+          <Image src="/logo.svg" alt="Logo" width={152} height={153} className="object-contain brightness-0 invert" priority /> 
         </div>
         {!isCollapsed && (
           <div className="text-center animate-in fade-in duration-300">

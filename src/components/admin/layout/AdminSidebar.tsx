@@ -55,10 +55,10 @@ export function SidebarNav({ onNavClick, isMobile }: SidebarNavProps) {
     )}>
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_10%,rgba(3,203,231,0.28),transparent_18rem),radial-gradient(circle_at_90%_68%,rgba(0,236,129,0.16),transparent_16rem)]" />
 
-      <div className="relative mb-4 flex h-20 items-center px-6">
-        <div className="flex size-10 shrink-0 items-center justify-center">
-          <div className="flex size-10 items-center justify-center overflow-hidden rounded-xl border border-white/10 bg-white/10 shadow-lg backdrop-blur-md text-cyan-300">
-            <ShieldCheck className="size-6" />
+      <div className="relative mb-6 flex h-24 items-center px-6">
+        <div className="flex size-14 shrink-0 items-center justify-center">
+          <div className="flex size-14 items-center justify-center overflow-hidden rounded-2xl border border-white/10 bg-white/10 shadow-xl backdrop-blur-md text-cyan-300">
+          <Image src="/logo.svg" alt="Logo" width={52} height={52} className="object-contain brightness-0 invert" priority />
           </div>
         </div>
         {!collapsed && (
