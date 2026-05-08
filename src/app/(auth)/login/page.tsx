@@ -73,7 +73,7 @@ function LoginForm() {
   };
 
   return (
-    <div className="relative min-h-screen overflow-hidden px-4 py-6 sm:px-6 lg:px-10">
+    <div className="relative min-h-screen overflow-hidden px-4 py-6 sm:px-6 lg:px-10" suppressHydrationWarning>
       <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(115deg,rgba(255,255,255,0.86),rgba(255,255,255,0.54)_42%,rgba(3,203,231,0.10)_42.2%,rgba(3,203,231,0.10)_100%)] dark:bg-[linear-gradient(115deg,rgba(8,13,30,0.96),rgba(8,13,30,0.78)_42%,rgba(3,203,231,0.10)_42.2%,rgba(3,203,231,0.10)_100%)]" />
       <div className="relative mx-auto grid min-h-[calc(100vh-3rem)] w-full max-w-6xl items-center gap-8 lg:grid-cols-[1.08fr_0.92fr]">
         <section className="hidden lg:block">
