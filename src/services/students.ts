@@ -41,4 +41,9 @@ export const studentService = {
     const response = await api.delete(`${STUDENTS_BASE_URL}/${id}`);
     return response.data;
   },
+
+  async bulkCreate(data: any[]): Promise<{ count: number }> {
+    const response = await api.post(`${STUDENTS_BASE_URL}/bulk`, { students: data });
+    return response.data;
+  },
 };

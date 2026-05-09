@@ -23,6 +23,8 @@ import { toast } from 'sonner';
 import { Trash2 } from 'lucide-react';
 import { CreateStudentModal } from './CreateStudentModal';
 import { EditStudentModal } from './EditStudentModal';
+import { BulkImportDialog } from '@/components/shared/BulkImportDialog';
+import { FileSpreadsheet } from 'lucide-react';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -58,11 +60,26 @@ export function StudentsWorkspace() {
   const teacherScoped = role === 'TEACHER';
   const canReadStudents = canManageScope || teacherScoped;
 
+  const queryClient = useQueryClient();
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState<StudentStatus | ''>('');
   const [viewMode, setViewMode] = useState<ViewMode>('all');
   const [selectedTeacherId, setSelectedTeacherId] = useState('');
+  const [isImportOpen, setIsImportOpen] = useState(false);
+
+  const handleBulkImport = async (data: any[]) => {
+    const students = data.map(item => ({
+      name: String(item.name || '').trim(),
+      phone: String(item.phone || '').trim(),
+      address: String(item.address || '').trim(),
+      parent: item.parent ? String(item.parent).trim() : undefined,
+      status: 'ACTIVE' as const,
+    }));
+
+    await studentService.bulkCreate(students);
+    queryClient.invalidateQueries({ queryKey: STUDENTS_KEYS.all });
+  };
 
   const effectiveViewMode: ViewMode = teacherScoped ? 'teacher' : viewMode;
   const effectiveTeacherId = teacherScoped ? user?.id ?? '' : selectedTeacherId;
@@ -196,7 +213,19 @@ export function StudentsWorkspace() {
                   <GraduationCap className="mr-1.5 size-3.5" />
                   {teacherScoped ? 'Teacher scope' : 'Student control room'}
                 </Badge>
-                {canManageScope && <CreateStudentModal />}
+                {canManageScope && (
+                  <div className="flex items-center gap-2">
+                    <CreateStudentModal />
+                    <Button 
+                      variant="outline" 
+                      onClick={() => setIsImportOpen(true)}
+                      className="rounded-xl border-green-600/30 bg-green-50/50 text-green-700 hover:bg-green-100 hover:text-green-800 dark:border-green-500/20 dark:bg-green-500/5 dark:text-green-400"
+                    >
+                      <FileSpreadsheet className="mr-2 size-4" />
+                      Import
+                    </Button>
+                  </div>
+                )}
               </div>
               <h1 className="max-w-3xl text-3xl font-black tracking-tight text-foreground sm:text-5xl">
                 {teacherScoped ? 'Your students, grouped by your classes.' : 'Students by organization or teacher.'}
@@ -359,6 +388,21 @@ export function StudentsWorkspace() {
           ? 'Teacher accounts are scoped through group enrollments.'
           : `Inactive in current view: ${inactiveCount}. Teacher filtering uses group enrollments.`}
       </p>
+
+      <BulkImportDialog
+        isOpen={isImportOpen}
+        onClose={() => setIsImportOpen(false)}
+        onImport={handleBulkImport}
+        title="Import Students"
+        description="Upload an Excel file to bulk add students to your organization."
+        requiredFields={['name', 'phone']}
+        columnMapping={{
+          'Full Name': 'name',
+          'Phone': 'phone',
+          'Address': 'address',
+          'Parent Name': 'parent',
+        }}
+      />
     </div>
   );
 }

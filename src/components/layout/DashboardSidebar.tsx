@@ -35,10 +35,10 @@ const navigationGroups = [
   {
     title: 'Management',
     items: [
-      { name: 'Students', href: '/students', icon: GraduationCap },
+      { name: 'Journal', href: '/journal', icon: BookOpen },
       { name: 'Leads', href: '/leads', icon: Users },
       { name: 'Teachers', href: '/teachers', icon: GraduationCap },
-      { name: 'Add Student', href: '/students/new', icon: UserPlus },
+      { name: 'Students', href: '/students', icon: GraduationCap },
     ]
   },
   {
@@ -46,7 +46,6 @@ const navigationGroups = [
     items: [
       { name: 'Attendance', href: '/attendance', icon: ClipboardCheck },
       { name: 'Schedule', href: '/schedule', icon: Calendar },
-      { name: 'Journal', href: '/journal', icon: BookOpen },
     ]
   },
   {

@@ -88,7 +88,7 @@ export function CreateStudentModal() {
             <Label htmlFor="name">Full Name *</Label>
             <Input
               id="name"
-              placeholder="E.g. Ali Valiyev"
+              placeholder="Name and Surname"
               value={formData.name}
               onChange={(e) => setFormData((prev) => ({ ...prev, name: e.target.value }))}
               disabled={isLoading}
@@ -108,7 +108,7 @@ export function CreateStudentModal() {
             <Label htmlFor="address">Address *</Label>
             <Input
               id="address"
-              placeholder="E.g. Bishkek, Chuy st. 12"
+              placeholder="Address"
               value={formData.address}
               onChange={(e) => setFormData((prev) => ({ ...prev, address: e.target.value }))}
               disabled={isLoading}

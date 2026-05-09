@@ -65,4 +65,12 @@ export const teacherService = {
   async deleteTeacher(id: string): Promise<void> {
     await api.delete(`${TEACHERS_BASE_URL}/${id}`);
   },
+
+  /**
+   * Bulk create teachers
+   */
+  async bulkCreate(data: CreateTeacherDto[]): Promise<{ count: number }> {
+    const response = await api.post(`${TEACHERS_BASE_URL}/bulk`, { teachers: data });
+    return response.data;
+  },
 };
