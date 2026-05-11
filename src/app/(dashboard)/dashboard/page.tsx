@@ -10,9 +10,12 @@ import {
   TrendingUp,
   Clock,
   ChevronRight,
-  Sparkles
+  Sparkles,
+  DollarSign,
+  GraduationCap
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { LucideIcon } from 'lucide-react';
 import { 
   PieChart, 
   Pie, 
@@ -24,29 +27,46 @@ import {
   CartesianGrid, 
   ResponsiveContainer, 
   Tooltip,
-  AreaChart,
-  Area
 } from 'recharts';
+import { useDashboardSummary, useLeadsByStatus, usePaymentsByMethod } from '@/hooks/useDashboard';
+import { Skeleton } from '@/components/ui/skeleton';
+import { useMemo } from 'react';
 
-const pieData = [
-  { name: 'English', value: 45, color: '#3b82f6' }, 
-  { name: 'IT Courses', value: 30, color: '#6366f1' }, 
-  { name: 'Math', value: 25, color: '#8b5cf6' }, 
-];
+const LEAD_STATUS_COLORS: Record<string, string> = {
+  NEW: '#3b82f6',
+  CONTACTED: '#6366f1',
+  CONVERTED: '#10b981',
+  LOST: '#ef4444',
+};
 
-const barData = [
-  { name: 'Cash', value: 25, color: '#2dd4bf' }, 
-  { name: 'Card', value: 85, color: '#3b82f6' }, 
-  { name: 'Bank', value: 10, color: '#64748b' }, 
-];
-
-const recentActivity = [
-  { id: 1, type: 'lead', title: 'New Lead: Sarah Johnson', time: '10 min ago', status: 'new' },
-  { id: 2, type: 'payment', title: 'Payment received: $450', time: '1 hour ago', status: 'success' },
-  { id: 3, type: 'class', title: 'IT Course - Group A started', time: '2 hours ago', status: 'active' },
-];
+const PAYMENT_METHOD_COLORS: Record<string, string> = {
+  CASH: '#2dd4bf',
+  CARD: '#3b82f6',
+  TRANSFER: '#8b5cf6',
+};
 
 export default function DashboardPage() {
+  const { data: summary, isLoading: summaryLoading } = useDashboardSummary();
+  const { data: leadsByStatus, isLoading: leadsLoading } = useLeadsByStatus();
+  const { data: paymentsByMethod, isLoading: paymentsLoading } = usePaymentsByMethod();
+
+  const pieData = useMemo(() => {
+    if (!leadsByStatus) return [];
+    return leadsByStatus.map(item => ({
+      name: item.status,
+      value: item.count,
+      color: LEAD_STATUS_COLORS[item.status] || '#64748b',
+    }));
+  }, [leadsByStatus]);
+
+  const barData = useMemo(() => {
+    if (!paymentsByMethod) return [];
+    return paymentsByMethod.map(item => ({
+      name: item.method || 'Unknown',
+      value: item.count,
+      color: PAYMENT_METHOD_COLORS[item.method || ''] || '#64748b',
+    }));
+  }, [paymentsByMethod]);
   return (
     <div className="w-full h-full space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
       
@@ -63,7 +83,11 @@ export default function DashboardPage() {
               Welcome back, Bilim Nuru Admin
             </h1>
             <p className="text-slate-300 max-w-xl font-medium">
-              Everything is looking good today. You have <span className="text-blue-400 font-bold">12 new leads</span> and 3 upcoming classes in the next hour.
+              {summaryLoading ? (
+                <Skeleton className="h-6 w-96 bg-white/10" />
+              ) : (
+                <>Everything is looking good today. You have <span className="text-blue-400 font-bold">{summary?.leadsNew || 0} new leads</span> and {summary?.upcomingLessons?.length || 0} upcoming lessons.</>  
+              )}
             </p>
           </div>
           <div className="flex items-center gap-3">
@@ -79,44 +103,57 @@ export default function DashboardPage() {
 
       {/* Stats Section */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <StatCard 
-          title="Total Students" 
-          value="92" 
-          subtitle="Full paid: 46" 
-          icon={Users} 
-          trend="+12%" 
-          trendUp={true}
-          color="#3b82f6"
-        />
-        <StatCard 
-          title="March Payments" 
-          value="364,950" 
-          unit="som" 
-          subtitle="Pending: 17" 
-          icon={CalendarDays} 
-          trend="+8%" 
-          trendUp={true}
-          color="#2dd4bf"
-        />
-        <StatCard 
-          title="April Payments" 
-          value="203,800" 
-          unit="som" 
-          subtitle="Pending: 45" 
-          icon={CalendarDays} 
-          trend="-3%" 
-          trendUp={false}
-          color="#f59e0b"
-        />
-        <StatCard 
-          title="Payment Risk" 
-          value="16" 
-          subtitle="Partial: 30" 
-          icon={AlertTriangle} 
-          trend="+2" 
-          trendUp={false}
-          color="#f43f5e"
-        />
+        {summaryLoading ? (
+          [1,2,3,4].map(i => (
+            <div key={i} className="bg-white/80 backdrop-blur-sm rounded-[32px] p-6 shadow-sm border border-slate-200/50">
+              <Skeleton className="h-12 w-12 rounded-2xl mb-4" />
+              <Skeleton className="h-4 w-24 mb-2" />
+              <Skeleton className="h-8 w-16 mb-1" />
+              <Skeleton className="h-3 w-20" />
+            </div>
+          ))
+        ) : (
+          <>
+            <StatCard 
+              title="Total Students" 
+              value={String(summary?.studentsActive || 0)} 
+              subtitle={`Inactive: ${summary?.studentsInactive || 0}`} 
+              icon={Users} 
+              trend={`${summary?.studentsTotal || 0} total`}
+              trendUp={true}
+              color="#3b82f6"
+            />
+            <StatCard 
+              title="Total Payments" 
+              value={String(summary?.paymentsCount || 0)} 
+              unit="payments" 
+              subtitle={`${Number(summary?.paymentsTotalAmount || 0).toLocaleString()} som`}
+              icon={DollarSign} 
+              trend={`${summary?.paymentsCount || 0} count`}
+              trendUp={true}
+              color="#2dd4bf"
+            />
+            <StatCard 
+              title="Active Leads" 
+              value={String(summary?.leadsNew || 0)} 
+              subtitle={`Contacted: ${summary?.leadsContacted || 0}`} 
+              icon={ClipboardList} 
+              trend={`${summary?.leadsConverted || 0} converted`}
+              trendUp={true}
+              color="#f59e0b"
+            />
+            <StatCard 
+              title="Attendance Rate" 
+              value={String(summary?.attendanceRate || 0)} 
+              unit="%"
+              subtitle={`Present: ${summary?.attendancePresent || 0}`} 
+              icon={GraduationCap} 
+              trend={`${summary?.attendanceAbsent || 0} absent`}
+              trendUp={(summary?.attendanceRate || 0) >= 75}
+              color="#8b5cf6"
+            />
+          </>
+        )}
       </div>
 
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
@@ -135,69 +172,94 @@ export default function DashboardPage() {
                   <TrendingUp className="size-5 text-slate-400" />
                 </div>
               </div>
-              <div className="h-[300px] w-full min-h-[300px]">
-                <ResponsiveContainer width="100%" height="100%">
-                  <PieChart>
-                    <Pie
-                      data={pieData}
-                      cx="50%"
-                      cy="50%"
-                      innerRadius={70}
-                      outerRadius={100}
-                      paddingAngle={8}
-                      dataKey="value"
-                      stroke="none"
-                    >
-                      {pieData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={entry.color} />
-                      ))}
-                    </Pie>
-                    <Tooltip 
-                      contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 10px 30px rgba(0,0,0,0.1)' }}
-                      itemStyle={{ fontWeight: 'bold' }}
-                    />
-                  </PieChart>
-                </ResponsiveContainer>
-              </div>
-              <div className="flex justify-center gap-6 mt-4">
-                {pieData.map((item) => (
-                  <div key={item.name} className="flex items-center gap-2">
-                    <div className="size-2 rounded-full" style={{ backgroundColor: item.color }} />
-                    <span className="text-xs font-bold text-slate-500">{item.name}</span>
+              {leadsLoading ? (
+                <div className="h-[300px] w-full min-h-[300px] flex items-center justify-center">
+                  <Skeleton className="h-48 w-48 rounded-full" />
+                </div>
+              ) : pieData.length > 0 ? (
+                <>
+                  <div className="h-[300px] w-full min-h-[300px]">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <PieChart>
+                        <Pie
+                          data={pieData}
+                          cx="50%"
+                          cy="50%"
+                          innerRadius={70}
+                          outerRadius={100}
+                          paddingAngle={8}
+                          dataKey="value"
+                          stroke="none"
+                        >
+                          {pieData.map((entry, index) => (
+                            <Cell key={`cell-${index}`} fill={entry.color} />
+                          ))}
+                        </Pie>
+                        <Tooltip 
+                          contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 10px 30px rgba(0,0,0,0.1)' }}
+                          itemStyle={{ fontWeight: 'bold' }}
+                        />
+                      </PieChart>
+                    </ResponsiveContainer>
                   </div>
-                ))}
-              </div>
+                  <div className="flex justify-center gap-6 mt-4">
+                    {pieData.map((item) => (
+                      <div key={item.name} className="flex items-center gap-2">
+                        <div className="size-2 rounded-full" style={{ backgroundColor: item.color }} />
+                        <span className="text-xs font-bold text-slate-500">{item.name}</span>
+                      </div>
+                    ))}
+                  </div>
+                </>
+              ) : (
+                <div className="h-[300px] flex items-center justify-center text-slate-400 text-sm">
+                  No lead data available
+                </div>
+              )}
             </div>
 
             {/* Payment Methods Chart */}
             <div className="bg-white/80 backdrop-blur-sm rounded-[32px] p-8 shadow-sm border border-slate-200/50 transition-all hover:shadow-xl hover:shadow-slate-200/40 min-w-0">
               <div className="flex items-center justify-between mb-8">
                 <div>
-                  <h3 className="text-xl font-black text-slate-900">Payment Stats</h3>
-                  <p className="text-sm text-slate-400 font-medium">Daily transaction breakdown</p>
+                  <h3 className="text-xl font-black text-slate-900">Payment Methods</h3>
+                  <p className="text-sm text-slate-400 font-medium">Transaction breakdown</p>
                 </div>
                 <div className="bg-slate-50 p-2 rounded-xl">
                   <Clock className="size-5 text-slate-400" />
                 </div>
               </div>
-              <div className="h-[280px] w-full mt-4 min-h-[280px]">
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={barData} margin={{ top: 0, right: 0, left: -20, bottom: 0 }} barSize={45}>
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-                    <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#94a3b8', fontSize: 12, fontWeight: 600 }} />
-                    <YAxis axisLine={false} tickLine={false} tick={{ fill: '#94a3b8', fontSize: 12 }} />
-                    <Tooltip
-                      cursor={{ fill: '#f8fafc' }}
-                      contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 10px 30px rgba(0,0,0,0.1)' }}
-                    />
-                    <Bar dataKey="value" radius={[10, 10, 10, 10]}>
-                      {barData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={entry.color} />
-                      ))}
-                    </Bar>
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
+              {paymentsLoading ? (
+                <div className="h-[280px] w-full mt-4 min-h-[280px] flex items-center justify-center">
+                  <div className="space-y-4 w-full">
+                    <Skeleton className="h-32 w-full" />
+                    <Skeleton className="h-32 w-full" />
+                  </div>
+                </div>
+              ) : barData.length > 0 ? (
+                <div className="h-[280px] w-full mt-4 min-h-[280px]">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={barData} margin={{ top: 0, right: 0, left: -20, bottom: 0 }} barSize={45}>
+                      <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                      <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#94a3b8', fontSize: 12, fontWeight: 600 }} />
+                      <YAxis axisLine={false} tickLine={false} tick={{ fill: '#94a3b8', fontSize: 12 }} />
+                      <Tooltip
+                        cursor={{ fill: '#f8fafc' }}
+                        contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 10px 30px rgba(0,0,0,0.1)' }}
+                      />
+                      <Bar dataKey="value" radius={[10, 10, 10, 10]}>
+                        {barData.map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={entry.color} />
+                        ))}
+                      </Bar>
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+              ) : (
+                <div className="h-[280px] flex items-center justify-center text-slate-400 text-sm">
+                  No payment data available
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -212,34 +274,51 @@ export default function DashboardPage() {
               </button>
             </div>
             <div className="space-y-6">
-              {recentActivity.map((activity) => (
-                <div key={activity.id} className="flex gap-4 group cursor-pointer">
-                  <div className={`size-10 rounded-xl shrink-0 flex items-center justify-center ${
-                    activity.status === 'new' ? 'bg-blue-50 text-blue-500' :
-                    activity.status === 'success' ? 'bg-emerald-50 text-emerald-500' :
-                    'bg-amber-50 text-amber-500'
-                  }`}>
-                    {activity.type === 'lead' ? <Users className="size-5" /> :
-                     activity.type === 'payment' ? <CreditCard className="size-5" /> :
-                     <CalendarDays className="size-5" />}
+              {summaryLoading ? (
+                [1,2,3].map(i => (
+                  <div key={i} className="flex gap-4">
+                    <Skeleton className="size-10 rounded-xl shrink-0" />
+                    <div className="space-y-2 flex-1">
+                      <Skeleton className="h-4 w-48" />
+                      <Skeleton className="h-3 w-24" />
+                    </div>
                   </div>
-                  <div className="space-y-1">
-                    <p className="text-sm font-bold text-slate-800 group-hover:text-blue-600 transition-colors">{activity.title}</p>
-                    <p className="text-xs font-medium text-slate-400">{activity.time}</p>
+                ))
+              ) : summary?.upcomingLessons && summary.upcomingLessons.length > 0 ? (
+                summary.upcomingLessons.slice(0, 3).map((lesson) => (
+                  <div key={lesson.id} className="flex gap-4 group cursor-pointer">
+                    <div className="size-10 rounded-xl shrink-0 flex items-center justify-center bg-indigo-50 text-indigo-500">
+                      <CalendarDays className="size-5" />
+                    </div>
+                    <div className="space-y-1">
+                      <p className="text-sm font-bold text-slate-800 group-hover:text-blue-600 transition-colors">{lesson.title}</p>
+                      <p className="text-xs font-medium text-slate-400">{lesson.course_title}</p>
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))
+              ) : (
+                <p className="text-sm text-slate-400 text-center py-8">No upcoming lessons</p>
+              )}
             </div>
 
             <div className="mt-12 pt-8 border-t border-slate-50">
               <div className="bg-gradient-to-br from-indigo-50 to-blue-50 rounded-2xl p-6 border border-blue-100/50">
-                <p className="text-sm font-black text-slate-900 mb-2">Today's Attendance</p>
+                <p className="text-sm font-black text-slate-900 mb-2">Overall Attendance</p>
                 <div className="flex items-end gap-2">
-                  <span className="text-3xl font-black text-indigo-600">0%</span>
-                  <span className="text-xs font-bold text-slate-400 mb-1">vs yesterday</span>
+                  {summaryLoading ? (
+                    <Skeleton className="h-10 w-20" />
+                  ) : (
+                    <>
+                      <span className="text-3xl font-black text-indigo-600">{summary?.attendanceRate || 0}%</span>
+                      <span className="text-xs font-bold text-slate-400 mb-1">{summary?.attendancePresent || 0} present</span>
+                    </>
+                  )}
                 </div>
                 <div className="w-full h-2 bg-slate-200/50 rounded-full mt-4 overflow-hidden">
-                  <div className="h-full bg-indigo-500 w-[0%] transition-all duration-1000" />
+                  <div 
+                    className="h-full bg-indigo-500 transition-all duration-1000" 
+                    style={{ width: `${summary?.attendanceRate || 0}%` }}
+                  />
                 </div>
               </div>
             </div>
@@ -250,7 +329,18 @@ export default function DashboardPage() {
   );
 }
 
-function StatCard({ title, value, unit, subtitle, icon: Icon, trend, trendUp, color }: any) {
+interface StatCardProps {
+  title: string;
+  value: string;
+  unit?: string;
+  subtitle: string;
+  icon: LucideIcon;
+  trend: string;
+  trendUp: boolean;
+  color: string;
+}
+
+function StatCard({ title, value, unit, subtitle, icon: Icon, trend, trendUp, color }: StatCardProps) {
   return (
     <div 
       className="bg-white/80 backdrop-blur-sm rounded-[32px] p-6 shadow-sm border border-slate-200/50 transition-all hover:shadow-xl hover:shadow-slate-200/40 group overflow-hidden relative"

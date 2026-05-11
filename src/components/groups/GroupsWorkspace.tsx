@@ -1,6 +1,7 @@
 'use client';
 
 import { useMemo, useState } from 'react';
+import { useDebounceSearch } from '@/hooks/useDebounceSearch';
 import { useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import {
@@ -8,6 +9,7 @@ import {
   Calendar,
   GraduationCap,
   Layers3,
+  Loader2,
   RefreshCw,
   Search,
   Trash2,
@@ -15,6 +17,7 @@ import {
   UsersRound,
   LayoutGrid,
   List,
+  X,
 } from 'lucide-react';
 import { useAuthStore } from '@/store/auth.store';
 import { useGroups, GROUPS_KEYS } from '@/hooks/useGroups';
@@ -35,6 +38,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { CreateGroupModal } from './CreateGroupModal';
 import { EditGroupModal } from './EditGroupModal';
@@ -48,7 +52,7 @@ export function GroupsWorkspace() {
   const teacherScoped = role === 'TEACHER';
   const canRead = canManage || teacherScoped;
 
-  const [search, setSearch] = useState('');
+  const { value: search, debouncedValue: debouncedSearch, handleChange: setSearch, clearSearch, isPending: isSearching } = useDebounceSearch({ delay: 300 });
   const [courseFilter, setCourseFilter] = useState('');
   const [viewMode, setViewMode] = useState<'table' | 'kanban'>('table');
 
@@ -70,7 +74,7 @@ export function GroupsWorkspace() {
 
   // Apply filters
   const rows = useMemo(() => {
-    const normalizedSearch = search.trim().toLowerCase();
+    const normalizedSearch = debouncedSearch.trim().toLowerCase();
     return scopedGroups.filter((g) => {
       const matchesSearch =
         !normalizedSearch ||
@@ -80,7 +84,7 @@ export function GroupsWorkspace() {
       const matchesCourse = !courseFilter || g.course_id === courseFilter;
       return matchesSearch && matchesCourse;
     });
-  }, [scopedGroups, search, courseFilter]);
+  }, [scopedGroups, debouncedSearch, courseFilter]);
 
   const uniqueCourses = useMemo(() => {
     const set = new Set(scopedGroups.map((g) => g.course?.title).filter(Boolean));
@@ -99,7 +103,8 @@ export function GroupsWorkspace() {
       await groupService.deleteGroup(id);
       toast.success('Group deleted successfully');
       queryClient.invalidateQueries({ queryKey: GROUPS_KEYS.all });
-    } catch (error: any) {
+    } catch (err: unknown) {
+      const error = err as { response?: { data?: { message?: string } } };
       toast.error(error.response?.data?.message || 'Failed to delete group');
     } finally {
       setIsDeleting(null);
@@ -174,13 +179,26 @@ export function GroupsWorkspace() {
             </div>
             <div className="flex flex-col gap-3 sm:flex-row">
               <div className="relative sm:w-64">
-                <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+                {isSearching ? (
+                  <Loader2 className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-primary animate-spin" />
+                ) : (
+                  <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+                )}
                 <Input
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                   placeholder="Search groups..."
-                  className="pl-9"
+                  className={cn('pl-9', search && 'pr-9')}
                 />
+                {search && (
+                  <button
+                    type="button"
+                    onClick={clearSearch}
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 rounded-full p-0.5 text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+                  >
+                    <X className="size-3.5" />
+                  </button>
+                )}
               </div>
               <select
                 value={courseFilter}
@@ -246,7 +264,7 @@ export function GroupsWorkspace() {
                 {canManage ? 'Click "Add Group" to create your first group.' : 'Groups will appear here once created.'}
               </p>
               {(search || courseFilter) && (
-                <Button variant="outline" size="sm" onClick={() => { setSearch(''); setCourseFilter(''); }} className="mt-4">
+                <Button variant="outline" size="sm" onClick={() => { clearSearch(); setCourseFilter(''); }} className="mt-4">
                   Clear filters
                 </Button>
               )}
@@ -273,7 +291,12 @@ export function GroupsWorkspace() {
                               {group.name.charAt(0).toUpperCase()}
                             </AvatarFallback>
                           </Avatar>
-                          <p className="text-sm font-bold text-foreground">{group.name}</p>
+                          <Link
+                            href={`/groups/${group.id}`}
+                            className="text-sm font-bold text-foreground hover:underline hover:text-primary transition-colors"
+                          >
+                            {group.name}
+                          </Link>
                         </div>
                       </TableCell>
                       <TableCell>

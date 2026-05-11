@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useCallback } from 'react';
+import { useDebounceSearch } from '@/hooks/useDebounceSearch';
 import { useOrganizations, useToggleOrganizationStatus } from '@/hooks/useOrganizations';
 import type { PlatformOrganization, OrganizationStatus } from '@/types/platform';
 import { format } from 'date-fns';
@@ -16,6 +17,8 @@ import {
   AlertCircle,
   ChevronLeft,
   ChevronRight,
+  X,
+  Loader2,
 } from 'lucide-react';
 import {
   Table,
@@ -55,14 +58,17 @@ export default function OrganizationsTable({
   onDetailClick,
 }: OrganizationsTableProps) {
   const [page, setPage] = useState(1);
-  const [search, setSearch] = useState('');
+  const { value: search, debouncedValue: debouncedSearch, handleChange: setSearch, clearSearch, isPending: isSearching } = useDebounceSearch({
+    delay: 300,
+    onDebouncedChange: () => setPage(1),
+  });
   const [statusFilter, setStatusFilter] = useState<OrganizationStatus | ''>('');
   const pageSize = PAGE_SIZE_DEFAULT;
 
   const { data, isLoading, isError, refetch } = useOrganizations({
     page,
     limit: pageSize,
-    search: search || undefined,
+    search: debouncedSearch || undefined,
     status: statusFilter || undefined,
   });
 
@@ -82,7 +88,7 @@ export default function OrganizationsTable({
   const items = data?.items ?? [];
   const meta = data?.meta;
 
-  const clearFilters = () => { setSearch(''); setStatusFilter(''); setPage(1); };
+  const clearFilters = () => { clearSearch(); setStatusFilter(''); setPage(1); };
 
   if (isError) {
     return (
@@ -108,13 +114,26 @@ export default function OrganizationsTable({
         {/* Toolbar */}
         <div className="flex flex-col sm:flex-row gap-3">
           <div className="relative flex-1 max-w-sm">
-            <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground pointer-events-none" />
+            {isSearching ? (
+              <Loader2 className="absolute left-2.5 top-1/2 -translate-y-1/2 size-4 text-primary animate-spin pointer-events-none" />
+            ) : (
+              <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground pointer-events-none" />
+            )}
             <Input
               placeholder="Search organizations..."
               value={search}
-              onChange={(e) => { setSearch(e.target.value); setPage(1); }}
-              className="pl-8"
+              onChange={(e) => setSearch(e.target.value)}
+              className={`pl-8${search ? ' pr-8' : ''}`}
             />
+            {search && (
+              <button
+                type="button"
+                onClick={clearSearch}
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 rounded-full p-0.5 text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+              >
+                <X className="size-3.5" />
+              </button>
+            )}
           </div>
 
           <select

@@ -1,6 +1,7 @@
 'use client';
 
 import { useMemo, useState } from 'react';
+import { useDebounceSearch } from '@/hooks/useDebounceSearch';
 import {
   AlertCircle,
   BookOpen,
@@ -8,17 +9,20 @@ import {
   ChevronRight,
   GraduationCap,
   Layers3,
+  Loader2,
   RefreshCw,
   Search,
   UserRoundCheck,
   UsersRound,
+  X,
 } from 'lucide-react';
 import { useAuthStore } from '@/store/auth.store';
 import { useTeachers } from '@/hooks/useTeachers';
-import { useGroupEnrollments, useStudentGroups, useStudents, STUDENTS_KEYS } from '@/hooks/useStudents';
+import { useGroupEnrollments, useStudentGroups, useStudents } from '@/hooks/useStudents';
 import type { Student, StudentStatus } from '@/types/student';
 import { studentService } from '@/services/students';
 import { useQueryClient } from '@tanstack/react-query';
+import { queryKeys } from '@/lib/api/query-keys';
 import { toast } from 'sonner';
 import { Trash2 } from 'lucide-react';
 import { CreateStudentModal } from './CreateStudentModal';
@@ -62,13 +66,16 @@ export function StudentsWorkspace() {
 
   const queryClient = useQueryClient();
   const [page, setPage] = useState(1);
-  const [search, setSearch] = useState('');
+  const { value: search, debouncedValue: debouncedSearch, handleChange: setSearch, clearSearch, isPending: isSearching } = useDebounceSearch({
+    delay: 300,
+    onDebouncedChange: () => setPage(1),
+  });
   const [statusFilter, setStatusFilter] = useState<StudentStatus | ''>('');
   const [viewMode, setViewMode] = useState<ViewMode>('all');
   const [selectedTeacherId, setSelectedTeacherId] = useState('');
   const [isImportOpen, setIsImportOpen] = useState(false);
 
-  const handleBulkImport = async (data: any[]) => {
+  const handleBulkImport = async (data: Record<string, unknown>[]) => {
     const students = data.map(item => ({
       name: String(item.name || '').trim(),
       phone: String(item.phone || '').trim(),
@@ -78,7 +85,7 @@ export function StudentsWorkspace() {
     }));
 
     await studentService.bulkCreate(students);
-    queryClient.invalidateQueries({ queryKey: STUDENTS_KEYS.all });
+    queryClient.invalidateQueries({ queryKey: queryKeys.students.all(user?.organization_id) });
   };
 
   const effectiveViewMode: ViewMode = teacherScoped ? 'teacher' : viewMode;
@@ -90,7 +97,7 @@ export function StudentsWorkspace() {
     {
       page,
       limit: pageSize,
-      search: search || undefined,
+      search: debouncedSearch || undefined,
       status: statusFilter || undefined,
     },
     shouldLoadAllStudents,
@@ -147,7 +154,7 @@ export function StudentsWorkspace() {
       });
     });
 
-    const normalizedSearch = search.trim().toLowerCase();
+    const normalizedSearch = debouncedSearch.trim().toLowerCase();
     return Array.from(rows.values()).filter((student) => {
       const matchesSearch =
         !normalizedSearch ||
@@ -156,7 +163,7 @@ export function StudentsWorkspace() {
       const matchesStatus = !statusFilter || student.status === statusFilter;
       return matchesSearch && matchesStatus;
     });
-  }, [enrollmentQueries, search, statusFilter]);
+  }, [enrollmentQueries, debouncedSearch, statusFilter]);
 
   const allRows = useMemo<StudentRow[]>(() => {
     return (studentsQuery.data?.items ?? []).map((student) => ({
@@ -183,7 +190,7 @@ export function StudentsWorkspace() {
   const groupCount = new Set(rows.flatMap((student) => student.groups)).size;
 
   const resetFilters = () => {
-    setSearch('');
+    clearSearch();
     setStatusFilter('');
     setPage(1);
   };
@@ -286,16 +293,26 @@ export function StudentsWorkspace() {
 
             <div className="flex flex-col gap-3 sm:flex-row">
               <div className="relative sm:w-72">
-                <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+                {isSearching ? (
+                  <Loader2 className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-primary animate-spin" />
+                ) : (
+                  <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+                )}
                 <Input
                   value={search}
-                  onChange={(e) => {
-                    setSearch(e.target.value);
-                    setPage(1);
-                  }}
+                  onChange={(e) => setSearch(e.target.value)}
                   placeholder="Search name or phone..."
-                  className="pl-9"
+                  className={cn('pl-9', search && 'pr-9')}
                 />
+                {search && (
+                  <button
+                    type="button"
+                    onClick={clearSearch}
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 rounded-full p-0.5 text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+                  >
+                    <X className="size-3.5" />
+                  </button>
+                )}
               </div>
 
               <select
@@ -319,8 +336,8 @@ export function StudentsWorkspace() {
                 >
                   <option value="">Choose teacher</option>
                   {teacherOptions.map((teacher) => (
-                    <option key={teacher.user_id} value={teacher.user_id}>
-                      {teacher.user?.full_name ?? 'Unnamed teacher'}
+                    <option key={teacher.id} value={teacher.id}>
+                      {teacher.full_name ?? 'Unnamed teacher'}
                     </option>
                   ))}
                 </select>
@@ -423,6 +440,7 @@ function StudentsTable({
   canManageScope: boolean;
 }) {
   const queryClient = useQueryClient();
+  const user = useAuthStore((state) => state.user);
   const [isDeleting, setIsDeleting] = useState<string | null>(null);
 
   const handleDelete = async (id: string, name: string) => {
@@ -431,7 +449,7 @@ function StudentsTable({
       setIsDeleting(id);
       await studentService.deleteStudent(id);
       toast.success('Student deleted successfully');
-      queryClient.invalidateQueries({ queryKey: STUDENTS_KEYS.all });
+      queryClient.invalidateQueries({ queryKey: queryKeys.students.all(user?.organization_id) });
     } catch (error: any) {
       toast.error(error.response?.data?.message || 'Failed to delete student');
     } finally {

@@ -37,8 +37,10 @@ const navigationGroups = [
     items: [
       { name: 'Journal', href: '/journal', icon: BookOpen },
       { name: 'Leads', href: '/leads', icon: Users },
+      { name: 'Courses', href: '/courses', icon: BookOpen },
       { name: 'Teachers', href: '/teachers', icon: GraduationCap },
       { name: 'Students', href: '/students', icon: GraduationCap },
+      { name: 'Groups', href: '/groups', icon: Users },
     ]
   },
   {
@@ -86,25 +88,27 @@ export function DashboardSidebar() {
       
       {/* Brand Section */}
       <div className={cn(
-        "flex flex-col items-center pt-10 pb-6 px-4 relative transition-all duration-500",
+        "flex flex-col items-center pt-10 pb-8 px-4 relative transition-all duration-500",
         isCollapsed ? "px-2" : "px-4"
       )}>
-        <div className="flex size-30 items-center justify-center rounded-2x  shadow-xl mb-4 transition-transform hover:scale-105 shrink-0">
-          <Image src="/logo.svg" alt="Logo" width={152} height={153} className="object-contain brightness-0 invert" priority /> 
-        </div>
-        {!isCollapsed && (
-          <div className="text-center animate-in fade-in duration-300">
-            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-blue-200/60 mb-1.5">
-              ОКУУ БОРБОРУ
-            </p>
-            <h2 className="font-bold text-2xl leading-none text-white mb-2">
-              Билим Нуру
-            </h2>
-            <p className="text-[11px] text-blue-100/70 leading-tight max-w-[170px] mx-auto font-medium">
-              Управление оплатами и учениками
-            </p>
+        <div className={cn(
+          "flex items-center justify-center rounded-3xl transition-all duration-500 group relative overflow-hidden",
+          isCollapsed ? "size-14" : "size-44"
+        )}>
+          {/* Decorative background glow inside logo container */}
+          <div className="absolute inset-0 bg-gradient-to-tr from-blue-400/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+          
+          <div className="relative z-10 transition-transform duration-500 group-hover:scale-110">
+            <Image 
+              src="/logo.svg" 
+              alt="Logo" 
+              width={isCollapsed ? 40 : 250} 
+              height={isCollapsed ? 40 : 250} 
+              className="object-contain brightness-0 invert opacity-90" 
+              priority 
+            /> 
           </div>
-        )}
+        </div>
       </div>
 
       {/* Navigation */}
@@ -120,6 +124,14 @@ export function DashboardSidebar() {
             )}
             <nav className="flex flex-col space-y-1">
               {group.items.map((item) => {
+                // Role-based filtering
+                if (item.name === 'Leads' && !['SUPER_ADMIN', 'ADMIN', 'MANAGER', 'TEACHER'].includes(user?.role || '')) return null;
+                if (item.name === 'Teachers' && !['SUPER_ADMIN', 'ADMIN', 'MANAGER'].includes(user?.role || '')) return null;
+                if (item.name === 'Groups' && !['SUPER_ADMIN', 'ADMIN', 'MANAGER', 'TEACHER'].includes(user?.role || '')) return null;
+                if (item.name === 'Finance' && !['SUPER_ADMIN', 'ADMIN', 'MANAGER'].includes(user?.role || '')) return null;
+                if (item.name === 'Reports' && !['SUPER_ADMIN', 'ADMIN', 'MANAGER'].includes(user?.role || '')) return null;
+                if (item.name === 'Settings' && !['SUPER_ADMIN', 'ADMIN'].includes(user?.role || '')) return null;
+
                 const isActive = pathname === item.href || (item.href !== '/dashboard' && pathname.startsWith(item.href));
                 return (
                   <Link

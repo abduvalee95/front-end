@@ -1,20 +1,24 @@
 'use client';
 
 import { useState, useMemo } from 'react';
+import { useDebounceSearch } from '@/hooks/useDebounceSearch';
 import { useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import {
   AlertCircle,
   BookOpen,
   Library,
+  Loader2,
   RefreshCw,
   Search,
   Trash2,
   Users2,
   GraduationCap,
+  X,
 } from 'lucide-react';
 import { useAuthStore } from '@/store/auth.store';
-import { useCourses, COURSES_KEYS } from '@/hooks/useCourses';
+import { useCourses } from '@/hooks/useCourses';
+import { queryKeys } from '@/lib/api/query-keys';
 import { courseService } from '@/services/courses';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -32,7 +36,7 @@ export function CoursesWorkspace() {
   // Note: Both Teachers and Students can view courses according to the controller
   const canRead = !!role; 
 
-  const [search, setSearch] = useState('');
+  const { value: search, debouncedValue: debouncedSearch, handleChange: setSearch, clearSearch, isPending: isSearching } = useDebounceSearch({ delay: 300 });
   const [statusFilter, setStatusFilter] = useState('');
   const [isDeleting, setIsDeleting] = useState<string | null>(null);
 
@@ -42,13 +46,13 @@ export function CoursesWorkspace() {
   const allCourses = coursesQuery.data ?? [];
 
   const rows = useMemo(() => {
-    const normalizedSearch = search.trim().toLowerCase();
+    const normalizedSearch = debouncedSearch.trim().toLowerCase();
     return allCourses.filter((c) => {
       const matchesSearch = !normalizedSearch || c.title.toLowerCase().includes(normalizedSearch);
       const matchesStatus = !statusFilter || c.status === statusFilter;
       return matchesSearch && matchesStatus;
     });
-  }, [allCourses, search, statusFilter]);
+  }, [allCourses, debouncedSearch, statusFilter]);
 
   const activeCourses = useMemo(() => allCourses.filter(c => c.status === 'ACTIVE').length, [allCourses]);
 
@@ -58,7 +62,8 @@ export function CoursesWorkspace() {
       setIsDeleting(id);
       await courseService.deleteCourse(id);
       toast.success('Course deleted successfully');
-      queryClient.invalidateQueries({ queryKey: COURSES_KEYS.all });
+      const user = useAuthStore.getState().user;
+      queryClient.invalidateQueries({ queryKey: queryKeys.courses.all(user?.organization_id) });
     } catch (error: any) {
       toast.error(error.response?.data?.message || 'Failed to delete course');
     } finally {
@@ -125,13 +130,26 @@ export function CoursesWorkspace() {
         <h2 className="text-xl font-bold tracking-tight">All Courses</h2>
         <div className="flex flex-col gap-3 sm:flex-row">
           <div className="relative sm:w-72">
-            <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+            {isSearching ? (
+              <Loader2 className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-primary animate-spin" />
+            ) : (
+              <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+            )}
             <Input
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search courses..."
-              className="pl-9 bg-white/50 dark:bg-white/5 backdrop-blur-sm"
+              className={cn('pl-9 bg-white/50 dark:bg-white/5 backdrop-blur-sm', search && 'pr-9')}
             />
+            {search && (
+              <button
+                type="button"
+                onClick={clearSearch}
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 rounded-full p-0.5 text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+              >
+                <X className="size-3.5" />
+              </button>
+            )}
           </div>
           <select
             value={statusFilter}
@@ -175,7 +193,7 @@ export function CoursesWorkspace() {
             {canManage ? 'Start building your curriculum by adding a new course.' : 'Courses will appear here once created.'}
           </p>
           {(search || statusFilter) && (
-            <Button variant="outline" size="sm" onClick={() => { setSearch(''); setStatusFilter(''); }} className="mt-4">
+            <Button variant="outline" size="sm" onClick={() => { clearSearch(); setStatusFilter(''); }} className="mt-4">
               Clear filters
             </Button>
           )}

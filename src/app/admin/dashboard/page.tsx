@@ -17,7 +17,7 @@ export default function AdminDashboardPage() {
     <div className="space-y-8 animate-in fade-in duration-700">
       <div className="flex flex-col gap-1">
         <h1 className="text-3xl font-extrabold text-foreground tracking-tight">SuperAdmin Dashboard</h1>
-        <p className="text-muted-foreground text-sm font-medium">Tizimning umumiy holati va statistikasi</p>
+        <p className="text-muted-foreground text-sm font-medium">all staticts about organization</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -40,15 +40,15 @@ export default function AdminDashboardPage() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card className="bg-card border-border backdrop-blur-md h-80">
           <CardHeader>
-            <CardTitle className="text-foreground text-lg">So'nggi aktivliklar</CardTitle>
+            <CardTitle className="text-foreground text-lg">last 5 active organizations</CardTitle>
           </CardHeader>
           <CardContent className="flex items-center justify-center h-full">
-            <span className="text-muted-foreground/50 text-sm italic">Ma'lumotlar yo'q</span>
+            <span className="text-muted-foreground/50 text-sm italic">No data</span>
           </CardContent>
         </Card>
         <Card className="bg-card border-border backdrop-blur-md h-80">
           <CardHeader>
-            <CardTitle className="text-foreground text-lg">Tushum grafigi</CardTitle>
+            <CardTitle className="text-foreground text-lg">last 5 active students</CardTitle>
           </CardHeader>
           <CardContent className="flex items-center justify-center h-full">
             <span className="text-muted-foreground/50 text-sm italic">Ma'lumotlar yo'q</span>

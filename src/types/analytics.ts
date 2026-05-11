@@ -99,6 +99,25 @@ export interface PaginatedLeads {
   meta: { total: number; page: number; limit: number; pages: number };
 }
 
+export interface CreateLeadDto {
+  full_name: string;
+  phone: string;
+  source: string;
+  admin: string;
+}
+
+export interface CreateLeadResponse {
+  id: string;
+  organization_id: string;
+  full_name: string;
+  phone: string;
+  source: string;
+  status: LeadStatus;
+  admin: string;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface Course {
   id: string;
   title: string;

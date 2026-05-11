@@ -33,15 +33,12 @@ export const userService = {
     });
     logger.debug('USERS FETCH RESPONSE:', response.data);
     
-    // Fallback if data is an array
-    if (Array.isArray(response.data)) {
-      return {
-        items: response.data,
-        meta: { total: response.data.length, page: 1, limit: 100, pages: 1 }
-      };
-    }
+    const result = response.data;
     
-    return response.data;
+    return {
+      items: result.items || result.data || [],
+      meta: result.meta || { total: 0, page: 1, limit: 10, pages: 1 }
+    };
   },
 
   /**

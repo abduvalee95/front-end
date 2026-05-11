@@ -1,3 +1,11 @@
+export interface LeadFilters {
+  status?: string;
+  source?: string;
+  search?: string;
+  from?: string;
+  to?: string;
+}
+
 export const queryKeys = {
   // Global/Auth
   auth: {
@@ -16,7 +24,7 @@ export const queryKeys = {
   // Leads
   leads: {
     all: (orgId: string | undefined) => ['leads', orgId] as const,
-    list: (orgId: string | undefined, page: number, limit: number, filters?: Record<string, any>) => 
+    list: (orgId: string | undefined, page: number, limit: number, filters?: LeadFilters) => 
       [...queryKeys.leads.all(orgId), 'list', { page, limit, ...filters }] as const,
     detail: (orgId: string | undefined, id: string) => 
       [...queryKeys.leads.all(orgId), 'detail', id] as const,

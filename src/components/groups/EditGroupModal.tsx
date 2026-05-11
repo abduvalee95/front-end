@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { Loader2, PenLine, Users2 } from 'lucide-react';
@@ -42,6 +42,18 @@ export function EditGroupModal({ group }: EditGroupModalProps) {
     end_date: group.end_date?.slice(0, 10) ?? '',
   });
 
+  useEffect(() => {
+    if (open) {
+      setFormData({
+        name: group.name,
+        course_id: group.course_id,
+        teacher_id: group.teacher_id,
+        start_date: group.start_date?.slice(0, 10) ?? '',
+        end_date: group.end_date?.slice(0, 10) ?? '',
+      });
+    }
+  }, [open, group]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const { name, course_id, teacher_id, start_date, end_date } = formData;
@@ -55,7 +67,8 @@ export function EditGroupModal({ group }: EditGroupModalProps) {
       toast.success('Group updated successfully');
       setOpen(false);
       queryClient.invalidateQueries({ queryKey: GROUPS_KEYS.all });
-    } catch (error: any) {
+    } catch (err: unknown) {
+      const error = err as { response?: { data?: { message?: string } } };
       toast.error(error.response?.data?.message || 'Failed to update group');
     } finally {
       setIsLoading(false);

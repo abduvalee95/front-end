@@ -16,6 +16,14 @@ export function useGroups(enabled = true) {
   });
 }
 
+export function useGroupDetail(groupId: string, enabled = true) {
+  return useQuery({
+    queryKey: GROUPS_KEYS.detail(groupId),
+    queryFn: () => groupService.getGroupById(groupId),
+    enabled: enabled && !!groupId,
+  });
+}
+
 export function useGroupSchedule(groupId: string, enabled = true) {
   return useQuery({
     queryKey: GROUPS_KEYS.schedule(groupId),

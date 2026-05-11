@@ -16,7 +16,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { useCreateLead } from '@/hooks/useAnalytics';
+import { useCreateLead } from '@/hooks/useLeads';
+import { useAuthStore } from '@/store/auth.store';
 
 interface CreateLeadModalProps {
   isOpen: boolean;
@@ -24,6 +25,7 @@ interface CreateLeadModalProps {
 }
 
 export function CreateLeadModal({ isOpen, onClose }: CreateLeadModalProps) {
+  const { user } = useAuthStore();
   const [formData, setFormData] = useState({
     full_name: '',
     phone: '',
@@ -39,13 +41,28 @@ export function CreateLeadModal({ isOpen, onClose }: CreateLeadModalProps) {
       return;
     }
 
+    if (!user?.full_name) {
+      toast.error('User information not found');
+      return;
+    }
+
+    const cleanPhone = formData.phone.replace(/\s+/g, '');
+    if (!/^\+?\d{9,15}$/.test(cleanPhone)) {
+      toast.error('Phone must be 9-15 digits (e.g., +998901234567)');
+      return;
+    }
+
     try {
-      await createLead.mutateAsync(formData);
-      toast.success('Lead created successfully');
+      await createLead.mutateAsync({
+        ...formData,
+        phone: cleanPhone,
+        admin: user.full_name,
+      });
       setFormData({ full_name: '', phone: '', source: 'DIRECT' });
       onClose();
     } catch (error: any) {
-      toast.error(error.response?.data?.message || 'Failed to create lead');
+      const errorMessage = error.response?.data?.message || error.message || 'Failed to create lead';
+      toast.error(errorMessage);
     }
   };
 

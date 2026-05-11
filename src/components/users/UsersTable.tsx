@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useDebounceSearch } from '@/hooks/useDebounceSearch';
 import { useUsers } from '@/hooks/useUsers';
 import { User, UserRole } from '@/types/auth';
 import { format } from 'date-fns';
@@ -14,6 +15,8 @@ import {
   AlertCircle,
   ChevronLeft,
   ChevronRight,
+  X,
+  Loader2,
 } from 'lucide-react';
 import {
   Table,
@@ -39,14 +42,17 @@ import { cn } from '@/lib/utils';
 
 export function UsersTable() {
   const [page, setPage] = useState(1);
-  const [search, setSearch] = useState('');
+  const { value: search, debouncedValue: debouncedSearch, handleChange: setSearch, clearSearch, isPending: isSearching } = useDebounceSearch({
+    delay: 300,
+    onDebouncedChange: () => setPage(1),
+  });
   const [roleFilter, setRoleFilter] = useState<UserRole | ''>('');
   const pageSize = 10;
 
   const { data, isLoading, isError, refetch } = useUsers({
     page,
     limit: pageSize,
-    search: search || undefined,
+    search: debouncedSearch || undefined,
     role: roleFilter || undefined,
   });
 
@@ -54,7 +60,7 @@ export function UsersTable() {
   const meta = data?.meta;
 
   const clearFilters = () => {
-    setSearch('');
+    clearSearch();
     setRoleFilter('');
     setPage(1);
   };
@@ -97,16 +103,26 @@ export function UsersTable() {
       {/* ── Toolbar ── */}
       <div className="flex flex-col sm:flex-row gap-3">
         <div className="relative flex-1 max-w-sm">
-          <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
+          {isSearching ? (
+            <Loader2 className="absolute left-2.5 top-1/2 -translate-y-1/2 size-4 text-primary animate-spin pointer-events-none" />
+          ) : (
+            <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground pointer-events-none" />
+          )}
           <Input
             placeholder="Search users..."
             value={search}
-            onChange={(e) => {
-              setSearch(e.target.value);
-              setPage(1);
-            }}
-            className="pl-8"
+            onChange={(e) => setSearch(e.target.value)}
+            className={cn('pl-8', search && 'pr-8')}
           />
+          {search && (
+            <button
+              type="button"
+              onClick={clearSearch}
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 rounded-full p-0.5 text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+            >
+              <X className="size-3.5" />
+            </button>
+          )}
         </div>
 
         <select

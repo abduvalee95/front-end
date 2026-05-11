@@ -12,7 +12,6 @@ import type {
   PaymentsByDay,
   FinanceSummary,
   FinanceReport,
-  PaginatedLeads,
   Course,
   PaginatedInvoices,
 } from '@/types/analytics';
@@ -39,13 +38,13 @@ function rangeQuery(params: RangeParams): Record<string, string> {
 export const analyticsService = {
   getDashboardSummary(range: RangeParams): Promise<DashboardSummary> {
     return api
-      .get<DashboardSummary>('dashboard/summary', { params: rangeQuery(range) })
+      .get<DashboardSummary>('proxy/dashboard/summary', { params: rangeQuery(range) })
       .then((r) => r.data);
   },
 
   getLeadsByStatus(range: RangeParams): Promise<LeadStatusCount[]> {
     return api
-      .get<LeadStatusCount[]>('dashboard/analytics/leads-by-status', {
+      .get<LeadStatusCount[]>('proxy/dashboard/analytics/leads-by-status', {
         params: rangeQuery(range),
       })
       .then((r) => r.data);
@@ -53,7 +52,7 @@ export const analyticsService = {
 
   getPaymentsByMethod(range: RangeParams): Promise<PaymentsByMethod[]> {
     return api
-      .get<PaymentsByMethod[]>('dashboard/analytics/payments-by-method', {
+      .get<PaymentsByMethod[]>('proxy/dashboard/analytics/payments-by-method', {
         params: rangeQuery(range),
       })
       .then((r) => r.data);
@@ -61,7 +60,7 @@ export const analyticsService = {
 
   getPaymentsByDay(range: RangeParams): Promise<PaymentsByDay[]> {
     return api
-      .get<PaymentsByDay[]>('dashboard/analytics/payments-by-day', {
+      .get<PaymentsByDay[]>('proxy/dashboard/analytics/payments-by-day', {
         params: rangeQuery(range),
       })
       .then((r) => r.data);
@@ -69,37 +68,25 @@ export const analyticsService = {
 
   getFinanceSummary(range: RangeParams): Promise<FinanceSummary> {
     return api
-      .get<FinanceSummary>('finance/summary', { params: rangeQuery(range) })
+      .get<FinanceSummary>('proxy/finance/summary', { params: rangeQuery(range) })
       .then((r) => r.data);
   },
 
   getFinanceReport(range: RangeParams): Promise<FinanceReport> {
     return api
-      .get<FinanceReport>('finance/report', { params: rangeQuery(range) })
-      .then((r) => r.data);
-  },
-
-  listLeads(params: RangeParams & { page?: number; limit?: number }): Promise<PaginatedLeads> {
-    return api
-      .get<PaginatedLeads>('lead', {
-        params: { ...rangeQuery(params), page: params.page ?? 1, limit: params.limit ?? 200 },
-      })
+      .get<FinanceReport>('proxy/finance/report', { params: rangeQuery(range) })
       .then((r) => r.data);
   },
 
   listCourses(): Promise<Course[] | { items: Course[] }> {
-    return api.get('course').then((r) => r.data);
+    return api.get('proxy/course').then((r) => r.data);
   },
 
   listInvoices(params: { status?: string; page?: number; limit?: number }): Promise<PaginatedInvoices> {
     return api
-      .get<PaginatedInvoices>('billing/invoices', {
+      .get<PaginatedInvoices>('proxy/billing/invoices', {
         params: { page: params.page ?? 1, limit: params.limit ?? 100, status: params.status },
       })
       .then((r) => r.data);
-  },
-
-  createLead(data: { full_name: string; phone: string; source: string }): Promise<any> {
-    return api.post('lead', data).then((r) => r.data);
   },
 };

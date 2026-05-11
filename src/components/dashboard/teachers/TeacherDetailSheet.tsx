@@ -1,0 +1,184 @@
+'use client';
+
+import { format } from 'date-fns';
+import {
+  GraduationCap,
+  Mail,
+  Phone,
+  Calendar,
+  DollarSign,
+  Award,
+  BookOpen,
+  Pencil,
+  Power,
+  Trash2,
+} from 'lucide-react';
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetDescription,
+} from '@/components/ui/sheet';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Separator } from '@/components/ui/separator';
+import { TeacherStatusBadge } from './TeacherStatusBadge';
+import type { TeacherProfile } from '@/types/teacher';
+
+interface TeacherDetailSheetProps {
+  teacher: TeacherProfile | null;
+  onClose: () => void;
+  onEdit: (teacher: TeacherProfile) => void;
+  onToggleStatus: (teacher: TeacherProfile) => void;
+  onDelete: (teacher: TeacherProfile) => void;
+}
+
+export function TeacherDetailSheet({
+  teacher,
+  onClose,
+  onEdit,
+  onToggleStatus,
+  onDelete,
+}: TeacherDetailSheetProps) {
+  if (!teacher) return null;
+
+  const isActive = teacher.status === 'ACTIVE';
+
+  return (
+    <Sheet open={!!teacher} onOpenChange={(v) => !v && onClose()}>
+      <SheetContent side="right" className="w-full sm:max-w-md flex flex-col gap-0 p-0">
+        <SheetHeader className="px-6 py-5 border-b">
+          <div className="flex items-center gap-3">
+            <Avatar className="size-12 shrink-0">
+              <AvatarFallback className="text-lg font-semibold edu-gradient-avatar">
+                {teacher.full_name?.charAt(0).toUpperCase() || 'T'}
+              </AvatarFallback>
+            </Avatar>
+            <div className="min-w-0 flex-1">
+              <SheetTitle className="truncate">{teacher.full_name}</SheetTitle>
+              <SheetDescription className="flex items-center gap-2 mt-1">
+                <TeacherStatusBadge status={teacher.status} />
+              </SheetDescription>
+            </div>
+          </div>
+        </SheetHeader>
+
+        <div className="flex-1 overflow-y-auto px-6 py-5 space-y-6">
+          {/* Contact Info */}
+          <div className="space-y-3">
+            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">
+              Contact Information
+            </p>
+            <InfoRow icon={<Mail className="size-4" />} label="Email" value={teacher.email} />
+            <InfoRow icon={<Phone className="size-4" />} label="Phone" value={teacher.phone || '—'} />
+            <InfoRow
+              icon={<Calendar className="size-4" />}
+              label="Joined"
+              value={format(new Date(teacher.created_at), 'MMMM d, yyyy')}
+            />
+          </div>
+
+          <Separator />
+
+          {/* Professional Info */}
+          <div className="space-y-3">
+            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">
+              Professional Details
+            </p>
+            <div className="space-y-2">
+              <div className="flex items-start gap-3">
+                <BookOpen className="size-4 text-muted-foreground mt-0.5 shrink-0" />
+                <div>
+                  <p className="text-xs text-muted-foreground">Subjects</p>
+                  {teacher.subjects?.length > 0 ? (
+                    <div className="flex flex-wrap gap-1.5 mt-1">
+                      {teacher.subjects.map((s) => (
+                        <Badge key={s} variant="secondary" className="text-xs">
+                          {s.replace(/_/g, ' ')}
+                        </Badge>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-sm">—</p>
+                  )}
+                </div>
+              </div>
+            </div>
+            <InfoRow
+              icon={<DollarSign className="size-4" />}
+              label="Hourly Rate"
+              value={teacher.hourly_rate ? `$${teacher.hourly_rate.toFixed(2)}` : '—'}
+            />
+            <InfoRow
+              icon={<Award className="size-4" />}
+              label="Qualifications"
+              value={teacher.qualifications || '—'}
+            />
+            {teacher.bio && (
+              <div className="flex items-start gap-3">
+                <GraduationCap className="size-4 text-muted-foreground mt-0.5 shrink-0" />
+                <div>
+                  <p className="text-xs text-muted-foreground">Bio</p>
+                  <p className="text-sm mt-0.5">{teacher.bio}</p>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Action Buttons */}
+        <div className="px-6 py-4 border-t flex flex-wrap gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            className="flex-1"
+            onClick={() => { onClose(); onEdit(teacher); }}
+          >
+            <Pencil className="mr-2 size-3.5" />
+            Edit
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            className={`flex-1 ${isActive ? 'text-amber-600 border-amber-200 hover:bg-amber-50' : 'text-teal-600 border-teal-200 hover:bg-teal-50'}`}
+            onClick={() => { onClose(); onToggleStatus(teacher); }}
+          >
+            <Power className="mr-2 size-3.5" />
+            {isActive ? 'Deactivate' : 'Activate'}
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            className="text-destructive border-destructive/30 hover:bg-destructive/10"
+            onClick={() => { onClose(); onDelete(teacher); }}
+          >
+            <Trash2 className="mr-2 size-3.5" />
+            Delete
+          </Button>
+        </div>
+      </SheetContent>
+    </Sheet>
+  );
+}
+
+function InfoRow({
+  icon,
+  label,
+  value,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  value: string;
+}) {
+  return (
+    <div className="flex items-center gap-3">
+      <span className="text-muted-foreground shrink-0">{icon}</span>
+      <div className="min-w-0">
+        <p className="text-xs text-muted-foreground">{label}</p>
+        <p className="text-sm truncate">{value}</p>
+      </div>
+    </div>
+  );
+}

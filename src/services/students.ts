@@ -1,5 +1,7 @@
 import { api } from '@/lib/api/client';
 import type {
+  BulkCreateStudentDto,
+  CreateStudentResponse,
   Enrollment,
   GroupSummary,
   PaginatedStudentsResponse,
@@ -27,7 +29,7 @@ export const studentService = {
     return response.data;
   },
 
-  async createStudent(data: Partial<Student>): Promise<{ student: Student; user: any; temporaryPassword?: string }> {
+  async createStudent(data: Partial<Student>): Promise<CreateStudentResponse> {
     const response = await api.post(STUDENTS_BASE_URL, data);
     return response.data;
   },
@@ -42,7 +44,7 @@ export const studentService = {
     return response.data;
   },
 
-  async bulkCreate(data: any[]): Promise<{ count: number }> {
+  async bulkCreate(data: BulkCreateStudentDto[]): Promise<{ count: number }> {
     const response = await api.post(`${STUDENTS_BASE_URL}/bulk`, { students: data });
     return response.data;
   },

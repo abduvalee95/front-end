@@ -44,6 +44,33 @@ export interface GroupSummary {
   };
 }
 
+export interface CreateStudentDto {
+  name: string;
+  phone: string;
+  address?: string;
+  parent?: string;
+  status?: StudentStatus;
+}
+
+export interface BulkCreateStudentDto {
+  name: string;
+  phone: string;
+  address?: string;
+  parent?: string;
+}
+
+export interface CreateStudentResponse {
+  student: Student;
+  user: {
+    id: string;
+    email: string;
+    full_name: string;
+    phone: string;
+    role: string;
+  };
+  temporaryPassword?: string;
+}
+
 export interface Enrollment {
   id: string;
   student_id: string;

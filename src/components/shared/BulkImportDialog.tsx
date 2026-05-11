@@ -35,7 +35,7 @@ interface BulkImportDialogProps<T> {
   sampleTemplateUrl?: string;
 }
 
-export function BulkImportDialog<T extends Record<string, any>>({
+export function BulkImportDialog<T extends Record<string, unknown>>({
   isOpen,
   onClose,
   onImport,
@@ -209,7 +209,7 @@ export function BulkImportDialog<T extends Record<string, any>>({
                             {previewData.slice(0, 5).map((row, i) => (
                               <TableRow key={i} className="hover:bg-muted/20">
                                 {Object.values(columnMapping).map((key) => (
-                                  <TableCell key={String(key)} className="py-3 font-medium">{row[key] ?? '-'}</TableCell>
+                                  <TableCell key={String(key)} className="py-3 font-medium">{String(row[key] ?? '-')}</TableCell>
                                 ))}
                               </TableRow>
                             ))}

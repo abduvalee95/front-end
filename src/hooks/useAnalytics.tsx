@@ -136,13 +136,7 @@ export function useCRMAnalytics() {
     staleTime: STALE_TIME.MEDIUM,
   });
 
-  const leads = useQuery({
-    queryKey: analyticsKeys.leads(key),
-    queryFn: () => analyticsService.listLeads({ ...range, limit: QUERY_LIMITS.LEADS }),
-    staleTime: STALE_TIME.MEDIUM,
-  });
-
-  return { summary, leadsByStatus, leads };
+  return { summary, leadsByStatus };
 }
 
 export function useLMSAnalytics() {
@@ -195,12 +189,12 @@ export function usePlatformAI(): {
 }
 
 export function useCRMAI(): { data: Insight[]; isLoading: boolean } {
-  const { summary, leads } = useCRMAnalytics();
+  const { summary } = useCRMAnalytics();
   const data = useMemo<Insight[]>(() => {
-    if (!summary.data || !leads.data) return [];
-    return generateCRMInsights({ summary: summary.data, leads: leads.data.items });
-  }, [summary.data, leads.data]);
-  return { data, isLoading: summary.isLoading || leads.isLoading };
+    if (!summary.data) return [];
+    return generateCRMInsights({ summary: summary.data, leads: [] });
+  }, [summary.data]);
+  return { data, isLoading: summary.isLoading };
 }
 
 export function useLMSAI(): { data: Insight[]; isLoading: boolean } {
@@ -210,14 +204,4 @@ export function useLMSAI(): { data: Insight[]; isLoading: boolean } {
     return generateLMSInsights({ summary: summary.data });
   }, [summary.data]);
   return { data, isLoading: summary.isLoading };
-}
-export function useCreateLead() {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: (data: { full_name: string; phone: string; source: string }) =>
-      analyticsService.createLead(data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: analyticsKeys.all });
-    },
-  });
 }

@@ -6,6 +6,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import type { Group } from '@/types/group';
 import { EditGroupModal } from './EditGroupModal';
@@ -137,9 +138,11 @@ export function GroupsKanbanBoard({ groups, canManage, isDeleting, onDelete }: G
                     </div>
 
                     {/* Group Name */}
-                    <h4 className="mb-4 text-lg font-bold leading-tight tracking-tight text-foreground">
-                      {group.name}
-                    </h4>
+                    <Link href={`/groups/${group.id}`}>
+                      <h4 className="mb-4 text-lg font-bold leading-tight tracking-tight text-foreground hover:text-primary hover:underline transition-colors cursor-pointer">
+                        {group.name}
+                      </h4>
+                    </Link>
 
                     {/* Teacher & Dates */}
                     <div className="flex flex-col gap-3 rounded-xl bg-muted/40 p-3">

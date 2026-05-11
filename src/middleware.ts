@@ -12,7 +12,7 @@ function getRoleFromToken(token: string): string | null {
   }
 }
 
-export function proxy(request: NextRequest) {
+export default function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // 1. API Proxy for external backend

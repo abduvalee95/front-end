@@ -55,20 +55,23 @@ export function SidebarNav({ onNavClick, isMobile }: SidebarNavProps) {
     )}>
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_10%,rgba(3,203,231,0.28),transparent_18rem),radial-gradient(circle_at_90%_68%,rgba(0,236,129,0.16),transparent_16rem)]" />
 
-      <div className="relative mb-6 flex h-24 items-center px-6">
-        <div className="flex size-14 shrink-0 items-center justify-center">
-          <div className="flex size-14 items-center justify-center overflow-hidden rounded-2xl border border-white/10 bg-white/10 shadow-xl backdrop-blur-md text-cyan-300">
-          <Image src="/logo.svg" alt="Logo" width={52} height={52} className="object-contain brightness-0 invert" priority />
-          </div>
+      <div className="relative flex h-28 items-center justify-center px-6">
+        <div className={cn(
+          "flex items-center justify-center rounded-2xl transition-all duration-500 group relative overflow-hidden",
+          "bg-gradient-to-br from-cyan-500/10 to-emerald-500/5",
+          "border border-white/10 shadow-2xl backdrop-blur-md",
+          collapsed ? "size-12" : "size-20"
+        )}>
+          <div className="absolute inset-0 bg-gradient-to-tr from-cyan-400/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+          <Image 
+            src="/logo.svg" 
+            alt="Logo" 
+            width={collapsed ? 32 : 156} 
+            height={collapsed ? 32 : 56} 
+            className="relative z-10 object-contain brightness-0 invert opacity-90 transition-transform duration-500 group-hover:scale-110" 
+            priority 
+          />
         </div>
-        {!collapsed && (
-          <div className="ml-4 animate-in fade-in slide-in-from-left-2 duration-300">
-            <h2 className="font-bold text-white text-lg leading-none tracking-tight">
-              SuperAdmin
-            </h2>
-            <p className="mt-1.5 text-[10px] font-medium uppercase tracking-[0.2em] text-cyan-200/80">Control Panel</p>
-          </div>
-        )}
       </div>
 
       <div className="scrollbar-hide relative flex-1 space-y-8 overflow-y-auto px-4 py-4">

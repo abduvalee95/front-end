@@ -27,7 +27,7 @@ export async function parseExcelFile<T>(
         const firstSheetName = workbook.SheetNames[0];
         const worksheet = workbook.Sheets[firstSheetName];
         
-        const rawData = XLSX.utils.sheet_to_json<Record<string, any>>(worksheet);
+        const rawData = XLSX.utils.sheet_to_json<Record<string, unknown>>(worksheet);
         
         const result: T[] = [];
         const errors: Array<{ row: number; column: string; message: string }> = [];
@@ -38,7 +38,7 @@ export async function parseExcelFile<T>(
 
           Object.entries(columnMapping).forEach(([excelColumn, objectKey]) => {
             const value = row[excelColumn];
-            item[objectKey] = value;
+            item[objectKey] = value as T[keyof T];
 
             // Check if required field is missing
             if (requiredFields.includes(objectKey) && (value === undefined || value === null || value === '')) {

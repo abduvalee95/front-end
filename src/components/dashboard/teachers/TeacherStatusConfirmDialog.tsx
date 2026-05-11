@@ -39,7 +39,7 @@ export function TeacherStatusConfirmDialog({
           </DialogTitle>
           <DialogDescription className="pt-2">
             Are you sure you want to {isDeactivating ? 'deactivate' : 'activate'}{' '}
-            <span className="font-semibold text-foreground">{teacher.user?.full_name}</span>?
+            <span className="font-semibold text-foreground">{teacher.full_name}</span>?
           </DialogDescription>
         </DialogHeader>
 

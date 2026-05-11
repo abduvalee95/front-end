@@ -1,7 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { teacherService } from '@/services/teachers';
-import { userService } from '@/services/users';
-import { CreateTeacherDto, UpdateTeacherDto, TeacherStatus, TeacherProfile } from '@/types/teacher';
+import type { CreateTeacherDto, UpdateTeacherDto, TeacherStatus } from '@/types/teacher';
 import { toast } from 'sonner';
 import { getErrorMessage } from '@/lib/api/client';
 
@@ -20,32 +19,18 @@ export function useTeachers(params?: {
   status?: string;
 }, enabled = true) {
   return useQuery({
-    queryKey: TEACHERS_KEYS.list(params || {}),
+    queryKey: TEACHERS_KEYS.list(params ?? {}),
     queryFn: async () => {
-      const isActiveFilter: boolean | undefined =
-        params?.status === 'ACTIVE' ? true :
-        params?.status === 'INACTIVE' ? false :
-        undefined;
-
-      const response = await userService.getUsers({
+      const response = await teacherService.getTeachers({
         page: params?.page,
         limit: params?.limit,
         search: params?.search,
-        role: 'TEACHER',
-        is_active: isActiveFilter,
+        status: params?.status,
       });
 
       return {
-        meta: response.meta,
-        items: response.items.map((user) => ({
-          id: user.id,
-          user_id: user.id,
-          subjects: [],
-          status: user.is_active ? 'ACTIVE' : 'INACTIVE',
-          created_at: user.created_at,
-          updated_at: user.updated_at,
-          user: user,
-        } as TeacherProfile)),
+        items: response.teachers,
+        meta: response.pagination,
       };
     },
     enabled,
@@ -67,7 +52,6 @@ export function useCreateTeacher() {
     mutationFn: (data: CreateTeacherDto) => teacherService.createTeacher(data),
     onSuccess: () => {
       toast.success('Teacher created successfully');
-      // Invalidate ALL teacher related queries to be safe
       queryClient.invalidateQueries({ queryKey: TEACHERS_KEYS.all });
     },
     onError: (error: unknown) => {
@@ -99,13 +83,27 @@ export function useToggleTeacherStatus() {
   return useMutation({
     mutationFn: ({ id, status }: { id: string; status: TeacherStatus }) =>
       teacherService.toggleStatus(id, status),
-    onSuccess: (data) => {
-      toast.success(`Teacher status updated to ${data.status.toLowerCase()}`);
-      queryClient.invalidateQueries({ queryKey: TEACHERS_KEYS.lists() });
-      queryClient.invalidateQueries({ queryKey: TEACHERS_KEYS.detail(data.id) });
+    onSuccess: (_data, variables) => {
+      toast.success(`Teacher status updated to ${variables.status.toLowerCase()}`);
+      queryClient.invalidateQueries({ queryKey: TEACHERS_KEYS.all });
     },
     onError: (error: unknown) => {
       toast.error(getErrorMessage(error) || 'Failed to update status');
+    },
+  });
+}
+
+export function useDeleteTeacher() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (id: string) => teacherService.deleteTeacher(id),
+    onSuccess: () => {
+      toast.success('Teacher deleted successfully');
+      queryClient.invalidateQueries({ queryKey: TEACHERS_KEYS.all });
+    },
+    onError: (error: unknown) => {
+      toast.error(getErrorMessage(error) || 'Failed to delete teacher');
     },
   });
 }

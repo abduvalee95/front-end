@@ -54,7 +54,8 @@ export function CreateGroupModal() {
       resetForm();
       setOpen(false);
       queryClient.invalidateQueries({ queryKey: GROUPS_KEYS.all });
-    } catch (error: any) {
+    } catch (err: unknown) {
+      const error = err as { response?: { data?: { message?: string } } };
       toast.error(error.response?.data?.message || 'Failed to create group');
     } finally {
       setIsLoading(false);

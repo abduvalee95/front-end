@@ -18,7 +18,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { courseService } from '@/services/courses';
-import { COURSES_KEYS } from '@/hooks/useCourses';
+import { queryKeys } from '@/lib/api/query-keys';
+import { useAuthStore } from '@/store/auth.store';
 import type { Course, CourseStatus } from '@/types/group';
 
 interface EditCourseModalProps {
@@ -54,7 +55,8 @@ export function EditCourseModal({ course }: EditCourseModalProps) {
       });
       toast.success('Course updated successfully');
       setOpen(false);
-      queryClient.invalidateQueries({ queryKey: COURSES_KEYS.all });
+      const user = useAuthStore.getState().user;
+      queryClient.invalidateQueries({ queryKey: queryKeys.courses.all(user?.organization_id) });
     } catch (error: any) {
       toast.error(error.response?.data?.message || 'Failed to update course');
     } finally {

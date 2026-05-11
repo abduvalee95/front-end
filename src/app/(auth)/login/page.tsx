@@ -110,14 +110,14 @@ function LoginForm() {
         </section>
 
         <section className="mx-auto w-full max-w-[28rem]">
-          <div className="mb-7 text-center lg:text-left">
-            <div className="inline-flex size-20 items-center justify-center overflow-hidden rounded-[1.35rem] border border-white/80 bg-white shadow-[0_18px_45px_rgba(14,110,234,0.14)] dark:border-white/10 dark:bg-white/10">
+          <div className="flex flex-col items-center">
+            <div className="flex size-24 items-center justify-center overflow-hidden rounded-3xl border border-white/80 bg-white/10 shadow-[0_24px_60px_rgba(14,110,234,0.2)] backdrop-blur-xl dark:border-white/10 dark:bg-white/5 transition-transform hover:scale-105 duration-500">
               <Image
                 src="/logo.svg"
                 alt="Bilim Nuru"
-                width={80}
-                height={80}
-                className="h-full w-full object-contain"
+                width={70}
+                height={70}
+                className="h-full w-full object-contain p-4"
                 onError={(e) => {
                   (e.target as HTMLImageElement).style.display = 'none';
                   (e.target as HTMLImageElement).parentElement!.innerHTML =
@@ -125,10 +125,6 @@ function LoginForm() {
                 }}
               />
             </div>
-            <h2 className="mt-4 text-2xl font-black tracking-tight text-foreground">БИЛИМ НУРУ</h2>
-            <p className="mt-1 text-sm font-medium text-muted-foreground">
-              Окуу Борбору management console
-            </p>
           </div>
 
           <div className="rounded-[1.5rem] border border-white/80 bg-card/88 p-7 shadow-[0_24px_80px_rgba(15,23,42,0.12)] backdrop-blur-xl dark:border-white/10 dark:bg-card/78">

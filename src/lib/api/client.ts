@@ -39,9 +39,12 @@ const processQueue = (error: Error | null, token: string | null = null) => {
   failedQueue = [];
 };
 
-// Request interceptor - add auth header if needed
+// Request interceptor - add auth header and track performance
 api.interceptors.request.use(
-  (config: InternalAxiosRequestConfig) => {
+  (config: InternalAxiosRequestConfig & { _startTime?: number }) => {
+    // Track start time for performance monitoring
+    config._startTime = Date.now();
+    
     // All auth is handled via HttpOnly cookies through the proxy
     // No need to manually add Authorization header here
     return config;
@@ -51,10 +54,26 @@ api.interceptors.request.use(
   }
 );
 
-// Response interceptor - handle 401 and refresh token
+// Process response performance logging
 api.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    const config = response.config as InternalAxiosRequestConfig & { _startTime?: number };
+    if (config._startTime) {
+      const duration = Date.now() - config._startTime;
+      if (duration > 1000) {
+        console.warn(`[API Performance] SLOW REQUEST: ${config.method?.toUpperCase()} ${config.url} took ${duration}ms`);
+      } else {
+        console.debug(`[API Performance] ${config.method?.toUpperCase()} ${config.url} took ${duration}ms`);
+      }
+    }
+    return response;
+  },
   async (error: AxiosError) => {
+    const config = error.config as InternalAxiosRequestConfig & { _startTime?: number };
+    if (config?._startTime) {
+      const duration = Date.now() - config._startTime;
+      console.error(`[API Error] ${config.method?.toUpperCase()} ${config.url} failed after ${duration}ms`);
+    }
     const originalRequest = error.config as InternalAxiosRequestConfig & { _retry?: boolean };
 
     if (!originalRequest) {

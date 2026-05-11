@@ -1,12 +1,13 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { useEffect } from 'react';
-import { Loader2, GraduationCap, UserCircle2 } from 'lucide-react';
+import { Loader2, GraduationCap, UserCircle2, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
+import { Badge } from '@/components/ui/badge';
 import {
   Sheet,
   SheetContent,
@@ -15,9 +16,17 @@ import {
   SheetHeader,
   SheetTitle,
 } from '@/components/ui/sheet';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { useUpdateTeacher } from '@/hooks/useTeachers';
 import type { TeacherProfile, UpdateTeacherDto } from '@/types/teacher';
+import { TEACHER_SUBJECTS } from '@/types/teacher';
 
 interface EditTeacherModalProps {
   teacher: TeacherProfile | null;
@@ -26,9 +35,7 @@ interface EditTeacherModalProps {
 
 type FormValues = {
   full_name: string;
-  email: string;
   phone: string;
-  subjects: string;
   hourly_rate?: number;
   qualifications?: string;
   bio?: string;
@@ -36,6 +43,8 @@ type FormValues = {
 
 export function EditTeacherModal({ teacher, onClose }: EditTeacherModalProps) {
   const updateTeacher = useUpdateTeacher();
+  const [selectedSubjects, setSelectedSubjects] = useState<string[]>([]);
+
   const {
     register,
     handleSubmit,
@@ -46,24 +55,32 @@ export function EditTeacherModal({ teacher, onClose }: EditTeacherModalProps) {
   useEffect(() => {
     if (teacher) {
       reset({
-        full_name: teacher.user?.full_name || '',
-        email: teacher.user?.email || '',
-        phone: teacher.user?.phone || '',
-        subjects: teacher.subjects?.join(', ') || '',
-        hourly_rate: teacher.hourly_rate || undefined,
+        full_name: teacher.full_name || '',
+        phone: teacher.phone || '',
+        hourly_rate: teacher.hourly_rate ?? undefined,
         qualifications: teacher.qualifications || '',
         bio: teacher.bio || '',
       });
+      setSelectedSubjects(teacher.subjects ?? []);
     }
   }, [teacher, reset]);
+
+  const handleAddSubject = (value: string | null) => {
+    if (value && !selectedSubjects.includes(value)) {
+      setSelectedSubjects((prev) => [...prev, value]);
+    }
+  };
+
+  const handleRemoveSubject = (value: string) => {
+    setSelectedSubjects((prev) => prev.filter((s) => s !== value));
+  };
 
   const onSubmit = (values: FormValues) => {
     if (!teacher) return;
     const payload: UpdateTeacherDto = {
       full_name: values.full_name || undefined,
-      email: values.email || undefined,
       phone: values.phone || undefined,
-      subjects: values.subjects ? values.subjects.split(',').map((s) => s.trim()).filter(Boolean) : undefined,
+      subjects: selectedSubjects.length > 0 ? selectedSubjects : undefined,
       hourly_rate: values.hourly_rate ? Number(values.hourly_rate) : undefined,
       qualifications: values.qualifications || undefined,
       bio: values.bio || undefined,
@@ -79,12 +96,12 @@ export function EditTeacherModal({ teacher, onClose }: EditTeacherModalProps) {
             {teacher && (
               <Avatar className="size-9 shrink-0">
                 <AvatarFallback className="edu-gradient-avatar font-semibold">
-                  {teacher.user?.full_name?.charAt(0).toUpperCase() || 'T'}
+                  {teacher.full_name?.charAt(0).toUpperCase() || 'T'}
                 </AvatarFallback>
               </Avatar>
             )}
             <div className="min-w-0">
-              <SheetTitle className="truncate">{teacher?.user?.full_name ?? 'Edit Teacher'}</SheetTitle>
+              <SheetTitle className="truncate">{teacher?.full_name ?? 'Edit Teacher'}</SheetTitle>
               <SheetDescription>Update teacher profile details</SheetDescription>
             </div>
           </div>
@@ -99,11 +116,8 @@ export function EditTeacherModal({ teacher, onClose }: EditTeacherModalProps) {
               <Field label="Full Name *" error={errors.full_name?.message}>
                 <Input {...register('full_name', { required: 'Required' })} />
               </Field>
-              <Field label="Email *" error={errors.email?.message}>
-                <Input type="email" {...register('email', { required: 'Required' })} />
-              </Field>
               <Field label="Phone">
-                <Input {...register('phone')} placeholder="+996XXXXXXXXX" />
+                <Input {...register('phone')} placeholder="+998XXXXXXXXX" />
               </Field>
             </div>
 
@@ -113,8 +127,31 @@ export function EditTeacherModal({ teacher, onClose }: EditTeacherModalProps) {
               <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest flex items-center gap-1.5">
                 <GraduationCap className="size-3" /> Professional
               </p>
-              <Field label="Subjects" error={errors.subjects?.message}>
-                <Input {...register('subjects')} placeholder="Math, Physics" />
+              <Field label="Subjects">
+                <Select onValueChange={handleAddSubject}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Add subject" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {TEACHER_SUBJECTS.filter((s) => !selectedSubjects.includes(s)).map((subject) => (
+                      <SelectItem key={subject} value={subject}>
+                        {subject.replace(/_/g, ' ')}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                {selectedSubjects.length > 0 && (
+                  <div className="flex flex-wrap gap-1.5 mt-2">
+                    {selectedSubjects.map((subject) => (
+                      <Badge key={subject} variant="secondary" className="gap-1 text-xs">
+                        {subject.replace(/_/g, ' ')}
+                        <button type="button" onClick={() => handleRemoveSubject(subject)} className="ml-0.5 hover:text-destructive">
+                          <X className="size-3" />
+                        </button>
+                      </Badge>
+                    ))}
+                  </div>
+                )}
               </Field>
               <Field label="Hourly Rate">
                 <Input type="number" step="0.01" {...register('hourly_rate')} placeholder="0.00" />

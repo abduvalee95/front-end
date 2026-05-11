@@ -1,40 +1,48 @@
-import { User } from './auth';
-
 export type TeacherStatus = 'ACTIVE' | 'INACTIVE' | 'ON_LEAVE';
 
+export const TEACHER_SUBJECTS = [
+  'ENGLISH',
+  'IT',
+  'MATH',
+  'PHYSICS',
+  'HISTORY',
+  'CHEMISTRY',
+  'UZBEK_LANGUAGE',
+  'RUSSIAN_LANGUAGE',
+  'ART',
+  'MUSIC',
+  'SPORT',
+  'DRAMA',
+  'DANCE',
+] as const;
+
+export type TeacherSubject = (typeof TEACHER_SUBJECTS)[number];
+
+/**
+ * Backend /teachers endpoint returns a flat object:
+ * User fields + TeacherProfile fields merged together.
+ */
 export interface TeacherProfile {
   id: string;
-  user_id: string;
+  email: string;
+  full_name: string;
+  phone: string;
+  role: 'TEACHER';
+  organization_id: string;
   subjects: string[];
-  hourly_rate?: number;
-  qualifications?: string;
-  bio?: string;
+  hourly_rate: number | null;
+  qualifications: string | null;
+  bio: string | null;
   status: TeacherStatus;
   created_at: string;
   updated_at: string;
-  user?: User;
-}
-
-// Teacher = User with role TEACHER + optional teacher_profile
-export interface Teacher {
-  id: string;
-  organization_id: string;
-  full_name: string;
-  email: string;
-  phone: string;
-  role: 'TEACHER';
-  created_at: string;
-  updated_at: string;
-  teacher_profile?: TeacherProfile;
-  organization_name?: string;
 }
 
 export interface CreateTeacherDto {
-  user_id?: string;
   full_name: string;
   email: string;
   phone: string;
-  password?: string;
+  password: string;
   subjects: string[];
   hourly_rate?: number;
   qualifications?: string;
@@ -43,7 +51,6 @@ export interface CreateTeacherDto {
 
 export interface UpdateTeacherDto {
   full_name?: string;
-  email?: string;
   phone?: string;
   subjects?: string[];
   hourly_rate?: number;
@@ -52,19 +59,9 @@ export interface UpdateTeacherDto {
   status?: TeacherStatus;
 }
 
-export interface PaginatedTeachersResponse {
-  items: TeacherProfile[];
-  meta: {
-    total: number;
-    page: number;
-    limit: number;
-    pages: number;
-  };
-}
-
-export interface TeachersResponse {
-  items: Teacher[];
-  meta: {
+export interface TeacherListResponse {
+  teachers: TeacherProfile[];
+  pagination: {
     total: number;
     page: number;
     limit: number;
@@ -74,9 +71,8 @@ export interface TeachersResponse {
 
 export interface TeacherFilters {
   search?: string;
-  role?: string;
+  subject?: string;
   status?: string;
-  organizationId?: string;
   page?: number;
   limit?: number;
 }

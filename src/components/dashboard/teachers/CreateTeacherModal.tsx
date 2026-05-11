@@ -1,11 +1,13 @@
 'use client';
 
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { Loader2, GraduationCap, UserCircle2 } from 'lucide-react';
+import { Loader2, GraduationCap, UserCircle2, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
+import { Badge } from '@/components/ui/badge';
 import {
   Dialog,
   DialogContent,
@@ -14,9 +16,15 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { useCreateTeacher } from '@/hooks/useTeachers';
-import { useInviteUser } from '@/hooks/useUsers';
-import type { CreateTeacherDto } from '@/types/teacher';
+import { TEACHER_SUBJECTS } from '@/types/teacher';
 
 interface CreateTeacherModalProps {
   open: boolean;
@@ -27,15 +35,15 @@ type FormValues = {
   full_name: string;
   email: string;
   phone: string;
-  password?: string;
-  subjects: string;
+  password: string;
   hourly_rate?: number;
   qualifications?: string;
 };
 
 export function CreateTeacherModal({ open, onClose }: CreateTeacherModalProps) {
-  const createTeacherProfile = useCreateTeacher();
-  const inviteUser = useInviteUser({ showToast: false });
+  const createTeacher = useCreateTeacher();
+  const [selectedSubjects, setSelectedSubjects] = useState<string[]>([]);
+  const [subjectError, setSubjectError] = useState('');
 
   const {
     register,
@@ -48,44 +56,50 @@ export function CreateTeacherModal({ open, onClose }: CreateTeacherModalProps) {
       email: '',
       phone: '',
       password: '',
-      subjects: '',
       hourly_rate: undefined,
       qualifications: '',
     },
   });
 
+  const handleAddSubject = (value: string | null) => {
+    if (value && !selectedSubjects.includes(value)) {
+      setSelectedSubjects((prev) => [...prev, value]);
+      setSubjectError('');
+    }
+  };
+
+  const handleRemoveSubject = (value: string) => {
+    setSelectedSubjects((prev) => prev.filter((s) => s !== value));
+  };
+
   const onSubmit = (values: FormValues) => {
-    // Step 1: Invite/Create User first
-    inviteUser.mutate({
+    if (selectedSubjects.length === 0) {
+      setSubjectError('At least one subject is required');
+      return;
+    }
+
+    createTeacher.mutate({
       full_name: values.full_name,
       email: values.email,
       phone: values.phone,
       password: values.password,
-      role: 'TEACHER'
+      subjects: selectedSubjects,
+      hourly_rate: values.hourly_rate ? Number(values.hourly_rate) : undefined,
+      qualifications: values.qualifications || undefined,
     }, {
-      onSuccess: (userData) => {
-        // Step 2: Create Teacher Profile using the new user's ID
-        createTeacherProfile.mutate({
-          user_id: userData.user.id,
-          full_name: values.full_name,
-          email: values.email,
-          phone: values.phone,
-          subjects: values.subjects.split(',').map((s) => s.trim()).filter(Boolean),
-          hourly_rate: values.hourly_rate ? Number(values.hourly_rate) : undefined,
-          qualifications: values.qualifications,
-        }, {
-          onSuccess: () => {
-            reset();
-            onClose();
-          }
-        });
-      }
+      onSuccess: () => {
+        reset();
+        setSelectedSubjects([]);
+        onClose();
+      },
     });
   };
 
   const handleOpenChange = (v: boolean) => {
     if (!v) {
       reset();
+      setSelectedSubjects([]);
+      setSubjectError('');
       onClose();
     }
   };
@@ -119,9 +133,9 @@ export function CreateTeacherModal({ open, onClose }: CreateTeacherModalProps) {
               <Input
                 {...register('phone', {
                   required: 'Phone number is required',
-                  pattern: { value: /^\+996\d{9}$/, message: 'Must be in format +996XXXXXXXXX' }
+                  pattern: { value: /^\+998\d{9}$/, message: 'Must be in format +998XXXXXXXXX' }
                 })}
-                placeholder="+996XXXXXXXXX"
+                placeholder="+998XXXXXXXXX"
               />
             </Field>
             <Field label="Password *" error={errors.password?.message}>
@@ -140,11 +154,31 @@ export function CreateTeacherModal({ open, onClose }: CreateTeacherModalProps) {
             <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest flex items-center gap-1.5">
               <GraduationCap className="size-3" /> Professional Info
             </p>
-            <Field label="Subjects *" error={errors.subjects?.message}>
-              <Input
-                {...register('subjects', { required: 'Required' })}
-                placeholder="e.g. Math, Physics (comma separated)"
-              />
+            <Field label="Subjects *" error={subjectError}>
+              <Select onValueChange={handleAddSubject}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select subjects" />
+                </SelectTrigger>
+                <SelectContent>
+                  {TEACHER_SUBJECTS.filter((s) => !selectedSubjects.includes(s)).map((subject) => (
+                    <SelectItem key={subject} value={subject}>
+                      {subject.replace(/_/g, ' ')}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              {selectedSubjects.length > 0 && (
+                <div className="flex flex-wrap gap-1.5 mt-2">
+                  {selectedSubjects.map((subject) => (
+                    <Badge key={subject} variant="secondary" className="gap-1 text-xs">
+                      {subject.replace(/_/g, ' ')}
+                      <button type="button" onClick={() => handleRemoveSubject(subject)} className="ml-0.5 hover:text-destructive">
+                        <X className="size-3" />
+                      </button>
+                    </Badge>
+                  ))}
+                </div>
+              )}
             </Field>
             <Field label="Hourly Rate" error={errors.hourly_rate?.message}>
               <Input
@@ -161,11 +195,11 @@ export function CreateTeacherModal({ open, onClose }: CreateTeacherModalProps) {
         </form>
 
         <DialogFooter>
-          <Button type="button" variant="outline" size="sm" onClick={onClose} disabled={inviteUser.isPending || createTeacherProfile.isPending}>
+          <Button type="button" variant="outline" size="sm" onClick={onClose} disabled={createTeacher.isPending}>
             Cancel
           </Button>
-          <Button type="submit" form="create-teacher-form" className="edu-gradient-btn rounded-lg" disabled={inviteUser.isPending || createTeacherProfile.isPending}>
-            {(inviteUser.isPending || createTeacherProfile.isPending) && <Loader2 className="mr-2 size-3.5 animate-spin" />}
+          <Button type="submit" form="create-teacher-form" className="edu-gradient-btn rounded-lg" disabled={createTeacher.isPending}>
+            {createTeacher.isPending && <Loader2 className="mr-2 size-3.5 animate-spin" />}
             Add Teacher
           </Button>
         </DialogFooter>

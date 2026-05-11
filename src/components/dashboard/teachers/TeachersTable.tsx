@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useCallback } from 'react';
+import { useDebounceSearch } from '@/hooks/useDebounceSearch';
 import { useTeachers, useToggleTeacherStatus } from '@/hooks/useTeachers';
 import type { TeacherProfile, TeacherStatus } from '@/types/teacher';
 import { format } from 'date-fns';
@@ -8,13 +9,16 @@ import {
   MoreHorizontal,
   Pencil,
   Power,
-  Plus,
   Search,
   RefreshCw,
   GraduationCap,
   AlertCircle,
   ChevronLeft,
   ChevronRight,
+  X,
+  Loader2,
+  Eye,
+  Trash2,
 } from 'lucide-react';
 import {
   Table,
@@ -43,20 +47,27 @@ const COL_COUNT = 5;
 
 interface TeachersTableProps {
   onEditClick: (teacher: TeacherProfile) => void;
+  onViewClick: (teacher: TeacherProfile) => void;
+  onDeleteClick: (teacher: TeacherProfile) => void;
 }
 
 export default function TeachersTable({
   onEditClick,
+  onViewClick,
+  onDeleteClick,
 }: TeachersTableProps) {
   const [page, setPage] = useState(1);
-  const [search, setSearch] = useState('');
+  const { value: search, debouncedValue: debouncedSearch, handleChange: setSearch, clearSearch, isPending: isSearching } = useDebounceSearch({
+    delay: 300,
+    onDebouncedChange: () => setPage(1),
+  });
   const [statusFilter, setStatusFilter] = useState<TeacherStatus | ''>('');
   const pageSize = 10;
 
   const { data, isLoading, isError, refetch } = useTeachers({
     page,
     limit: pageSize,
-    search: search || undefined,
+    search: debouncedSearch || undefined,
     status: statusFilter || undefined,
   });
 
@@ -76,7 +87,7 @@ export default function TeachersTable({
   const items = data?.items ?? [];
   const meta = data?.meta;
 
-  const clearFilters = () => { setSearch(''); setStatusFilter(''); setPage(1); };
+  const clearFilters = () => { clearSearch(); setStatusFilter(''); setPage(1); };
 
   if (isError) {
     return (
@@ -102,13 +113,26 @@ export default function TeachersTable({
         {/* Toolbar */}
         <div className="flex flex-col sm:flex-row gap-3">
           <div className="relative flex-1 max-w-sm">
-            <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground pointer-events-none" />
+            {isSearching ? (
+              <Loader2 className="absolute left-2.5 top-1/2 -translate-y-1/2 size-4 text-primary animate-spin pointer-events-none" />
+            ) : (
+              <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground pointer-events-none" />
+            )}
             <Input
               placeholder="Search teachers..."
               value={search}
-              onChange={(e) => { setSearch(e.target.value); setPage(1); }}
-              className="pl-8"
+              onChange={(e) => setSearch(e.target.value)}
+              className={`pl-8${search ? ' pr-8' : ''}`}
             />
+            {search && (
+              <button
+                type="button"
+                onClick={clearSearch}
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 rounded-full p-0.5 text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+              >
+                <X className="size-3.5" />
+              </button>
+            )}
           </div>
 
           <select
@@ -178,12 +202,12 @@ export default function TeachersTable({
                       <div className="flex items-center gap-3">
                         <Avatar className="size-8">
                           <AvatarFallback className="text-xs font-semibold edu-gradient-avatar">
-                            {teacher.user?.full_name?.charAt(0).toUpperCase() || 'T'}
+                            {teacher.full_name?.charAt(0).toUpperCase() || 'T'}
                           </AvatarFallback>
                         </Avatar>
                         <div className="min-w-0">
-                          <p className="font-medium truncate">{teacher.user?.full_name}</p>
-                          <p className="text-xs text-muted-foreground truncate">{teacher.user?.email}</p>
+                          <p className="font-medium truncate">{teacher.full_name}</p>
+                          <p className="text-xs text-muted-foreground truncate">{teacher.email}</p>
                         </div>
                       </div>
                     </TableCell>
@@ -191,7 +215,7 @@ export default function TeachersTable({
                       <TeacherStatusBadge status={teacher.status} />
                     </TableCell>
                     <TableCell className="text-muted-foreground">
-                      {teacher.user?.phone || '—'}
+                      {teacher.phone || '—'}
                     </TableCell>
                     <TableCell className="text-muted-foreground truncate max-w-[200px]">
                       {teacher.subjects?.join(', ') || '—'}
@@ -202,8 +226,10 @@ export default function TeachersTable({
                     <TableCell className="text-right pr-4">
                       <TeacherActionsMenu
                         teacher={teacher}
+                        onView={() => onViewClick(teacher)}
                         onEdit={() => onEditClick(teacher)}
                         onToggleStatus={() => setStatusTarget(teacher)}
+                        onDelete={() => onDeleteClick(teacher)}
                       />
                     </TableCell>
                   </TableRow>
@@ -239,25 +265,31 @@ export default function TeachersTable({
             />
           ) : (
             items.map((teacher) => (
-              <Card key={teacher.id} className="bg-white border-slate-200 shadow-sm hover:shadow-md transition-all duration-300">
+              <Card
+                key={teacher.id}
+                className="bg-white border-slate-200 shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer"
+                onClick={() => onViewClick(teacher)}
+              >
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3 min-w-0">
                       <Avatar className="size-10 shrink-0">
                         <AvatarFallback className="text-sm font-semibold edu-gradient-avatar">
-                          {teacher.user?.full_name?.charAt(0).toUpperCase() || 'T'}
+                          {teacher.full_name?.charAt(0).toUpperCase() || 'T'}
                         </AvatarFallback>
                       </Avatar>
                       <div className="min-w-0">
-                        <p className="font-medium truncate">{teacher.user?.full_name}</p>
+                        <p className="font-medium truncate">{teacher.full_name}</p>
                         <TeacherStatusBadge status={teacher.status} />
                       </div>
                     </div>
-                    <div>
+                    <div onClick={(e) => e.stopPropagation()}>
                       <TeacherActionsMenu
                         teacher={teacher}
+                        onView={() => onViewClick(teacher)}
                         onEdit={() => onEditClick(teacher)}
                         onToggleStatus={() => setStatusTarget(teacher)}
+                        onDelete={() => onDeleteClick(teacher)}
                       />
                     </div>
                   </div>
@@ -314,12 +346,16 @@ export default function TeachersTable({
 
 function TeacherActionsMenu({
   teacher,
+  onView,
   onEdit,
   onToggleStatus,
+  onDelete,
 }: {
   teacher: TeacherProfile;
+  onView: () => void;
   onEdit: () => void;
   onToggleStatus: () => void;
+  onDelete: () => void;
 }) {
   return (
     <DropdownMenu>
@@ -329,6 +365,10 @@ function TeacherActionsMenu({
         </Button>
       } />
       <DropdownMenuContent align="end">
+        <DropdownMenuItem onClick={onView}>
+          <Eye className="mr-2 size-4" />
+          View Profile
+        </DropdownMenuItem>
         <DropdownMenuItem onClick={onEdit}>
           <Pencil className="mr-2 size-4" />
           Edit Profile
@@ -336,10 +376,17 @@ function TeacherActionsMenu({
         <DropdownMenuSeparator />
         <DropdownMenuItem
           onClick={onToggleStatus}
-          className={teacher.status === 'ACTIVE' ? 'text-destructive focus:text-destructive' : ''}
+          className={teacher.status === 'ACTIVE' ? 'text-amber-600 focus:text-amber-600' : 'text-teal-600 focus:text-teal-600'}
         >
           <Power className="mr-2 size-4" />
           {teacher.status === 'ACTIVE' ? 'Deactivate' : 'Activate'}
+        </DropdownMenuItem>
+        <DropdownMenuItem
+          onClick={onDelete}
+          className="text-destructive focus:text-destructive"
+        >
+          <Trash2 className="mr-2 size-4" />
+          Delete Teacher
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

@@ -1,15 +1,15 @@
 import { useQuery } from '@tanstack/react-query';
 import { courseService } from '@/services/courses';
-
-export const COURSES_KEYS = {
-  all: ['courses'] as const,
-  list: () => [...COURSES_KEYS.all, 'list'] as const,
-};
+import { queryKeys } from '@/lib/api/query-keys';
+import { useAuthStore } from '@/store/auth.store';
 
 export function useCourses(enabled = true) {
+  const { user } = useAuthStore();
+  const orgId = user?.organization_id;
+
   return useQuery({
-    queryKey: COURSES_KEYS.list(),
+    queryKey: queryKeys.courses.list(orgId),
     queryFn: () => courseService.getCourses(),
-    enabled,
+    enabled: enabled && !!orgId,
   });
 }

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useDebounceSearch } from '@/hooks/useDebounceSearch';
 import { 
   Users, 
   Search, 
@@ -13,9 +14,11 @@ import {
   ChevronRight,
   UserCheck,
   UserMinus,
-  MessageSquarePlus
+  MessageSquarePlus,
+  Loader2,
+  X,
 } from 'lucide-react';
-import { useCRMAnalytics } from '@/hooks/useAnalytics';
+import { useLeads } from '@/hooks/useLeads';
 import { Lead, LeadStatus } from '@/types/analytics';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -33,19 +36,20 @@ import { AILeadResponse } from '../analytics/AILeadResponse';
 import { CreateLeadModal } from './CreateLeadModal';
 
 export function LeadsWorkspace() {
-  const { leads } = useCRMAnalytics();
-  const [search, setSearch] = useState('');
+  const { value: search, debouncedValue: debouncedSearch, handleChange: setSearch, clearSearch, isPending: isSearching } = useDebounceSearch({ delay: 300 });
   const [statusFilter, setStatusFilter] = useState<LeadStatus | 'ALL'>('ALL');
+  
+  const leads = useLeads({
+    page: 1,
+    limit: 100,
+    search: debouncedSearch || undefined,
+    status: statusFilter === 'ALL' ? undefined : statusFilter,
+  });
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
   const [isAIModalOpen, setIsAIModalOpen] = useState(false);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
-  const filteredLeads = leads.data?.items.filter(l => {
-    const matchesSearch = l.full_name.toLowerCase().includes(search.toLowerCase()) || 
-                          l.phone.includes(search);
-    const matchesStatus = statusFilter === 'ALL' || l.status === statusFilter;
-    return matchesSearch && matchesStatus;
-  }) ?? [];
+  const filteredLeads = leads.data?.items ?? [];
 
   const getStatusBadge = (status: LeadStatus) => {
     switch (status) {
@@ -83,13 +87,26 @@ export function LeadsWorkspace() {
       {/* Filters & Search */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 bg-card border border-border p-4 rounded-2xl shadow-sm">
         <div className="md:col-span-2 relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
+          {isSearching ? (
+            <Loader2 className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-primary animate-spin pointer-events-none" />
+          ) : (
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground pointer-events-none" />
+          )}
           <Input 
             placeholder="Search leads by name or phone..." 
-            className="pl-10"
+            className={`pl-10${search ? ' pr-9' : ''}`}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
+          {search && (
+            <button
+              type="button"
+              onClick={clearSearch}
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 rounded-full p-0.5 text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+            >
+              <X className="size-3.5" />
+            </button>
+          )}
         </div>
         <div className="flex gap-2">
           <DropdownMenu>

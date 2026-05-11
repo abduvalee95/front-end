@@ -15,10 +15,7 @@ import {
 } from 'lucide-react';
 import { format, parseISO } from 'date-fns';
 import { cn } from '@/lib/utils';
-import { analyticsService } from '@/services/analytics';
-import { useQueryClient } from '@tanstack/react-query';
-import { queryKeys } from '@/lib/api/query-keys';
-import { useAuthStore } from '@/store/auth.store';
+import { useUpdateLead, useConvertLead } from '@/hooks/useLeads';
 import { toast } from 'sonner';
 
 interface LeadsKanbanProps {
@@ -35,10 +32,9 @@ const COLUMNS: { status: LeadStatus; label: string; color: string }[] = [
 ];
 
 export function LeadsKanban({ leads, isLoading, onAIAction }: LeadsKanbanProps) {
-  const queryClient = useQueryClient();
-  const { user } = useAuthStore();
-  const organization_id = user?.organization_id;
   const [draggedId, setDraggedId] = useState<string | null>(null);
+  const updateLead = useUpdateLead();
+  const convertLead = useConvertLead();
 
   const handleDragStart = (e: React.DragEvent, id: string) => {
     setDraggedId(id);
@@ -49,32 +45,28 @@ export function LeadsKanban({ leads, isLoading, onAIAction }: LeadsKanbanProps) 
     e.preventDefault();
   };
 
-  const handleDrop = async (e: React.DragEvent, status: LeadStatus) => {
+  const handleDrop = (e: React.DragEvent, status: LeadStatus) => {
     e.preventDefault();
     const id = e.dataTransfer.getData('leadId');
     if (!id) return;
 
-    try {
-      await analyticsService.updateLead(id, { status });
-      toast.success(`Lead moved to ${status.toLowerCase()}`);
-      // Invalidate queries to refresh data
-      queryClient.invalidateQueries({ queryKey: queryKeys.leads.all(organization_id) });
-      queryClient.invalidateQueries({ queryKey: queryKeys.dashboard.all(organization_id) });
-    } catch (error) {
-      toast.error('Failed to update lead status');
-    }
+    updateLead.mutate(
+      { id, data: { status } },
+      {
+        onSuccess: () => {
+          toast.success(`Lead moved to ${status.toLowerCase()}`);
+        },
+      }
+    );
     setDraggedId(null);
   };
 
-  const handleConvert = async (lead: Lead) => {
-    try {
-      await analyticsService.convertToStudent(lead.id);
-      toast.success(`${lead.full_name} converted to student!`);
-      queryClient.invalidateQueries({ queryKey: queryKeys.leads.all(organization_id) });
-      queryClient.invalidateQueries({ queryKey: queryKeys.dashboard.all(organization_id) });
-    } catch (error) {
-      toast.error('Conversion failed');
-    }
+  const handleConvert = (lead: Lead) => {
+    convertLead.mutate(lead.id, {
+      onSuccess: () => {
+        toast.success(`${lead.full_name} converted to student!`);
+      },
+    });
   };
 
   if (isLoading) {
