@@ -10,7 +10,7 @@ import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';
 import { toast } from 'sonner';
 import {
-  BarChart3,
+  Building2,
   Eye,
   EyeOff,
   Loader2,
@@ -54,18 +54,15 @@ function LoginForm() {
 
     let formattedPhone = phone.trim().replace(/\s+/g, '');
     if (!formattedPhone.startsWith('+')) {
-      if (formattedPhone.startsWith('0') && formattedPhone.length === 10) {
-        // User typed 0505... -> +996505...
-        formattedPhone = '+996' + formattedPhone.slice(1);
-      } else if (formattedPhone.length === 9) {
-        // User typed 505... -> +996505...
-        formattedPhone = '+996' + formattedPhone;
-      } else if (formattedPhone.startsWith('996')) {
-        // User typed 996505... -> +996505...
+      if (formattedPhone.startsWith('998') && formattedPhone.length === 12) {
+        // User typed 998901234567 -> +998901234567
         formattedPhone = '+' + formattedPhone;
+      } else if (formattedPhone.length === 9) {
+        // User typed 901234567 -> +998901234567
+        formattedPhone = '+998' + formattedPhone;
       } else {
-        // Fallback
-        formattedPhone = '+996' + formattedPhone;
+        // Fallback: assume Uzbekistan
+        formattedPhone = '+998' + formattedPhone;
       }
     }
 
@@ -93,9 +90,9 @@ function LoginForm() {
 
           <div className="mt-12 grid max-w-2xl grid-cols-3 gap-3">
             {[
-              { label: 'Students', value: '1,284', icon: UsersRound },
-              { label: 'Active courses', value: '38', icon: School },
-              { label: 'Conversion', value: '64%', icon: BarChart3 },
+              { label: 'All Users', value: '2,500+', icon: UsersRound },
+              { label: 'Courses', value: '45+', icon: School },
+              { label: 'Organizations', value: '12', icon: Building2 },
             ].map((item) => (
               <div
                 key={item.label}

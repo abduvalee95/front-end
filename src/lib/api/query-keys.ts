@@ -33,8 +33,8 @@ export const queryKeys = {
   // Students
   students: {
     all: (orgId: string | undefined) => ['students', orgId] as const,
-    list: (orgId: string | undefined, page: number, limit: number) => 
-      [...queryKeys.students.all(orgId), 'list', { page, limit }] as const,
+    list: (orgId: string | undefined, page: number, limit: number, search?: string, status?: string) => 
+      [...queryKeys.students.all(orgId), 'list', { page, limit, search, status }] as const,
     detail: (orgId: string | undefined, id: string) => 
       [...queryKeys.students.all(orgId), 'detail', id] as const,
   },
@@ -53,6 +53,17 @@ export const queryKeys = {
       [...queryKeys.groups.all(orgId), 'list'] as const,
   },
   
+  // Journal
+  journal: {
+    all: (orgId: string | undefined) => ['journal', orgId] as const,
+    list: (orgId: string | undefined, params: Record<string, unknown>) =>
+      [...queryKeys.journal.all(orgId), 'list', params] as const,
+    byGroup: (orgId: string | undefined, groupId: string, params: Record<string, unknown>) =>
+      [...queryKeys.journal.all(orgId), 'group', groupId, params] as const,
+    byTeacher: (orgId: string | undefined, teacherId: string, params: Record<string, unknown>) =>
+      [...queryKeys.journal.all(orgId), 'teacher', teacherId, params] as const,
+  },
+
   // Finance
   finance: {
     all: (orgId: string | undefined) => ['finance', orgId] as const,
