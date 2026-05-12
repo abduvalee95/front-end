@@ -18,7 +18,9 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { studentService } from '@/services/students';
-import { STUDENTS_KEYS } from '@/hooks/useStudents';
+import { queryKeys } from '@/lib/api/query-keys';
+import { useAuthStore } from '@/store/auth.store';
+import { getErrorMessage } from '@/lib/api/client';
 import type { Student, StudentStatus } from '@/types/student';
 
 interface EditStudentModalProps {
@@ -33,6 +35,8 @@ export function EditStudentModal({ student, trigger }: EditStudentModalProps) {
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const queryClient = useQueryClient();
+  const { user } = useAuthStore();
+  const orgId = user?.organization_id;
 
   const [formData, setFormData] = useState({
     name: student.name || '',
@@ -54,9 +58,9 @@ export function EditStudentModal({ student, trigger }: EditStudentModalProps) {
       await studentService.updateStudent(student.id, formData);
       toast.success('Student updated successfully');
       setOpen(false);
-      queryClient.invalidateQueries({ queryKey: STUDENTS_KEYS.all });
-    } catch (error: any) {
-      toast.error(error.response?.data?.message || 'Failed to update student');
+      queryClient.invalidateQueries({ queryKey: queryKeys.students.all(orgId) });
+    } catch (error: unknown) {
+      toast.error(getErrorMessage(error) || 'Failed to update student');
     } finally {
       setIsLoading(false);
     }
@@ -73,17 +77,21 @@ export function EditStudentModal({ student, trigger }: EditStudentModalProps) {
           )
         }
       />
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent>
         <DialogHeader>
-          <div className="mx-auto mb-4 flex size-12 items-center justify-center rounded-2xl bg-primary/10 text-primary">
-            <UsersRound className="size-6" />
+          <div className="flex items-center gap-3">
+            <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+              <UsersRound className="size-5" />
+            </div>
+            <div>
+              <DialogTitle>Edit Student</DialogTitle>
+              <DialogDescription>
+                Update student details and status.
+              </DialogDescription>
+            </div>
           </div>
-          <DialogTitle className="text-center text-xl">Edit Student</DialogTitle>
-          <DialogDescription className="text-center">
-            Update student details and status.
-          </DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4 pt-4">
+        <form onSubmit={handleSubmit} className="space-y-4 pt-2">
           <div className="space-y-2">
             <Label htmlFor={`edit-name-${student.id}`}>Full Name *</Label>
             <Input
@@ -98,7 +106,7 @@ export function EditStudentModal({ student, trigger }: EditStudentModalProps) {
             <Label htmlFor={`edit-phone-${student.id}`}>Phone Number *</Label>
             <Input
               id={`edit-phone-${student.id}`}
-              placeholder="+996 500 000 000"
+              placeholder="+998 90 000 00 00"
               value={formData.phone}
               onChange={(e) => setFormData((prev) => ({ ...prev, phone: e.target.value }))}
               disabled={isLoading}
@@ -118,7 +126,7 @@ export function EditStudentModal({ student, trigger }: EditStudentModalProps) {
             <Label htmlFor={`edit-parent-${student.id}`}>Parent Info</Label>
             <Input
               id={`edit-parent-${student.id}`}
-              placeholder="E.g. Father: +996 700 000 000"
+              placeholder="E.g. Father: +998 90 000 00 00"
               value={formData.parent}
               onChange={(e) => setFormData((prev) => ({ ...prev, parent: e.target.value }))}
               disabled={isLoading}
@@ -140,17 +148,17 @@ export function EditStudentModal({ student, trigger }: EditStudentModalProps) {
               </SelectContent>
             </Select>
           </div>
-          <DialogFooter className="pt-4">
+          <DialogFooter>
             <Button
               type="button"
               variant="outline"
               onClick={() => setOpen(false)}
               disabled={isLoading}
-              className="w-full sm:w-auto"
+              className="w-full sm:w-auto rounded-xl"
             >
               Cancel
             </Button>
-            <Button type="submit" disabled={isLoading} className="w-full sm:w-auto">
+            <Button type="submit" disabled={isLoading} className="w-full sm:w-auto rounded-xl">
               {isLoading ? (
                 <>
                   <Loader2 className="mr-2 size-4 animate-spin" />

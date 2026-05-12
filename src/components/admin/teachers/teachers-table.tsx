@@ -12,16 +12,16 @@ import {
 } from '@/components/ui/table'
 import { Skeleton } from '@/components/ui/skeleton'
 import { cn } from '@/lib/utils'
-import type { Teacher } from '@/types/teacher'
 import { GraduationCap } from 'lucide-react'
 import { TeacherActionsMenu } from './teacher-actions-menu'
+import { TeacherProfile } from '@/types/teacher';
 
 
 
 interface TeachersTableProps {
-  teachers: Teacher[]
+  teachers: TeacherProfile[]
   isLoading: boolean
-  onTeacherClick: (teacher: Teacher) => void
+  onTeacherClick: (teacher: TeacherProfile) => void
 }
 
 export function TeachersTable({
@@ -119,14 +119,14 @@ export function TeachersTable({
                 </TableCell>
 
                 <TableCell>
-                  <span className="text-sm text-muted-foreground">
-                    {teacher.organization_name || '—'}
+                  <span className="text-sm text-muted-foreground font-mono">
+                    {teacher.organization_id ? `${teacher.organization_id.substring(0,8)}...` : '—'}
                   </span>
                 </TableCell>
 
                 <TableCell>
-                  {teacher.teacher_profile ? (
-                    <TeacherStatusBadge status={teacher.teacher_profile.status} />
+                  {teacher.status ? (
+                    <TeacherStatusBadge status={teacher.status} />
                   ) : (
                     <Badge variant="secondary">—</Badge>
                   )}

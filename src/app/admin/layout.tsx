@@ -2,19 +2,7 @@ import { redirect } from 'next/navigation';
 import { cookies } from 'next/headers';
 import { AdminShell } from '@/components/admin/layout/AdminShell';
 import { AdminProviders } from '@/components/admin/AdminProviders';
-
-function getRoleFromToken(token: string): string | null {
-  try {
-    const payload = token.split('.')[1];
-    if (!payload) return null;
-    const decoded = JSON.parse(
-      Buffer.from(payload.replace(/-/g, '+').replace(/_/g, '/'), 'base64').toString('utf8'),
-    );
-    return decoded.role ?? null;
-  } catch {
-    return null;
-  }
-}
+import { getRoleFromToken } from '@/lib/auth/jwt';
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const cookieStore = await cookies();

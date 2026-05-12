@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import { useAuthStore } from '@/store/auth.store';
+import { useTranslations } from '@/i18n/index';
 import {
   Card,
   CardContent,
@@ -49,6 +50,8 @@ interface LocalEntry {
 }
 
 export default function JournalPage() {
+  const t = useTranslations('journal');
+  const tCommon = useTranslations('common');
   const user = useAuthStore((state) => state.user);
   const isTeacher = user?.role === 'TEACHER';
   const isAdmin = user?.role === 'ADMIN' || user?.role === 'MANAGER';
@@ -150,14 +153,14 @@ export default function JournalPage() {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
-            <h1 className="text-3xl font-black tracking-tight text-slate-900">Class Journal</h1>
+            <h1 className="text-3xl font-black tracking-tight text-slate-900">{t('title')}</h1>
             {isAdmin && (
               <Badge className="bg-amber-100 text-amber-700 border-amber-200 hover:bg-amber-100">
                 <ShieldCheck className="size-3 mr-1" /> Admin View
               </Badge>
             )}
           </div>
-          <p className="text-slate-500 mt-1">Manage attendance and grade student performance.</p>
+          <p className="text-slate-500 mt-1">{t('subtitle')}</p>
         </div>
         <div className="flex items-center gap-3">
           <Button
@@ -166,7 +169,7 @@ export default function JournalPage() {
             className="bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg shadow-indigo-600/20 px-6 font-bold"
           >
             <Save className="mr-2 h-4 w-4" />
-            {upsert.isPending ? 'Saqlanmoqda...' : 'Save Journal'}
+            {upsert.isPending ? tCommon('loading') : t('save_attendance')}
           </Button>
         </div>
       </div>
@@ -178,7 +181,7 @@ export default function JournalPage() {
             <CardHeader className="bg-slate-50/50 pb-3 border-b">
               <CardTitle className="text-sm font-bold flex items-center gap-2 text-slate-600">
                 <Users className="size-4 text-indigo-500" />
-                {isTeacher ? 'My Groups' : 'All Groups'}
+                {isTeacher ? tCommon('your_groups') : 'All Groups'}
               </CardTitle>
             </CardHeader>
             <CardContent className="p-2 pt-3 space-y-1">
@@ -187,7 +190,7 @@ export default function JournalPage() {
                   <Skeleton key={i} className="h-10 rounded-xl" />
                 ))
               ) : visibleGroups.length === 0 ? (
-                <p className="text-xs text-slate-400 text-center py-4">No groups</p>
+                <p className="text-xs text-slate-400 text-center py-4">{tCommon('no_data')}</p>
               ) : (
                 visibleGroups.map((group) => (
                   <div
@@ -218,7 +221,7 @@ export default function JournalPage() {
           <Card className="border-slate-200/60 shadow-sm overflow-hidden">
             <CardHeader className="bg-slate-50/50 pb-3 border-b">
               <CardTitle className="text-sm font-bold flex items-center gap-2 text-slate-600">
-                <CalendarIcon className="size-4 text-indigo-500" /> Select Date
+                <CalendarIcon className="size-4 text-indigo-500" /> {t('date')}
               </CardTitle>
             </CardHeader>
             <CardContent className="p-4">
@@ -249,24 +252,24 @@ export default function JournalPage() {
           {enrollments.length > 0 && (
             <Card className="border-slate-200/60 shadow-sm overflow-hidden">
               <CardHeader className="bg-slate-50/50 pb-3 border-b">
-                <CardTitle className="text-sm font-bold text-slate-600">Today&apos;s Stats</CardTitle>
+                <CardTitle className="text-sm font-bold text-slate-600">{t('today')}</CardTitle>
               </CardHeader>
               <CardContent className="p-4 space-y-2">
                 <div className="flex items-center justify-between text-sm">
                   <span className="flex items-center gap-1.5 text-green-600 font-bold">
-                    <CheckCircle2 className="size-3.5" /> Present
+                    <CheckCircle2 className="size-3.5" /> {t('present')}
                   </span>
                   <Badge className="bg-green-100 text-green-700 border-0">{stats.present}</Badge>
                 </div>
                 <div className="flex items-center justify-between text-sm">
                   <span className="flex items-center gap-1.5 text-amber-600 font-bold">
-                    <Clock className="size-3.5" /> Late
+                    <Clock className="size-3.5" /> {t('late')}
                   </span>
                   <Badge className="bg-amber-100 text-amber-700 border-0">{stats.late}</Badge>
                 </div>
                 <div className="flex items-center justify-between text-sm">
                   <span className="flex items-center gap-1.5 text-red-600 font-bold">
-                    <XCircle className="size-3.5" /> Absent
+                    <XCircle className="size-3.5" /> {t('absent')}
                   </span>
                   <Badge className="bg-red-100 text-red-700 border-0">{stats.absent}</Badge>
                 </div>
@@ -281,11 +284,11 @@ export default function JournalPage() {
             <CardHeader className="flex flex-row items-center justify-between border-b bg-white">
               <div>
                 <CardTitle className="text-lg font-black text-slate-800">
-                  {selectedGroup ? selectedGroup.name : 'Select a Group'}
+                  {selectedGroup ? selectedGroup.name : t('group')}
                 </CardTitle>
                 <CardDescription className="font-medium">
                   {selectedGroup
-                    ? `${format(currentDate, 'EEEE, MMMM d yyyy')} — attendance & grading`
+                    ? `${format(currentDate, 'EEEE, MMMM d yyyy')} — ${t('attendance')}`
                     : 'Choose a group from the left panel'}
                 </CardDescription>
               </div>
@@ -302,7 +305,7 @@ export default function JournalPage() {
               {!selectedGroupId ? (
                 <div className="flex flex-col items-center justify-center py-20 text-slate-400">
                   <BookOpen className="size-12 mb-3 opacity-30" />
-                  <p className="font-bold text-slate-500">No group selected</p>
+                  <p className="font-bold text-slate-500">{t('group')}</p>
                   <p className="text-sm mt-1">Select a group from the left panel</p>
                 </div>
               ) : isLoading ? (
@@ -322,10 +325,10 @@ export default function JournalPage() {
                   <TableHeader className="bg-slate-50/50">
                     <TableRow>
                       <TableHead className="w-[250px] font-bold text-slate-700 pl-6">
-                        Student
+                        {tCommon('student')}
                       </TableHead>
                       <TableHead className="text-center font-bold text-slate-700">
-                        Attendance
+                        {t('attendance')}
                       </TableHead>
                       <TableHead className="text-center font-bold text-slate-700">
                         Score (0–100)

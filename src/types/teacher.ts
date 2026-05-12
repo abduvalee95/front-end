@@ -1,4 +1,4 @@
-export type TeacherStatus = 'ACTIVE' | 'INACTIVE' | 'ON_LEAVE';
+export type TeacherStatus = 'ACTIVE' | 'INACTIVE' | 'ON_LEAVE' | 'DELETED';
 
 export const TEACHER_SUBJECTS = [
   'ENGLISH',
@@ -34,6 +34,7 @@ export interface TeacherProfile {
   qualifications: string | null;
   bio: string | null;
   status: TeacherStatus;
+  deleted_at: string | null;
   created_at: string;
   updated_at: string;
 }

@@ -22,7 +22,7 @@ export function useAuth() {
       toast.success(`Welcome, ${data.user.full_name}!`);
 
       // Role asosida yo'naltirish
-      if (data.user.role === 'SUPER_ADMIN' || data.user.role === 'ADMIN') {
+      if (data.user.role === 'SUPER_ADMIN') {
         router.push('/admin/dashboard');
       } else {
         router.push('/dashboard');

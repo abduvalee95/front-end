@@ -1,6 +1,6 @@
 import { Badge } from '@/components/ui/badge';
 import { TeacherStatus } from '@/types/teacher';
-import { CheckCircle2, XCircle, Clock } from 'lucide-react';
+import { CheckCircle2, XCircle, Clock, Trash2 } from 'lucide-react';
 
 interface TeacherStatusBadgeProps {
   status: TeacherStatus;
@@ -27,6 +27,13 @@ export function TeacherStatusBadge({ status }: TeacherStatusBadgeProps) {
         <Badge variant="secondary" className="bg-blue-50 text-blue-700 border-blue-200/50 gap-1.5 px-2 py-0.5">
           <Clock className="size-3" />
           On Leave
+        </Badge>
+      );
+    case 'DELETED':
+      return (
+        <Badge variant="outline" className="bg-red-50 text-red-600 border-red-200/50 gap-1.5 px-2 py-0.5">
+          <Trash2 className="size-3" />
+          Deleted
         </Badge>
       );
     default:

@@ -90,3 +90,30 @@ export interface Enrollment {
     };
   };
 }
+
+export interface StudentDetail extends Student {
+  enrollments: {
+    id: string;
+    group_id: string;
+    enrolled_at: string;
+    group: {
+      id: string;
+      name: string;
+      course: {
+        id: string;
+        title: string;
+      } | null;
+      teacher: {
+        id: string;
+        full_name: string;
+      } | null;
+    };
+  }[];
+}
+
+export interface StudentStatistics {
+  total: number;
+  active: number;
+  inactive: number;
+  enrollmentCount: number;
+}

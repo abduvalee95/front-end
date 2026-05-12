@@ -1,8 +1,4 @@
 /** @type {import('next').NextConfig} */
-const config = {
-  turbopack: {
-    root: __dirname,
-  },
-};
+const config = {};
 
 module.exports = config;

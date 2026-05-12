@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { Loader2, Plus, Users2 } from 'lucide-react';
+import { useAuthStore } from '@/store/auth.store';
 import {
   Dialog,
   DialogContent,
@@ -21,10 +22,21 @@ import { GROUPS_KEYS } from '@/hooks/useGroups';
 import { useCourses } from '@/hooks/useCourses';
 import { useTeachers } from '@/hooks/useTeachers';
 
-export function CreateGroupModal() {
-  const [open, setOpen] = useState(false);
+interface CreateGroupModalProps {
+  open?: boolean;
+  onClose?: () => void;
+}
+
+export function CreateGroupModal({ open: externalOpen, onClose }: CreateGroupModalProps = {}) {
+  const isControlled = externalOpen !== undefined;
+  const [internalOpen, setInternalOpen] = useState(false);
+  const open = isControlled ? externalOpen : internalOpen;
+  const setOpen = isControlled
+    ? (val: boolean) => { if (!val) onClose?.(); }
+    : setInternalOpen;
   const [isLoading, setIsLoading] = useState(false);
   const queryClient = useQueryClient();
+  const user = useAuthStore((s) => s.user);
 
   const coursesQuery = useCourses(open);
   const teachersQuery = useTeachers({ page: 1, limit: 100 }, open);
@@ -53,7 +65,7 @@ export function CreateGroupModal() {
       toast.success('Group created successfully');
       resetForm();
       setOpen(false);
-      queryClient.invalidateQueries({ queryKey: GROUPS_KEYS.all });
+      queryClient.invalidateQueries({ queryKey: GROUPS_KEYS.all(user?.organization_id) });
     } catch (err: unknown) {
       const error = err as { response?: { data?: { message?: string } } };
       toast.error(error.response?.data?.message || 'Failed to create group');
@@ -67,25 +79,31 @@ export function CreateGroupModal() {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger
-        render={
-          <Button className="gap-2 bg-slate-950 text-white shadow-md hover:bg-slate-800 dark:bg-primary dark:text-primary-foreground dark:hover:bg-primary/90 rounded-xl h-10 px-5">
-            <Plus className="size-4" />
-            Add Group
-          </Button>
-        }
-      />
-      <DialogContent className="sm:max-w-[480px]">
+      {!isControlled && (
+        <DialogTrigger
+          render={
+            <Button className="gap-2 bg-slate-950 text-white shadow-md hover:bg-slate-800 dark:bg-primary dark:text-primary-foreground dark:hover:bg-primary/90 rounded-xl h-10 px-5">
+              <Plus className="size-4" />
+              Add Group
+            </Button>
+          }
+        />
+      )}
+      <DialogContent>
         <DialogHeader>
-          <div className="mx-auto mb-4 flex size-12 items-center justify-center rounded-2xl bg-primary/10 text-primary">
-            <Users2 className="size-6" />
+          <div className="flex items-center gap-3">
+            <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+              <Users2 className="size-5" />
+            </div>
+            <div>
+              <DialogTitle>Create New Group</DialogTitle>
+              <DialogDescription>
+                A group links a course with a teacher and schedule.
+              </DialogDescription>
+            </div>
           </div>
-          <DialogTitle className="text-center text-xl">Create New Group</DialogTitle>
-          <DialogDescription className="text-center">
-            A group links a course with a teacher and schedule.
-          </DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4 pt-4">
+        <form onSubmit={handleSubmit} className="space-y-4 pt-2">
           <div className="space-y-2">
             <Label htmlFor="group-name">Group Name *</Label>
             <Input
@@ -104,7 +122,7 @@ export function CreateGroupModal() {
               value={formData.course_id}
               onChange={(e) => setFormData((p) => ({ ...p, course_id: e.target.value }))}
               disabled={isLoading}
-              className="flex h-9 w-full rounded-lg border border-input bg-background px-3 text-sm text-foreground outline-none transition-colors focus:ring-2 focus:ring-ring"
+              className="flex h-9 w-full rounded-xl border border-input bg-background px-3 text-sm text-foreground outline-none transition-colors focus:ring-2 focus:ring-ring"
             >
               <option value="">Select course...</option>
               {courses.map((c) => (
@@ -120,11 +138,11 @@ export function CreateGroupModal() {
               value={formData.teacher_id}
               onChange={(e) => setFormData((p) => ({ ...p, teacher_id: e.target.value }))}
               disabled={isLoading}
-              className="flex h-9 w-full rounded-lg border border-input bg-background px-3 text-sm text-foreground outline-none transition-colors focus:ring-2 focus:ring-ring"
+              className="flex h-9 w-full rounded-xl border border-input bg-background px-3 text-sm text-foreground outline-none transition-colors focus:ring-2 focus:ring-ring"
             >
               <option value="">Select teacher...</option>
               {teachers.map((t) => (
-                <option key={t.user_id} value={t.user_id}>{t.user?.full_name ?? 'Unnamed'}</option>
+                <option key={t.id} value={t.id}>{t.full_name ?? 'Teacher'}</option>
               ))}
             </select>
           </div>
@@ -152,11 +170,11 @@ export function CreateGroupModal() {
             </div>
           </div>
 
-          <DialogFooter className="pt-4">
-            <Button type="button" variant="outline" onClick={() => setOpen(false)} disabled={isLoading} className="w-full sm:w-auto">
+          <DialogFooter>
+            <Button type="button" variant="outline" onClick={() => setOpen(false)} disabled={isLoading} className="w-full sm:w-auto rounded-xl">
               Cancel
             </Button>
-            <Button type="submit" disabled={isLoading} className="w-full sm:w-auto">
+            <Button type="submit" disabled={isLoading} className="w-full sm:w-auto rounded-xl">
               {isLoading ? <><Loader2 className="mr-2 size-4 animate-spin" />Creating...</> : 'Create Group'}
             </Button>
           </DialogFooter>

@@ -23,6 +23,7 @@ import {
   Area,
   AreaChart,
 } from 'recharts';
+import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
 
 export const CHART_COLORS = [
@@ -70,7 +71,7 @@ export function ChartFrame({
       </div>
       <div style={{ height }} className="flex-1 relative">
         {isLoading ? (
-          <div className="h-full w-full rounded-xl bg-muted/50 animate-pulse" />
+          <Skeleton className="h-full w-full rounded-xl" />
         ) : isEmpty ? (
           <div className="h-full w-full flex items-center justify-center text-sm text-muted-foreground">
             {emptyText}

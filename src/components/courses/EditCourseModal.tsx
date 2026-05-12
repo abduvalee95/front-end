@@ -73,17 +73,21 @@ export function EditCourseModal({ course }: EditCourseModalProps) {
           </Button>
         }
       />
-      <DialogContent className="sm:max-w-[480px]">
+      <DialogContent>
         <DialogHeader>
-          <div className="mx-auto mb-4 flex size-12 items-center justify-center rounded-2xl bg-indigo-500/10 text-indigo-600">
-            <BookOpen className="size-6" />
+          <div className="flex items-center gap-3">
+            <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-indigo-500/10 text-indigo-600">
+              <BookOpen className="size-5" />
+            </div>
+            <div>
+              <DialogTitle>Edit Course</DialogTitle>
+              <DialogDescription>
+                Update course details and availability status.
+              </DialogDescription>
+            </div>
           </div>
-          <DialogTitle className="text-center text-xl">Edit Course</DialogTitle>
-          <DialogDescription className="text-center">
-            Update course details and availability status.
-          </DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4 pt-4">
+        <form onSubmit={handleSubmit} className="space-y-4 pt-2">
           <div className="space-y-2">
             <Label htmlFor={`edit-ctitle-${course.id}`}>Course Title *</Label>
             <Input
@@ -124,7 +128,7 @@ export function EditCourseModal({ course }: EditCourseModalProps) {
                 value={formData.status}
                 onChange={(e) => setFormData((p) => ({ ...p, status: e.target.value as CourseStatus }))}
                 disabled={isLoading}
-                className="flex h-9 w-full rounded-lg border border-input bg-background px-3 text-sm text-foreground outline-none transition-colors focus:ring-2 focus:ring-ring"
+                className="flex h-9 w-full rounded-xl border border-input bg-background px-3 text-sm text-foreground outline-none transition-colors focus:ring-2 focus:ring-ring"
               >
                 <option value="ACTIVE">Active</option>
                 <option value="INACTIVE">Inactive</option>
@@ -132,11 +136,11 @@ export function EditCourseModal({ course }: EditCourseModalProps) {
             </div>
           </div>
 
-          <DialogFooter className="pt-4">
-            <Button type="button" variant="outline" onClick={() => setOpen(false)} disabled={isLoading} className="w-full sm:w-auto">
+          <DialogFooter>
+            <Button type="button" variant="outline" onClick={() => setOpen(false)} disabled={isLoading} className="w-full sm:w-auto rounded-xl">
               Cancel
             </Button>
-            <Button type="submit" disabled={isLoading} className="w-full sm:w-auto">
+            <Button type="submit" disabled={isLoading} className="w-full sm:w-auto rounded-xl">
               {isLoading ? <><Loader2 className="mr-2 size-4 animate-spin" />Saving...</> : 'Save Changes'}
             </Button>
           </DialogFooter>

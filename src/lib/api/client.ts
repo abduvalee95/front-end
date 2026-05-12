@@ -124,11 +124,18 @@ api.interceptors.response.use(
 
         // Clear auth state
         useAuthStore.getState().clearAuth();
-        
+
         // Show error toast
         toast.error('Session expired. Please log in again.');
-        
-        // Redirect to login
+
+        // Clear HttpOnly cookies via server route BEFORE redirecting
+        // Without this, middleware sees stale refresh_token and loops back to dashboard
+        try {
+          await axios.post('/api/auth/logout');
+        } catch {
+          // Ignore logout errors — redirect regardless
+        }
+
         window.location.href = '/login?error=session_expired';
         
         return Promise.reject(refreshError);

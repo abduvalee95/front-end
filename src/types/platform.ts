@@ -3,11 +3,13 @@
  * Mirrors backend DTOs exactly — no invented fields.
  */
 
+import { UserRole } from './auth';
+
+// Re-export shared auth types from canonical source
+export type { UserRole } from './auth';
+
 // --- Enums ---
-
 export type OrganizationStatus = 'ACTIVE' | 'INACTIVE';
-
-export type UserRole = 'SUPER_ADMIN' | 'ADMIN' | 'MANAGER' | 'TEACHER' | 'STUDENT';
 
 // --- List Response (GET /platform/organizations) ---
 

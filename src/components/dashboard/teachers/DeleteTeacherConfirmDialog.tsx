@@ -42,11 +42,11 @@ export function DeleteTeacherConfirmDialog({
         </DialogHeader>
 
         <div className="bg-destructive/10 text-destructive text-sm p-3 rounded-lg border border-destructive/20 mt-2">
-          <p className="font-medium mb-1">This action cannot be undone:</p>
+          <p className="font-medium mb-1">The following will happen:</p>
           <ul className="list-disc list-inside space-y-1 ml-1">
-            <li>Teacher profile will be permanently removed.</li>
-            <li>Group assignments will be unlinked.</li>
-            <li>Login access will be revoked immediately.</li>
+            <li>Teacher will be deactivated and hidden from the list.</li>
+            <li>Teacher will no longer be assignable to new groups.</li>
+            <li>Historical data (lessons, attendance) will be preserved.</li>
           </ul>
         </div>
 

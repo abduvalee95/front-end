@@ -1,16 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { logger } from '@/lib/logger';
-
-function getRoleFromToken(token: string): string | null {
-  try {
-    const payload = token.split('.')[1];
-    if (!payload) return null;
-    const decoded = JSON.parse(atob(payload.replace(/-/g, '+').replace(/_/g, '/')));
-    return decoded.role ?? null;
-  } catch {
-    return null;
-  }
-}
+import { getRoleFromToken } from '@/lib/auth/jwt';
 
 export default function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -42,15 +32,20 @@ export default function middleware(request: NextRequest) {
   const hasRefreshToken = request.cookies.has('refresh_token');
   const isAuth = hasAccessToken || hasRefreshToken;
   
-  // Define route types
-  const protectedPrefixes = ['/dashboard', '/analytics', '/students', '/teachers', '/users', '/admin'];
-  const isProtectedRoute = protectedPrefixes.some((prefix) => pathname.startsWith(prefix));
-  const isAuthRoute = pathname === '/login' || pathname.startsWith('/login/');
-  const isPublicRoute = pathname === '/' || 
+  // Define route types by explicit public lists instead of hardcoded protected ones
+  const publicRoutes = ['/'];
+  const authRoutes = ['/login']; // Routes that logged-in users shouldn't access (like login page)
+
+  const isPublicRoute = publicRoutes.includes(pathname) || 
     pathname.startsWith('/_next/') || 
     pathname.startsWith('/api/auth/') || // Auth endpoints are public
     pathname.includes('.') || // Static files
     pathname === '/favicon.ico';
+
+  const isAuthRoute = authRoutes.some((route) => pathname.startsWith(route));
+
+  // Any route that is not explicitly public or auth is considered protected
+  const isProtectedRoute = !isPublicRoute && !isAuthRoute;
 
   // Skip middleware for public routes
   if (isPublicRoute) {

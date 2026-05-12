@@ -3,8 +3,10 @@
 import { format, parseISO } from 'date-fns';
 import { UserPlus, Users, TrendingUp, UserX, Target, PhoneCall } from 'lucide-react';
 import { useCRMAnalytics, useCRMAI } from '@/hooks/useAnalytics';
+import type { Lead } from '@/types/analytics';
 import { MetricCard, InsightCard, SectionHeader } from './shared';
 import { BarChartWrapper, ChartFrame, FunnelChart, LineChartWrapper } from '@/components/charts/chart-primitives';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export function CRMTab() {
   const { summary, leadsByStatus, leads } = useCRMAnalytics();
@@ -18,7 +20,7 @@ export function CRMTab() {
 
   // Lead source breakdown (client-side from listLeads)
   const sourceBuckets = new Map<string, number>();
-  leads.data?.items.forEach((l) => {
+  leads.data?.items.forEach((l: Lead) => {
     const key = (l.source || 'unknown').trim() || 'unknown';
     sourceBuckets.set(key, (sourceBuckets.get(key) || 0) + 1);
   });
@@ -29,7 +31,7 @@ export function CRMTab() {
 
   // Leads by day
   const dayBuckets = new Map<string, number>();
-  leads.data?.items.forEach((l) => {
+  leads.data?.items.forEach((l: Lead) => {
     const day = l.created_at.slice(0, 10);
     dayBuckets.set(day, (dayBuckets.get(day) || 0) + 1);
   });
@@ -39,7 +41,7 @@ export function CRMTab() {
 
   // Top admins table
   const adminBuckets = new Map<string, { total: number; converted: number }>();
-  leads.data?.items.forEach((l) => {
+  leads.data?.items.forEach((l: Lead) => {
     const key = l.admin || 'unassigned';
     const cur = adminBuckets.get(key) ?? { total: 0, converted: 0 };
     cur.total += 1;
@@ -107,7 +109,7 @@ export function CRMTab() {
         <div className="bg-card border border-border rounded-2xl p-6">
           <h3 className="font-semibold mb-4">Lead Funnel</h3>
           {leadsByStatus.isLoading ? (
-            <div className="h-64 bg-muted/50 rounded-xl animate-pulse" />
+            <Skeleton className="h-64 w-full rounded-xl" />
           ) : (
             <FunnelChart
               stages={[
@@ -151,7 +153,7 @@ export function CRMTab() {
           {insightsLoading ? (
             <div className="space-y-3">
               {[0, 1, 2].map((i) => (
-                <div key={i} className="h-24 rounded-2xl bg-muted/50 animate-pulse" />
+                <Skeleton key={i} className="h-24 w-full rounded-2xl" />
               ))}
             </div>
           ) : insights.length === 0 ? (
@@ -183,11 +185,14 @@ export function CRMTab() {
             </thead>
             <tbody>
               {leads.isLoading ? (
-                <tr>
-                  <td colSpan={4} className="px-4 py-8 text-center text-muted-foreground">
-                    Loading…
-                  </td>
-                </tr>
+                Array.from({ length: 5 }).map((_, i) => (
+                  <tr key={i} className="border-t border-border hover:bg-muted/30">
+                    <td className="px-4 py-3"><Skeleton className="h-5 w-32" /></td>
+                    <td className="px-4 py-3"><Skeleton className="h-5 w-12 ml-auto" /></td>
+                    <td className="px-4 py-3"><Skeleton className="h-5 w-12 ml-auto" /></td>
+                    <td className="px-4 py-3"><Skeleton className="h-5 w-16 ml-auto" /></td>
+                  </tr>
+                ))
               ) : topAdmins.length === 0 ? (
                 <tr>
                   <td colSpan={4} className="px-4 py-8 text-center text-muted-foreground">

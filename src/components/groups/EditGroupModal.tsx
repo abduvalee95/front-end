@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { Loader2, PenLine, Users2 } from 'lucide-react';
+import { useAuthStore } from '@/store/auth.store';
 import {
   Dialog,
   DialogContent,
@@ -30,6 +31,7 @@ export function EditGroupModal({ group }: EditGroupModalProps) {
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const queryClient = useQueryClient();
+  const user = useAuthStore((s) => s.user);
 
   const coursesQuery = useCourses(open);
   const teachersQuery = useTeachers({ page: 1, limit: 100 }, open);
@@ -66,7 +68,7 @@ export function EditGroupModal({ group }: EditGroupModalProps) {
       await groupService.updateGroup(group.id, formData);
       toast.success('Group updated successfully');
       setOpen(false);
-      queryClient.invalidateQueries({ queryKey: GROUPS_KEYS.all });
+      queryClient.invalidateQueries({ queryKey: GROUPS_KEYS.all(user?.organization_id) });
     } catch (err: unknown) {
       const error = err as { response?: { data?: { message?: string } } };
       toast.error(error.response?.data?.message || 'Failed to update group');
@@ -87,17 +89,21 @@ export function EditGroupModal({ group }: EditGroupModalProps) {
           </Button>
         }
       />
-      <DialogContent className="sm:max-w-[480px]">
+      <DialogContent>
         <DialogHeader>
-          <div className="mx-auto mb-4 flex size-12 items-center justify-center rounded-2xl bg-primary/10 text-primary">
-            <Users2 className="size-6" />
+          <div className="flex items-center gap-3">
+            <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+              <Users2 className="size-5" />
+            </div>
+            <div>
+              <DialogTitle>Edit Group</DialogTitle>
+              <DialogDescription>
+                Update group details, course, or teacher assignment.
+              </DialogDescription>
+            </div>
           </div>
-          <DialogTitle className="text-center text-xl">Edit Group</DialogTitle>
-          <DialogDescription className="text-center">
-            Update group details, course, or teacher assignment.
-          </DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4 pt-4">
+        <form onSubmit={handleSubmit} className="space-y-4 pt-2">
           <div className="space-y-2">
             <Label htmlFor={`edit-gname-${group.id}`}>Group Name *</Label>
             <Input
@@ -114,7 +120,7 @@ export function EditGroupModal({ group }: EditGroupModalProps) {
               value={formData.course_id}
               onChange={(e) => setFormData((p) => ({ ...p, course_id: e.target.value }))}
               disabled={isLoading}
-              className="flex h-9 w-full rounded-lg border border-input bg-background px-3 text-sm text-foreground outline-none transition-colors focus:ring-2 focus:ring-ring"
+              className="flex h-9 w-full rounded-xl border border-input bg-background px-3 text-sm text-foreground outline-none transition-colors focus:ring-2 focus:ring-ring"
             >
               <option value="">Select course...</option>
               {courses.map((c) => (
@@ -129,11 +135,11 @@ export function EditGroupModal({ group }: EditGroupModalProps) {
               value={formData.teacher_id}
               onChange={(e) => setFormData((p) => ({ ...p, teacher_id: e.target.value }))}
               disabled={isLoading}
-              className="flex h-9 w-full rounded-lg border border-input bg-background px-3 text-sm text-foreground outline-none transition-colors focus:ring-2 focus:ring-ring"
+              className="flex h-9 w-full rounded-xl border border-input bg-background px-3 text-sm text-foreground outline-none transition-colors focus:ring-2 focus:ring-ring"
             >
               <option value="">Select teacher...</option>
               {teachers.map((t) => (
-                <option key={t.user_id} value={t.user_id}>{t.user?.full_name ?? 'Unnamed'}</option>
+                <option key={t.id} value={t.id}>{t.full_name ?? 'Teacher'}</option>
               ))}
             </select>
           </div>
@@ -149,9 +155,9 @@ export function EditGroupModal({ group }: EditGroupModalProps) {
             </div>
           </div>
 
-          <DialogFooter className="pt-4">
-            <Button type="button" variant="outline" onClick={() => setOpen(false)} disabled={isLoading} className="w-full sm:w-auto">Cancel</Button>
-            <Button type="submit" disabled={isLoading} className="w-full sm:w-auto">
+          <DialogFooter>
+            <Button type="button" variant="outline" onClick={() => setOpen(false)} disabled={isLoading} className="w-full sm:w-auto rounded-xl">Cancel</Button>
+            <Button type="submit" disabled={isLoading} className="w-full sm:w-auto rounded-xl">
               {isLoading ? <><Loader2 className="mr-2 size-4 animate-spin" />Saving...</> : 'Save Changes'}
             </Button>
           </DialogFooter>

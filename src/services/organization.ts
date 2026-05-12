@@ -6,6 +6,7 @@ export interface OrganizationSettings {
   email: string;
   phone: string;
   status: string;
+  logo_url?: string;
   telegram_enabled: boolean;
   telegram_bot_token?: string;
   telegram_chat_id?: string;
@@ -27,5 +28,14 @@ export const organizationService = {
   updateSettings: async (payload: Partial<OrganizationSettings>): Promise<OrganizationSettings> => {
     const { data } = await api.patch<OrganizationSettings>('/proxy/organizations/settings', payload);
     return data;
-  }
+  },
+
+  uploadLogo: async (file: File): Promise<{ logo_url: string }> => {
+    const formData = new FormData();
+    formData.append('logo', file);
+    const { data } = await api.post<{ logo_url: string }>('/proxy/organizations/settings/logo', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+    return data;
+  },
 };

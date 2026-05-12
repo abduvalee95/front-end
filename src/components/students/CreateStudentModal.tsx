@@ -1,9 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
-import { Loader2, Plus, UsersRound } from 'lucide-react';
+import { BookOpen, Loader2, Plus, UsersRound } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -16,20 +16,41 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { studentService } from '@/services/students';
-import { STUDENTS_KEYS } from '@/hooks/useStudents';
+import { enrollmentService } from '@/services/enrollments';
+import { useGroups } from '@/hooks/useGroups';
+import { queryKeys } from '@/lib/api/query-keys';
+import { useAuthStore } from '@/store/auth.store';
+import { getErrorMessage } from '@/lib/api/client';
 
-export function CreateStudentModal() {
-  const [open, setOpen] = useState(false);
+interface CreateStudentModalProps {
+  open?: boolean;
+  onClose?: () => void;
+}
+
+export function CreateStudentModal({ open: externalOpen, onClose }: CreateStudentModalProps = {}) {
+  const isControlled = externalOpen !== undefined;
+  const [internalOpen, setInternalOpen] = useState(false);
+  const open = isControlled ? externalOpen : internalOpen;
+  const setOpen = isControlled
+    ? (val: boolean) => { if (!val) onClose?.(); }
+    : setInternalOpen;
   const [isLoading, setIsLoading] = useState(false);
   const queryClient = useQueryClient();
+  const { user } = useAuthStore();
+  const orgId = user?.organization_id;
 
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
     address: '',
     parent: '',
+    groupId: '',
   });
+
+  const { data: groupsData } = useGroups(open);
+  const groups = useMemo(() => groupsData ?? [], [groupsData]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -40,10 +61,15 @@ export function CreateStudentModal() {
 
     try {
       setIsLoading(true);
+      const { groupId, ...studentData } = formData;
       const res = await studentService.createStudent({
-        ...formData,
+        ...studentData,
         status: 'ACTIVE',
       });
+
+      if (groupId) {
+        await enrollmentService.create({ student_id: res.student.id, group_id: groupId });
+      }
 
       toast.success('Student created successfully');
       
@@ -51,13 +77,13 @@ export function CreateStudentModal() {
         toast.info(`Temporary password: ${res.temporaryPassword}`, { duration: 10000 });
       }
 
-      setFormData({ name: '', phone: '', address: '', parent: '' });
+      setFormData({ name: '', phone: '', address: '', parent: '', groupId: '' });
       setOpen(false);
       
       // Invalidate queries to refresh the list
-      queryClient.invalidateQueries({ queryKey: STUDENTS_KEYS.all });
-    } catch (error: any) {
-      toast.error(error.response?.data?.message || 'Failed to create student');
+      queryClient.invalidateQueries({ queryKey: queryKeys.students.all(orgId) });
+    } catch (error: unknown) {
+      toast.error(getErrorMessage(error) || 'Failed to create student');
     } finally {
       setIsLoading(false);
     }
@@ -65,25 +91,31 @@ export function CreateStudentModal() {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger
-        render={
-          <Button className="gap-2 bg-slate-950 text-white shadow-md hover:bg-slate-800 dark:bg-primary dark:text-primary-foreground dark:hover:bg-primary/90 rounded-xl h-10 px-5">
-            <Plus className="size-4" />
-            Add Student
-          </Button>
-        }
-      />
-      <DialogContent className="sm:max-w-[425px]">
+      {!isControlled && (
+        <DialogTrigger
+          render={
+            <Button className="gap-2 bg-slate-950 text-white shadow-md hover:bg-slate-800 dark:bg-primary dark:text-primary-foreground dark:hover:bg-primary/90 rounded-xl h-10 px-5">
+              <Plus className="size-4" />
+              Add Student
+            </Button>
+          }
+        />
+      )}
+      <DialogContent>
         <DialogHeader>
-          <div className="mx-auto mb-4 flex size-12 items-center justify-center rounded-2xl bg-primary/10 text-primary">
-            <UsersRound className="size-6" />
+          <div className="flex items-center gap-3">
+            <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+              <UsersRound className="size-5" />
+            </div>
+            <div>
+              <DialogTitle>Create New Student</DialogTitle>
+              <DialogDescription>
+                Add a new student directly to the organization.
+              </DialogDescription>
+            </div>
           </div>
-          <DialogTitle className="text-center text-xl">Create New Student</DialogTitle>
-          <DialogDescription className="text-center">
-            Add a new student directly to the organization.
-          </DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4 pt-4">
+        <form onSubmit={handleSubmit} className="space-y-4 pt-2">
           <div className="space-y-2">
             <Label htmlFor="name">Full Name *</Label>
             <Input
@@ -98,7 +130,7 @@ export function CreateStudentModal() {
             <Label htmlFor="phone">Phone Number *</Label>
             <Input
               id="phone"
-              placeholder="+996 500 000 000"
+              placeholder="+998 90 000 00 00"
               value={formData.phone}
               onChange={(e) => setFormData((prev) => ({ ...prev, phone: e.target.value }))}
               disabled={isLoading}
@@ -118,23 +150,47 @@ export function CreateStudentModal() {
             <Label htmlFor="parent">Parent Info (Optional)</Label>
             <Input
               id="parent"
-              placeholder="E.g. Father: +996 700 000 000"
+              placeholder="E.g. Father: +998 90 000 00 00"
               value={formData.parent}
               onChange={(e) => setFormData((prev) => ({ ...prev, parent: e.target.value }))}
               disabled={isLoading}
             />
           </div>
-          <DialogFooter className="pt-4">
+          <div className="space-y-2">
+            <Label className="flex items-center gap-1.5">
+              <BookOpen className="size-3.5 text-muted-foreground" />
+              Group (Optional)
+            </Label>
+            <Select
+              value={formData.groupId || '_none_'}
+              onValueChange={(v) => setFormData((prev) => ({ ...prev, groupId: v === '_none_' ? '' : (v ?? '') }))}
+              disabled={isLoading}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select a group" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="_none_">No group</SelectItem>
+                {groups.map((g) => (
+                  <SelectItem key={g.id} value={g.id}>
+                    {g.name}
+                    {g.course?.title ? ` — ${g.course.title}` : ''}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <DialogFooter>
             <Button
               type="button"
               variant="outline"
               onClick={() => setOpen(false)}
               disabled={isLoading}
-              className="w-full sm:w-auto"
+              className="w-full sm:w-auto rounded-xl"
             >
               Cancel
             </Button>
-            <Button type="submit" disabled={isLoading} className="w-full sm:w-auto">
+            <Button type="submit" disabled={isLoading} className="w-full sm:w-auto rounded-xl">
               {isLoading ? (
                 <>
                   <Loader2 className="mr-2 size-4 animate-spin" />

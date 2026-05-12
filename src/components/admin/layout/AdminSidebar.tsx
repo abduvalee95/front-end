@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useTranslations } from '@/i18n/index';
 import {
   LayoutDashboard,
   Building2,
@@ -18,22 +19,7 @@ import { useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
-const navItems = [
-  {
-    group: 'Main',
-    items: [
-      { name: 'Dashboard', href: '/admin/dashboard', icon: LayoutDashboard },
-      { name: 'Organizations', href: '/admin/organizations', icon: Building2 },
-    ],
-  },
-  {
-    group: 'System',
-    items: [
-      { name: 'Users', href: '/admin/users', icon: Users },
-      { name: 'Settings', href: '/admin/settings', icon: Settings },
-    ],
-  },
-];
+// Nav items are translated dynamically in component
 
 interface SidebarNavProps {
   onNavClick?: () => void;
@@ -44,6 +30,26 @@ export function SidebarNav({ onNavClick, isMobile }: SidebarNavProps) {
   const pathname = usePathname();
   const [isCollapsed, setIsCollapsed] = useState(false);
   const { logout, user } = useAuth();
+  const tNav = useTranslations('nav');
+  const tAuth = useTranslations('auth');
+  const tCommon = useTranslations('common');
+  
+  const navItems = [
+    {
+      group: tCommon('main'),
+      items: [
+        { key: 'dashboard', href: '/admin/dashboard', icon: LayoutDashboard },
+        { key: 'organizations', href: '/admin/organizations', icon: Building2 },
+      ],
+    },
+    {
+      group: tCommon('system'),
+      items: [
+        { key: 'users', href: '/admin/users', icon: Users },
+        { key: 'settings', href: '/admin/settings', icon: Settings },
+      ],
+    },
+  ];
 
   const collapsed = isMobile ? false : isCollapsed;
 
@@ -79,15 +85,16 @@ export function SidebarNav({ onNavClick, isMobile }: SidebarNavProps) {
           <div key={group.group}>
             {!collapsed && (
               <h3 className="mb-4 px-4 text-[10px] font-bold uppercase tracking-[0.2em] text-cyan-200/55 animate-in fade-in duration-500">
-                {group.group}
+                {group.group === tCommon('main') ? tCommon('main') : group.group === tCommon('system') ? tCommon('system') : group.group}
               </h3>
             )}
             <div className="space-y-1">
               {group.items.map((item) => {
                 const isActive = pathname === item.href || pathname.startsWith(item.href + '/');
+                const label = tNav(item.key as Parameters<typeof tNav>[0]);
                 return (
                   <Link
-                    key={item.name}
+                    key={item.key}
                     href={item.href}
                     onClick={onNavClick}
                     className={cn(
@@ -96,13 +103,13 @@ export function SidebarNav({ onNavClick, isMobile }: SidebarNavProps) {
                         ? "border border-cyan-200/20 bg-white/12 text-white shadow-[0_18px_46px_rgba(3,203,231,0.12)] backdrop-blur-md before:absolute before:left-2 before:top-1/2 before:size-1.5 before:-translate-y-1/2 before:rounded-full before:bg-cyan-300"
                         : "border border-transparent text-slate-300 hover:border-white/10 hover:bg-white/5 hover:text-white hover:backdrop-blur-sm"
                     )}
-                    aria-label={item.name}
+                    aria-label={label}
                   >
                     <item.icon className={cn(
                       "size-5 shrink-0 transition-transform duration-300 group-hover:scale-110",
                       isActive ? "text-cyan-100 drop-shadow-[0_0_8px_rgba(103,216,232,0.5)]" : "text-slate-400 group-hover:text-white"
                     )} />
-                    {!collapsed && <span className="font-medium text-sm">{item.name}</span>}
+                    {!collapsed && <span className="font-medium text-sm">{label}</span>}
                   </Link>
                 );
               })}
@@ -132,8 +139,8 @@ export function SidebarNav({ onNavClick, isMobile }: SidebarNavProps) {
             <button 
               onClick={() => setIsCollapsed(!isCollapsed)}
               className="flex items-center justify-center h-10 rounded-xl hover:bg-white/10 transition-colors border border-white/10 text-slate-300 hover:text-white backdrop-blur-sm"
-              title="Toggle Sidebar"
-              aria-label="Toggle sidebar"
+              title={tCommon('toggle_sidebar')}
+              aria-label={tCommon('toggle_sidebar')}
             >
               {isCollapsed ? <ChevronRight className="size-4" /> : <ChevronLeft className="size-4" />}
             </button>
@@ -141,8 +148,8 @@ export function SidebarNav({ onNavClick, isMobile }: SidebarNavProps) {
           <button 
             onClick={() => logout()}
             className={cn("flex items-center justify-center h-10 rounded-xl bg-red-500/10 text-red-400 hover:bg-red-500/20 hover:text-red-300 transition-all border border-red-500/20 backdrop-blur-sm", isMobile ? "col-span-2" : "")}
-            title="Logout"
-            aria-label="Logout"
+            title={tAuth('logout')}
+            aria-label={tAuth('logout')}
           >
             <LogOut className="size-4" />
           </button>

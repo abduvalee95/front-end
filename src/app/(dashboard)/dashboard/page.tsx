@@ -31,6 +31,8 @@ import {
 import { useDashboardSummary, useLeadsByStatus, usePaymentsByMethod } from '@/hooks/useDashboard';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useMemo } from 'react';
+import { useTranslations } from '@/i18n/index';
+import { useAuthStore } from '@/store/auth.store';
 
 const LEAD_STATUS_COLORS: Record<string, string> = {
   NEW: '#3b82f6',
@@ -46,6 +48,8 @@ const PAYMENT_METHOD_COLORS: Record<string, string> = {
 };
 
 export default function DashboardPage() {
+  const t = useTranslations('dashboard');
+  const user = useAuthStore((state) => state.user);
   const { data: summary, isLoading: summaryLoading } = useDashboardSummary();
   const { data: leadsByStatus, isLoading: leadsLoading } = useLeadsByStatus();
   const { data: paymentsByMethod, isLoading: paymentsLoading } = usePaymentsByMethod();
@@ -80,15 +84,20 @@ export default function DashboardPage() {
               <span>System Insights</span>
             </div>
             <h1 className="text-3xl md:text-4xl font-black tracking-tight">
-              Welcome back, Bilim Nuru Admin
+              {t('welcome_back')} {user?.organization_name || 'Bilim Nuru'}
             </h1>
-            <p className="text-slate-300 max-w-xl font-medium">
-              {summaryLoading ? (
+            {summaryLoading ? (
+              <div className="text-slate-300 max-w-xl font-medium">
                 <Skeleton className="h-6 w-96 bg-white/10" />
-              ) : (
-                <>Everything is looking good today. You have <span className="text-blue-400 font-bold">{summary?.leadsNew || 0} new leads</span> and {summary?.upcomingLessons?.length || 0} upcoming lessons.</>  
-              )}
-            </p>
+              </div>
+            ) : (
+              <p className="text-slate-300 max-w-xl font-medium">
+                {t('you_have')}{' '}
+                <span className="text-blue-400 font-bold">{summary?.leadsNew || 0} {t('new_leads')}</span>
+                {' '}{t('and')}{' '}
+                <span className="text-red-400 font-bold">{summary?.attendanceAbsent || 0} {t('absent_today')}</span>.
+              </p>
+            )}
           </div>
           <div className="flex items-center gap-3">
             <button className="bg-white/5 hover:bg-white/10 text-white px-5 py-3 rounded-2xl font-bold text-sm transition-all backdrop-blur-md border border-white/10">
@@ -115,7 +124,7 @@ export default function DashboardPage() {
         ) : (
           <>
             <StatCard 
-              title="Total Students" 
+              title={t('total_students')} 
               value={String(summary?.studentsActive || 0)} 
               subtitle={`Inactive: ${summary?.studentsInactive || 0}`} 
               icon={Users} 
@@ -124,7 +133,7 @@ export default function DashboardPage() {
               color="#3b82f6"
             />
             <StatCard 
-              title="Total Payments" 
+              title={t('total_payments')} 
               value={String(summary?.paymentsCount || 0)} 
               unit="payments" 
               subtitle={`${Number(summary?.paymentsTotalAmount || 0).toLocaleString()} som`}
@@ -134,7 +143,7 @@ export default function DashboardPage() {
               color="#2dd4bf"
             />
             <StatCard 
-              title="Active Leads" 
+              title={t('active_leads')} 
               value={String(summary?.leadsNew || 0)} 
               subtitle={`Contacted: ${summary?.leadsContacted || 0}`} 
               icon={ClipboardList} 
@@ -143,10 +152,10 @@ export default function DashboardPage() {
               color="#f59e0b"
             />
             <StatCard 
-              title="Attendance Rate" 
+              title={t('attendance_rate')} 
               value={String(summary?.attendanceRate || 0)} 
               unit="%"
-              subtitle={`Present: ${summary?.attendancePresent || 0}`} 
+              subtitle={`${t('present')}: ${summary?.attendancePresent || 0}`} 
               icon={GraduationCap} 
               trend={`${summary?.attendanceAbsent || 0} absent`}
               trendUp={(summary?.attendanceRate || 0) >= 75}
@@ -165,8 +174,8 @@ export default function DashboardPage() {
             <div className="bg-white/80 backdrop-blur-sm rounded-[32px] p-8 shadow-sm border border-slate-200/50 transition-all hover:shadow-xl hover:shadow-slate-200/40 min-w-0">
               <div className="flex items-center justify-between mb-8">
                 <div>
-                  <h3 className="text-xl font-black text-slate-900">Leads by Status</h3>
-                  <p className="text-sm text-slate-400 font-medium">Conversion funnel overview</p>
+                  <h3 className="text-xl font-black text-slate-900">{t('leads_by_status')}</h3>
+                  <p className="text-sm text-slate-400 font-medium">{t('conversion_funnel_overview')}</p>
                 </div>
                 <div className="bg-slate-50 p-2 rounded-xl">
                   <TrendingUp className="size-5 text-slate-400" />
@@ -222,8 +231,8 @@ export default function DashboardPage() {
             <div className="bg-white/80 backdrop-blur-sm rounded-[32px] p-8 shadow-sm border border-slate-200/50 transition-all hover:shadow-xl hover:shadow-slate-200/40 min-w-0">
               <div className="flex items-center justify-between mb-8">
                 <div>
-                  <h3 className="text-xl font-black text-slate-900">Payment Methods</h3>
-                  <p className="text-sm text-slate-400 font-medium">Transaction breakdown</p>
+                  <h3 className="text-xl font-black text-slate-900">{t('payment_methods')}</h3>
+                  <p className="text-sm text-slate-400 font-medium">{t('transaction_breakdown')}</p>
                 </div>
                 <div className="bg-slate-50 p-2 rounded-xl">
                   <Clock className="size-5 text-slate-400" />
@@ -268,9 +277,9 @@ export default function DashboardPage() {
         <div className="space-y-8">
           <div className="bg-white/80 backdrop-blur-sm rounded-[32px] p-8 shadow-sm border border-slate-200/50 h-full">
             <div className="flex items-center justify-between mb-8">
-              <h3 className="text-xl font-black text-slate-900">Recent Activity</h3>
+              <h3 className="text-xl font-black text-slate-900">{t('recent_activity')}</h3>
               <button className="text-blue-500 font-bold text-xs hover:underline flex items-center gap-1">
-                View All <ChevronRight className="size-3" />
+                {t('view_all')} <ChevronRight className="size-3" />
               </button>
             </div>
             <div className="space-y-6">
@@ -297,20 +306,20 @@ export default function DashboardPage() {
                   </div>
                 ))
               ) : (
-                <p className="text-sm text-slate-400 text-center py-8">No upcoming lessons</p>
+                <p className="text-sm text-slate-400 text-center py-8">{t('no_upcoming_lessons')}</p>
               )}
             </div>
 
             <div className="mt-12 pt-8 border-t border-slate-50">
               <div className="bg-gradient-to-br from-indigo-50 to-blue-50 rounded-2xl p-6 border border-blue-100/50">
-                <p className="text-sm font-black text-slate-900 mb-2">Overall Attendance</p>
+                <p className="text-sm font-black text-slate-900 mb-2">{t('overall_attendance')}</p>
                 <div className="flex items-end gap-2">
                   {summaryLoading ? (
                     <Skeleton className="h-10 w-20" />
                   ) : (
                     <>
                       <span className="text-3xl font-black text-indigo-600">{summary?.attendanceRate || 0}%</span>
-                      <span className="text-xs font-bold text-slate-400 mb-1">{summary?.attendancePresent || 0} present</span>
+                      <span className="text-xs font-bold text-slate-400 mb-1">{summary?.attendancePresent || 0} {t('present')}</span>
                     </>
                   )}
                 </div>

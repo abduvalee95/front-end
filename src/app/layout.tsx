@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Toaster } from "sonner";
+import { cookies } from 'next/headers';
+import { LOCALES, DEFAULT_LOCALE, type Locale } from '@/i18n/routing';
+import { I18nProvider } from '@/i18n/index';
 import { Providers } from "@/components/providers";
 import "./globals.css";
 
@@ -22,20 +25,29 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const cookieStore = await cookies();
+  const raw = cookieStore.get('NEXT_LOCALE')?.value;
+  const locale: Locale = (raw && (LOCALES as ReadonlyArray<string>).includes(raw))
+    ? (raw as Locale)
+    : DEFAULT_LOCALE;
+  const messages = ((await import(`../../messages/${locale}.json`)) as { default: Record<string, unknown> }).default;
+
   return (
-    <html lang="en" suppressHydrationWarning={true}>
+    <html lang={locale} suppressHydrationWarning={true}>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         suppressHydrationWarning
       >
-        <Providers>
-          {children}
-        </Providers>
+        <I18nProvider locale={locale} messages={messages}>
+          <Providers>
+            {children}
+          </Providers>
+        </I18nProvider>
         <Toaster position="top-right" richColors closeButton />
       </body>
     </html>

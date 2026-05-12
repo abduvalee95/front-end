@@ -64,15 +64,19 @@ export function CreateOrganizationModal({ open, onClose }: CreateOrganizationMod
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className="sm:max-w-[520px] max-h-[90vh] overflow-y-auto">
+      <DialogContent className="sm:max-w-[540px]">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <Building2 className="size-4 text-primary" />
-            Create Organization
-          </DialogTitle>
-          <DialogDescription>
-            Add a new tenant company and its admin account to the platform.
-          </DialogDescription>
+          <div className="flex items-center gap-3">
+            <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+              <Building2 className="size-5" />
+            </div>
+            <div>
+              <DialogTitle>Create Organization</DialogTitle>
+              <DialogDescription>
+                Add a new tenant company and its admin account to the platform.
+              </DialogDescription>
+            </div>
+          </div>
         </DialogHeader>
 
         <form id="create-org-form" onSubmit={handleSubmit(onSubmit)} className="space-y-4 py-2">
@@ -127,10 +131,10 @@ export function CreateOrganizationModal({ open, onClose }: CreateOrganizationMod
         </form>
 
         <DialogFooter>
-          <Button type="button" variant="outline" size="sm" onClick={onClose} disabled={createOrg.isPending}>
+          <Button type="button" variant="outline" onClick={onClose} disabled={createOrg.isPending} className="rounded-xl">
             Cancel
           </Button>
-          <Button type="submit" form="create-org-form" className="edu-gradient-btn rounded-lg" disabled={createOrg.isPending}>
+          <Button type="submit" form="create-org-form" className="edu-gradient-btn rounded-xl" disabled={createOrg.isPending}>
             {createOrg.isPending && <Loader2 className="mr-2 size-3.5 animate-spin" />}
             Create Organization
           </Button>

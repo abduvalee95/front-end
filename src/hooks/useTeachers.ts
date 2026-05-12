@@ -3,13 +3,16 @@ import { teacherService } from '@/services/teachers';
 import type { CreateTeacherDto, UpdateTeacherDto, TeacherStatus } from '@/types/teacher';
 import { toast } from 'sonner';
 import { getErrorMessage } from '@/lib/api/client';
+import { useAuthStore } from '@/store/auth.store';
 
 export const TEACHERS_KEYS = {
-  all: ['teachers'] as const,
-  lists: () => [...TEACHERS_KEYS.all, 'list'] as const,
-  list: (params: Record<string, unknown>) => [...TEACHERS_KEYS.lists(), params] as const,
-  details: () => [...TEACHERS_KEYS.all, 'detail'] as const,
-  detail: (id: string) => [...TEACHERS_KEYS.details(), id] as const,
+  all: (orgId: string | undefined) => ['teachers', orgId] as const,
+  lists: (orgId: string | undefined) => [...TEACHERS_KEYS.all(orgId), 'list'] as const,
+  list: (orgId: string | undefined, params: Record<string, unknown>) => [...TEACHERS_KEYS.lists(orgId), params] as const,
+  deleted: (orgId: string | undefined) => [...TEACHERS_KEYS.all(orgId), 'deleted'] as const,
+  deletedList: (orgId: string | undefined, params: Record<string, unknown>) => [...TEACHERS_KEYS.deleted(orgId), params] as const,
+  details: (orgId: string | undefined) => [...TEACHERS_KEYS.all(orgId), 'detail'] as const,
+  detail: (orgId: string | undefined, id: string) => [...TEACHERS_KEYS.details(orgId), id] as const,
 };
 
 export function useTeachers(params?: {
@@ -18,8 +21,11 @@ export function useTeachers(params?: {
   search?: string;
   status?: string;
 }, enabled = true) {
+  const { user } = useAuthStore();
+  const orgId = user?.organization_id;
+
   return useQuery({
-    queryKey: TEACHERS_KEYS.list(params ?? {}),
+    queryKey: TEACHERS_KEYS.list(orgId, params ?? {}),
     queryFn: async () => {
       const response = await teacherService.getTeachers({
         page: params?.page,
@@ -33,26 +39,56 @@ export function useTeachers(params?: {
         meta: response.pagination,
       };
     },
-    enabled,
+    enabled: enabled && !!orgId,
+  });
+}
+
+export function useDeletedTeachers(params?: {
+  page?: number;
+  limit?: number;
+  search?: string;
+}, enabled = true) {
+  const { user } = useAuthStore();
+  const orgId = user?.organization_id;
+
+  return useQuery({
+    queryKey: TEACHERS_KEYS.deletedList(orgId, params ?? {}),
+    queryFn: async () => {
+      const response = await teacherService.getDeletedTeachers({
+        page: params?.page,
+        limit: params?.limit,
+        search: params?.search,
+      });
+      return {
+        items: response.teachers,
+        meta: response.pagination,
+      };
+    },
+    enabled: enabled && !!orgId,
   });
 }
 
 export function useTeacher(id: string) {
+  const { user } = useAuthStore();
+  const orgId = user?.organization_id;
+
   return useQuery({
-    queryKey: TEACHERS_KEYS.detail(id),
+    queryKey: TEACHERS_KEYS.detail(orgId, id),
     queryFn: () => teacherService.getTeacherById(id),
-    enabled: !!id,
+    enabled: !!id && !!orgId,
   });
 }
 
 export function useCreateTeacher() {
   const queryClient = useQueryClient();
+  const { user } = useAuthStore();
+  const orgId = user?.organization_id;
 
   return useMutation({
     mutationFn: (data: CreateTeacherDto) => teacherService.createTeacher(data),
     onSuccess: () => {
       toast.success('Teacher created successfully');
-      queryClient.invalidateQueries({ queryKey: TEACHERS_KEYS.all });
+      queryClient.invalidateQueries({ queryKey: TEACHERS_KEYS.all(orgId) });
     },
     onError: (error: unknown) => {
       toast.error(getErrorMessage(error) || 'Failed to create teacher');
@@ -62,14 +98,16 @@ export function useCreateTeacher() {
 
 export function useUpdateTeacher() {
   const queryClient = useQueryClient();
+  const { user } = useAuthStore();
+  const orgId = user?.organization_id;
 
   return useMutation({
     mutationFn: ({ id, data }: { id: string; data: UpdateTeacherDto }) =>
       teacherService.updateTeacher(id, data),
     onSuccess: (data) => {
       toast.success('Teacher updated successfully');
-      queryClient.invalidateQueries({ queryKey: TEACHERS_KEYS.lists() });
-      queryClient.invalidateQueries({ queryKey: TEACHERS_KEYS.detail(data.id) });
+      queryClient.invalidateQueries({ queryKey: TEACHERS_KEYS.lists(orgId) });
+      queryClient.invalidateQueries({ queryKey: TEACHERS_KEYS.detail(orgId, data.id) });
     },
     onError: (error: unknown) => {
       toast.error(getErrorMessage(error) || 'Failed to update teacher');
@@ -79,13 +117,15 @@ export function useUpdateTeacher() {
 
 export function useToggleTeacherStatus() {
   const queryClient = useQueryClient();
+  const { user } = useAuthStore();
+  const orgId = user?.organization_id;
 
   return useMutation({
     mutationFn: ({ id, status }: { id: string; status: TeacherStatus }) =>
       teacherService.toggleStatus(id, status),
     onSuccess: (_data, variables) => {
       toast.success(`Teacher status updated to ${variables.status.toLowerCase()}`);
-      queryClient.invalidateQueries({ queryKey: TEACHERS_KEYS.all });
+      queryClient.invalidateQueries({ queryKey: TEACHERS_KEYS.all(orgId) });
     },
     onError: (error: unknown) => {
       toast.error(getErrorMessage(error) || 'Failed to update status');
@@ -95,12 +135,14 @@ export function useToggleTeacherStatus() {
 
 export function useDeleteTeacher() {
   const queryClient = useQueryClient();
+  const { user } = useAuthStore();
+  const orgId = user?.organization_id;
 
   return useMutation({
     mutationFn: (id: string) => teacherService.deleteTeacher(id),
     onSuccess: () => {
       toast.success('Teacher deleted successfully');
-      queryClient.invalidateQueries({ queryKey: TEACHERS_KEYS.all });
+      queryClient.invalidateQueries({ queryKey: TEACHERS_KEYS.all(orgId) });
     },
     onError: (error: unknown) => {
       toast.error(getErrorMessage(error) || 'Failed to delete teacher');

@@ -1,13 +1,20 @@
 /**
  * Analytics Types — mirror the backend DTOs we actually hit.
+ *
+ * Shared primitive types are re-exported from their canonical files
+ * to keep a single source of truth (DRY).
  */
 
+import { PaymentMethod } from './finance';
+
+// Re-export shared primitives from their canonical files
+export type { StudentStatus } from './student';
+export type { PaymentMethod } from './finance';
+export type { CourseStatus, Course } from './group';
+
 export type LeadStatus = 'NEW' | 'CONTACTED' | 'CONVERTED' | 'LOST';
-export type PaymentMethod = 'CASH' | 'CARD' | 'TRANSFER';
 export type InvoiceStatus = 'OPEN' | 'PAID' | 'OVERDUE' | 'VOID';
 export type AttendanceStatus = 'PRESENT' | 'ABSENT';
-export type CourseStatus = 'ACTIVE' | 'INACTIVE';
-export type StudentStatus = 'ACTIVE' | 'INACTIVE';
 
 export interface DateRange {
   from: Date | null;
@@ -118,14 +125,7 @@ export interface CreateLeadResponse {
   updated_at: string;
 }
 
-export interface Course {
-  id: string;
-  title: string;
-  description?: string;
-  price: string;
-  status: CourseStatus;
-  created_at: string;
-}
+// Course is re-exported from '@/types/group' above
 
 export interface InvoiceItem {
   id: string;

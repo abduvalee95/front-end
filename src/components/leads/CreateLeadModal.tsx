@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { Loader2, Users } from 'lucide-react';
+import { useTranslations } from '@/i18n/index';
 import {
   Dialog,
   DialogContent,
@@ -25,6 +26,8 @@ interface CreateLeadModalProps {
 }
 
 export function CreateLeadModal({ isOpen, onClose }: CreateLeadModalProps) {
+  const t = useTranslations('leads');
+  const tCommon = useTranslations('common');
   const { user } = useAuthStore();
   const [formData, setFormData] = useState({
     full_name: '',
@@ -68,19 +71,23 @@ export function CreateLeadModal({ isOpen, onClose }: CreateLeadModalProps) {
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent>
         <DialogHeader>
-          <div className="mx-auto mb-4 flex size-12 items-center justify-center rounded-2xl bg-indigo-500/10 text-indigo-500">
-            <Users className="size-6" />
+          <div className="flex items-center gap-3">
+            <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-indigo-500/10 text-indigo-500">
+              <Users className="size-5" />
+            </div>
+            <div>
+              <DialogTitle>{t('add_lead')}</DialogTitle>
+              <DialogDescription>
+                {t('subtitle')}
+              </DialogDescription>
+            </div>
           </div>
-          <DialogTitle className="text-center text-xl">Add New Lead</DialogTitle>
-          <DialogDescription className="text-center">
-            Enter the details of the potential student.
-          </DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4 pt-4">
+        <form onSubmit={handleSubmit} className="space-y-4 pt-2">
           <div className="space-y-2">
-            <Label htmlFor="lead-name">Full Name *</Label>
+            <Label htmlFor="lead-name">{t('full_name')} *</Label>
             <Input
               id="lead-name"
               placeholder="E.g. Ali Valiyev"
@@ -90,7 +97,7 @@ export function CreateLeadModal({ isOpen, onClose }: CreateLeadModalProps) {
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="lead-phone">Phone Number *</Label>
+            <Label htmlFor="lead-phone">{t('phone')} *</Label>
             <Input
               id="lead-phone"
               placeholder="+998 90 123 45 67"
@@ -100,7 +107,7 @@ export function CreateLeadModal({ isOpen, onClose }: CreateLeadModalProps) {
             />
           </div>
           <div className="space-y-2">
-            <Label>Source</Label>
+            <Label>{t('source')}</Label>
             <Select
               value={formData.source}
               onValueChange={(val: string | null) => val && setFormData((prev) => ({ ...prev, source: val }))}
@@ -119,24 +126,24 @@ export function CreateLeadModal({ isOpen, onClose }: CreateLeadModalProps) {
               </SelectContent>
             </Select>
           </div>
-          <DialogFooter className="pt-4">
+          <DialogFooter>
             <Button
               type="button"
               variant="outline"
               onClick={onClose}
               disabled={createLead.isPending}
-              className="w-full sm:w-auto"
+              className="w-full sm:w-auto rounded-xl"
             >
-              Cancel
+              {tCommon('cancel')}
             </Button>
-            <Button type="submit" disabled={createLead.isPending} className="w-full sm:w-auto edu-gradient-primary text-white">
+            <Button type="submit" disabled={createLead.isPending} className="w-full sm:w-auto rounded-xl edu-gradient-primary text-white">
               {createLead.isPending ? (
                 <>
                   <Loader2 className="mr-2 size-4 animate-spin" />
-                  Creating...
+                  {tCommon('loading')}
                 </>
               ) : (
-                'Create Lead'
+                t('add_lead')
               )}
             </Button>
           </DialogFooter>

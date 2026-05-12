@@ -1,31 +1,5 @@
 import { api } from '@/lib/api/client';
-
-export interface DashboardSummary {
-  from?: Date;
-  to?: Date;
-  studentsTotal: number;
-  studentsActive: number;
-  studentsInactive: number;
-  leadsTotal: number;
-  leadsNew: number;
-  leadsContacted: number;
-  leadsConverted: number;
-  leadsLost: number;
-  coursesTotal: number;
-  coursesActive: number;
-  coursesInactive: number;
-  groupsTotal: number;
-  enrollmentsTotal: number;
-  paymentsCount: number;
-  paymentsTotalAmount: string;
-  attendancePresent: number;
-  attendanceAbsent: number;
-  attendanceRate: number;
-  progressTotal: number;
-  progressCompleted: number;
-  progressCompletionRate: number;
-  upcomingLessons: UpcomingLesson[];
-}
+import type { DashboardSummary } from '@/types/analytics';
 
 export interface UpcomingLesson {
   id: string;

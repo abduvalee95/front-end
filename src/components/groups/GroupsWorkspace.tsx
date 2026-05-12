@@ -1,6 +1,7 @@
 'use client';
 
 import { useMemo, useState } from 'react';
+import { useTranslations } from '@/i18n/index';
 import { useDebounceSearch } from '@/hooks/useDebounceSearch';
 import { useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
@@ -46,6 +47,8 @@ import { EnrollStudentModal } from './EnrollStudentModal';
 import { GroupsKanbanBoard } from './GroupsKanbanBoard';
 
 export function GroupsWorkspace() {
+  const t = useTranslations('groups');
+  const tCommon = useTranslations('common');
   const user = useAuthStore((s) => s.user);
   const role = user?.role;
   const canManage = role === 'ADMIN' || role === 'MANAGER';
@@ -97,15 +100,15 @@ export function GroupsWorkspace() {
   }, [scopedGroups]);
 
   const handleDelete = async (id: string, name: string) => {
-    if (!confirm(`Are you sure you want to delete group "${name}"? Groups with enrollments cannot be deleted.`)) return;
+    if (!confirm(`${tCommon('confirm_delete')} "${name}"? ${tCommon('groups_with_enrollments_cannot_delete')}`)) return;
     try {
       setIsDeleting(id);
       await groupService.deleteGroup(id);
-      toast.success('Group deleted successfully');
-      queryClient.invalidateQueries({ queryKey: GROUPS_KEYS.all });
+      toast.success(tCommon('group_deleted_success'));
+      queryClient.invalidateQueries({ queryKey: GROUPS_KEYS.all(user?.organization_id) });
     } catch (err: unknown) {
       const error = err as { response?: { data?: { message?: string } } };
-      toast.error(error.response?.data?.message || 'Failed to delete group');
+      toast.error(error.response?.data?.message || tCommon('failed_delete_group'));
     } finally {
       setIsDeleting(null);
     }
@@ -124,9 +127,9 @@ export function GroupsWorkspace() {
         <div className="mx-auto mb-5 flex size-16 items-center justify-center rounded-2xl bg-muted text-muted-foreground">
           <AlertCircle className="size-8" />
         </div>
-        <h1 className="text-2xl font-black">Groups unavailable</h1>
+        <h1 className="text-2xl font-black">{tCommon('groups_unavailable')}</h1>
         <p className="mt-2 text-sm text-muted-foreground">
-          Your current role {role ? `(${role})` : ''} does not have access.
+          {tCommon('role_no_access')} {role ? `(${role})` : ''}
         </p>
       </div>
     );
@@ -143,17 +146,15 @@ export function GroupsWorkspace() {
               <div className="flex items-center gap-3 mb-5">
                 <Badge variant="outline" className="rounded-full border-primary/20 bg-primary/7 text-primary">
                   <Users2 className="mr-1.5 size-3.5" />
-                  {teacherScoped ? 'Your groups' : 'Group management'}
+                  {teacherScoped ? tCommon('your_groups') : tCommon('group_management')}
                 </Badge>
                 {canManage && <CreateGroupModal />}
               </div>
               <h1 className="max-w-3xl text-3xl font-black tracking-tight text-foreground sm:text-5xl">
-                {teacherScoped ? 'Your teaching groups' : 'Groups & Classes'}
+                {teacherScoped ? tCommon('your_teaching_groups') : t('title')}
               </h1>
               <p className="mt-4 max-w-2xl text-sm leading-6 text-muted-foreground sm:text-base">
-                {teacherScoped
-                  ? 'Manage your assigned groups and student enrollments.'
-                  : 'Organize students into groups, assign teachers, and manage schedules.'}
+                {teacherScoped ? t('subtitle_teacher') : t('subtitle')}
               </p>
             </div>
           </div>
@@ -162,9 +163,9 @@ export function GroupsWorkspace() {
 
       {/* Metrics */}
       <section className="grid grid-cols-1 gap-4 md:grid-cols-3">
-        <MetricCard icon={Users2} label="Total groups" value={scopedGroups.length.toString()} tone="violet" />
-        <MetricCard icon={Layers3} label="Courses" value={uniqueCourses.toString()} tone="blue" />
-        <MetricCard icon={GraduationCap} label="Teachers" value={uniqueTeachers.toString()} tone="amber" />
+        <MetricCard icon={Users2} label={tCommon('total_groups')} value={scopedGroups.length.toString()} tone="violet" />
+        <MetricCard icon={Layers3} label={tCommon('courses')} value={uniqueCourses.toString()} tone="blue" />
+        <MetricCard icon={GraduationCap} label={tCommon('teachers')} value={uniqueTeachers.toString()} tone="amber" />
       </section>
 
       {/* Table card */}
@@ -172,9 +173,9 @@ export function GroupsWorkspace() {
         <CardHeader className="gap-5 px-5 pt-5 sm:px-6 sm:pt-6">
           <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
             <div>
-              <CardTitle className="text-xl font-bold">Group roster</CardTitle>
+              <CardTitle className="text-xl font-bold">{tCommon('group_roster')}</CardTitle>
               <CardDescription>
-                {teacherScoped ? 'Groups assigned to you.' : 'All groups in the organization.'}
+                {teacherScoped ? t('subtitle_teacher') : t('subtitle')}
               </CardDescription>
             </div>
             <div className="flex flex-col gap-3 sm:flex-row">
@@ -187,7 +188,7 @@ export function GroupsWorkspace() {
                 <Input
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  placeholder="Search groups..."
+                  placeholder={`${tCommon('search')} ${t('group_name')}...`}
                   className={cn('pl-9', search && 'pr-9')}
                 />
                 {search && (

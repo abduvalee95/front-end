@@ -1,9 +1,11 @@
 'use client';
 
 import { useState, useCallback } from 'react';
+import { useTranslations } from '@/i18n/index';
 import { useDebounceSearch } from '@/hooks/useDebounceSearch';
-import { useTeachers, useToggleTeacherStatus } from '@/hooks/useTeachers';
+import { useTeachers, useDeletedTeachers, useToggleTeacherStatus } from '@/hooks/useTeachers';
 import type { TeacherProfile, TeacherStatus } from '@/types/teacher';
+import { useAuthStore } from '@/store/auth.store';
 import { format } from 'date-fns';
 import {
   MoreHorizontal,
@@ -56,20 +58,33 @@ export default function TeachersTable({
   onViewClick,
   onDeleteClick,
 }: TeachersTableProps) {
+  const t = useTranslations('teachers');
+  const tCommon = useTranslations('common');
   const [page, setPage] = useState(1);
   const { value: search, debouncedValue: debouncedSearch, handleChange: setSearch, clearSearch, isPending: isSearching } = useDebounceSearch({
     delay: 300,
     onDebouncedChange: () => setPage(1),
   });
-  const [statusFilter, setStatusFilter] = useState<TeacherStatus | ''>('');
+  const [statusFilter, setStatusFilter] = useState<TeacherStatus | ''>('ACTIVE');
   const pageSize = 10;
 
-  const { data, isLoading, isError, refetch } = useTeachers({
+  const isSuperAdmin = useAuthStore((state) => state.user?.role === 'SUPER_ADMIN');
+  const isDeletedView = statusFilter === 'DELETED';
+
+  const normalQuery = useTeachers({
     page,
     limit: pageSize,
     search: debouncedSearch || undefined,
-    status: statusFilter || undefined,
-  });
+    status: (statusFilter && !isDeletedView) ? statusFilter : undefined,
+  }, !isDeletedView);
+
+  const deletedQuery = useDeletedTeachers({
+    page,
+    limit: pageSize,
+    search: debouncedSearch || undefined,
+  }, isDeletedView);
+
+  const { data, isLoading, isError, refetch } = isDeletedView ? deletedQuery : normalQuery;
 
   const toggleStatus = useToggleTeacherStatus();
   const [statusTarget, setStatusTarget] = useState<TeacherProfile | null>(null);
@@ -87,7 +102,7 @@ export default function TeachersTable({
   const items = data?.items ?? [];
   const meta = data?.meta;
 
-  const clearFilters = () => { clearSearch(); setStatusFilter(''); setPage(1); };
+  const clearFilters = () => { clearSearch(); setStatusFilter(isDeletedView ? 'DELETED' : 'ACTIVE'); setPage(1); };
 
   if (isError) {
     return (
@@ -96,12 +111,12 @@ export default function TeachersTable({
           <AlertCircle className="size-5 text-destructive" />
         </div>
         <div className="text-center">
-          <p className="font-medium text-sm">Failed to load teachers</p>
-          <p className="text-muted-foreground text-xs mt-1">Check your connection and try again</p>
+          <p className="font-medium text-sm">{tCommon('failed_load_teachers')}</p>
+          <p className="text-muted-foreground text-xs mt-1">{tCommon('check_connection')}</p>
         </div>
         <Button variant="outline" size="sm" onClick={() => refetch()}>
           <RefreshCw className="mr-2 size-3.5" />
-          Try Again
+          {tCommon('try_again')}
         </Button>
       </div>
     );
@@ -119,7 +134,7 @@ export default function TeachersTable({
               <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground pointer-events-none" />
             )}
             <Input
-              placeholder="Search teachers..."
+              placeholder={`${tCommon('search')} ${t('full_name')}...`}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className={`pl-8${search ? ' pr-8' : ''}`}
@@ -140,13 +155,14 @@ export default function TeachersTable({
             onChange={(e) => { setStatusFilter(e.target.value as TeacherStatus | ''); setPage(1); }}
             className="h-8 rounded-lg border border-input bg-background px-3 text-sm text-foreground outline-none focus:ring-2 focus:ring-ring transition-colors"
           >
-            <option value="">All statuses</option>
-            <option value="ACTIVE">Active</option>
-            <option value="INACTIVE">Inactive</option>
-            <option value="ON_LEAVE">On Leave</option>
+            <option value="">{tCommon('all_statuses')}</option>
+            <option value="ACTIVE">{t('status_active')}</option>
+            <option value="INACTIVE">{t('status_inactive')}</option>
+            <option value="ON_LEAVE">{t('status_on_leave')}</option>
+            {isSuperAdmin && <option value="DELETED">{tCommon('deleted')}</option>}
           </select>
 
-          <Button variant="ghost" size="icon" onClick={() => refetch()} title="Refresh" className="size-8 shrink-0">
+          <Button variant="ghost" size="icon" onClick={() => refetch()} title={tCommon('refresh')} className="size-8 shrink-0">
             <RefreshCw className="size-4" />
           </Button>
         </div>
@@ -156,12 +172,12 @@ export default function TeachersTable({
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead className="pl-4">Teacher</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Phone</TableHead>
-                <TableHead>Subjects</TableHead>
-                <TableHead>Joined</TableHead>
-                <TableHead className="text-right pr-4">Actions</TableHead>
+                <TableHead className="pl-4">{tCommon('teacher')}</TableHead>
+                <TableHead>{tCommon('status')}</TableHead>
+                <TableHead>{t('phone')}</TableHead>
+                <TableHead>{tCommon('subjects')}</TableHead>
+                <TableHead>{isDeletedView ? tCommon('deleted_on') : tCommon('joined')}</TableHead>
+                <TableHead className="text-right pr-4">{tCommon('actions')}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -187,8 +203,10 @@ export default function TeachersTable({
                 <TableRow>
                   <TableCell colSpan={COL_COUNT + 1} className="py-24 text-center">
                     <EmptyState
-                      hasFilters={!!(search || statusFilter)}
-                      onClear={clearFilters}
+                      hasFilters={isDeletedView ? !!search : !!(search || statusFilter !== 'ACTIVE')}
+                      onClear={isDeletedView ? clearSearch : clearFilters}
+                      emptyMessage={isDeletedView ? 'No deleted teachers' : undefined}
+                      emptyDescription={isDeletedView ? 'No teachers have been deleted in this organization.' : undefined}
                     />
                   </TableCell>
                 </TableRow>
@@ -221,16 +239,30 @@ export default function TeachersTable({
                       {teacher.subjects?.join(', ') || '—'}
                     </TableCell>
                     <TableCell className="text-muted-foreground" suppressHydrationWarning>
-                      {format(new Date(teacher.created_at), 'MMM d, yyyy')}
+                      {isDeletedView && teacher.deleted_at
+                        ? format(new Date(teacher.deleted_at), 'MMM d, yyyy')
+                        : format(new Date(teacher.created_at), 'MMM d, yyyy')}
                     </TableCell>
                     <TableCell className="text-right pr-4">
-                      <TeacherActionsMenu
-                        teacher={teacher}
-                        onView={() => onViewClick(teacher)}
-                        onEdit={() => onEditClick(teacher)}
-                        onToggleStatus={() => setStatusTarget(teacher)}
-                        onDelete={() => onDeleteClick(teacher)}
-                      />
+                      {isDeletedView ? (
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="size-8 rounded-lg hover:bg-slate-100"
+                          onClick={() => onViewClick(teacher)}
+                          aria-label="View"
+                        >
+                          <Eye className="size-4 text-slate-500" />
+                        </Button>
+                      ) : (
+                        <TeacherActionsMenu
+                          teacher={teacher}
+                          onView={() => onViewClick(teacher)}
+                          onEdit={() => onEditClick(teacher)}
+                          onToggleStatus={() => setStatusTarget(teacher)}
+                          onDelete={() => onDeleteClick(teacher)}
+                        />
+                      )}
                     </TableCell>
                   </TableRow>
                 ))
@@ -260,8 +292,10 @@ export default function TeachersTable({
             ))
           ) : items.length === 0 ? (
             <EmptyState
-              hasFilters={!!(search || statusFilter)}
-              onClear={clearFilters}
+              hasFilters={isDeletedView ? !!search : !!(search || statusFilter !== 'ACTIVE')}
+              onClear={isDeletedView ? clearSearch : clearFilters}
+              emptyMessage={isDeletedView ? 'No deleted teachers' : undefined}
+              emptyDescription={isDeletedView ? 'No teachers have been deleted in this organization.' : undefined}
             />
           ) : (
             items.map((teacher) => (
@@ -283,18 +317,23 @@ export default function TeachersTable({
                         <TeacherStatusBadge status={teacher.status} />
                       </div>
                     </div>
-                    <div onClick={(e) => e.stopPropagation()}>
-                      <TeacherActionsMenu
-                        teacher={teacher}
-                        onView={() => onViewClick(teacher)}
-                        onEdit={() => onEditClick(teacher)}
-                        onToggleStatus={() => setStatusTarget(teacher)}
-                        onDelete={() => onDeleteClick(teacher)}
-                      />
-                    </div>
+                    {!isDeletedView && (
+                      <div onClick={(e) => e.stopPropagation()}>
+                        <TeacherActionsMenu
+                          teacher={teacher}
+                          onView={() => onViewClick(teacher)}
+                          onEdit={() => onEditClick(teacher)}
+                          onToggleStatus={() => setStatusTarget(teacher)}
+                          onDelete={() => onDeleteClick(teacher)}
+                        />
+                      </div>
+                    )}
                   </div>
                   <p className="mt-3 text-xs text-muted-foreground">
-                    Joined {format(new Date(teacher.created_at), 'MMM d, yyyy')} · {teacher.subjects?.join(', ') || 'No subjects'}
+                    {isDeletedView && teacher.deleted_at
+                      ? `Deleted ${format(new Date(teacher.deleted_at), 'MMM d, yyyy')}`
+                      : `Joined ${format(new Date(teacher.created_at), 'MMM d, yyyy')}`
+                    } · {teacher.subjects?.join(', ') || 'No subjects'}
                   </p>
                 </CardContent>
               </Card>
@@ -396,9 +435,13 @@ function TeacherActionsMenu({
 function EmptyState({
   hasFilters,
   onClear,
+  emptyMessage = 'No teachers yet',
+  emptyDescription = 'Teachers will appear here once they are invited and their profiles are created.',
 }: {
   hasFilters: boolean;
   onClear: () => void;
+  emptyMessage?: string;
+  emptyDescription?: string;
 }) {
   return (
     <div className="flex flex-col items-center justify-center py-16 gap-3">
@@ -407,12 +450,12 @@ function EmptyState({
       </div>
       <div className="text-center">
         <h3 className="text-lg font-semibold">
-          {hasFilters ? 'No teachers found' : 'No teachers yet'}
+          {hasFilters ? 'No teachers found' : emptyMessage}
         </h3>
         <p className="text-muted-foreground text-sm mt-1 text-center max-w-sm">
           {hasFilters
             ? 'Try adjusting your search or filters'
-            : 'Teachers will appear here once they are invited and their profiles are created.'}
+            : emptyDescription}
         </p>
       </div>
       {hasFilters && (

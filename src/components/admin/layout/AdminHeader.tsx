@@ -1,6 +1,7 @@
 'use client';
 
 import { usePathname } from 'next/navigation';
+import { useTranslations } from '@/i18n/index';
 import { Menu, Bell, Settings, LogOut, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -24,12 +25,7 @@ import { ThemeToggle } from '@/components/ThemeToggle';
 import { useAuth } from '@/hooks/useAuth';
 import { cn } from '@/lib/utils';
 
-const routeLabels: Record<string, string> = {
-  dashboard: 'Dashboard',
-  organizations: 'Organizations',
-  users: 'Users',
-  settings: 'Settings',
-};
+// Route labels are translated dynamically in component
 
 interface AdminHeaderProps {
   onMobileMenuToggle: () => void;
@@ -38,6 +34,16 @@ interface AdminHeaderProps {
 export function AdminHeader({ onMobileMenuToggle }: AdminHeaderProps) {
   const pathname = usePathname();
   const { user, logout } = useAuth();
+  const tNav = useTranslations('nav');
+  const tAuth = useTranslations('auth');
+  const tCommon = useTranslations('common');
+  
+  const routeLabels: Record<string, string> = {
+    dashboard: tNav('dashboard'),
+    organizations: 'Organizations',
+    users: tNav('users'),
+    settings: tNav('settings'),
+  };
 
   const segments = pathname
     .replace('/admin/', '')
@@ -60,20 +66,20 @@ export function AdminHeader({ onMobileMenuToggle }: AdminHeaderProps) {
           size="icon"
           className={cn('size-8 md:hidden')}
           onClick={onMobileMenuToggle}
-          aria-label="Open menu"
+          aria-label={tCommon('open_menu')}
         >
           <Menu className="size-4" />
         </Button>
 
         {/* Mobile brand name */}
-        <span className="text-sm font-semibold md:hidden">SuperAdmin</span>
+        <span className="text-sm font-semibold md:hidden">{tNav('admin')}</span>
 
         {/* Desktop breadcrumb */}
         <Breadcrumb className="hidden md:flex">
           <BreadcrumbList>
             <BreadcrumbItem>
               <BreadcrumbLink href="/admin/dashboard" className="text-muted-foreground font-medium">
-                Admin
+                {tNav('admin')}
               </BreadcrumbLink>
             </BreadcrumbItem>
             {segments.map((seg, i) => {
@@ -114,7 +120,7 @@ export function AdminHeader({ onMobileMenuToggle }: AdminHeaderProps) {
           <DropdownMenu>
             <DropdownMenuTrigger
               render={
-                <button className="flex items-center rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20" aria-label="User menu" />
+                <button className="flex items-center rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20" aria-label={tCommon('user_menu')} />
               }
             >
               <Avatar className="size-10 rounded-xl border border-primary/15 bg-primary/10 text-primary shadow-inner" size="lg">
@@ -131,11 +137,11 @@ export function AdminHeader({ onMobileMenuToggle }: AdminHeaderProps) {
               <DropdownMenuSeparator className="bg-border/50" />
               <DropdownMenuItem className="cursor-pointer focus:bg-primary/10 focus:text-primary rounded-lg mx-1">
                 <User className="mr-2 size-4" />
-                Profile
+                {tCommon('profile')}
               </DropdownMenuItem>
               <DropdownMenuItem className="cursor-pointer focus:bg-primary/10 focus:text-primary rounded-lg mx-1">
                 <Settings className="mr-2 size-4" />
-                Settings
+                {tNav('settings')}
               </DropdownMenuItem>
               <DropdownMenuSeparator className="bg-border/50" />
               <DropdownMenuItem
@@ -143,7 +149,7 @@ export function AdminHeader({ onMobileMenuToggle }: AdminHeaderProps) {
                 onClick={() => logout()}
               >
                 <LogOut className="mr-2 size-4" />
-                Logout
+                {tAuth('logout')}
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

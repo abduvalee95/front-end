@@ -68,15 +68,19 @@ export function InviteUserModal({ open, onOpenChange }: InviteUserModalProps) {
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent className="sm:max-w-md max-h-[90vh] overflow-y-auto">
-        <DialogHeader className="pb-4">
-          <DialogTitle className="flex items-center gap-2">
-            <User className="size-4 text-primary" />
-            Invite User
-          </DialogTitle>
-          <DialogDescription>
-            Invite a new user to your organization. They will receive access immediately.
-          </DialogDescription>
+      <DialogContent>
+        <DialogHeader>
+          <div className="flex items-center gap-3">
+            <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+              <User className="size-5" />
+            </div>
+            <div>
+              <DialogTitle>Invite User</DialogTitle>
+              <DialogDescription>
+                Invite a new user to your organization. They will receive access immediately.
+              </DialogDescription>
+            </div>
+          </div>
         </DialogHeader>
 
         {tempPassword ? (
@@ -116,9 +120,9 @@ export function InviteUserModal({ open, onOpenChange }: InviteUserModalProps) {
                 <Input
                   {...register('phone', { 
                     required: 'Phone number is required',
-                    pattern: { value: /^\+996\d{9}$/, message: 'Must be in format +996XXXXXXXXX' }
+                    pattern: { value: /^\+998\d{9}$/, message: 'Must be in format +998XXXXXXXXX' }
                   })}
-                  placeholder="+996XXXXXXXXX"
+                  placeholder="+998XXXXXXXXX"
                 />
                 {errors.phone && <p className="text-[10px] text-destructive">{errors.phone.message}</p>}
               </div>
@@ -189,11 +193,11 @@ export function InviteUserModal({ open, onOpenChange }: InviteUserModalProps) {
 
             </div>
 
-            <DialogFooter className="pt-4">
-              <Button type="button" variant="outline" onClick={handleClose} disabled={inviteUser.isPending}>
+            <DialogFooter>
+              <Button type="button" variant="outline" onClick={handleClose} disabled={inviteUser.isPending} className="rounded-xl">
                 Cancel
               </Button>
-              <Button type="submit" disabled={inviteUser.isPending}>
+              <Button type="submit" disabled={inviteUser.isPending} className="rounded-xl">
                 {inviteUser.isPending && <Loader2 className="size-4 mr-2 animate-spin" />}
                 Send Invitation
               </Button>

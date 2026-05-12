@@ -40,4 +40,9 @@ export const teacherService = {
     const response = await api.delete<{ message: string }>(`${BASE}/${id}`);
     return response.data;
   },
+
+  async getDeletedTeachers(params?: { page?: number; limit?: number; search?: string }): Promise<TeacherListResponse> {
+    const response = await api.get<TeacherListResponse>(`${BASE}/deleted`, { params });
+    return response.data;
+  },
 };

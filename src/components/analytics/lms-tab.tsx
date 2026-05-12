@@ -5,6 +5,7 @@ import { GraduationCap, BookOpen, CheckCircle2, Users2, CalendarDays, TrendingUp
 import { useLMSAnalytics, useLMSAI } from '@/hooks/useAnalytics';
 import { MetricCard, InsightCard, SectionHeader } from './shared';
 import { BarChartWrapper, ChartFrame } from '@/components/charts/chart-primitives';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export function LMSTab() {
   const { summary, invoices } = useLMSAnalytics();
@@ -109,7 +110,7 @@ export function LMSTab() {
           {summary.isLoading ? (
             <div className="space-y-3">
               {[0, 1, 2, 3].map((i) => (
-                <div key={i} className="h-12 rounded-lg bg-muted/50 animate-pulse" />
+                <Skeleton key={i} className="h-12 w-full rounded-lg" />
               ))}
             </div>
           ) : (s?.upcomingLessons?.length ?? 0) === 0 ? (
@@ -146,7 +147,7 @@ export function LMSTab() {
         {insightsLoading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {[0, 1, 2].map((i) => (
-              <div key={i} className="h-28 rounded-2xl bg-muted/50 animate-pulse" />
+              <Skeleton key={i} className="h-28 w-full rounded-2xl" />
             ))}
           </div>
         ) : insights.length === 0 ? (

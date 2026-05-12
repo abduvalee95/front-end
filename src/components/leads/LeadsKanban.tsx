@@ -1,9 +1,11 @@
 'use client';
 
 import { useState } from 'react';
+import { useTranslations } from '@/i18n/index';
 import { Lead, LeadStatus } from '@/types/analytics';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Skeleton } from '@/components/ui/skeleton';
 import { 
   Phone, 
   Clock, 
@@ -24,17 +26,18 @@ interface LeadsKanbanProps {
   onAIAction?: (lead: Lead) => void;
 }
 
-const COLUMNS: { status: LeadStatus; label: string; color: string }[] = [
-  { status: 'NEW', label: 'New Leads', color: 'bg-blue-500' },
-  { status: 'CONTACTED', label: 'Contacted', color: 'bg-amber-500' },
-  { status: 'CONVERTED', label: 'Converted', color: 'bg-emerald-500' },
-  { status: 'LOST', label: 'Lost', color: 'bg-rose-500' },
-];
-
 export function LeadsKanban({ leads, isLoading, onAIAction }: LeadsKanbanProps) {
+  const t = useTranslations('leads');
   const [draggedId, setDraggedId] = useState<string | null>(null);
   const updateLead = useUpdateLead();
   const convertLead = useConvertLead();
+
+  const COLUMNS: { status: LeadStatus; label: string; color: string }[] = [
+    { status: 'NEW', label: t('status_new'), color: 'bg-blue-500' },
+    { status: 'CONTACTED', label: t('status_contacted'), color: 'bg-amber-500' },
+    { status: 'CONVERTED', label: t('status_converted'), color: 'bg-emerald-500' },
+    { status: 'LOST', label: t('status_lost'), color: 'bg-rose-500' },
+  ];
 
   const handleDragStart = (e: React.DragEvent, id: string) => {
     setDraggedId(id);
@@ -54,7 +57,7 @@ export function LeadsKanban({ leads, isLoading, onAIAction }: LeadsKanbanProps) 
       { id, data: { status } },
       {
         onSuccess: () => {
-          toast.success(`Lead moved to ${status.toLowerCase()}`);
+          toast.success(`Lead moved to ${t(`status_${status.toLowerCase()}`)}`);
         },
       }
     );
@@ -64,7 +67,7 @@ export function LeadsKanban({ leads, isLoading, onAIAction }: LeadsKanbanProps) 
   const handleConvert = (lead: Lead) => {
     convertLead.mutate(lead.id, {
       onSuccess: () => {
-        toast.success(`${lead.full_name} converted to student!`);
+        toast.success(`${lead.full_name} ${t('converted')}`);
       },
     });
   };
@@ -73,10 +76,10 @@ export function LeadsKanban({ leads, isLoading, onAIAction }: LeadsKanbanProps) 
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 h-[600px]">
         {COLUMNS.map((col) => (
-          <div key={col.status} className="bg-muted/30 rounded-2xl p-4 space-y-4 animate-pulse">
-            <div className="h-8 bg-muted rounded-lg w-1/2" />
-            <div className="h-32 bg-muted rounded-xl w-full" />
-            <div className="h-32 bg-muted rounded-xl w-full" />
+          <div key={col.status} className="bg-slate-50/50 dark:bg-slate-900/50 border border-dashed border-border rounded-2xl p-4 space-y-4">
+            <Skeleton className="h-6 w-32 mb-6" />
+            <Skeleton className="h-[140px] w-full rounded-xl" />
+            <Skeleton className="h-[140px] w-full rounded-xl" />
           </div>
         ))}
       </div>
@@ -152,7 +155,7 @@ export function LeadsKanban({ leads, isLoading, onAIAction }: LeadsKanbanProps) 
                           variant="ghost" 
                           className="size-7 text-emerald-500 hover:text-emerald-600 hover:bg-emerald-500/10"
                           onClick={() => handleConvert(lead)}
-                          title="Convert to Student"
+                          title={t('convert')}
                         >
                           <UserCheck className="size-3.5" />
                         </Button>
@@ -173,7 +176,7 @@ export function LeadsKanban({ leads, isLoading, onAIAction }: LeadsKanbanProps) 
               
               {columnLeads.length === 0 && (
                 <div className="flex-1 flex items-center justify-center text-xs text-muted-foreground italic text-center p-8">
-                  Drop leads here
+                  {t('drop_leads')}
                 </div>
               )}
             </div>

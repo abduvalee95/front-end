@@ -8,10 +8,10 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import type { Teacher } from '@/types/teacher'
+import { TeacherProfile } from '@/types/teacher';
 
 interface TeacherActionsMenuProps {
-  teacher: Teacher
+  teacher: TeacherProfile
   onView: () => void
 }
 

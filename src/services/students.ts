@@ -7,6 +7,7 @@ import type {
   PaginatedStudentsResponse,
   Student,
   StudentQueryParams,
+  StudentStatistics,
 } from '@/types/student';
 
 const STUDENTS_BASE_URL = '/proxy/student';
@@ -29,6 +30,11 @@ export const studentService = {
     return response.data;
   },
 
+  async getStudentById(id: string): Promise<Student> {
+    const response = await api.get<Student>(`${STUDENTS_BASE_URL}/${id}`);
+    return response.data;
+  },
+
   async createStudent(data: Partial<Student>): Promise<CreateStudentResponse> {
     const response = await api.post(STUDENTS_BASE_URL, data);
     return response.data;
@@ -46,6 +52,16 @@ export const studentService = {
 
   async bulkCreate(data: BulkCreateStudentDto[]): Promise<{ count: number }> {
     const response = await api.post(`${STUDENTS_BASE_URL}/bulk`, { students: data });
+    return response.data;
+  },
+
+  async getEnrollmentsByStudent(studentId: string): Promise<Enrollment[]> {
+    const response = await api.get<Enrollment[]>(`${ENROLLMENT_BASE_URL}/student/${studentId}`);
+    return response.data;
+  },
+
+  async getStatistics(): Promise<StudentStatistics> {
+    const response = await api.get<StudentStatistics>(`${STUDENTS_BASE_URL}/statistics`);
     return response.data;
   },
 };

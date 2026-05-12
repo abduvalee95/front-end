@@ -1,9 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
-import { Loader2, UserPlus, X } from 'lucide-react';
+import { Loader2, UserPlus, X, Search, CheckSquare, Square } from 'lucide-react';
+import { useAuthStore } from '@/store/auth.store';
 import {
   Dialog,
   DialogContent,
@@ -14,6 +15,7 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { enrollmentService } from '@/services/enrollments';
@@ -31,13 +33,13 @@ export function EnrollStudentModal({ groupId, groupName }: EnrollStudentModalPro
   const [open, setOpen] = useState(false);
   const [isEnrolling, setIsEnrolling] = useState(false);
   const [isRemoving, setIsRemoving] = useState<string | null>(null);
-  const [selectedStudentId, setSelectedStudentId] = useState('');
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [search, setSearch] = useState('');
   const queryClient = useQueryClient();
+  const user = useAuthStore((s) => s.user);
 
-  // Fetch students for the dropdown
-  const studentsQuery = useStudents({ page: 1, limit: 200 }, open);
+  const studentsQuery = useStudents({ page: 1, limit: 500 }, open);
 
-  // Fetch current enrollments for this group
   const enrollmentsQuery = useQuery({
     queryKey: ['enrollments', 'group', groupId],
     queryFn: () => enrollmentService.getByGroup(groupId),
@@ -48,25 +50,52 @@ export function EnrollStudentModal({ groupId, groupName }: EnrollStudentModalPro
     (enrollmentsQuery.data ?? []).map((e: Enrollment) => e.student_id)
   );
 
-  const availableStudents = (studentsQuery.data?.items ?? []).filter(
-    (s) => !enrolledStudentIds.has(s.id)
-  );
+  const availableStudents = useMemo(() => {
+    const all = (studentsQuery.data?.items ?? []).filter((s) => !enrolledStudentIds.has(s.id));
+    if (!search.trim()) return all;
+    const q = search.toLowerCase();
+    return all.filter(
+      (s) => s.name.toLowerCase().includes(q) || s.phone?.toLowerCase().includes(q)
+    );
+  }, [studentsQuery.data, enrolledStudentIds, search]);
+
+  const toggleStudent = (id: string) => {
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
+
+  const toggleAll = () => {
+    if (selectedIds.size === availableStudents.length && availableStudents.length > 0) {
+      setSelectedIds(new Set());
+    } else {
+      setSelectedIds(new Set(availableStudents.map((s) => s.id)));
+    }
+  };
 
   const handleEnroll = async () => {
-    if (!selectedStudentId) {
-      toast.error('Please select a student');
+    if (selectedIds.size === 0) {
+      toast.error('Please select at least one student');
       return;
     }
     try {
       setIsEnrolling(true);
-      await enrollmentService.create({ student_id: selectedStudentId, group_id: groupId });
-      toast.success('Student enrolled successfully');
-      setSelectedStudentId('');
+      const results = await Promise.allSettled(
+        [...selectedIds].map((studentId) =>
+          enrollmentService.create({ student_id: studentId, group_id: groupId })
+        )
+      );
+      const succeeded = results.filter((r) => r.status === 'fulfilled').length;
+      const failed = results.length - succeeded;
+      if (succeeded > 0) toast.success(`${succeeded} student${succeeded > 1 ? 's' : ''} enrolled`);
+      if (failed > 0) toast.error(`${failed} enrollment${failed > 1 ? 's' : ''} failed`);
+      setSelectedIds(new Set());
+      setSearch('');
       queryClient.invalidateQueries({ queryKey: ['enrollments', 'group', groupId] });
-      queryClient.invalidateQueries({ queryKey: GROUPS_KEYS.all });
-    } catch (err: unknown) {
-      const error = err as { response?: { data?: { message?: string } } };
-      toast.error(error.response?.data?.message || 'Failed to enroll student');
+      queryClient.invalidateQueries({ queryKey: GROUPS_KEYS.all(user?.organization_id) });
     } finally {
       setIsEnrolling(false);
     }
@@ -79,7 +108,7 @@ export function EnrollStudentModal({ groupId, groupName }: EnrollStudentModalPro
       await enrollmentService.remove(enrollmentId);
       toast.success('Student removed from group');
       queryClient.invalidateQueries({ queryKey: ['enrollments', 'group', groupId] });
-      queryClient.invalidateQueries({ queryKey: GROUPS_KEYS.all });
+      queryClient.invalidateQueries({ queryKey: GROUPS_KEYS.all(user?.organization_id) });
     } catch (err: unknown) {
       const error = err as { response?: { data?: { message?: string } } };
       toast.error(error.response?.data?.message || 'Failed to remove enrollment');
@@ -89,9 +118,10 @@ export function EnrollStudentModal({ groupId, groupName }: EnrollStudentModalPro
   };
 
   const enrollments = enrollmentsQuery.data ?? [];
+  const allSelected = availableStudents.length > 0 && selectedIds.size === availableStudents.length;
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={(v) => { setOpen(v); if (!v) { setSelectedIds(new Set()); setSearch(''); } }}>
       <DialogTrigger
         render={
           <Button variant="ghost" size="icon" className="size-8" title="Manage enrollment">
@@ -99,56 +129,135 @@ export function EnrollStudentModal({ groupId, groupName }: EnrollStudentModalPro
           </Button>
         }
       />
-      <DialogContent className="sm:max-w-[520px]">
+      <DialogContent className="sm:max-w-[560px]">
         <DialogHeader>
-          <div className="mx-auto mb-4 flex size-12 items-center justify-center rounded-2xl bg-emerald-500/10 text-emerald-600">
-            <UserPlus className="size-6" />
+          <div className="flex items-center gap-3">
+            <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-600">
+              <UserPlus className="size-5" />
+            </div>
+            <div>
+              <DialogTitle>Enrollment — {groupName}</DialogTitle>
+              <DialogDescription>
+                Select one or more students to add to this group.
+              </DialogDescription>
+            </div>
           </div>
-          <DialogTitle className="text-center text-xl">Enrollment — {groupName}</DialogTitle>
-          <DialogDescription className="text-center">
-            Add or remove students from this group.
-          </DialogDescription>
         </DialogHeader>
 
-        {/* Enroll new student */}
-        <div className="space-y-3 pt-4">
-          <Label>Add Student to Group</Label>
-          <div className="flex gap-2">
-            <select
-              value={selectedStudentId}
-              onChange={(e) => setSelectedStudentId(e.target.value)}
-              disabled={isEnrolling}
-              className="flex h-9 flex-1 rounded-lg border border-input bg-background px-3 text-sm text-foreground outline-none transition-colors focus:ring-2 focus:ring-ring"
-            >
-              <option value="">Select student...</option>
-              {availableStudents.map((s) => (
-                <option key={s.id} value={s.id}>{s.name} — {s.phone}</option>
-              ))}
-            </select>
-            <Button onClick={handleEnroll} disabled={isEnrolling || !selectedStudentId} size="sm" className="h-9 px-4">
-              {isEnrolling ? <Loader2 className="size-4 animate-spin" /> : 'Enroll'}
-            </Button>
+        {/* Add students section */}
+        <div className="space-y-2">
+          <div className="flex items-center justify-between">
+            <Label className="text-xs font-medium">
+              Available Students
+              {availableStudents.length > 0 && (
+                <span className="ml-1.5 text-muted-foreground">({availableStudents.length})</span>
+              )}
+            </Label>
+            {availableStudents.length > 0 && (
+              <button
+                type="button"
+                onClick={toggleAll}
+                className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
+              >
+                {allSelected ? <CheckSquare className="size-3.5 text-emerald-600" /> : <Square className="size-3.5" />}
+                {allSelected ? 'Deselect all' : 'Select all'}
+              </button>
+            )}
           </div>
+
+          {/* Search */}
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-3.5 text-muted-foreground pointer-events-none" />
+            <Input
+              placeholder="Search by name or phone..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="pl-9 h-9 rounded-xl"
+            />
+          </div>
+
+          {/* Student list */}
+          {studentsQuery.isLoading ? (
+            <div className="flex items-center justify-center py-6">
+              <Loader2 className="size-5 animate-spin text-muted-foreground" />
+            </div>
+          ) : availableStudents.length === 0 ? (
+            <div className="rounded-xl border border-dashed border-border/60 px-4 py-5 text-center">
+              <p className="text-sm text-muted-foreground">
+                {search ? 'No students match your search.' : 'All students are already enrolled.'}
+              </p>
+            </div>
+          ) : (
+            <div className="max-h-[180px] space-y-1 overflow-y-auto pr-1">
+              {availableStudents.map((s) => {
+                const checked = selectedIds.has(s.id);
+                return (
+                  <button
+                    key={s.id}
+                    type="button"
+                    onClick={() => toggleStudent(s.id)}
+                    className={`w-full flex items-center gap-3 rounded-xl border px-3 py-2 text-left transition-colors ${
+                      checked
+                        ? 'border-emerald-500/40 bg-emerald-500/8 text-foreground'
+                        : 'border-border/50 bg-transparent hover:bg-muted/30'
+                    }`}
+                  >
+                    {checked
+                      ? <CheckSquare className="size-4 shrink-0 text-emerald-600" />
+                      : <Square className="size-4 shrink-0 text-muted-foreground/50" />
+                    }
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-sm font-medium">{s.name}</p>
+                      <p className="truncate text-xs text-muted-foreground">{s.phone}</p>
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          )}
+
+          {/* Enroll button */}
+          {selectedIds.size > 0 && (
+            <Button
+              onClick={handleEnroll}
+              disabled={isEnrolling}
+              className="w-full rounded-xl h-9 bg-emerald-600 hover:bg-emerald-700 text-white"
+            >
+              {isEnrolling ? (
+                <><Loader2 className="mr-2 size-4 animate-spin" />Enrolling...</>
+              ) : (
+                <>
+                  <UserPlus className="mr-2 size-4" />
+                  Enroll {selectedIds.size} Student{selectedIds.size > 1 ? 's' : ''}
+                </>
+              )}
+            </Button>
+          )}
         </div>
 
         {/* Current enrollments */}
-        <div className="mt-6 space-y-3">
-          <Label>Enrolled Students ({enrollments.length})</Label>
+        <div className="space-y-2">
+          <Label className="text-xs font-medium">
+            Enrolled Students
+            <span className="ml-1.5 text-muted-foreground">({enrollments.length})</span>
+          </Label>
           {enrollmentsQuery.isLoading ? (
-            <p className="text-sm text-muted-foreground">Loading...</p>
+            <div className="flex items-center justify-center py-6">
+              <Loader2 className="size-5 animate-spin text-muted-foreground" />
+            </div>
           ) : enrollments.length === 0 ? (
-            <div className="rounded-xl border border-dashed border-border px-4 py-8 text-center">
+            <div className="rounded-xl border border-dashed border-border/60 px-4 py-5 text-center">
               <p className="text-sm text-muted-foreground">No students enrolled yet.</p>
             </div>
           ) : (
-            <div className="max-h-[280px] space-y-2 overflow-y-auto pr-1">
+            <div className="max-h-[180px] space-y-1.5 overflow-y-auto pr-1">
               {enrollments.map((enrollment: Enrollment) => (
                 <div
                   key={enrollment.id}
-                  className="flex items-center justify-between rounded-xl border border-border/70 bg-muted/30 px-4 py-3 transition-colors hover:bg-muted/50"
+                  className="flex items-center justify-between rounded-xl border border-border/50 bg-muted/20 px-3 py-2.5 transition-colors hover:bg-muted/40"
                 >
                   <div className="min-w-0">
-                    <p className="truncate text-sm font-semibold text-foreground">
+                    <p className="truncate text-sm font-medium text-foreground">
                       {enrollment.student?.name ?? 'Unknown'}
                     </p>
                     <p className="truncate text-xs text-muted-foreground">
@@ -156,18 +265,18 @@ export function EnrollStudentModal({ groupId, groupName }: EnrollStudentModalPro
                     </p>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Badge variant="outline" className="rounded-full text-xs">
+                    <Badge variant="outline" className="rounded-full text-[10px] px-2 py-0.5">
                       {enrollment.student?.status ?? 'N/A'}
                     </Badge>
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="size-7 text-destructive hover:bg-destructive/10"
+                      className="size-7 rounded-lg text-destructive/70 hover:text-destructive hover:bg-destructive/10"
                       disabled={isRemoving === enrollment.id}
                       onClick={() => handleRemove(enrollment.id)}
                       title="Remove from group"
                     >
-                      <X className="size-3.5" />
+                      {isRemoving === enrollment.id ? <Loader2 className="size-3 animate-spin" /> : <X className="size-3.5" />}
                     </Button>
                   </div>
                 </div>
@@ -176,8 +285,8 @@ export function EnrollStudentModal({ groupId, groupName }: EnrollStudentModalPro
           )}
         </div>
 
-        <DialogFooter className="pt-4">
-          <Button variant="outline" onClick={() => setOpen(false)} className="w-full sm:w-auto">
+        <DialogFooter>
+          <Button variant="outline" onClick={() => setOpen(false)} className="w-full sm:w-auto rounded-xl">
             Close
           </Button>
         </DialogFooter>

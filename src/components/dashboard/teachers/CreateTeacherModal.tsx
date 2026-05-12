@@ -106,15 +106,19 @@ export function CreateTeacherModal({ open, onClose }: CreateTeacherModalProps) {
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className="sm:max-w-[520px] max-h-[90vh] overflow-y-auto">
+      <DialogContent className="sm:max-w-[540px]">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <GraduationCap className="size-4 text-primary" />
-            Add Teacher
-          </DialogTitle>
-          <DialogDescription>
-            Create a new teacher profile in your organization.
-          </DialogDescription>
+          <div className="flex items-center gap-3">
+            <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+              <GraduationCap className="size-5" />
+            </div>
+            <div>
+              <DialogTitle>Add Teacher</DialogTitle>
+              <DialogDescription>
+                Create a new teacher profile in your organization.
+              </DialogDescription>
+            </div>
+          </div>
         </DialogHeader>
 
         <form id="create-teacher-form" onSubmit={handleSubmit(onSubmit)} className="space-y-4 py-2">
@@ -195,10 +199,10 @@ export function CreateTeacherModal({ open, onClose }: CreateTeacherModalProps) {
         </form>
 
         <DialogFooter>
-          <Button type="button" variant="outline" size="sm" onClick={onClose} disabled={createTeacher.isPending}>
+          <Button type="button" variant="outline" onClick={onClose} disabled={createTeacher.isPending} className="rounded-xl">
             Cancel
           </Button>
-          <Button type="submit" form="create-teacher-form" className="edu-gradient-btn rounded-lg" disabled={createTeacher.isPending}>
+          <Button type="submit" form="create-teacher-form" className="edu-gradient-btn rounded-xl" disabled={createTeacher.isPending}>
             {createTeacher.isPending && <Loader2 className="mr-2 size-3.5 animate-spin" />}
             Add Teacher
           </Button>
