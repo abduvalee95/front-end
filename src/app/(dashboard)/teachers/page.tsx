@@ -46,7 +46,7 @@ export default function TeachersPage() {
     }));
 
     try {
-      const result = await api.post<{ count: number }>('/proxy/teachers/bulk', { teachers });
+      const result = await api.post<{ count: number }>('proxy/teachers/bulk', { teachers });
       const count = result.data.count;
       if (count > 0) {
         toast.success(`${count} teacher(s) imported successfully`);

@@ -10,8 +10,8 @@ import type {
   PaymentFilters,
 } from '@/types/finance';
 
-const PAYMENT_URL = '/proxy/payment';
-const EXPENSE_URL = '/proxy/expense';
+const PAYMENT_URL = 'proxy/payment';
+const EXPENSE_URL = 'proxy/expense';
 
 export const paymentService = {
   async list(params?: PaymentFilters): Promise<PaginatedPayments> {

@@ -8,7 +8,7 @@ import type {
   TeacherFilters,
 } from '@/types/teacher';
 
-const BASE = '/proxy/teachers';
+const BASE = 'proxy/teachers';
 
 export const teacherService = {
   async getTeachers(params?: TeacherFilters): Promise<TeacherListResponse> {

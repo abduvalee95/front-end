@@ -10,9 +10,9 @@ import type {
   StudentStatistics,
 } from '@/types/student';
 
-const STUDENTS_BASE_URL = '/proxy/student';
-const GROUPS_BASE_URL = '/proxy/groups';
-const ENROLLMENT_BASE_URL = '/proxy/enrollment';
+const STUDENTS_BASE_URL = 'proxy/student';
+const GROUPS_BASE_URL = 'proxy/groups';
+const ENROLLMENT_BASE_URL = 'proxy/enrollment';
 
 export const studentService = {
   async getStudents(params?: StudentQueryParams): Promise<PaginatedStudentsResponse> {

@@ -19,7 +19,7 @@ async function fetchFromBackend(path: string, params: Record<string, string | nu
   const qs = new URLSearchParams(
     Object.fromEntries(Object.entries(params).map(([k, v]) => [k, String(v)])),
   ).toString();
-  const url = `${backendUrl.replace(/\/$/, '')}/${path.replace(/^\//, '')}${qs ? '?' + qs : ''}`;
+  const url = `${backendUrl.replace(/\/$/, '')}/api/${path.replace(/^\//, '')}${qs ? '?' + qs : ''}`;
 
   serverLogger.debug(`[AI Tool] ${url}`);
 

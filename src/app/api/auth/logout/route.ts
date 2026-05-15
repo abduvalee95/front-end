@@ -16,7 +16,7 @@ export async function POST(request: NextRequest) {
     // Optional: Tell backend to invalidate the session
     if (accessToken) {
       try {
-        await fetch(`${backendUrl}/user/logout`, {
+        await fetch(`${backendUrl}/api/auth/logout`, {
           method: 'POST',
           headers: {
             Authorization: `Bearer ${accessToken}`,

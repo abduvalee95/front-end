@@ -34,22 +34,22 @@ export interface DashboardQuery {
 
 export const dashboardService = {
   async getSummary(query?: DashboardQuery): Promise<DashboardSummary> {
-    const response = await api.get<DashboardSummary>('/proxy/dashboard/summary', { params: query });
+    const response = await api.get<DashboardSummary>('proxy/dashboard/summary', { params: query });
     return response.data;
   },
 
   async getLeadsByStatus(query?: DashboardQuery): Promise<StatusCount[]> {
-    const response = await api.get<StatusCount[]>('/proxy/dashboard/analytics/leads-by-status', { params: query });
+    const response = await api.get<StatusCount[]>('proxy/dashboard/analytics/leads-by-status', { params: query });
     return response.data;
   },
 
   async getPaymentsByMethod(query?: DashboardQuery): Promise<PaymentByMethod[]> {
-    const response = await api.get<PaymentByMethod[]>('/proxy/dashboard/analytics/payments-by-method', { params: query });
+    const response = await api.get<PaymentByMethod[]>('proxy/dashboard/analytics/payments-by-method', { params: query });
     return response.data;
   },
 
   async getPaymentsByDay(query?: DashboardQuery): Promise<PaymentByDay[]> {
-    const response = await api.get<PaymentByDay[]>('/proxy/dashboard/analytics/payments-by-day', { params: query });
+    const response = await api.get<PaymentByDay[]>('proxy/dashboard/analytics/payments-by-day', { params: query });
     return response.data;
   },
 };

@@ -16,9 +16,9 @@ export default function middleware(request: NextRequest) {
 
     const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
     const targetPath = pathname.replace(/^\/api\/proxy/, '');
-    
-    // Construct the target URL manually to preserve any base path in backendUrl (like /api)
-    const targetUrl = `${backendUrl.replace(/\/$/, '')}${targetPath}${request.nextUrl.search}`;
+
+    // Backend has a global `/api` prefix (NestJS setGlobalPrefix('api'))
+    const targetUrl = `${backendUrl.replace(/\/$/, '')}/api${targetPath}${request.nextUrl.search}`;
 
     logger.debug(`[Proxy] ${request.method} ${pathname} -> ${targetUrl}`);
 

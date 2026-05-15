@@ -1,7 +1,7 @@
 import { api } from '@/lib/api/client';
 import type { Course, CreateCoursePayload, UpdateCoursePayload } from '@/types/group';
 
-const COURSES_URL = '/proxy/courses';
+const COURSES_URL = 'proxy/courses';
 
 export const courseService = {
   async getCourses(): Promise<Course[]> {

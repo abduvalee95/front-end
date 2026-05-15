@@ -20,7 +20,7 @@ export interface UserQueryParams {
   is_active?: boolean;
 }
 
-const BASE_URL = '/proxy/organizations/users';
+const BASE_URL = 'proxy/organizations/users';
 
 export const userService = {
   /**

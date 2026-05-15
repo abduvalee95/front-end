@@ -28,7 +28,7 @@ export async function POST(request: NextRequest) {
     const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
     
     // Forward login request to backend (uses phone, not email)
-    const response = await fetch(`${backendUrl}/user/login`, {
+    const response = await fetch(`${backendUrl}/api/auth/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ phone, password, remember_me }),

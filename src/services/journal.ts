@@ -6,7 +6,7 @@ import type {
   JournalQueryParams,
 } from '@/types/journal';
 
-const JOURNAL_URL = '/proxy/journal';
+const JOURNAL_URL = 'proxy/journal';
 
 export const journalService = {
   async upsertEntries(data: CreateJournalDto): Promise<JournalEntryResponse[]> {

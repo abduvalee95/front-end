@@ -14,7 +14,7 @@ import type {
   PlatformOrganization,
 } from '@/types/platform';
 
-const BASE = '/proxy/platform';
+const BASE = 'proxy/platform';
 
 export const platformService = {
   /** GET /platform/organizations — paginated list */

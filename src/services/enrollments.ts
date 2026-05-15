@@ -1,7 +1,7 @@
 import { api } from '@/lib/api/client';
 import type { Enrollment } from '@/types/student';
 
-const ENROLLMENT_URL = '/proxy/enrollment';
+const ENROLLMENT_URL = 'proxy/enrollment';
 
 export interface CreateEnrollmentPayload {
   student_id: string;

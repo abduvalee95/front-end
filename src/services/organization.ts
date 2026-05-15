@@ -21,19 +21,19 @@ export interface OrganizationSettings {
 
 export const organizationService = {
   getSettings: async (): Promise<OrganizationSettings> => {
-    const { data } = await api.get<OrganizationSettings>('/proxy/organizations/settings');
+    const { data } = await api.get<OrganizationSettings>('proxy/organizations/settings');
     return data;
   },
 
   updateSettings: async (payload: Partial<OrganizationSettings>): Promise<OrganizationSettings> => {
-    const { data } = await api.patch<OrganizationSettings>('/proxy/organizations/settings', payload);
+    const { data } = await api.patch<OrganizationSettings>('proxy/organizations/settings', payload);
     return data;
   },
 
   uploadLogo: async (file: File): Promise<{ logo_url: string }> => {
     const formData = new FormData();
     formData.append('logo', file);
-    const { data } = await api.post<{ logo_url: string }>('/proxy/organizations/settings/logo', formData, {
+    const { data } = await api.post<{ logo_url: string }>('proxy/organizations/settings/logo', formData, {
       headers: { 'Content-Type': 'multipart/form-data' },
     });
     return data;

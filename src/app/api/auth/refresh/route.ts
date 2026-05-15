@@ -26,7 +26,7 @@ export async function POST(request: NextRequest) {
 
     const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
     
-    const response = await fetch(`${backendUrl}/auth/refresh`, {
+    const response = await fetch(`${backendUrl}/api/auth/refresh`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ refreshToken }),

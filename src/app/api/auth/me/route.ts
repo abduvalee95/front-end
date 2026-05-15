@@ -21,7 +21,7 @@ export async function GET(request: NextRequest) {
 
     const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
     
-    const response = await fetch(`${backendUrl}/user/me`, {
+    const response = await fetch(`${backendUrl}/api/auth/me`, {
       headers: {
         Authorization: `Bearer ${accessToken}`,
         'Content-Type': 'application/json',

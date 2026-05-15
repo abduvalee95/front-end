@@ -15,7 +15,7 @@ export function useUsers(params?: UserQueryParams) {
   
   return useQuery({
     queryKey: [USERS_KEY, params, user?.role],
-    queryFn: () => userService.getUsers(params, user?.role === 'SUPER_ADMIN' ? '/proxy/platform/users' : undefined),
+    queryFn: () => userService.getUsers(params, user?.role === 'SUPER_ADMIN' ? 'proxy/platform/users' : undefined),
     enabled: !!user,
   });
 }
@@ -30,7 +30,7 @@ export function useInviteUser(options?: { showToast?: boolean }) {
 
   return useMutation({
     mutationFn: async (payload: InviteUserDto) => {
-      const { data } = await api.post<InviteUserResponse>('/proxy/organizations/users', payload);
+      const { data } = await api.post<InviteUserResponse>('proxy/organizations/users', payload);
       return data;
     },
     onSuccess: (data) => {

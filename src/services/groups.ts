@@ -7,7 +7,7 @@ import type {
   SetSchedulePayload,
 } from '@/types/group';
 
-const GROUPS_URL = '/proxy/groups';
+const GROUPS_URL = 'proxy/groups';
 
 export const groupService = {
   async getGroups(): Promise<Group[]> {
