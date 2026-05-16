@@ -26,10 +26,8 @@ async function fetchOverdueInvoices(): Promise<Invoice[]> {
   return (data.items ?? []) as Invoice[];
 }
 
-// ── Step: send WhatsApp reminder via Twilio ──────────────────────────
+// ── Helper: send single WhatsApp message via Twilio (called inside step) ──
 async function sendWhatsAppReminder(invoice: Invoice): Promise<{ success: boolean; sid?: string }> {
-  'use step';
-
   const accountSid = process.env.TWILIO_ACCOUNT_SID;
   const authToken = process.env.TWILIO_AUTH_TOKEN;
   const from = process.env.TWILIO_WHATSAPP_FROM; // e.g. whatsapp:+14155238886

@@ -20,7 +20,8 @@ export function normalizeMessages(messages: RawMessage[]): NormalizedMessage[] {
         .map((p) => p.text ?? '')
         .join('');
     }
-    const role = (['user', 'assistant', 'system'] as const).includes(m.role as never)
+    const VALID_ROLES = ['user', 'assistant', 'system'] as const;
+    const role = VALID_ROLES.includes(m.role as NormalizedMessage['role'])
       ? (m.role as NormalizedMessage['role'])
       : 'user';
     return { role, content: content || ' ' };

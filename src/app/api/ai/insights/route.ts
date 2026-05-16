@@ -14,9 +14,11 @@ const InsightSchema = z.object({
   body: z.string(),
 });
 
+const apiKey = process.env.OPENAI_API_KEY;
+const openai = apiKey ? createOpenAI({ apiKey }) : null;
+
 export async function POST(request: Request) {
-  const apiKey = process.env.OPENAI_API_KEY;
-  if (!apiKey) {
+  if (!openai) {
     return NextResponse.json(
       { message: 'AI not configured. Set OPENAI_API_KEY to enable.' },
       { status: 501 },
@@ -27,10 +29,8 @@ export async function POST(request: Request) {
     const body = await request.json();
     const { metrics } = body as { metrics: Record<string, unknown> };
 
-    const openai = createOpenAI({ apiKey });
-
     const { object } = await generateObject({
-      model: openai('gpt-4o-mini'),
+      model: openai!('gpt-4o-mini'),
       schema: InsightSchema,
       prompt: `You are an AI analytics assistant for a CRM + LMS education-center SaaS.
 Metrics: ${JSON.stringify(metrics)}
