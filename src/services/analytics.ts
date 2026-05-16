@@ -79,7 +79,7 @@ export const analyticsService = {
   },
 
   listCourses(): Promise<Course[] | { items: Course[] }> {
-    return api.get('proxy/course').then((r) => r.data);
+    return api.get('proxy/courses').then((r) => r.data);
   },
 
   listInvoices(params: { status?: string; page?: number; limit?: number }): Promise<PaginatedInvoices> {

@@ -53,8 +53,6 @@ export async function POST(request: NextRequest) {
       name: TOKEN_CONFIG.access.cookieName,
       value: accessToken,
       ...ACCESS_COOKIE_OPTIONS,
-      // Extend refresh token if remember_me
-      maxAge: remember_me ? TOKEN_CONFIG.refresh.ttlSeconds : undefined,
     });
 
     // Set refresh token cookie
