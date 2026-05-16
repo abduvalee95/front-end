@@ -14,6 +14,8 @@ import type {
   Lead,
 } from '@/types/analytics';
 
+const INSIGHTS_LIMIT = 5;
+
 function pct(num: number, den: number): number {
   if (!den) return 0;
   return Math.round((num / den) * 1000) / 10;
@@ -179,7 +181,7 @@ export function generatePlatformSummary(ctx: PlatformContext): PlatformAISummary
         ? 'Needs attention'
         : 'Platform steady',
     body: parts.join(' '),
-    insights: insights.slice(0, 5),
+    insights: insights.slice(0, INSIGHTS_LIMIT),
     generatedAt: new Date().toISOString(),
     source: 'rule-based',
   };
@@ -257,7 +259,7 @@ export function generateCRMInsights(ctx: CRMContext): Insight[] {
     });
   }
 
-  return insights.slice(0, 5);
+  return insights.slice(0, INSIGHTS_LIMIT);
 }
 
 export interface LMSContext {
@@ -317,5 +319,5 @@ export function generateLMSInsights(ctx: LMSContext): Insight[] {
     });
   }
 
-  return insights.slice(0, 5);
+  return insights.slice(0, INSIGHTS_LIMIT);
 }

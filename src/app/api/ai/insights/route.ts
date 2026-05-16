@@ -5,6 +5,14 @@
  */
 
 import { NextResponse } from 'next/server';
+import { createOpenAI } from '@ai-sdk/openai';
+import { generateObject } from 'ai';
+import { z } from 'zod';
+
+const InsightSchema = z.object({
+  headline: z.string(),
+  body: z.string(),
+});
 
 export async function POST(request: Request) {
   const apiKey = process.env.OPENAI_API_KEY;
@@ -19,36 +27,20 @@ export async function POST(request: Request) {
     const body = await request.json();
     const { metrics } = body as { metrics: Record<string, unknown> };
 
-    const prompt = `You are an AI analytics assistant for a CRM + LMS education-center SaaS.
+    const openai = createOpenAI({ apiKey });
+
+    const { object } = await generateObject({
+      model: openai('gpt-4o-mini'),
+      schema: InsightSchema,
+      prompt: `You are an AI analytics assistant for a CRM + LMS education-center SaaS.
 Metrics: ${JSON.stringify(metrics)}
 Produce a concise platform summary (max 3 sentences) highlighting trends, risks, and opportunities.
-Be specific with numbers. Return JSON: {"headline": "...", "body": "..."}.`;
-
-    const resp = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${apiKey}`,
-      },
-      body: JSON.stringify({
-        model: 'gpt-4o-mini',
-        messages: [{ role: 'user', content: prompt }],
-        response_format: { type: 'json_object' },
-        temperature: 0.3,
-      }),
+Be specific with numbers.`,
     });
 
-    if (!resp.ok) {
-      const err = await resp.text();
-      return NextResponse.json({ message: err }, { status: resp.status });
-    }
-
-    const data = await resp.json();
-    const content = data.choices?.[0]?.message?.content ?? '{}';
-    const parsed = JSON.parse(content);
     return NextResponse.json({
-      headline: parsed.headline ?? 'AI summary',
-      body: parsed.body ?? '',
+      headline: object.headline,
+      body: object.body,
       source: 'openai',
       generatedAt: new Date().toISOString(),
     });

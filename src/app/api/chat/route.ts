@@ -2,6 +2,7 @@ import { createGroq } from '@ai-sdk/groq';
 import { streamText } from 'ai';
 import { cookies } from 'next/headers';
 import { serverLogger } from '@/lib/logger';
+import { normalizeMessages } from '@/lib/ai/normalize-messages';
 
 // Allow streaming responses up to 30 seconds
 export const maxDuration = 30;
@@ -30,9 +31,13 @@ async function fetchFromBackend(path: string, params: Record<string, string | nu
         'Content-Type': 'application/json',
       },
     });
-    if (!res.ok) return null;
+    if (!res.ok) {
+      serverLogger.warn(`[AI Tool] GET ${url} -> ${res.status}`);
+      return null;
+    }
     return await res.json();
-  } catch {
+  } catch (err) {
+    serverLogger.warn(`[AI Tool] ${url} network error:`, err);
     return null;
   }
 }
@@ -40,17 +45,14 @@ async function fetchFromBackend(path: string, params: Record<string, string | nu
 // ── Detect intent and fetch data ─────────────────────────────────────
 async function getContextData(userMessage: string): Promise<string> {
   const msg = userMessage.toLowerCase().trim();
-  const parts: string[] = [];
 
-  // Helper to check if a word is just a filler or question word
-  const isQuestionWord = (w: string) => 
-    ['bor', 'yo\'q', 'bormi', 'yoqmi', 'nechta', 'qancha', 'kim', 'qani', 'qayerda'].includes(w.toLowerCase());
+  const FILLER_WORDS = ['bor', "yo'q", 'bormi', 'yoqmi', 'nechta', 'qancha', 'kim', 'qani', 'qayerda'];
+  const isQuestionWord = (w: string) => FILLER_WORDS.includes(w.toLowerCase());
 
-  // Student search - more specific regex
   const studentPatterns = [
-    /(?:student|o'quvchi|talaba|bola)\s+([a-z'‘ʼ ]+?)(?:\s+degan|\s+ismli|$)/i,
-    /([a-z'‘ʼ ]+?)\s+(?:degan\s+)?(?:student|o'quvchi|talaba|bola)\s+(?:bormi|yoqmi|izla)/i,
-    /(?:ismi|nomi)\s+([a-z'‘ʼ ]+)/i,
+    /(?:student|o'quvchi|talaba|bola)\s+([a-z''ʼ ]+?)(?:\s+degan|\s+ismli|$)/i,
+    /([a-z''ʼ ]+?)\s+(?:degan\s+)?(?:student|o'quvchi|talaba|bola)\s+(?:bormi|yoqmi|izla)/i,
+    /(?:ismi|nomi)\s+([a-z''ʼ ]+)/i,
   ];
 
   let searchName = '';
@@ -65,37 +67,49 @@ async function getContextData(userMessage: string): Promise<string> {
     }
   }
 
-  // If specific name found, search for it
+  // Collect all fetch promises in parallel
+  const fetches: Promise<{ key: string; data: unknown }>[] = [];
+
   if (searchName) {
-    const data = await fetchFromBackend('student', { search: searchName, limit: 5 });
-    if (data?.items?.length > 0) {
-      parts.push(`\n📋 Talabalar topildi («${searchName}»): ${JSON.stringify(data.items)}`);
-    } else {
-      parts.push(`\n⚠️ «${searchName}» ismli talaba bazada topilmadi.`);
-    }
+    fetches.push(
+      fetchFromBackend('student', { search: searchName, limit: 5 }).then((d) => ({ key: 'student', data: d })),
+    );
   }
-
-  // Statistics / "How many" - check summary
   if (/nechta|qancha|stat|hisobot|dashboard|umumiy|jami|holat|daromad|pul/i.test(msg)) {
-    const data = await fetchFromBackend('dashboard/summary');
-    if (data) {
-      parts.push(`\n📊 Tizimning umumiy holati: ${JSON.stringify(data)}`);
-    }
+    fetches.push(fetchFromBackend('dashboard/summary').then((d) => ({ key: 'summary', data: d })));
   }
-
-  // Leads check
   if (/lead|lid|yangi|qiziq|murojaat/i.test(msg)) {
-    const data = await fetchFromBackend('lead', { limit: 10 });
-    if (data?.items?.length > 0) {
-      parts.push(`\n📋 So'nggi lidlar: ${JSON.stringify(data.items)}`);
-    }
+    fetches.push(fetchFromBackend('lead', { limit: 10 }).then((d) => ({ key: 'leads', data: d })));
+  }
+  if (/group|guruh|sinf|klass/i.test(msg)) {
+    fetches.push(fetchFromBackend('groups').then((d) => ({ key: 'groups', data: d })));
   }
 
-  // Groups
-  if (/group|guruh|sinf|klass/i.test(msg)) {
-    const data = await fetchFromBackend('groups');
-    if (data) {
-      parts.push(`\n📋 Mavjud guruhlar: ${JSON.stringify(data)}`);
+  if (fetches.length === 0) return '';
+
+  const results = await Promise.allSettled(fetches);
+  const parts: string[] = [];
+
+  for (const result of results) {
+    if (result.status !== 'fulfilled') continue;
+    const { key, data } = result.value;
+
+    if (key === 'student') {
+      const d = data as { items?: unknown[] } | null;
+      if (d?.items?.length) {
+        parts.push(`\n Talabalar topildi («${searchName}»): ${JSON.stringify(d.items)}`);
+      } else {
+        parts.push(`\n «${searchName}» ismli talaba bazada topilmadi.`);
+      }
+    } else if (key === 'summary' && data) {
+      parts.push(`\n Tizimning umumiy holati: ${JSON.stringify(data)}`);
+    } else if (key === 'leads') {
+      const d = data as { items?: unknown[] } | null;
+      if (d?.items?.length) {
+        parts.push(`\n So'nggi lidlar: ${JSON.stringify(d.items)}`);
+      }
+    } else if (key === 'groups' && data) {
+      parts.push(`\n Mavjud guruhlar: ${JSON.stringify(data)}`);
     }
   }
 
@@ -106,27 +120,11 @@ async function getContextData(userMessage: string): Promise<string> {
 export async function POST(req: Request) {
   const { messages } = await req.json();
 
-  // Normalize messages to { role, content }
-  const formattedMessages = messages.map((m: any) => {
-    let content = '';
-    if (typeof m.content === 'string') content = m.content;
-    else if (Array.isArray(m.parts)) {
-      content = m.parts
-        .filter((p: any) => p.type === 'text')
-        .map((p: any) => p.text)
-        .join('');
-    }
-    return {
-      role: ['user', 'assistant', 'system'].includes(m.role) ? m.role : 'user',
-      content: content || ' ',
-    };
-  });
+  const formattedMessages = normalizeMessages(messages);
 
-  // Get the last user message
-  const lastUserMsg = [...formattedMessages].reverse().find((m: any) => m.role === 'user');
+  const lastUserMsg = [...formattedMessages].reverse().find((m) => m.role === 'user');
   const userText = lastUserMsg?.content || '';
 
-  // Fetch relevant data from the database
   const contextData = await getContextData(userText);
 
   const systemPrompt = `You are a professional AI assistant for the "Bilim Nuru" CRM/LMS.
@@ -138,7 +136,7 @@ ${contextData || 'No specific database records found for this query.'}
 
 CRITICAL RULES:
 1. Use the DATABASE CONTEXT to answer. If it says 0 students or "not found", inform the user politely.
-2. NEVER show raw JSON or code like '{"items":[]}' to the user.
+2. NEVER show raw JSON or code to the user.
 3. Convert the data into a human-readable, friendly response in Uzbek (or English if the user asked in English).
 4. If the context is empty, respond based on general knowledge about the CRM features (Leads, Students, Groups, Finance).
 5. Be concise and professional.`;
