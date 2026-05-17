@@ -199,7 +199,7 @@ export function IntegrationsTab({
               <Input 
                 value={formData.whatsapp_target || ''} 
                 onChange={(e) => handleOrgInputChange('whatsapp_target', e.target.value)}
-                placeholder="998901234567"
+                placeholder="996901234567"
                 className="h-11 font-mono text-sm"
               />
             </div>

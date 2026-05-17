@@ -18,6 +18,7 @@ import {
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { useUpdateOrganization } from '@/hooks/useOrganizations';
 import type { PlatformOrganization, UpdateOrganizationPayload } from '@/types/platform';
+import { useTranslations } from '@/i18n/index';
 
 interface EditOrganizationModalProps {
   org: PlatformOrganization | null;
@@ -34,6 +35,8 @@ type FormValues = {
 
 export function EditOrganizationModal({ org, onClose }: EditOrganizationModalProps) {
   const updateOrg = useUpdateOrganization();
+  const t = useTranslations('common');
+  const tSettings = useTranslations('settings');
   const {
     register,
     handleSubmit,
@@ -78,8 +81,8 @@ export function EditOrganizationModal({ org, onClose }: EditOrganizationModalPro
               </Avatar>
             )}
             <div className="min-w-0">
-              <SheetTitle className="truncate">{org?.name ?? 'Edit Organization'}</SheetTitle>
-              <SheetDescription>Update organization details</SheetDescription>
+              <SheetTitle className="truncate">{org?.name ?? t('edit_organization')}</SheetTitle>
+              <SheetDescription>{t('update_org_details')}</SheetDescription>
             </div>
           </div>
         </SheetHeader>
@@ -88,16 +91,16 @@ export function EditOrganizationModal({ org, onClose }: EditOrganizationModalPro
           <form id="edit-org-form" onSubmit={handleSubmit(onSubmit)} className="space-y-5">
             <div className="space-y-3">
               <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest flex items-center gap-1.5">
-                <Building2 className="size-3" /> Basic Info
+                <Building2 className="size-3" /> {t('basic_info')}
               </p>
-              <Field label="Name *" error={errors.name?.message}>
-                <Input {...register('name', { required: 'Required' })} />
+              <Field label={`${t('name')} *`} error={errors.name?.message}>
+                <Input {...register('name', { required: t('required') })} />
               </Field>
-              <Field label="Email *" error={errors.email?.message}>
-                <Input type="email" {...register('email', { required: 'Required' })} />
+              <Field label={`${t('email')} *`} error={errors.email?.message}>
+                <Input type="email" {...register('email', { required: t('required') })} />
               </Field>
-              <Field label="Phone">
-                <Input {...register('phone')} placeholder="+998901234567" />
+              <Field label={t('phone')}>
+                <Input {...register('phone')} placeholder="+996901234567" />
               </Field>
             </div>
 
@@ -105,13 +108,13 @@ export function EditOrganizationModal({ org, onClose }: EditOrganizationModalPro
 
             <div className="space-y-3">
               <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest flex items-center gap-1.5">
-                <MessageSquare className="size-3" /> Integrations
+                <MessageSquare className="size-3" /> {tSettings('integrations')}
               </p>
-              <Field label="Telegram Chat ID">
+              <Field label={tSettings('chat_id')}>
                 <Input {...register('telegram_chat_id')} placeholder="-100xxxxxxxxxx" />
               </Field>
-              <Field label="WhatsApp Number">
-                <Input {...register('whatsapp_target')} placeholder="+998901234567" />
+              <Field label={t('whatsapp_number')}>
+                <Input {...register('whatsapp_target')} placeholder="+996901234567" />
               </Field>
             </div>
           </form>
@@ -119,11 +122,11 @@ export function EditOrganizationModal({ org, onClose }: EditOrganizationModalPro
 
         <SheetFooter className="px-6 py-4 border-t flex flex-row gap-2 justify-end">
           <Button variant="outline" size="sm" onClick={onClose} disabled={updateOrg.isPending}>
-            Cancel
+            {t('cancel')}
           </Button>
           <Button type="submit" form="edit-org-form" className="edu-gradient-btn rounded-lg" disabled={updateOrg.isPending}>
             {updateOrg.isPending && <Loader2 className="mr-2 size-3.5 animate-spin" />}
-            Save Changes
+            {tSettings('save_changes')}
           </Button>
         </SheetFooter>
       </SheetContent>

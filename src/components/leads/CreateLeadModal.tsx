@@ -40,18 +40,18 @@ export function CreateLeadModal({ isOpen, onClose }: CreateLeadModalProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.full_name.trim() || !formData.phone.trim()) {
-      toast.error('Please fill in Name and Phone Number');
+      toast.error(t('fill_required_fields'));
       return;
     }
 
     if (!user?.full_name) {
-      toast.error('User information not found');
+      toast.error(tCommon('user_not_found'));
       return;
     }
 
     const cleanPhone = formData.phone.replace(/\s+/g, '');
     if (!/^\+?\d{9,15}$/.test(cleanPhone)) {
-      toast.error('Phone must be 9-15 digits (e.g., +998901234567)');
+      toast.error(t('phone_format_error'));
       return;
     }
 
@@ -64,7 +64,7 @@ export function CreateLeadModal({ isOpen, onClose }: CreateLeadModalProps) {
       setFormData({ full_name: '', phone: '', source: 'DIRECT' });
       onClose();
     } catch (error: any) {
-      const errorMessage = error.response?.data?.message || error.message || 'Failed to create lead';
+      const errorMessage = error.response?.data?.message || error.message || t('failed_create');
       toast.error(errorMessage);
     }
   };
@@ -100,7 +100,7 @@ export function CreateLeadModal({ isOpen, onClose }: CreateLeadModalProps) {
             <Label htmlFor="lead-phone">{t('phone')} *</Label>
             <Input
               id="lead-phone"
-              placeholder="+998 90 123 45 67"
+              placeholder="+996 90 123 45 67"
               value={formData.phone}
               onChange={(e) => setFormData((prev) => ({ ...prev, phone: e.target.value }))}
               disabled={createLead.isPending}
@@ -114,15 +114,15 @@ export function CreateLeadModal({ isOpen, onClose }: CreateLeadModalProps) {
               disabled={createLead.isPending}
             >
               <SelectTrigger>
-                <SelectValue placeholder="Select source" />
+                <SelectValue placeholder={t('select_source')} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="DIRECT">Direct</SelectItem>
-                <SelectItem value="INSTAGRAM">Instagram</SelectItem>
-                <SelectItem value="TELEGRAM">Telegram</SelectItem>
-                <SelectItem value="FACEBOOK">Facebook</SelectItem>
-                <SelectItem value="RECOMMENDATION">Recommendation</SelectItem>
-                <SelectItem value="OTHER">Other</SelectItem>
+                <SelectItem value="DIRECT">{t('source_direct')}</SelectItem>
+                <SelectItem value="INSTAGRAM">{t('source_instagram')}</SelectItem>
+                <SelectItem value="TELEGRAM">{t('source_telegram')}</SelectItem>
+                <SelectItem value="FACEBOOK">{t('source_facebook')}</SelectItem>
+                <SelectItem value="RECOMMENDATION">{t('source_recommendation')}</SelectItem>
+                <SelectItem value="OTHER">{t('source_other')}</SelectItem>
               </SelectContent>
             </Select>
           </div>

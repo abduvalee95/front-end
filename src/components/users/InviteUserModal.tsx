@@ -20,6 +20,7 @@ import { Separator } from '@/components/ui/separator';
 
 import { useInviteUser } from '@/hooks/useUsers';
 import type { InviteUserDto } from '@/types/user';
+import { useTranslations } from '@/i18n/index';
 
 interface InviteUserModalProps {
   open: boolean;
@@ -31,6 +32,10 @@ type FormValues = InviteUserDto;
 export function InviteUserModal({ open, onOpenChange }: InviteUserModalProps) {
   const [tempPassword, setTempPassword] = useState<string | null>(null);
   const inviteUser = useInviteUser();
+  const t = useTranslations('users');
+  const tCommon = useTranslations('common');
+  const tSettings = useTranslations('settings');
+  const tAuth = useTranslations('auth');
   const {
     register,
     handleSubmit,
@@ -53,10 +58,6 @@ export function InviteUserModal({ open, onOpenChange }: InviteUserModalProps) {
   const onSubmit = (values: FormValues) => {
     inviteUser.mutate(values, {
       onSuccess: (data) => {
-        // If backend returned a temporary password or we successfully set one, show it.
-        // Actually, backend requires password. We are sending one if entered, otherwise we can auto-generate?
-        // Wait, the backend requires a password inside the DTO, but the frontend should provide it.
-        // Let's just rely on the user input password or what they provide.
         if (data.temporaryPassword) {
           setTempPassword(data.temporaryPassword);
         } else {
@@ -75,10 +76,8 @@ export function InviteUserModal({ open, onOpenChange }: InviteUserModalProps) {
               <User className="size-5" />
             </div>
             <div>
-              <DialogTitle>Invite User</DialogTitle>
-              <DialogDescription>
-                Invite a new user to your organization. They will receive access immediately.
-              </DialogDescription>
+              <DialogTitle>{t('invite_user')}</DialogTitle>
+              <DialogDescription>{t('invite_user_desc')}</DialogDescription>
             </div>
           </div>
         </DialogHeader>
@@ -87,14 +86,14 @@ export function InviteUserModal({ open, onOpenChange }: InviteUserModalProps) {
           <div className="py-6 space-y-4">
             <div className="p-4 bg-emerald-500/10 border border-emerald-500/20 rounded-xl text-center space-y-2">
               <KeyRound className="size-8 text-emerald-500 mx-auto mb-2" />
-              <p className="text-sm font-medium text-emerald-600 dark:text-emerald-400">User invited successfully!</p>
-              <p className="text-xs text-muted-foreground">Please share this temporary password with the user:</p>
+              <p className="text-sm font-medium text-emerald-600 dark:text-emerald-400">{t('invited_success')}</p>
+              <p className="text-xs text-muted-foreground">{t('temp_password_desc')}</p>
               <div className="bg-background p-3 rounded-lg font-mono text-lg font-bold tracking-wider select-all mt-4 border border-input">
                 {tempPassword}
               </div>
             </div>
             <Button className="w-full" onClick={handleClose}>
-              Done
+              {tCommon('done')}
             </Button>
           </div>
         ) : (
@@ -103,10 +102,10 @@ export function InviteUserModal({ open, onOpenChange }: InviteUserModalProps) {
               <div className="space-y-1.5">
                 <Label className="text-xs flex items-center gap-2">
                   <User className="size-3 text-muted-foreground" />
-                  Full Name <span className="text-destructive">*</span>
+                  {tSettings('full_name')} <span className="text-destructive">*</span>
                 </Label>
                 <Input
-                  {...register('full_name', { required: 'Full name is required', minLength: { value: 2, message: 'Minimum 2 characters' } })}
+                  {...register('full_name', { required: t('full_name_required'), minLength: { value: 2, message: t('min_2_chars') } })}
                   placeholder="e.g. John Doe"
                 />
                 {errors.full_name && <p className="text-[10px] text-destructive">{errors.full_name.message}</p>}
@@ -115,14 +114,14 @@ export function InviteUserModal({ open, onOpenChange }: InviteUserModalProps) {
               <div className="space-y-1.5">
                 <Label className="text-xs flex items-center gap-2">
                   <Phone className="size-3 text-muted-foreground" />
-                  Phone Number <span className="text-destructive">*</span>
+                  {tSettings('phone')} <span className="text-destructive">*</span>
                 </Label>
                 <Input
-                  {...register('phone', { 
-                    required: 'Phone number is required',
-                    pattern: { value: /^\+998\d{9}$/, message: 'Must be in format +998XXXXXXXXX' }
+                  {...register('phone', {
+                    required: t('phone_required'),
+                    pattern: { value: /^\+996\d{9}$/, message: t('phone_format') }
                   })}
-                  placeholder="+998XXXXXXXXX"
+                  placeholder="+996XXXXXXXXX"
                 />
                 {errors.phone && <p className="text-[10px] text-destructive">{errors.phone.message}</p>}
               </div>
@@ -130,13 +129,13 @@ export function InviteUserModal({ open, onOpenChange }: InviteUserModalProps) {
               <div className="space-y-1.5">
                 <Label className="text-xs flex items-center gap-2">
                   <Mail className="size-3 text-muted-foreground" />
-                  Email Address <span className="text-destructive">*</span>
+                  {tSettings('email')} <span className="text-destructive">*</span>
                 </Label>
                 <Input
                   type="email"
-                  {...register('email', { 
-                    required: 'Email is required',
-                    pattern: { value: /^\S+@\S+\.\S+$/, message: 'Invalid email address' }
+                  {...register('email', {
+                    required: t('email_required'),
+                    pattern: { value: /^\S+@\S+\.\S+$/, message: t('email_invalid') }
                   })}
                   placeholder="user@example.com"
                 />
@@ -149,16 +148,16 @@ export function InviteUserModal({ open, onOpenChange }: InviteUserModalProps) {
                 <div className="space-y-1.5">
                   <Label className="text-xs flex items-center gap-2">
                     <Shield className="size-3 text-muted-foreground" />
-                    Role <span className="text-destructive">*</span>
+                    {tCommon('role')} <span className="text-destructive">*</span>
                   </Label>
                   <select
-                    {...register('role', { required: 'Role is required' })}
+                    {...register('role', { required: t('role_required') })}
                     className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
                   >
-                    <option value="STUDENT" className="bg-background text-foreground">Student</option>
-                    <option value="TEACHER" className="bg-background text-foreground">Teacher</option>
-                    <option value="MANAGER" className="bg-background text-foreground">Manager</option>
-                    <option value="ADMIN" className="bg-background text-foreground">Admin</option>
+                    <option value="STUDENT" className="bg-background text-foreground">{t('role_student')}</option>
+                    <option value="TEACHER" className="bg-background text-foreground">{t('role_teacher')}</option>
+                    <option value="MANAGER" className="bg-background text-foreground">{t('role_manager')}</option>
+                    <option value="ADMIN" className="bg-background text-foreground">{t('role_admin')}</option>
                   </select>
                   {errors.role && <p className="text-[10px] text-destructive">{errors.role.message}</p>}
                 </div>
@@ -166,13 +165,13 @@ export function InviteUserModal({ open, onOpenChange }: InviteUserModalProps) {
                 <div className="space-y-1.5">
                   <Label className="text-xs flex items-center gap-2">
                     <KeyRound className="size-3 text-muted-foreground" />
-                    Password <span className="text-destructive">*</span>
+                    {tAuth('password')} <span className="text-destructive">*</span>
                   </Label>
                   <Input
                     type="password"
-                    {...register('password', { 
-                      required: 'Password is required',
-                      minLength: { value: 6, message: 'Minimum 6 characters' }
+                    {...register('password', {
+                      required: t('password_required'),
+                      minLength: { value: 6, message: t('min_6_chars') }
                     })}
                     placeholder="••••••"
                   />
@@ -183,7 +182,7 @@ export function InviteUserModal({ open, onOpenChange }: InviteUserModalProps) {
               <div className="space-y-1.5">
                 <Label className="text-xs flex items-center gap-2">
                   <Briefcase className="size-3 text-muted-foreground" />
-                  Title (Optional)
+                  {t('title_optional')}
                 </Label>
                 <Input
                   {...register('title')}
@@ -195,11 +194,11 @@ export function InviteUserModal({ open, onOpenChange }: InviteUserModalProps) {
 
             <DialogFooter>
               <Button type="button" variant="outline" onClick={handleClose} disabled={inviteUser.isPending} className="rounded-xl">
-                Cancel
+                {tCommon('cancel')}
               </Button>
               <Button type="submit" disabled={inviteUser.isPending} className="rounded-xl">
                 {inviteUser.isPending && <Loader2 className="size-4 mr-2 animate-spin" />}
-                Send Invitation
+                {t('send_invitation')}
               </Button>
             </DialogFooter>
           </form>

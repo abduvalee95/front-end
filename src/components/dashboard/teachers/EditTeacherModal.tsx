@@ -27,6 +27,7 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { useUpdateTeacher } from '@/hooks/useTeachers';
 import type { TeacherProfile, UpdateTeacherDto } from '@/types/teacher';
 import { TEACHER_SUBJECTS } from '@/types/teacher';
+import { useTranslations } from '@/i18n/index';
 
 interface EditTeacherModalProps {
   teacher: TeacherProfile | null;
@@ -43,6 +44,9 @@ type FormValues = {
 
 export function EditTeacherModal({ teacher, onClose }: EditTeacherModalProps) {
   const updateTeacher = useUpdateTeacher();
+  const t = useTranslations('teachers');
+  const tCommon = useTranslations('common');
+  const tSettings = useTranslations('settings');
   const [selectedSubjects, setSelectedSubjects] = useState<string[]>([]);
 
   const {
@@ -101,8 +105,8 @@ export function EditTeacherModal({ teacher, onClose }: EditTeacherModalProps) {
               </Avatar>
             )}
             <div className="min-w-0">
-              <SheetTitle className="truncate">{teacher?.full_name ?? 'Edit Teacher'}</SheetTitle>
-              <SheetDescription>Update teacher profile details</SheetDescription>
+              <SheetTitle className="truncate">{teacher?.full_name ?? t('edit_teacher')}</SheetTitle>
+              <SheetDescription>{t('edit_teacher_desc')}</SheetDescription>
             </div>
           </div>
         </SheetHeader>
@@ -111,13 +115,13 @@ export function EditTeacherModal({ teacher, onClose }: EditTeacherModalProps) {
           <form id="edit-teacher-form" onSubmit={handleSubmit(onSubmit)} className="space-y-5">
             <div className="space-y-3">
               <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest flex items-center gap-1.5">
-                <UserCircle2 className="size-3" /> Basic Info
+                <UserCircle2 className="size-3" /> {tCommon('basic_info')}
               </p>
-              <Field label="Full Name *" error={errors.full_name?.message}>
-                <Input {...register('full_name', { required: 'Required' })} />
+              <Field label={`${t('full_name')} *`} error={errors.full_name?.message}>
+                <Input {...register('full_name', { required: tCommon('required') })} />
               </Field>
-              <Field label="Phone">
-                <Input {...register('phone')} placeholder="+998XXXXXXXXX" />
+              <Field label={t('phone')}>
+                <Input {...register('phone')} placeholder="+996XXXXXXXXX" />
               </Field>
             </div>
 
@@ -125,12 +129,12 @@ export function EditTeacherModal({ teacher, onClose }: EditTeacherModalProps) {
 
             <div className="space-y-3">
               <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest flex items-center gap-1.5">
-                <GraduationCap className="size-3" /> Professional
+                <GraduationCap className="size-3" /> {t('professional')}
               </p>
-              <Field label="Subjects">
+              <Field label={tCommon('subjects')}>
                 <Select onValueChange={handleAddSubject}>
                   <SelectTrigger>
-                    <SelectValue placeholder="Add subject" />
+                    <SelectValue placeholder={t('add_subject')} />
                   </SelectTrigger>
                   <SelectContent>
                     {TEACHER_SUBJECTS.filter((s) => !selectedSubjects.includes(s)).map((subject) => (
@@ -153,10 +157,10 @@ export function EditTeacherModal({ teacher, onClose }: EditTeacherModalProps) {
                   </div>
                 )}
               </Field>
-              <Field label="Hourly Rate">
+              <Field label={t('hourly_rate')}>
                 <Input type="number" step="0.01" {...register('hourly_rate')} placeholder="0.00" />
               </Field>
-              <Field label="Qualifications">
+              <Field label={t('qualifications')}>
                 <Input {...register('qualifications')} placeholder="PhD in Math" />
               </Field>
             </div>
@@ -165,11 +169,11 @@ export function EditTeacherModal({ teacher, onClose }: EditTeacherModalProps) {
 
         <SheetFooter className="px-6 py-4 border-t flex flex-row gap-2 justify-end">
           <Button variant="outline" size="sm" onClick={onClose} disabled={updateTeacher.isPending}>
-            Cancel
+            {tCommon('cancel')}
           </Button>
           <Button type="submit" form="edit-teacher-form" className="edu-gradient-btn rounded-lg" disabled={updateTeacher.isPending}>
             {updateTeacher.isPending && <Loader2 className="mr-2 size-3.5 animate-spin" />}
-            Save Changes
+            {tSettings('save_changes')}
           </Button>
         </SheetFooter>
       </SheetContent>

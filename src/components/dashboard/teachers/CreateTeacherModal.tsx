@@ -25,6 +25,7 @@ import {
 } from '@/components/ui/select';
 import { useCreateTeacher } from '@/hooks/useTeachers';
 import { TEACHER_SUBJECTS } from '@/types/teacher';
+import { useTranslations } from '@/i18n/index';
 
 interface CreateTeacherModalProps {
   open: boolean;
@@ -42,6 +43,9 @@ type FormValues = {
 
 export function CreateTeacherModal({ open, onClose }: CreateTeacherModalProps) {
   const createTeacher = useCreateTeacher();
+  const t = useTranslations('teachers');
+  const tCommon = useTranslations('common');
+  const tAuth = useTranslations('auth');
   const [selectedSubjects, setSelectedSubjects] = useState<string[]>([]);
   const [subjectError, setSubjectError] = useState('');
 
@@ -74,7 +78,7 @@ export function CreateTeacherModal({ open, onClose }: CreateTeacherModalProps) {
 
   const onSubmit = (values: FormValues) => {
     if (selectedSubjects.length === 0) {
-      setSubjectError('At least one subject is required');
+      setSubjectError(t('subject_required'));
       return;
     }
 
@@ -113,10 +117,8 @@ export function CreateTeacherModal({ open, onClose }: CreateTeacherModalProps) {
               <GraduationCap className="size-5" />
             </div>
             <div>
-              <DialogTitle>Add Teacher</DialogTitle>
-              <DialogDescription>
-                Create a new teacher profile in your organization.
-              </DialogDescription>
+              <DialogTitle>{t('add_teacher')}</DialogTitle>
+              <DialogDescription>{t('add_teacher_desc')}</DialogDescription>
             </div>
           </div>
         </DialogHeader>
@@ -125,27 +127,27 @@ export function CreateTeacherModal({ open, onClose }: CreateTeacherModalProps) {
           {/* User Info */}
           <div className="space-y-3">
             <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest flex items-center gap-1.5">
-              <UserCircle2 className="size-3" /> Account Info
+              <UserCircle2 className="size-3" /> {t('account_info')}
             </p>
-            <Field label="Full Name *" error={errors.full_name?.message}>
-              <Input {...register('full_name', { required: 'Required' })} placeholder="e.g. John Doe" />
+            <Field label={`${t('full_name')} *`} error={errors.full_name?.message}>
+              <Input {...register('full_name', { required: tCommon('required') })} placeholder="e.g. John Doe" />
             </Field>
-            <Field label="Email *" error={errors.email?.message}>
-              <Input type="email" {...register('email', { required: 'Required' })} placeholder="teacher@school.com" />
+            <Field label={`${tCommon('email')} *`} error={errors.email?.message}>
+              <Input type="email" {...register('email', { required: tCommon('required') })} placeholder="teacher@school.com" />
             </Field>
-            <Field label="Phone *" error={errors.phone?.message}>
+            <Field label={`${t('phone')} *`} error={errors.phone?.message}>
               <Input
                 {...register('phone', {
-                  required: 'Phone number is required',
-                  pattern: { value: /^\+998\d{9}$/, message: 'Must be in format +998XXXXXXXXX' }
+                  required: t('phone_required'),
+                  pattern: { value: /^\+996\d{9}$/, message: t('phone_format') }
                 })}
-                placeholder="+998XXXXXXXXX"
+                placeholder="+996XXXXXXXXX"
               />
             </Field>
-            <Field label="Password *" error={errors.password?.message}>
+            <Field label={`${tAuth('password')} *`} error={errors.password?.message}>
               <Input
                 type="password"
-                {...register('password', { required: 'Required', minLength: { value: 6, message: 'Min 6 chars' } })}
+                {...register('password', { required: tCommon('required'), minLength: { value: 6, message: tCommon('min_6_chars') } })}
                 placeholder="••••••••"
               />
             </Field>
@@ -156,12 +158,12 @@ export function CreateTeacherModal({ open, onClose }: CreateTeacherModalProps) {
           {/* Teacher Profile */}
           <div className="space-y-3">
             <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest flex items-center gap-1.5">
-              <GraduationCap className="size-3" /> Professional Info
+              <GraduationCap className="size-3" /> {t('professional_info')}
             </p>
-            <Field label="Subjects *" error={subjectError}>
+            <Field label={`${tCommon('subjects')} *`} error={subjectError}>
               <Select onValueChange={handleAddSubject}>
                 <SelectTrigger>
-                  <SelectValue placeholder="Select subjects" />
+                  <SelectValue placeholder={t('select_subjects')} />
                 </SelectTrigger>
                 <SelectContent>
                   {TEACHER_SUBJECTS.filter((s) => !selectedSubjects.includes(s)).map((subject) => (
@@ -184,7 +186,7 @@ export function CreateTeacherModal({ open, onClose }: CreateTeacherModalProps) {
                 </div>
               )}
             </Field>
-            <Field label="Hourly Rate" error={errors.hourly_rate?.message}>
+            <Field label={t('hourly_rate')} error={errors.hourly_rate?.message}>
               <Input
                 type="number"
                 {...register('hourly_rate')}
@@ -192,7 +194,7 @@ export function CreateTeacherModal({ open, onClose }: CreateTeacherModalProps) {
                 step="0.01"
               />
             </Field>
-            <Field label="Qualifications" error={errors.qualifications?.message}>
+            <Field label={t('qualifications')} error={errors.qualifications?.message}>
               <Input {...register('qualifications')} placeholder="e.g. PhD in Mathematics" />
             </Field>
           </div>
@@ -200,11 +202,11 @@ export function CreateTeacherModal({ open, onClose }: CreateTeacherModalProps) {
 
         <DialogFooter>
           <Button type="button" variant="outline" onClick={onClose} disabled={createTeacher.isPending} className="rounded-xl">
-            Cancel
+            {tCommon('cancel')}
           </Button>
           <Button type="submit" form="create-teacher-form" className="edu-gradient-btn rounded-xl" disabled={createTeacher.isPending}>
             {createTeacher.isPending && <Loader2 className="mr-2 size-3.5 animate-spin" />}
-            Add Teacher
+            {t('add_teacher')}
           </Button>
         </DialogFooter>
       </DialogContent>

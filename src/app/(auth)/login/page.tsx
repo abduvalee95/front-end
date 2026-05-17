@@ -23,10 +23,13 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useAuth } from '@/hooks/useAuth';
+import { useTranslations } from '@/i18n/index';
 
 function LoginForm() {
   const searchParams = useSearchParams();
   const { login, isLoading } = useAuth();
+  const t = useTranslations('auth');
+  const tCommon = useTranslations('common');
 
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
@@ -36,33 +39,33 @@ function LoginForm() {
   useEffect(() => {
     const error = searchParams.get('error');
     if (error === 'session_expired') {
-      toast.error('Your session has expired. Please log in again.');
+      toast.error(t('session_expired'));
     }
-  }, [searchParams]);
+  }, [searchParams, t]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!phone.trim()) {
-      toast.error('Please enter your phone number');
+      toast.error(t('enter_phone_error'));
       return;
     }
     if (!password) {
-      toast.error('Please enter your password');
+      toast.error(t('enter_password_error'));
       return;
     }
 
     let formattedPhone = phone.trim().replace(/\s+/g, '');
     if (!formattedPhone.startsWith('+')) {
-      if (formattedPhone.startsWith('998') && formattedPhone.length === 12) {
-        // User typed 998901234567 -> +998901234567
+      if (formattedPhone.startsWith('996') && formattedPhone.length === 12) {
+        // User typed 996901234567 -> +996901234567
         formattedPhone = '+' + formattedPhone;
       } else if (formattedPhone.length === 9) {
-        // User typed 901234567 -> +998901234567
-        formattedPhone = '+998' + formattedPhone;
+        // User typed 901234567 -> +996901234567
+        formattedPhone = '+996' + formattedPhone;
       } else {
-        // Fallback: assume Uzbekistan
-        formattedPhone = '+998' + formattedPhone;
+        // Fallback: assume Kyrgyzstan
+        formattedPhone = '+996' + formattedPhone;
       }
     }
 
@@ -126,16 +129,16 @@ function LoginForm() {
 
           <div className="rounded-[1.5rem] border border-white/80 bg-card/88 p-7 shadow-[0_24px_80px_rgba(15,23,42,0.12)] backdrop-blur-xl dark:border-white/10 dark:bg-card/78">
             <div className="mb-6">
-              <h3 className="text-xl font-bold text-foreground">Welcome back</h3>
+              <h3 className="text-xl font-bold text-foreground">{t('welcome_back_title')}</h3>
               <p className="mt-1 text-sm text-muted-foreground">
-                Sign in with your organization credentials.
+                {t('sign_in_subtitle')}
               </p>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-5">
               <div className="space-y-2">
                 <label htmlFor="phone" className="text-sm font-medium text-foreground">
-                  Phone Number
+                  {t('phone_number')}
                 </label>
                 <div className="relative">
                   <Phone className="absolute left-3 top-1/2 size-5 -translate-y-1/2 text-muted-foreground" />
@@ -154,7 +157,7 @@ function LoginForm() {
 
               <div className="space-y-2">
                 <label htmlFor="password" className="text-sm font-medium text-foreground">
-                  Password
+                  {t('password')}
                 </label>
                 <div className="relative">
                   <Lock className="absolute left-3 top-1/2 size-5 -translate-y-1/2 text-muted-foreground" />
@@ -173,7 +176,7 @@ function LoginForm() {
                     onClick={() => setShowPassword(!showPassword)}
                     className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground transition-colors hover:text-foreground"
                     tabIndex={-1}
-                    aria-label={showPassword ? 'Hide password' : 'Show password'}
+                    aria-label={showPassword ? t('hide_password') : t('show_password')}
                   >
                     {showPassword ? <EyeOff className="size-5" /> : <Eye className="size-5" />}
                   </button>
@@ -189,10 +192,10 @@ function LoginForm() {
                     className="size-4 rounded border-border text-primary focus:ring-primary"
                     disabled={isLoading}
                   />
-                  <span className="text-sm text-muted-foreground">Remember me</span>
+                  <span className="text-sm text-muted-foreground">{t('remember_me')}</span>
                 </label>
                 <a href="#" className="text-sm font-medium text-primary transition-colors hover:text-primary/80">
-                  Forgot password?
+                  {t('forgot_password')}
                 </a>
               </div>
 
@@ -205,24 +208,23 @@ function LoginForm() {
                 {isLoading ? (
                   <>
                     <Loader2 className="mr-2 size-5 animate-spin" />
-                    Signing in...
+                    {t('signing_in')}
                   </>
                 ) : (
-                  'Sign in'
+                  t('sign_in_button')
                 )}
               </Button>
             </form>
 
             <div className="mt-6 rounded-2xl border border-primary/12 bg-primary/5 p-4 text-xs leading-5 text-muted-foreground">
-              Use the phone number assigned by your administrator. Session refresh is handled
-              automatically after sign in.
+              {t('phone_info')}
             </div>
           </div>
 
           <p className="mt-7 text-center text-sm text-muted-foreground">
-            Don&apos;t have an account?{' '}
+            {t('no_account')}{' '}
             <a href="#" className="font-semibold text-primary transition-colors hover:text-primary/80">
-              Contact administrator
+              {t('contact_admin')}
             </a>
           </p>
         </section>

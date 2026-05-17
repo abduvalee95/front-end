@@ -124,7 +124,7 @@ export function ProfileTab({ user, profileData, handleProfileChange }: ProfileTa
                 value={profileData.phone} 
                 onChange={(e) => handleProfileChange('phone', e.target.value)}
                 className="h-11"
-                placeholder="+998 XX XXX XX XX"
+                placeholder="+996 XX XXX XX XX"
               />
             </div>
             <div className="space-y-2">

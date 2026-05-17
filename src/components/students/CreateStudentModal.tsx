@@ -23,6 +23,7 @@ import { useGroups } from '@/hooks/useGroups';
 import { queryKeys } from '@/lib/api/query-keys';
 import { useAuthStore } from '@/store/auth.store';
 import { getErrorMessage } from '@/lib/api/client';
+import { useTranslations } from '@/i18n/index';
 
 interface CreateStudentModalProps {
   open?: boolean;
@@ -40,6 +41,8 @@ export function CreateStudentModal({ open: externalOpen, onClose }: CreateStuden
   const queryClient = useQueryClient();
   const { user } = useAuthStore();
   const orgId = user?.organization_id;
+  const t = useTranslations('students');
+  const tCommon = useTranslations('common');
 
   const [formData, setFormData] = useState({
     name: '',
@@ -55,7 +58,7 @@ export function CreateStudentModal({ open: externalOpen, onClose }: CreateStuden
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.name.trim() || !formData.phone.trim() || !formData.address.trim()) {
-      toast.error('Please fill in all required fields (Name, Phone, Address)');
+      toast.error(t('fill_required'));
       return;
     }
 
@@ -71,19 +74,18 @@ export function CreateStudentModal({ open: externalOpen, onClose }: CreateStuden
         await enrollmentService.create({ student_id: res.student.id, group_id: groupId });
       }
 
-      toast.success('Student created successfully');
-      
+      toast.success(t('created_success'));
+
       if (res.temporaryPassword) {
-        toast.info(`Temporary password: ${res.temporaryPassword}`, { duration: 10000 });
+        toast.info(`${t('temp_password')}: ${res.temporaryPassword}`, { duration: 10000 });
       }
 
       setFormData({ name: '', phone: '', address: '', parent: '', groupId: '' });
       setOpen(false);
-      
-      // Invalidate queries to refresh the list
+
       queryClient.invalidateQueries({ queryKey: queryKeys.students.all(orgId) });
     } catch (error: unknown) {
-      toast.error(getErrorMessage(error) || 'Failed to create student');
+      toast.error(getErrorMessage(error) || t('failed_create'));
     } finally {
       setIsLoading(false);
     }
@@ -96,7 +98,7 @@ export function CreateStudentModal({ open: externalOpen, onClose }: CreateStuden
           render={
             <Button className="gap-2 bg-slate-950 text-white shadow-md hover:bg-slate-800 dark:bg-primary dark:text-primary-foreground dark:hover:bg-primary/90 rounded-xl h-10 px-5">
               <Plus className="size-4" />
-              Add Student
+              {t('add_student')}
             </Button>
           }
         />
@@ -108,16 +110,14 @@ export function CreateStudentModal({ open: externalOpen, onClose }: CreateStuden
               <UsersRound className="size-5" />
             </div>
             <div>
-              <DialogTitle>Create New Student</DialogTitle>
-              <DialogDescription>
-                Add a new student directly to the organization.
-              </DialogDescription>
+              <DialogTitle>{t('create_student')}</DialogTitle>
+              <DialogDescription>{t('create_student_desc')}</DialogDescription>
             </div>
           </div>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4 pt-2">
           <div className="space-y-2">
-            <Label htmlFor="name">Full Name *</Label>
+            <Label htmlFor="name">{t('full_name')} *</Label>
             <Input
               id="name"
               placeholder="Name and Surname"
@@ -127,17 +127,17 @@ export function CreateStudentModal({ open: externalOpen, onClose }: CreateStuden
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="phone">Phone Number *</Label>
+            <Label htmlFor="phone">{t('phone')} *</Label>
             <Input
               id="phone"
-              placeholder="+998 90 000 00 00"
+              placeholder="+996 90 000 00 00"
               value={formData.phone}
               onChange={(e) => setFormData((prev) => ({ ...prev, phone: e.target.value }))}
               disabled={isLoading}
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="address">Address *</Label>
+            <Label htmlFor="address">{t('address')} *</Label>
             <Input
               id="address"
               placeholder="Address"
@@ -147,10 +147,10 @@ export function CreateStudentModal({ open: externalOpen, onClose }: CreateStuden
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="parent">Parent Info (Optional)</Label>
+            <Label htmlFor="parent">{t('parent_info')}</Label>
             <Input
               id="parent"
-              placeholder="E.g. Father: +998 90 000 00 00"
+              placeholder="E.g. Father: +996 90 000 00 00"
               value={formData.parent}
               onChange={(e) => setFormData((prev) => ({ ...prev, parent: e.target.value }))}
               disabled={isLoading}
@@ -159,7 +159,7 @@ export function CreateStudentModal({ open: externalOpen, onClose }: CreateStuden
           <div className="space-y-2">
             <Label className="flex items-center gap-1.5">
               <BookOpen className="size-3.5 text-muted-foreground" />
-              Group (Optional)
+              {t('group_optional')}
             </Label>
             <Select
               value={formData.groupId || '_none_'}
@@ -167,10 +167,10 @@ export function CreateStudentModal({ open: externalOpen, onClose }: CreateStuden
               disabled={isLoading}
             >
               <SelectTrigger>
-                <SelectValue placeholder="Select a group" />
+                <SelectValue placeholder={t('select_group')} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="_none_">No group</SelectItem>
+                <SelectItem value="_none_">{t('no_group')}</SelectItem>
                 {groups.map((g) => (
                   <SelectItem key={g.id} value={g.id}>
                     {g.name}
@@ -188,16 +188,16 @@ export function CreateStudentModal({ open: externalOpen, onClose }: CreateStuden
               disabled={isLoading}
               className="w-full sm:w-auto rounded-xl"
             >
-              Cancel
+              {tCommon('cancel')}
             </Button>
             <Button type="submit" disabled={isLoading} className="w-full sm:w-auto rounded-xl">
               {isLoading ? (
                 <>
                   <Loader2 className="mr-2 size-4 animate-spin" />
-                  Creating...
+                  {t('creating')}
                 </>
               ) : (
-                'Create Student'
+                t('create_student')
               )}
             </Button>
           </DialogFooter>
