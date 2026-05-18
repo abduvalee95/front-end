@@ -206,7 +206,7 @@ export default function LandingPage() {
                   <span className="size-2.5 rounded-full bg-amber-400/80"></span>
                   <span className="size-2.5 rounded-full bg-emerald-400/80"></span>
                   <div className="ml-3 px-2.5 py-1 rounded-md bg-white border border-slate-200 text-[10.5px] font-mono text-slate-500">
-                    bilimnuru.uz/jurnal/5-A
+                    {t('mockup_url')}
                   </div>
                   <div className="ml-auto flex items-center gap-1.5">
                     <span className="size-1.5 rounded-full bg-emerald-500"></span>
@@ -244,19 +244,19 @@ export default function LandingPage() {
                   <div className="flex-1 p-4 overflow-hidden">
                     <div className="flex items-center gap-2 mb-3">
                       <div>
-                        <p className="text-[14px] font-black text-slate-900 leading-none">5-A · Ingliz tili</p>
-                        <p className="text-[10px] text-slate-500 mt-1 font-semibold">Joriy oy: May 2026</p>
+                        <p className="text-[14px] font-black text-slate-900 leading-none">{t('mockup_journal_title')}</p>
+                        <p className="text-[10px] text-slate-500 mt-1 font-semibold">{t('mockup_current_month')}</p>
                       </div>
                       <div className="ml-auto flex items-center gap-1 p-0.5 rounded-lg bg-slate-100">
-                        <span className="px-2 py-1 rounded-md bg-white text-[10px] font-bold text-slate-700 shadow-sm">Oy</span>
-                        <span className="px-2 py-1 text-[10px] font-bold text-slate-500">Hafta</span>
+                        <span className="px-2 py-1 rounded-md bg-white text-[10px] font-bold text-slate-700 shadow-sm">{t('mockup_month')}</span>
+                        <span className="px-2 py-1 text-[10px] font-bold text-slate-500">{t('mockup_week')}</span>
                       </div>
                     </div>
 
                     <div className="rounded-xl border border-slate-200 overflow-hidden bg-white">
                       {/* Header row */}
                       <div className="grid text-[9px] font-bold text-slate-500 uppercase tracking-wider bg-slate-50 border-b border-slate-200" style={{ gridTemplateColumns: '80px repeat(12, 1fr)' }}>
-                        <div className="px-2 py-2">O&apos;quvchi</div>
+                        <div className="px-2 py-2">{t('mockup_student')}</div>
                         {DAYS.map((d, i) => (
                           <div key={i} className={`px-1 py-2 text-center ${i === 11 ? 'text-slate-400' : ''}`}>{d}</div>
                         ))}
@@ -442,7 +442,7 @@ export default function LandingPage() {
               </p>
               <div className="mt-5 rounded-xl bg-slate-50 border border-slate-100 px-3 py-2.5">
                 <p className="text-[10.5px] font-mono text-slate-500">SMS · 17:42</p>
-                <p className="text-[12.5px] font-semibold text-slate-700 leading-snug mt-1">Sardor bugun darsda. Baho: <b>5</b>. Mavzu: Past Perfect.</p>
+                <p className="text-[12.5px] font-semibold text-slate-700 leading-snug mt-1" dangerouslySetInnerHTML={{ __html: t('mockup_sms') }}></p>
               </div>
             </article>
           </div>
@@ -491,8 +491,8 @@ export default function LandingPage() {
               <div className="px-5 py-4 border-b border-slate-200 flex items-center gap-3">
                 <span className="size-9 rounded-xl brand-grad text-white text-[11px] font-black flex items-center justify-center">5-A</span>
                 <div>
-                  <p className="text-[13px] font-black text-slate-900">Ingliz tili · A2</p>
-                  <p className="text-[10.5px] font-semibold text-slate-500">18 o&apos;quvchi · Ma-Cho-Ju</p>
+                  <p className="text-[13px] font-black text-slate-900">{t('mockup_course_name')}</p>
+                  <p className="text-[10.5px] font-semibold text-slate-500">{t('mockup_course_info')}</p>
                 </div>
                 <button className="ml-auto px-3 py-1.5 rounded-lg brand-grad text-white text-[11.5px] font-bold inline-flex items-center gap-1.5">
                   <svg viewBox="0 0 24 24" className="size-3.5" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -569,12 +569,12 @@ export default function LandingPage() {
               <div className="grid grid-cols-3 gap-3 mt-3">
                 <div className="rounded-xl bg-slate-50 p-3">
                   <p className="text-[9.5px] font-black uppercase tracking-wider text-slate-500">{t('analytics_stat1_label')}</p>
-                  <p className="text-[13px] font-black text-slate-900 mt-1">IELTS Intensive</p>
+                  <p className="text-[13px] font-black text-slate-900 mt-1">{t('mockup_top_group')}</p>
                   <p className="text-[11px] text-emerald-600 font-bold tabular-nums">98.1%</p>
                 </div>
                 <div className="rounded-xl bg-slate-50 p-3">
                   <p className="text-[9.5px] font-black uppercase tracking-wider text-slate-500">{t('analytics_stat2_label')}</p>
-                  <p className="text-[13px] font-black text-slate-900 mt-1">7-B Matem.</p>
+                  <p className="text-[13px] font-black text-slate-900 mt-1">{t('mockup_attention_group')}</p>
                   <p className="text-[11px] text-amber-600 font-bold tabular-nums">82.4%</p>
                 </div>
                 <div className="rounded-xl bg-slate-50 p-3">

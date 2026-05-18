@@ -668,6 +668,17 @@
         "float_avg_sub": "Compared to last week",
         "feat5_stage1": "New 38",
         "feat5_stage2": "Contact 21",
-        "feat5_stage3": "Signed 14"
+        "feat5_stage3": "Signed 14",
+        "mockup_journal_title": "5-A · English",
+        "mockup_current_month": "Current month: May 2026",
+        "mockup_month": "Month",
+        "mockup_week": "Week",
+        "mockup_student": "Student",
+        "mockup_course_name": "English · A2",
+        "mockup_course_info": "18 students · Mon-Wed-Fri",
+        "mockup_sms": "Sardor attended class today. Grade: <b>5</b>. Topic: Past Perfect.",
+        "mockup_top_group": "IELTS Intensive",
+        "mockup_attention_group": "7-B Math",
+        "mockup_url": "bilimnuru.uz/journal/5-A"
     }
 }
