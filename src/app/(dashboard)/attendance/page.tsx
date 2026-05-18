@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { ClipboardCheck } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { buttonVariants } from '@/components/ui/button';
 
 export default function AttendancePage() {
   return (
@@ -15,9 +15,9 @@ export default function AttendancePage() {
         Davomatni hozircha jurnal sahifasida ko&apos;rishingiz mumkin. Alohida davomat
         sahifasi keyinroq ishga tushiriladi.
       </p>
-      <Button asChild   >
-        <Link href="/journal">Jurnalga o&apos;tish</Link>
-      </Button>
+      <Link href="/journal" className={buttonVariants()}>
+        Jurnalga o&apos;tish
+      </Link>
     </div>
   );
 }
