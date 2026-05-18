@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import { useAuthStore } from '@/store/auth.store';
 import { useCourses } from '@/hooks/useCourses';
+import { useTranslations } from '@/i18n/index';
 import { queryKeys } from '@/lib/api/query-keys';
 import { courseService } from '@/services/courses';
 import { Badge } from '@/components/ui/badge';
@@ -31,6 +32,7 @@ import { EditCourseModal } from './EditCourseModal';
 
 export function CoursesWorkspace() {
   const user = useAuthStore((s) => s.user);
+  const t = useTranslations('courses');
   const role = user?.role;
   const canManage = role === 'ADMIN' || role === 'MANAGER';
   // Note: Both Teachers and Students can view courses according to the controller
@@ -57,15 +59,15 @@ export function CoursesWorkspace() {
   const activeCourses = useMemo(() => allCourses.filter(c => c.status === 'ACTIVE').length, [allCourses]);
 
   const handleDelete = async (id: string, title: string) => {
-    if (!confirm(`Are you sure you want to delete the course "${title}"? This might fail if there are groups associated with it.`)) return;
+    if (!confirm(t('delete_confirm').replace('{title}', title))) return;
     try {
       setIsDeleting(id);
       await courseService.deleteCourse(id);
-      toast.success('Course deleted successfully');
+      toast.success(t('delete_success'));
       const user = useAuthStore.getState().user;
       queryClient.invalidateQueries({ queryKey: queryKeys.courses.all(user?.organization_id) });
     } catch (error: any) {
-      toast.error(error.response?.data?.message || 'Failed to delete course');
+      toast.error(error.response?.data?.message || t('delete_failed'));
     } finally {
       setIsDeleting(null);
     }
@@ -79,9 +81,9 @@ export function CoursesWorkspace() {
         <div className="mx-auto mb-5 flex size-16 items-center justify-center rounded-2xl bg-muted text-muted-foreground">
           <AlertCircle className="size-8" />
         </div>
-        <h1 className="text-2xl font-black">Courses unavailable</h1>
+        <h1 className="text-2xl font-black">{t('courses_unavailable')}</h1>
         <p className="mt-2 text-sm text-muted-foreground">
-          Your current role {role ? `(${role})` : ''} does not have access.
+          {t('courses_unavailable_desc').replace('{role}', role || '')}
         </p>
       </div>
     );
@@ -98,15 +100,15 @@ export function CoursesWorkspace() {
               <div className="flex items-center gap-3 mb-5">
                 <Badge variant="outline" className="rounded-full border-indigo-500/20 bg-indigo-500/10 text-indigo-700 dark:text-indigo-300">
                   <Library className="mr-1.5 size-3.5" />
-                  Course management
+                  {t('course_management')}
                 </Badge>
                 {canManage && <CreateCourseModal />}
               </div>
               <h1 className="max-w-3xl text-3xl font-black tracking-tight text-foreground sm:text-5xl">
-                Educational Programs
+                {t('educational_programs')}
               </h1>
               <p className="mt-4 max-w-2xl text-sm leading-6 text-muted-foreground sm:text-base">
-                Manage all the courses offered at your organization. Courses act as templates for creating groups.
+                {t('educational_programs_desc')}
               </p>
             </div>
             
@@ -114,11 +116,11 @@ export function CoursesWorkspace() {
             <div className="flex shrink-0 gap-4">
               <div className="flex flex-col items-center justify-center rounded-2xl bg-white/40 px-5 py-3 shadow-inner ring-1 ring-white/50 backdrop-blur-md dark:bg-black/20 dark:ring-white/10">
                 <span className="text-3xl font-black text-indigo-600 dark:text-indigo-400">{allCourses.length}</span>
-                <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Total Courses</span>
+                <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">{t('total_courses')}</span>
               </div>
               <div className="flex flex-col items-center justify-center rounded-2xl bg-white/40 px-5 py-3 shadow-inner ring-1 ring-white/50 backdrop-blur-md dark:bg-black/20 dark:ring-white/10">
                 <span className="text-3xl font-black text-emerald-600 dark:text-emerald-400">{activeCourses}</span>
-                <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Active Now</span>
+                <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">{t('active_now')}</span>
               </div>
             </div>
           </div>
@@ -127,7 +129,7 @@ export function CoursesWorkspace() {
 
       {/* Toolbar */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <h2 className="text-xl font-bold tracking-tight">All Courses</h2>
+        <h2 className="text-xl font-bold tracking-tight">{t('all_courses')}</h2>
         <div className="flex flex-col gap-3 sm:flex-row">
           <div className="relative sm:w-72">
             {isSearching ? (
@@ -138,7 +140,7 @@ export function CoursesWorkspace() {
             <Input
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search courses..."
+              placeholder={t('search_courses')}
               className={cn('pl-9 bg-white/50 dark:bg-white/5 backdrop-blur-sm', search && 'pr-9')}
             />
             {search && (
@@ -156,11 +158,11 @@ export function CoursesWorkspace() {
             onChange={(e) => setStatusFilter(e.target.value)}
             className="h-9 rounded-lg border border-input bg-white/50 dark:bg-white/5 backdrop-blur-sm px-3 text-sm text-foreground outline-none transition-colors focus:ring-2 focus:ring-ring"
           >
-            <option value="">All Statuses</option>
-            <option value="ACTIVE">Active</option>
-            <option value="INACTIVE">Inactive</option>
+            <option value="">{t('all_statuses')}</option>
+            <option value="ACTIVE">{t('status_active')}</option>
+            <option value="INACTIVE">{t('status_inactive')}</option>
           </select>
-          <Button variant="outline" size="icon" onClick={refresh} className="size-9 shrink-0 bg-white/50 dark:bg-white/5" title="Refresh">
+          <Button variant="outline" size="icon" onClick={refresh} className="size-9 shrink-0 bg-white/50 dark:bg-white/5" title={t('refresh')}>
             <RefreshCw className={cn('size-4', coursesQuery.isLoading && 'animate-spin')} />
           </Button>
         </div>
@@ -178,9 +180,9 @@ export function CoursesWorkspace() {
           <div className="mb-4 flex size-14 items-center justify-center rounded-2xl bg-destructive/10 text-destructive">
             <AlertCircle className="size-7" />
           </div>
-          <h3 className="text-lg font-bold">Failed to load courses</h3>
+          <h3 className="text-lg font-bold">{t('failed_to_load')}</h3>
           <Button variant="outline" size="sm" onClick={refresh} className="mt-4">
-            <RefreshCw className="mr-2 size-3.5" /> Try again
+            <RefreshCw className="mr-2 size-3.5" /> {t('try_again')}
           </Button>
         </div>
       ) : rows.length === 0 ? (
@@ -188,13 +190,13 @@ export function CoursesWorkspace() {
           <div className="mb-4 flex size-16 items-center justify-center rounded-2xl bg-muted text-muted-foreground">
             <BookOpen className="size-8" />
           </div>
-          <h3 className="text-xl font-bold">{search || statusFilter ? 'No matching courses' : 'No courses yet'}</h3>
+          <h3 className="text-xl font-bold">{search || statusFilter ? t('no_matching_courses') : t('no_courses_yet')}</h3>
           <p className="mt-2 max-w-sm text-sm text-muted-foreground">
-            {canManage ? 'Start building your curriculum by adding a new course.' : 'Courses will appear here once created.'}
+            {canManage ? t('start_building') : t('courses_will_appear')}
           </p>
           {(search || statusFilter) && (
             <Button variant="outline" size="sm" onClick={() => { clearSearch(); setStatusFilter(''); }} className="mt-4">
-              Clear filters
+              {t('clear_filters')}
             </Button>
           )}
         </div>
@@ -217,7 +219,7 @@ export function CoursesWorkspace() {
                         className="size-8 bg-white/50 text-destructive hover:bg-destructive/90 hover:text-white backdrop-blur-md transition-colors"
                         disabled={isDeleting === course.id}
                         onClick={() => handleDelete(course.id, course.title)}
-                        title="Delete course"
+                        title={t('delete_course')}
                       >
                         {isDeleting === course.id ? (
                           <RefreshCw className="size-4 animate-spin" />
@@ -241,12 +243,12 @@ export function CoursesWorkspace() {
                 </div>
                 
                 <p className="mt-2 line-clamp-2 text-sm text-muted-foreground flex-1">
-                  {course.description || 'No description provided.'}
+                  {course.description || t('no_description')}
                 </p>
 
                 <div className="mt-5 flex items-end justify-between border-t border-border/50 pt-4">
                   <div>
-                    <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1">Price</p>
+                    <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1">{t('price')}</p>
                     <p className="text-xl font-black text-foreground">{course.price}</p>
                   </div>
                   <Badge 

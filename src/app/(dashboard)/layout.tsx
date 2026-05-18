@@ -23,7 +23,7 @@ export default function DashboardLayout({
             
             <DashboardSidebar />
             <main className="relative flex flex-1 flex-col overflow-y-auto scrollbar-hide">
-              <DashboardHeader />
+              {/* <DashboardHeader /> */} //no touch !
               <div className="mx-auto w-full max-w-[1600px] flex-1 px-8 pb-12 pt-4">
                 {children}
               </div>
