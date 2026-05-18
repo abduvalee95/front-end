@@ -591,13 +591,19 @@
         "pricing_desc": "Faol o'quvchilar soni bo'yicha. Yashirin to'lov yo'q, istalgan paytda bekor qilasiz.",
         "pricing_annual_note": "Yillik to'lov uchun −20% · Maxsus shartlar mavjud",
         "plan_start_name": "Start",
+        "plan_start_price": "290 000",
+        "plan_start_price_unit": "so'm / oy",
         "plan_start_limit": "100 tagacha o'quvchi",
         "plan_start_cta": "Boshlash",
         "plan_start_f1": "Cheksiz o'qituvchi",
         "plan_start_f2": "Jurnal · Davomat · Baholar",
         "plan_start_f3": "SMS-xabarlar (1000/oy)",
+        "plan_start_disabled1": "Moliya moduli",
+        "plan_start_disabled2": "API",
         "plan_pro_name": "Pro",
         "plan_pro_badge": "Eng mashhur",
+        "plan_pro_price": "890 000",
+        "plan_pro_price_unit": "so'm / oy",
         "plan_pro_limit": "500 tagacha o'quvchi",
         "plan_pro_cta": "Pro tariflari",
         "plan_pro_f1": "Start tarkibining hammasi",
@@ -659,6 +665,9 @@
         "float_saved": "Davomat saqlandi",
         "float_saved_sub": "5-A · 18/18 belgilandi",
         "float_avg": "O'rtacha bal: 4.32",
-        "float_avg_sub": "Haftaga nisbatan"
+        "float_avg_sub": "Haftaga nisbatan",
+        "feat5_stage1": "Yangi 38",
+        "feat5_stage2": "Aloqa 21",
+        "feat5_stage3": "Imzo 14"
     }
 }

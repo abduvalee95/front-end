@@ -204,11 +204,6 @@ export function DashboardSidebar() {
 
       {/* Footer Controls */}
       <div className="p-4 mt-auto border-t border-white/5 bg-blue-900/10">
-        {!isCollapsed && (
-          <div className="mb-2">
-            <LanguageSwitcher variant="sidebar" />
-          </div>
-        )}
         <div className="flex items-center gap-3">
           {!isCollapsed ? (
             <div className="flex flex-1 items-center gap-3 px-3 py-3 rounded-2xl bg-white/5 border border-white/5 backdrop-blur-sm">

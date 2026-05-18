@@ -136,7 +136,7 @@ export default function DashboardPage() {
               title={t('total_payments')} 
               value={String(summary?.paymentsCount || 0)} 
               unit="payments" 
-              subtitle={`${Number(summary?.paymentsTotalAmount || 0).toLocaleString()} som`}
+              subtitle={`${Number(summary?.paymentsTotalAmount || 0).toLocaleString()} сом`}
               icon={DollarSign} 
               trend={`${summary?.paymentsCount || 0} count`}
               trendUp={true}

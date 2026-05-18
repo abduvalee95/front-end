@@ -425,7 +425,7 @@ export default function LandingPage() {
                 <div className="flex-1 h-1.5 rounded-full bg-slate-200"></div>
               </div>
               <div className="mt-2 flex justify-between text-[10px] font-bold text-slate-500">
-                <span>Yangi 38</span><span>Aloqa 21</span><span>Imzo 14</span><span>—</span>
+                <span>{t('feat5_stage1')}</span><span>{t('feat5_stage2')}</span><span>{t('feat5_stage3')}</span><span>—</span>
               </div>
             </article>
 
@@ -723,8 +723,8 @@ export default function LandingPage() {
               <p className="text-[12px] font-black uppercase tracking-wider text-slate-500">{t('plan_start_name')}</p>
               <p className="mt-3 text-[13px] text-slate-500">{t('plan_start_limit')}</p>
               <div className="mt-5 flex items-baseline gap-2">
-                <span className="text-[48px] font-black tracking-tight text-slate-900 tabular-nums">290k</span>
-                <span className="text-[13px] font-bold text-slate-500">so&apos;m / oy</span>
+                <span className="text-[48px] font-black tracking-tight text-slate-900 tabular-nums">{t('plan_start_price')}</span>
+                <span className="text-[13px] font-bold text-slate-500">{t('plan_start_price_unit')}</span>
               </div>
               <Link href="/login" className="mt-6 block text-center px-4 py-3 rounded-xl border border-slate-200 text-[13px] font-bold text-slate-800 hover:bg-slate-50">{t('plan_start_cta')}</Link>
               <ul className="mt-6 space-y-2.5 text-[13px] text-slate-700">
@@ -734,7 +734,7 @@ export default function LandingPage() {
                     {item}
                   </li>
                 ))}
-                {['Moliya moduli', 'API'].map((item) => (
+                {[t('plan_start_disabled1'), t('plan_start_disabled2')].map((item) => (
                   <li key={item} className="flex gap-2 text-slate-400">
                     <span className="size-4 rounded-md bg-slate-100 flex items-center justify-center shrink-0 mt-0.5"></span>
                     {item}
@@ -749,8 +749,8 @@ export default function LandingPage() {
               <p className="text-[12px] font-black uppercase tracking-wider" style={{ color: '#03CBE7' }}>{t('plan_pro_name')}</p>
               <p className="mt-3 text-[13px] opacity-80">{t('plan_pro_limit')}</p>
               <div className="mt-5 flex items-baseline gap-2">
-                <span className="text-[48px] font-black tracking-tight tabular-nums">890k</span>
-                <span className="text-[13px] font-bold opacity-70">so&apos;m / oy</span>
+                <span className="text-[48px] font-black tracking-tight tabular-nums">{t('plan_pro_price')}</span>
+                <span className="text-[13px] font-bold opacity-70">{t('plan_pro_price_unit')}</span>
               </div>
               <Link href="/login" className="mt-6 block text-center px-4 py-3 rounded-xl brand-grad text-white text-[13px] font-bold">{t('plan_pro_cta')}</Link>
               <ul className="mt-6 space-y-2.5 text-[13px] opacity-90">
@@ -863,7 +863,7 @@ export default function LandingPage() {
             <p className="mt-5 text-[13.5px] text-slate-600 max-w-[320px] leading-relaxed">
               {t('footer_tagline')}
             </p>
-            <p className="mt-5 text-[11.5px] text-slate-500 font-mono">support@bilimnuru.uz · +998 71 200 12 12</p>
+            <p className="mt-5 text-[11.5px] text-slate-500 font-mono">support@bilimnuru · +996 505004411</p>
           </div>
 
           <div>

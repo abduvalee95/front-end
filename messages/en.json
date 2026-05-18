@@ -591,13 +591,19 @@
         "pricing_desc": "Based on active students. No hidden fees, cancel anytime.",
         "pricing_annual_note": "−20% for annual billing · Special rates for public schools",
         "plan_start_name": "Start",
+        "plan_start_price": "290 000",
+        "plan_start_price_unit": "so'm / mo",
         "plan_start_limit": "Up to 100 students",
         "plan_start_cta": "Get started",
         "plan_start_f1": "Unlimited teachers",
         "plan_start_f2": "Journal · Attendance · Grades",
         "plan_start_f3": "SMS notifications (1000/mo)",
+        "plan_start_disabled1": "Finance module",
+        "plan_start_disabled2": "API",
         "plan_pro_name": "Pro",
         "plan_pro_badge": "Most popular",
+        "plan_pro_price": "890 000",
+        "plan_pro_price_unit": "so'm / mo",
         "plan_pro_limit": "Up to 500 students",
         "plan_pro_cta": "Pro plans",
         "plan_pro_f1": "Everything in Start",
@@ -659,6 +665,9 @@
         "float_saved": "Attendance saved",
         "float_saved_sub": "5-A · 18/18 marked",
         "float_avg": "Avg grade: 4.32",
-        "float_avg_sub": "Compared to last week"
+        "float_avg_sub": "Compared to last week",
+        "feat5_stage1": "New 38",
+        "feat5_stage2": "Contact 21",
+        "feat5_stage3": "Signed 14"
     }
 }
