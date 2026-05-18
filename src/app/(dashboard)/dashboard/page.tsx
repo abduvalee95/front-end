@@ -10,7 +10,6 @@ import {
   TrendingUp,
   Clock,
   ChevronRight,
-  Sparkles,
   DollarSign,
   GraduationCap
 } from 'lucide-react';
@@ -79,10 +78,6 @@ export default function DashboardPage() {
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(59,130,246,0.2),transparent_25rem)]" />
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="space-y-2">
-            <div className="flex items-center gap-2 text-blue-400 font-bold text-xs uppercase tracking-widest">
-              <Sparkles className="size-4" />
-              <span>System Insights</span>
-            </div>
             <h1 className="text-3xl md:text-4xl font-black tracking-tight">
               {t('welcome_back')} {user?.organization_name || 'Bilim Nuru'}
             </h1>
