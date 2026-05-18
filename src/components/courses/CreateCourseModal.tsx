@@ -62,6 +62,7 @@ export function CreateCourseModal({ open: externalOpen, onClose }: CreateCourseM
         title: formData.title,
         description: formData.description || undefined,
         price: formData.price,
+        status: formData.status,
       });
       toast.success(tCommon('course_created_success'));
       resetForm();

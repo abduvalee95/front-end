@@ -15,6 +15,7 @@ export interface CreateCoursePayload {
   title: string;
   description?: string;
   price: string;
+  status?: CourseStatus;
 }
 
 export interface UpdateCoursePayload {
