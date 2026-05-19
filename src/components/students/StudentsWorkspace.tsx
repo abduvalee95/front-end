@@ -302,7 +302,7 @@ export function StudentsWorkspace() {
 
           {/* Status pills */}
           <div className="flex rounded-xl border border-border/60 bg-muted/40 p-0.5">
-            {([['', 'All'], ['ACTIVE', 'Active'], ['INACTIVE', 'Inactive']] as [string, string][]).map(([val, label]) => (
+            {([['', t('all')], ['ACTIVE', t('status_active')], ['INACTIVE', t('status_inactive')]] as [string, string][]).map(([val, label]) => (
               <button
                 key={val}
                 type="button"
@@ -335,13 +335,13 @@ export function StudentsWorkspace() {
               <SelectTrigger className="h-9 w-auto min-w-[160px] rounded-xl text-xs font-medium">
                 <span className="flex items-center gap-2 mr-1">
                   <UsersRound className="size-3.5 shrink-0 text-muted-foreground" />
-                  <SelectValue placeholder="All teachers" />
+                  <SelectValue placeholder={t('all_teachers')} />
                 </span>
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="_all_">All teachers</SelectItem>
-                {teacherOptions.map((t) => (
-                  <SelectItem key={t.id} value={t.id}>{t.full_name ?? 'Unnamed'}</SelectItem>
+                <SelectItem value="_all_">{t('all_teachers')}</SelectItem>
+                {teacherOptions.map((teacher) => (
+                  <SelectItem key={teacher.id} value={teacher.id}>{teacher.full_name ?? t('unnamed')}</SelectItem>
                 ))}
               </SelectContent>
             </Select>
@@ -350,7 +350,7 @@ export function StudentsWorkspace() {
           {/* View mode toggle */}
           {canManageScope && (
             <div className="flex rounded-xl border border-border/60 bg-muted/40 p-0.5">
-              {([['all', 'All'], ['teacher', 'By teacher']] as [ViewMode, string][]).map(([val, label]) => (
+              {([['all', t('all')], ['teacher', t('by_teacher')]] as [ViewMode, string][]).map(([val, label]) => (
                 <button
                   key={val}
                   type="button"
@@ -373,16 +373,16 @@ export function StudentsWorkspace() {
         {/* Table header row */}
         <div className="flex items-center justify-between border-b border-border/60 px-5 py-3.5">
           <div>
-            <p className="text-sm font-bold text-foreground">Student roster</p>
+            <p className="text-sm font-bold text-foreground">{t('student_roster')}</p>
             <p className="text-xs text-muted-foreground mt-0.5">
               {effectiveViewMode === 'all'
-                ? `${studentsQuery.data?.meta.total ?? rows.length} students total`
-                : `${rows.length} students from teacher's groups`}
+                ? `${studentsQuery.data?.meta.total ?? rows.length} ${t('students_total')}`
+                : `${rows.length} ${t('students_from_teacher')}`}
             </p>
           </div>
           {(search || statusFilter) && (
             <button type="button" onClick={resetFilters} className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground hover:text-foreground transition-colors rounded-lg border border-border/60 px-2.5 py-1.5">
-              <X className="size-3" /> Clear filters
+              <X className="size-3" /> {t('clear_filters')}
             </button>
           )}
         </div>
@@ -403,17 +403,17 @@ export function StudentsWorkspace() {
           <Table>
             <TableHeader>
               <TableRow className="hover:bg-transparent border-b border-border/50">
-                <TableHead className="w-8 pl-5 text-[11px] font-bold uppercase tracking-wider text-muted-foreground">#</TableHead>
-                <TableHead className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Student</TableHead>
-                <TableHead className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Status</TableHead>
-                <TableHead className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Parent</TableHead>
+                <TableHead className="w-8 pl-5 text-[11px] font-bold uppercase tracking-wider text-muted-foreground">{t('col_number')}</TableHead>
+                <TableHead className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">{t('col_student')}</TableHead>
+                <TableHead className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">{t('col_status')}</TableHead>
+                <TableHead className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">{t('col_parent')}</TableHead>
                 <TableHead className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
-                  {teacherScoped ? 'Group / Course' : 'Address'}
+                  {teacherScoped ? t('col_group_course') : t('col_address')}
                 </TableHead>
                 <TableHead className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
-                  {teacherScoped ? 'Teacher' : 'Phone'}
+                  {teacherScoped ? t('col_teacher') : t('col_phone')}
                 </TableHead>
-                {canManageScope && <TableHead className="w-20 pr-4 text-right text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Actions</TableHead>}
+                {canManageScope && <TableHead className="w-20 pr-4 text-right text-[11px] font-bold uppercase tracking-wider text-muted-foreground">{t('col_actions')}</TableHead>}
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -435,10 +435,10 @@ export function StudentsWorkspace() {
         {effectiveViewMode === 'all' && studentsQuery.data?.meta && studentsQuery.data.meta.pages > 1 && (
           <div className="flex items-center justify-between border-t border-border/50 px-5 py-3">
             <p className="text-xs text-muted-foreground">
-              Page <span className="font-bold text-foreground">{page}</span> of{' '}
+              Page <span className="font-bold text-foreground">{page}</span> {t('page_of')}{' '}
               <span className="font-bold text-foreground">{studentsQuery.data.meta.pages}</span>
               <span className="mx-2 text-border">·</span>
-              <span className="font-bold text-foreground">{studentsQuery.data.meta.total}</span> students
+              <span className="font-bold text-foreground">{studentsQuery.data.meta.total}</span> {t('col_student').toLowerCase()}
             </p>
             <div className="flex items-center gap-1">
               <Button variant="outline" size="icon" className="size-8 rounded-lg" disabled={page === 1} onClick={() => setPage((p) => Math.max(1, p - 1))}>
@@ -456,8 +456,8 @@ export function StudentsWorkspace() {
         isOpen={isImportOpen}
         onClose={() => setIsImportOpen(false)}
         onImport={handleBulkImport}
-        title="Import Students"
-        description="Upload an Excel file to bulk add students to your organization."
+        title={t('import_title')}
+        description={t('import_desc')}
         requiredFields={['name', 'phone']}
         columnMapping={{ 'Full Name': 'name', 'Phone': 'phone', 'Address': 'address', 'Parent Name': 'parent' }}
       />
@@ -478,18 +478,19 @@ function StudentTableRow({
   canManageScope: boolean;
   orgId?: string;
 }) {
+  const t = useTranslations('students');
   const queryClient = useQueryClient();
   const [isDeleting, setIsDeleting] = useState(false);
 
   const handleDelete = async () => {
-    if (!confirm(`Delete ${student.name}?`)) return;
+    if (!confirm(t('delete_confirm').replace('{name}', student.name))) return;
     try {
       setIsDeleting(true);
       await studentService.deleteStudent(student.id);
-      toast.success('Student deleted');
+      toast.success(t('deleted_success'));
       queryClient.invalidateQueries({ queryKey: queryKeys.students.all(orgId) });
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : 'Failed to delete';
+      const msg = err instanceof Error ? err.message : t('delete_failed');
       toast.error(msg);
     } finally {
       setIsDeleting(false);
@@ -524,7 +525,7 @@ function StudentTableRow({
             : 'bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400',
         )}>
           <span className={cn('size-1.5 rounded-full', student.status === 'ACTIVE' ? 'bg-emerald-500' : 'bg-slate-400')} />
-          {student.status === 'ACTIVE' ? 'Active' : 'Inactive'}
+          {student.status === 'ACTIVE' ? t('status_active') : t('status_inactive')}
         </span>
       </TableCell>
       <TableCell className="text-xs text-muted-foreground max-w-[160px]">
@@ -534,7 +535,7 @@ function StudentTableRow({
         {teacherScoped ? (
           <div>
             <p className="truncate font-medium text-foreground/80">{student.groups.join(', ') || <span className="text-border">—</span>}</p>
-            <p className="truncate text-[11px] text-muted-foreground/70">{student.courses.join(', ') || 'No course'}</p>
+            <p className="truncate text-[11px] text-muted-foreground/70">{student.courses.join(', ') || t('no_course')}</p>
           </div>
         ) : (
           <span className="line-clamp-1">{student.address || <span className="text-border">—</span>}</span>
@@ -573,28 +574,30 @@ function StudentTableRow({
 }
 
 function TeacherPrompt() {
+  const t = useTranslations('students');
   return (
     <div className="flex flex-col items-center justify-center px-6 py-16 text-center">
       <div className="mb-4 flex size-14 items-center justify-center rounded-2xl bg-indigo-50 dark:bg-indigo-500/10">
         <BookOpen className="size-6 text-indigo-500" />
       </div>
-      <p className="text-sm font-bold text-foreground">Select a teacher</p>
+      <p className="text-sm font-bold text-foreground">{t('select_teacher')}</p>
       <p className="mt-1.5 max-w-xs text-xs text-muted-foreground">
-        Switch to &ldquo;By teacher&rdquo; view and pick a teacher to see their enrolled students.
+        {t('select_teacher_desc')}
       </p>
     </div>
   );
 }
 
 function EmptyState({ hasFilters, teacherScoped, onClear }: { hasFilters: boolean; teacherScoped: boolean; onClear: () => void }) {
+  const t = useTranslations('students');
   return (
     <div className="flex flex-col items-center justify-center px-6 py-16 text-center">
       <div className="mb-4 flex size-14 items-center justify-center rounded-2xl bg-muted">
         <UsersRound className="size-6 text-muted-foreground" />
       </div>
-      <p className="text-sm font-bold">{hasFilters ? 'No matching students' : 'No students yet'}</p>
+      <p className="text-sm font-bold">{hasFilters ? t('no_matching_students') : t('no_students_yet')}</p>
       <p className="mt-1.5 max-w-xs text-xs text-muted-foreground">
-        {teacherScoped ? 'Enroll students into your groups first.' : 'Add your first student using the button above.'}
+        {teacherScoped ? t('enroll_first') : t('add_first')}
       </p>
       {hasFilters && (
         <Button variant="outline" size="sm" onClick={onClear} className="mt-4 rounded-xl text-xs h-8">

@@ -90,7 +90,7 @@ export function CreateLeadModal({ isOpen, onClose }: CreateLeadModalProps) {
             <Label htmlFor="lead-name">{t('full_name')} *</Label>
             <Input
               id="lead-name"
-              placeholder="E.g. Ali Valiyev"
+              placeholder={t('name_placeholder')}
               value={formData.full_name}
               onChange={(e) => setFormData((prev) => ({ ...prev, full_name: e.target.value }))}
               disabled={createLead.isPending}

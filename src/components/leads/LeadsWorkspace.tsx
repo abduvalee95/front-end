@@ -243,7 +243,7 @@ export function LeadsWorkspace() {
                           variant="ghost" 
                           className="h-8 w-8 p-0 text-indigo-500 hover:text-indigo-600 hover:bg-indigo-500/10"
                           onClick={() => handleAIAction(lead)}
-                          title="Generate AI Response"
+                          title={t('generate_ai_response')}
                         >
                           <Sparkles className="size-4" />
                         </Button>
@@ -259,7 +259,7 @@ export function LeadsWorkspace() {
                             <DropdownMenuLabel>{t('title')}</DropdownMenuLabel>
                             <DropdownMenuItem onClick={() => handleAIAction(lead)}>
                               <Sparkles className="mr-2 size-4 text-indigo-500" />
-                              Generate AI Response
+                              {t('generate_ai_response')}
                             </DropdownMenuItem>
                             <DropdownMenuSeparator />
                             <DropdownMenuItem

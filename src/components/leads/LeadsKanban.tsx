@@ -57,7 +57,7 @@ export function LeadsKanban({ leads, isLoading, onAIAction }: LeadsKanbanProps) 
       { id, data: { status } },
       {
         onSuccess: () => {
-          toast.success(`Lead moved to ${t(`status_${status.toLowerCase()}`)}`);
+          toast.success(t('lead_moved_to').replace('{status}', t(`status_${status.toLowerCase()}`)));
         },
       }
     );
@@ -164,7 +164,7 @@ export function LeadsKanban({ leads, isLoading, onAIAction }: LeadsKanbanProps) 
                         size="icon" 
                         variant="ghost" 
                         className="size-7 text-indigo-500 hover:text-indigo-600 hover:bg-indigo-500/10"
-                        title="AI Assistant"
+                        title={t('ai_assistant')}
                         onClick={() => onAIAction?.(lead)}
                       >
                         <Sparkles className="size-3.5" />
