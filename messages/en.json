@@ -179,7 +179,16 @@
         "view_all": "View All",
         "no_upcoming_lessons": "No upcoming lessons",
         "overall_attendance": "Overall Attendance",
-        "present": "Present"
+        "present": "Present",
+        "inactive": "Inactive",
+        "total": "total",
+        "payments_unit": "payments",
+        "count": "count",
+        "contacted": "Contacted",
+        "converted": "Converted",
+        "absent": "Absent",
+        "no_lead_data": "No lead data available",
+        "no_payment_data": "No payment data available"
     },
     "leads": {
         "title": "Leads",

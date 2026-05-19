@@ -87,28 +87,28 @@ export default function DashboardPage() {
             <StatCard 
               title={t('total_students')} 
               value={String(summary?.studentsActive || 0)} 
-              subtitle={`Inactive: ${summary?.studentsInactive || 0}`} 
+              subtitle={`${t('inactive')}: ${summary?.studentsInactive || 0}`} 
               icon={Users} 
-              trend={`${summary?.studentsTotal || 0} total`}
+              trend={`${summary?.studentsTotal || 0} ${t('total')}`}
               trendUp={true}
               color="#3b82f6"
             />
             <StatCard 
               title={t('total_payments')} 
               value={String(summary?.paymentsCount || 0)} 
-              unit="payments" 
+              unit={t('payments_unit')} 
               subtitle={`${Number(summary?.paymentsTotalAmount || 0).toLocaleString()} сом`}
               icon={DollarSign} 
-              trend={`${summary?.paymentsCount || 0} count`}
+              trend={`${summary?.paymentsCount || 0} ${t('count')}`}
               trendUp={true}
               color="#2dd4bf"
             />
             <StatCard 
               title={t('active_leads')} 
               value={String(summary?.leadsNew || 0)} 
-              subtitle={`Contacted: ${summary?.leadsContacted || 0}`} 
+              subtitle={`${t('contacted')}: ${summary?.leadsContacted || 0}`} 
               icon={ClipboardList} 
-              trend={`${summary?.leadsConverted || 0} converted`}
+              trend={`${summary?.leadsConverted || 0} ${t('converted')}`}
               trendUp={true}
               color="#f59e0b"
             />
@@ -118,7 +118,7 @@ export default function DashboardPage() {
               unit="%"
               subtitle={`${t('present')}: ${summary?.attendancePresent || 0}`} 
               icon={GraduationCap} 
-              trend={`${summary?.attendanceAbsent || 0} absent`}
+              trend={`${summary?.attendanceAbsent || 0} ${t('absent')}`}
               trendUp={(summary?.attendanceRate || 0) >= 75}
               color="#8b5cf6"
             />
@@ -183,7 +183,7 @@ export default function DashboardPage() {
                 </>
               ) : (
                 <div className="h-[300px] flex items-center justify-center text-slate-400 text-sm">
-                  No lead data available
+                  {t('no_lead_data')}
                 </div>
               )}
             </div>
@@ -227,7 +227,7 @@ export default function DashboardPage() {
                 </div>
               ) : (
                 <div className="h-[280px] flex items-center justify-center text-slate-400 text-sm">
-                  No payment data available
+                  {t('no_payment_data')}
                 </div>
               )}
             </div>

@@ -179,7 +179,16 @@
         "view_all": "Посмотреть все",
         "no_upcoming_lessons": "Нет предстоящих уроков",
         "overall_attendance": "Общая посещаемость",
-        "present": "Присутствует"
+        "present": "Присутствует",
+        "inactive": "Неактивных",
+        "total": "всего",
+        "payments_unit": "платежей",
+        "count": "шт.",
+        "contacted": "Связались",
+        "converted": "Конвертировано",
+        "absent": "Отсутствует",
+        "no_lead_data": "Нет данных о лидах",
+        "no_payment_data": "Нет данных о платежах"
     },
     "leads": {
         "title": "Лиды",

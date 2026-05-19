@@ -179,7 +179,16 @@
         "view_all": "Баарын көрүү",
         "no_upcoming_lessons": "Келген сабактар жок",
         "overall_attendance": "Жалпы катышуу",
-        "present": "Катышты"
+        "present": "Катышты",
+        "inactive": "Активдүү эмес",
+        "total": "жалпы",
+        "payments_unit": "төлөм",
+        "count": "даана",
+        "contacted": "Байланышкан",
+        "converted": "Конвертацияланган",
+        "absent": "Келбеген",
+        "no_lead_data": "Лид маалыматтары жок",
+        "no_payment_data": "Төлөм маалыматтары жок"
     },
     "leads": {
         "title": "Лидтер",

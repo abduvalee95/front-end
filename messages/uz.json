@@ -179,7 +179,16 @@
         "view_all": "Hammasini ko'rish",
         "no_upcoming_lessons": "Kelayotgan darslar yo'q",
         "overall_attendance": "Umumiy davomat",
-        "present": "Keldi"
+        "present": "Keldi",
+        "inactive": "Nofaol",
+        "total": "jami",
+        "payments_unit": "ta to'lov",
+        "count": "ta",
+        "contacted": "Bog'lanilgan",
+        "converted": "Konvertatsiya qilingan",
+        "absent": "Kelmagan",
+        "no_lead_data": "Lid ma'lumotlari mavjud emas",
+        "no_payment_data": "To'lov ma'lumotlari mavjud emas"
     },
     "leads": {
         "title": "Lidlar",
