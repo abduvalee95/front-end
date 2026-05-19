@@ -17,6 +17,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { useTranslations } from '@/i18n/index';
 import { groupService } from '@/services/groups';
 import { GROUPS_KEYS } from '@/hooks/useGroups';
 import { useCourses } from '@/hooks/useCourses';
@@ -28,6 +29,8 @@ interface CreateGroupModalProps {
 }
 
 export function CreateGroupModal({ open: externalOpen, onClose }: CreateGroupModalProps = {}) {
+  const t = useTranslations('groups');
+  const tCommon = useTranslations('common');
   const isControlled = externalOpen !== undefined;
   const [internalOpen, setInternalOpen] = useState(false);
   const open = isControlled ? externalOpen : internalOpen;
@@ -55,20 +58,20 @@ export function CreateGroupModal({ open: externalOpen, onClose }: CreateGroupMod
     e.preventDefault();
     const { name, course_id, teacher_id, start_date, end_date } = formData;
     if (!name.trim() || !course_id || !teacher_id || !start_date || !end_date) {
-      toast.error('Please fill in all fields');
+      toast.error(t('fill_all_fields'));
       return;
     }
 
     try {
       setIsLoading(true);
       await groupService.createGroup(formData);
-      toast.success('Group created successfully');
+      toast.success(t('group_created'));
       resetForm();
       setOpen(false);
       queryClient.invalidateQueries({ queryKey: GROUPS_KEYS.all(user?.organization_id) });
     } catch (err: unknown) {
       const error = err as { response?: { data?: { message?: string } } };
-      toast.error(error.response?.data?.message || 'Failed to create group');
+      toast.error(error.response?.data?.message || t('group_create_failed'));
     } finally {
       setIsLoading(false);
     }
@@ -84,7 +87,7 @@ export function CreateGroupModal({ open: externalOpen, onClose }: CreateGroupMod
           render={
             <Button className="gap-2 bg-slate-950 text-white shadow-md hover:bg-slate-800 dark:bg-primary dark:text-primary-foreground dark:hover:bg-primary/90 rounded-xl h-10 px-5">
               <Plus className="size-4" />
-              Add Group
+              {t('add_group')}
             </Button>
           }
         />
@@ -96,19 +99,19 @@ export function CreateGroupModal({ open: externalOpen, onClose }: CreateGroupMod
               <Users2 className="size-5" />
             </div>
             <div>
-              <DialogTitle>Create New Group</DialogTitle>
+              <DialogTitle>{t('create_group')}</DialogTitle>
               <DialogDescription>
-                A group links a course with a teacher and schedule.
+                {t('create_group_desc')}
               </DialogDescription>
             </div>
           </div>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4 pt-2">
           <div className="space-y-2">
-            <Label htmlFor="group-name">Group Name *</Label>
+            <Label htmlFor="group-name">{t('group_name')} *</Label>
             <Input
               id="group-name"
-              placeholder="E.g. English B1 — Morning"
+              placeholder={t('group_name_placeholder')}
               value={formData.name}
               onChange={(e) => setFormData((p) => ({ ...p, name: e.target.value }))}
               disabled={isLoading}
@@ -116,7 +119,7 @@ export function CreateGroupModal({ open: externalOpen, onClose }: CreateGroupMod
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="group-course">Course *</Label>
+            <Label htmlFor="group-course">{t('course')} *</Label>
             <select
               id="group-course"
               value={formData.course_id}
@@ -124,7 +127,7 @@ export function CreateGroupModal({ open: externalOpen, onClose }: CreateGroupMod
               disabled={isLoading}
               className="flex h-9 w-full rounded-xl border border-input bg-background px-3 text-sm text-foreground outline-none transition-colors focus:ring-2 focus:ring-ring"
             >
-              <option value="">Select course...</option>
+              <option value="">{t('select_course')}</option>
               {courses.map((c) => (
                 <option key={c.id} value={c.id}>{c.title}</option>
               ))}
@@ -132,7 +135,7 @@ export function CreateGroupModal({ open: externalOpen, onClose }: CreateGroupMod
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="group-teacher">Teacher *</Label>
+            <Label htmlFor="group-teacher">{t('teacher')} *</Label>
             <select
               id="group-teacher"
               value={formData.teacher_id}
@@ -140,7 +143,7 @@ export function CreateGroupModal({ open: externalOpen, onClose }: CreateGroupMod
               disabled={isLoading}
               className="flex h-9 w-full rounded-xl border border-input bg-background px-3 text-sm text-foreground outline-none transition-colors focus:ring-2 focus:ring-ring"
             >
-              <option value="">Select teacher...</option>
+              <option value="">{t('select_teacher')}</option>
               {teachers.map((t) => (
                 <option key={t.id} value={t.id}>{t.full_name ?? 'Teacher'}</option>
               ))}
@@ -149,7 +152,7 @@ export function CreateGroupModal({ open: externalOpen, onClose }: CreateGroupMod
 
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-2">
-              <Label htmlFor="group-start">Start Date *</Label>
+              <Label htmlFor="group-start">{t('start_date')} *</Label>
               <Input
                 id="group-start"
                 type="date"
@@ -159,7 +162,7 @@ export function CreateGroupModal({ open: externalOpen, onClose }: CreateGroupMod
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="group-end">End Date *</Label>
+              <Label htmlFor="group-end">{t('end_date')} *</Label>
               <Input
                 id="group-end"
                 type="date"
@@ -172,10 +175,10 @@ export function CreateGroupModal({ open: externalOpen, onClose }: CreateGroupMod
 
           <DialogFooter>
             <Button type="button" variant="outline" onClick={() => setOpen(false)} disabled={isLoading} className="w-full sm:w-auto rounded-xl">
-              Cancel
+              {tCommon('cancel')}
             </Button>
             <Button type="submit" disabled={isLoading} className="w-full sm:w-auto rounded-xl">
-              {isLoading ? <><Loader2 className="mr-2 size-4 animate-spin" />Creating...</> : 'Create Group'}
+              {isLoading ? <><Loader2 className="mr-2 size-4 animate-spin" />{t('creating')}</> : t('create_group')}
             </Button>
           </DialogFooter>
         </form>

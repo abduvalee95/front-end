@@ -454,7 +454,10 @@
         "day_thu": "Thu",
         "day_fri": "Fri",
         "day_sat": "Sat",
-        "min": "min"
+        "min": "min",
+        "creating": "Creating...",
+        "saving": "Saving...",
+        "save_changes": "Save Changes"
     },
     "finance": {
         "title": "Finance",

@@ -17,6 +17,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { useTranslations } from '@/i18n/index';
 import { groupService } from '@/services/groups';
 import { GROUPS_KEYS } from '@/hooks/useGroups';
 import { useCourses } from '@/hooks/useCourses';
@@ -28,6 +29,8 @@ interface EditGroupModalProps {
 }
 
 export function EditGroupModal({ group }: EditGroupModalProps) {
+  const t = useTranslations('groups');
+  const tCommon = useTranslations('common');
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const queryClient = useQueryClient();
@@ -60,18 +63,18 @@ export function EditGroupModal({ group }: EditGroupModalProps) {
     e.preventDefault();
     const { name, course_id, teacher_id, start_date, end_date } = formData;
     if (!name.trim() || !course_id || !teacher_id || !start_date || !end_date) {
-      toast.error('Please fill in all fields');
+      toast.error(t('fill_all_fields'));
       return;
     }
     try {
       setIsLoading(true);
       await groupService.updateGroup(group.id, formData);
-      toast.success('Group updated successfully');
+      toast.success(t('group_updated'));
       setOpen(false);
       queryClient.invalidateQueries({ queryKey: GROUPS_KEYS.all(user?.organization_id) });
     } catch (err: unknown) {
       const error = err as { response?: { data?: { message?: string } } };
-      toast.error(error.response?.data?.message || 'Failed to update group');
+      toast.error(error.response?.data?.message || t('group_update_failed'));
     } finally {
       setIsLoading(false);
     }
@@ -84,7 +87,7 @@ export function EditGroupModal({ group }: EditGroupModalProps) {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger
         render={
-          <Button variant="ghost" size="icon" className="size-8" title="Edit group">
+          <Button variant="ghost" size="icon" className="size-8" title={t('edit_group')}>
             <PenLine className="size-4" />
           </Button>
         }
@@ -96,16 +99,16 @@ export function EditGroupModal({ group }: EditGroupModalProps) {
               <Users2 className="size-5" />
             </div>
             <div>
-              <DialogTitle>Edit Group</DialogTitle>
+              <DialogTitle>{t('edit_group')}</DialogTitle>
               <DialogDescription>
-                Update group details, course, or teacher assignment.
+                {t('edit_group_desc')}
               </DialogDescription>
             </div>
           </div>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4 pt-2">
           <div className="space-y-2">
-            <Label htmlFor={`edit-gname-${group.id}`}>Group Name *</Label>
+            <Label htmlFor={`edit-gname-${group.id}`}>{t('group_name')} *</Label>
             <Input
               id={`edit-gname-${group.id}`}
               value={formData.name}
@@ -115,14 +118,14 @@ export function EditGroupModal({ group }: EditGroupModalProps) {
           </div>
 
           <div className="space-y-2">
-            <Label>Course *</Label>
+            <Label>{t('course')} *</Label>
             <select
               value={formData.course_id}
               onChange={(e) => setFormData((p) => ({ ...p, course_id: e.target.value }))}
               disabled={isLoading}
               className="flex h-9 w-full rounded-xl border border-input bg-background px-3 text-sm text-foreground outline-none transition-colors focus:ring-2 focus:ring-ring"
             >
-              <option value="">Select course...</option>
+              <option value="">{t('select_course')}</option>
               {courses.map((c) => (
                 <option key={c.id} value={c.id}>{c.title}</option>
               ))}
@@ -130,14 +133,14 @@ export function EditGroupModal({ group }: EditGroupModalProps) {
           </div>
 
           <div className="space-y-2">
-            <Label>Teacher *</Label>
+            <Label>{t('teacher')} *</Label>
             <select
               value={formData.teacher_id}
               onChange={(e) => setFormData((p) => ({ ...p, teacher_id: e.target.value }))}
               disabled={isLoading}
               className="flex h-9 w-full rounded-xl border border-input bg-background px-3 text-sm text-foreground outline-none transition-colors focus:ring-2 focus:ring-ring"
             >
-              <option value="">Select teacher...</option>
+              <option value="">{t('select_teacher')}</option>
               {teachers.map((t) => (
                 <option key={t.id} value={t.id}>{t.full_name ?? 'Teacher'}</option>
               ))}
@@ -146,19 +149,19 @@ export function EditGroupModal({ group }: EditGroupModalProps) {
 
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-2">
-              <Label>Start Date *</Label>
+              <Label>{t('start_date')} *</Label>
               <Input type="date" value={formData.start_date} onChange={(e) => setFormData((p) => ({ ...p, start_date: e.target.value }))} disabled={isLoading} />
             </div>
             <div className="space-y-2">
-              <Label>End Date *</Label>
+              <Label>{t('end_date')} *</Label>
               <Input type="date" value={formData.end_date} onChange={(e) => setFormData((p) => ({ ...p, end_date: e.target.value }))} disabled={isLoading} />
             </div>
           </div>
 
           <DialogFooter>
-            <Button type="button" variant="outline" onClick={() => setOpen(false)} disabled={isLoading} className="w-full sm:w-auto rounded-xl">Cancel</Button>
+            <Button type="button" variant="outline" onClick={() => setOpen(false)} disabled={isLoading} className="w-full sm:w-auto rounded-xl">{tCommon('cancel')}</Button>
             <Button type="submit" disabled={isLoading} className="w-full sm:w-auto rounded-xl">
-              {isLoading ? <><Loader2 className="mr-2 size-4 animate-spin" />Saving...</> : 'Save Changes'}
+              {isLoading ? <><Loader2 className="mr-2 size-4 animate-spin" />{t('saving')}</> : t('save_changes')}
             </Button>
           </DialogFooter>
         </form>

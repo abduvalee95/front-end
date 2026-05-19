@@ -454,7 +454,10 @@
         "day_thu": "Pa",
         "day_fri": "Ju",
         "day_sat": "Sh",
-        "min": "daq"
+        "min": "daq",
+        "creating": "Yaratilmoqda...",
+        "saving": "Saqlanmoqda...",
+        "save_changes": "O'zgarishlarni saqlash"
     },
     "finance": {
         "title": "Moliya",
