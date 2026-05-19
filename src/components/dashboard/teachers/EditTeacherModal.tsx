@@ -25,7 +25,7 @@ import {
 } from '@/components/ui/select';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { useUpdateTeacher } from '@/hooks/useTeachers';
-import type { TeacherProfile, UpdateTeacherDto } from '@/types/teacher';
+import type { TeacherProfile, UpdateTeacherDto, SalaryType } from '@/types/teacher';
 import { TEACHER_SUBJECTS } from '@/types/teacher';
 import { useTranslations } from '@/i18n/index';
 
@@ -48,6 +48,7 @@ export function EditTeacherModal({ teacher, onClose }: EditTeacherModalProps) {
   const tCommon = useTranslations('common');
   const tSettings = useTranslations('settings');
   const [selectedSubjects, setSelectedSubjects] = useState<string[]>([]);
+  const [salaryType, setSalaryType] = useState<SalaryType>('MONTHLY');
 
   const {
     register,
@@ -66,6 +67,7 @@ export function EditTeacherModal({ teacher, onClose }: EditTeacherModalProps) {
         bio: teacher.bio || '',
       });
       setSelectedSubjects(teacher.subjects ?? []);
+      setSalaryType(teacher.salary_type ?? 'MONTHLY');
     }
   }, [teacher, reset]);
 
@@ -86,6 +88,7 @@ export function EditTeacherModal({ teacher, onClose }: EditTeacherModalProps) {
       phone: values.phone || undefined,
       subjects: selectedSubjects.length > 0 ? selectedSubjects : undefined,
       hourly_rate: values.hourly_rate ? Number(values.hourly_rate) : undefined,
+      salary_type: salaryType,
       qualifications: values.qualifications || undefined,
       bio: values.bio || undefined,
     };
@@ -157,8 +160,27 @@ export function EditTeacherModal({ teacher, onClose }: EditTeacherModalProps) {
                   </div>
                 )}
               </Field>
-              <Field label={t('hourly_rate')}>
-                <Input type="number" step="0.01" {...register('hourly_rate')} placeholder="0.00" />
+              <div className="space-y-1.5">
+                <Label className="text-xs">Oylik turi</Label>
+                <div className="flex rounded-xl border border-border/60 bg-muted/40 p-0.5 w-fit">
+                  {(['MONTHLY', 'DAILY'] as SalaryType[]).map((type) => (
+                    <button
+                      key={type}
+                      type="button"
+                      onClick={() => setSalaryType(type)}
+                      className={`h-7 rounded-lg px-3 text-xs font-semibold transition-all ${
+                        salaryType === type
+                          ? 'bg-background text-foreground shadow-sm'
+                          : 'text-muted-foreground hover:text-foreground'
+                      }`}
+                    >
+                      {type === 'MONTHLY' ? 'Oylik' : 'Kunlik'}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <Field label={salaryType === 'MONTHLY' ? 'Oylik maosh (KGS)' : 'Kunlik stavka (KGS)'}>
+                <Input type="number" step="100" {...register('hourly_rate')} placeholder={salaryType === 'MONTHLY' ? '15000' : '700'} />
               </Field>
               <Field label={t('qualifications')}>
                 <Input {...register('qualifications')} placeholder="PhD in Math" />

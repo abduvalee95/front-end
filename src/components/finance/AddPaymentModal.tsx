@@ -28,6 +28,8 @@ import type { CreatePaymentDto, PaymentMethod } from '@/types/finance';
 interface AddPaymentModalProps {
   open: boolean;
   onClose: () => void;
+  studentId?: string;
+  studentName?: string;
 }
 
 type FormValues = {
@@ -37,15 +39,15 @@ type FormValues = {
   description: string;
 };
 
-export function AddPaymentModal({ open, onClose }: AddPaymentModalProps) {
+export function AddPaymentModal({ open, onClose, studentId, studentName }: AddPaymentModalProps) {
   const t = useTranslations('finance');
   const tCommon = useTranslations('common');
   const createPayment = useCreatePayment();
-  const studentsQuery = useStudents({ page: 1, limit: 500 }, open);
+  const studentsQuery = useStudents({ page: 1, limit: 500 }, open && !studentId);
 
   const { register, handleSubmit, reset, setValue, watch, formState: { errors } } = useForm<FormValues>({
     defaultValues: {
-      student_id: '',
+      student_id: studentId ?? '',
       amount: '',
       method: 'CASH',
       description: '',
@@ -55,11 +57,13 @@ export function AddPaymentModal({ open, onClose }: AddPaymentModalProps) {
   const methodValue = watch('method');
   const studentValue = watch('student_id');
   const students = studentsQuery.data?.items ?? [];
-  const selectedStudent = students.find((s) => s.id === studentValue);
+  const selectedStudent = studentId
+    ? { name: studentName ?? studentId, phone: '' }
+    : students.find((s) => s.id === studentValue);
 
   const onSubmit = (values: FormValues) => {
     const dto: CreatePaymentDto = {
-      student_id: values.student_id,
+      student_id: studentId ?? values.student_id,
       amount: parseFloat(values.amount),
       method: values.method,
       description: values.description || undefined,
@@ -89,25 +93,33 @@ export function AddPaymentModal({ open, onClose }: AddPaymentModalProps) {
         <form id="add-payment-form" onSubmit={handleSubmit(onSubmit)} className="space-y-4 pt-2">
           <div className="space-y-1.5">
             <Label className="text-xs">{tCommon('student')} *</Label>
-            <Select
-              value={studentValue}
-              onValueChange={(v) => setValue('student_id', v ?? '')}
-              disabled={createPayment.isPending}
-            >
-              <SelectTrigger className="rounded-xl h-9">
-                {selectedStudent
-                  ? <span className="truncate">{selectedStudent.name} — {selectedStudent.phone}</span>
-                  : <SelectValue placeholder={tCommon('select_student')} />}
-              </SelectTrigger>
-              <SelectContent className="max-h-[220px]">
-                {(studentsQuery.data?.items ?? []).map((s) => (
-                  <SelectItem key={s.id} value={s.id}>
-                    {s.name} — {s.phone}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            {errors.student_id && <p className="text-xs text-destructive">{tCommon('required')}</p>}
+            {studentId ? (
+              <div className="flex h-9 items-center rounded-xl border border-border/60 bg-muted/40 px-3 text-sm font-medium">
+                {studentName ?? studentId}
+              </div>
+            ) : (
+              <>
+                <Select
+                  value={studentValue}
+                  onValueChange={(v) => setValue('student_id', v ?? '')}
+                  disabled={createPayment.isPending}
+                >
+                  <SelectTrigger className="rounded-xl h-9">
+                    {selectedStudent
+                      ? <span className="truncate">{selectedStudent.name}{(selectedStudent as { phone?: string }).phone ? ` — ${(selectedStudent as { phone?: string }).phone}` : ''}</span>
+                      : <SelectValue placeholder={tCommon('select_student')} />}
+                  </SelectTrigger>
+                  <SelectContent className="max-h-[220px]">
+                    {(studentsQuery.data?.items ?? []).map((s) => (
+                      <SelectItem key={s.id} value={s.id}>
+                        {s.name} — {s.phone}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                {errors.student_id && <p className="text-xs text-destructive">{tCommon('required')}</p>}
+              </>
+            )}
           </div>
 
           <div className="grid grid-cols-2 gap-3">

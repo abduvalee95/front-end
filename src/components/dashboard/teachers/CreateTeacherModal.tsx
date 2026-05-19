@@ -24,7 +24,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { useCreateTeacher } from '@/hooks/useTeachers';
-import { TEACHER_SUBJECTS } from '@/types/teacher';
+import { TEACHER_SUBJECTS, type SalaryType } from '@/types/teacher';
 import { useTranslations } from '@/i18n/index';
 
 interface CreateTeacherModalProps {
@@ -48,6 +48,7 @@ export function CreateTeacherModal({ open, onClose }: CreateTeacherModalProps) {
   const tAuth = useTranslations('auth');
   const [selectedSubjects, setSelectedSubjects] = useState<string[]>([]);
   const [subjectError, setSubjectError] = useState('');
+  const [salaryType, setSalaryType] = useState<SalaryType>('MONTHLY');
 
   const {
     register,
@@ -89,11 +90,13 @@ export function CreateTeacherModal({ open, onClose }: CreateTeacherModalProps) {
       password: values.password,
       subjects: selectedSubjects,
       hourly_rate: values.hourly_rate ? Number(values.hourly_rate) : undefined,
+      salary_type: salaryType,
       qualifications: values.qualifications || undefined,
     }, {
       onSuccess: () => {
         reset();
         setSelectedSubjects([]);
+        setSalaryType('MONTHLY');
         onClose();
       },
     });
@@ -104,6 +107,7 @@ export function CreateTeacherModal({ open, onClose }: CreateTeacherModalProps) {
       reset();
       setSelectedSubjects([]);
       setSubjectError('');
+      setSalaryType('MONTHLY');
       onClose();
     }
   };
@@ -186,12 +190,31 @@ export function CreateTeacherModal({ open, onClose }: CreateTeacherModalProps) {
                 </div>
               )}
             </Field>
-            <Field label={t('hourly_rate')} error={errors.hourly_rate?.message}>
+            <div className="space-y-1.5">
+              <Label className="text-xs">Oylik turi</Label>
+              <div className="flex rounded-xl border border-border/60 bg-muted/40 p-0.5 w-fit">
+                {(['MONTHLY', 'DAILY'] as SalaryType[]).map((type) => (
+                  <button
+                    key={type}
+                    type="button"
+                    onClick={() => setSalaryType(type)}
+                    className={`h-7 rounded-lg px-3 text-xs font-semibold transition-all ${
+                      salaryType === type
+                        ? 'bg-background text-foreground shadow-sm'
+                        : 'text-muted-foreground hover:text-foreground'
+                    }`}
+                  >
+                    {type === 'MONTHLY' ? 'Oylik' : 'Kunlik'}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <Field label={salaryType === 'MONTHLY' ? 'Oylik maosh (KGS)' : 'Kunlik stavka (KGS)'} error={errors.hourly_rate?.message}>
               <Input
                 type="number"
                 {...register('hourly_rate')}
-                placeholder="0.00"
-                step="0.01"
+                placeholder={salaryType === 'MONTHLY' ? '15000' : '700'}
+                step="100"
               />
             </Field>
             <Field label={t('qualifications')} error={errors.qualifications?.message}>

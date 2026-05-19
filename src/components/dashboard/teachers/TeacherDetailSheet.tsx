@@ -1,6 +1,8 @@
 'use client';
 
-import { format } from 'date-fns';
+import { useMemo } from 'react';
+import { format, startOfMonth, endOfMonth } from 'date-fns';
+import { useQuery } from '@tanstack/react-query';
 import {
   GraduationCap,
   Mail,
@@ -25,7 +27,12 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { TeacherStatusBadge } from './TeacherStatusBadge';
+import { journalService } from '@/services/journal';
 import type { TeacherProfile } from '@/types/teacher';
+
+function formatKGS(amount: number) {
+  return new Intl.NumberFormat('ky-KG').format(amount) + ' KGS';
+}
 
 interface TeacherDetailSheetProps {
   teacher: TeacherProfile | null;
@@ -45,6 +52,28 @@ export function TeacherDetailSheet({
   if (!teacher) return null;
 
   const isActive = teacher.status === 'ACTIVE';
+
+  const now = new Date();
+  const monthFrom = format(startOfMonth(now), 'yyyy-MM-dd');
+  const monthTo = format(endOfMonth(now), 'yyyy-MM-dd');
+
+  const journalQuery = useQuery({
+    queryKey: ['journal', 'teacher', teacher.id, monthFrom],
+    queryFn: () => journalService.findByTeacher(teacher.id, { date_from: monthFrom, date_to: monthTo, limit: 500 }),
+    enabled: !!teacher.id && teacher.salary_type === 'DAILY',
+  });
+
+  const workedDays = useMemo(() => {
+    const entries = journalQuery.data?.items ?? [];
+    const uniqueDates = new Set(entries.map((e) => e.date?.slice(0, 10)));
+    return uniqueDates.size;
+  }, [journalQuery.data]);
+
+  const calculatedSalary = useMemo(() => {
+    if (!teacher.hourly_rate) return null;
+    if (teacher.salary_type === 'MONTHLY') return teacher.hourly_rate;
+    return teacher.hourly_rate * workedDays;
+  }, [teacher.hourly_rate, teacher.salary_type, workedDays]);
 
   return (
     <Sheet open={!!teacher} onOpenChange={(v) => !v && onClose()}>
@@ -106,11 +135,36 @@ export function TeacherDetailSheet({
                 </div>
               </div>
             </div>
-            <InfoRow
-              icon={<DollarSign className="size-4" />}
-              label="Hourly Rate"
-              value={teacher.hourly_rate ? `$${teacher.hourly_rate.toFixed(2)}` : '—'}
-            />
+            <div className="flex items-start gap-3">
+              <DollarSign className="size-4 text-muted-foreground shrink-0 mt-0.5" />
+              <div className="min-w-0 flex-1">
+                <p className="text-xs text-muted-foreground">
+                  {teacher.salary_type === 'DAILY' ? 'Kunlik stavka' : 'Oylik maosh'}
+                </p>
+                <p className="text-sm font-medium">
+                  {teacher.hourly_rate ? formatKGS(teacher.hourly_rate) : '—'}
+                </p>
+                {teacher.salary_type === 'DAILY' && teacher.hourly_rate && (
+                  <div className="mt-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-500/10 px-2.5 py-1.5">
+                    <p className="text-[11px] text-muted-foreground">
+                      {format(now, 'MMMM yyyy')} — ishlagan kunlar:{' '}
+                      <span className="font-bold text-foreground">{workedDays}</span>
+                    </p>
+                    <p className="text-xs font-bold text-emerald-700 dark:text-emerald-400 mt-0.5">
+                      Hisoblangan: {formatKGS(calculatedSalary ?? 0)}
+                    </p>
+                  </div>
+                )}
+                {teacher.salary_type === 'MONTHLY' && teacher.hourly_rate && (
+                  <div className="mt-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-500/10 px-2.5 py-1.5">
+                    <p className="text-[11px] text-muted-foreground">{format(now, 'MMMM yyyy')} — oylik</p>
+                    <p className="text-xs font-bold text-emerald-700 dark:text-emerald-400 mt-0.5">
+                      {formatKGS(teacher.hourly_rate)}
+                    </p>
+                  </div>
+                )}
+              </div>
+            </div>
             <InfoRow
               icon={<Award className="size-4" />}
               label="Qualifications"

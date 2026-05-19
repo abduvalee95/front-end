@@ -1,8 +1,11 @@
 'use client';
 
+import { useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { useStudentDetail } from '@/hooks/useStudents';
-import { ArrowLeft, BookOpen, Calendar, GraduationCap, MapPin, Phone, User, Users } from 'lucide-react';
+import { usePayments, useDeletePayment } from '@/hooks/useFinance';
+import { AddPaymentModal } from '@/components/finance/AddPaymentModal';
+import { ArrowLeft, BookOpen, Calendar, CreditCard, GraduationCap, Loader2, MapPin, Phone, Plus, Trash2, User, Users } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -10,12 +13,21 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
 
+function formatAmount(amount: number) {
+  return new Intl.NumberFormat('ky-KG').format(amount) + ' KGS';
+}
+
 export default function StudentDetailPage() {
   const params = useParams();
   const router = useRouter();
   const studentId = params.id as string;
+  const [paymentModalOpen, setPaymentModalOpen] = useState(false);
 
   const { data: student, isLoading, isError } = useStudentDetail(studentId);
+  const paymentsQuery = usePayments({ student_id: studentId, limit: 100 }, !!studentId);
+  const deletePayment = useDeletePayment();
+
+  const payments = paymentsQuery.data?.items ?? [];
 
   if (isLoading) {
     return <LoadingSkeleton />;
@@ -152,6 +164,92 @@ export default function StudentDetailPage() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Payments */}
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between pb-3">
+          <div>
+            <CardTitle className="flex items-center gap-2">
+              <CreditCard className="size-5" />
+              To&apos;lovlar
+            </CardTitle>
+            <CardDescription>Ushbu talaba uchun barcha to&apos;lovlar</CardDescription>
+          </div>
+          <Button
+            size="sm"
+            className="rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white h-9"
+            onClick={() => setPaymentModalOpen(true)}
+          >
+            <Plus className="mr-1.5 size-4" />
+            To&apos;lov qo&apos;shish
+          </Button>
+        </CardHeader>
+        <CardContent>
+          {paymentsQuery.isLoading ? (
+            <div className="space-y-2">
+              {Array.from({ length: 3 }).map((_, i) => (
+                <Skeleton key={i} className="h-14 rounded-xl" />
+              ))}
+            </div>
+          ) : payments.length === 0 ? (
+            <div className="flex flex-col items-center justify-center rounded-xl border border-dashed py-12 text-center">
+              <CreditCard className="mb-3 size-10 text-muted-foreground" />
+              <p className="text-sm font-medium">To&apos;lovlar yo&apos;q</p>
+              <p className="text-xs text-muted-foreground">Hali hech qanday to&apos;lov kiritilmagan</p>
+            </div>
+          ) : (
+            <div className="space-y-2">
+              {payments.map((payment) => (
+                <div
+                  key={payment.id}
+                  className="flex items-center justify-between rounded-xl border border-border/50 bg-muted/20 px-4 py-3"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="flex size-9 items-center justify-center rounded-lg bg-emerald-500/10">
+                      <CreditCard className="size-4 text-emerald-600" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-bold text-emerald-600">+{formatAmount(payment.amount)}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {format(new Date(payment.paid_at), 'dd MMM yyyy')}
+                        {payment.description && <span> · {payment.description}</span>}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Badge variant="outline" className="rounded-full text-[10px] px-2 py-0.5">
+                      {payment.method}
+                    </Badge>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="size-7 rounded-lg text-destructive/60 hover:text-destructive hover:bg-destructive/10"
+                      disabled={deletePayment.isPending}
+                      onClick={() => {
+                        if (!confirm('Bu to\'lovni o\'chirasizmi?')) return;
+                        deletePayment.mutate(payment.id);
+                      }}
+                    >
+                      {deletePayment.isPending ? (
+                        <Loader2 className="size-3.5 animate-spin" />
+                      ) : (
+                        <Trash2 className="size-3.5" />
+                      )}
+                    </Button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      <AddPaymentModal
+        open={paymentModalOpen}
+        onClose={() => setPaymentModalOpen(false)}
+        studentId={studentId}
+        studentName={student.name}
+      />
     </div>
   );
 }

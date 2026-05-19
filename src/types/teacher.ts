@@ -22,6 +22,8 @@ export type TeacherSubject = (typeof TEACHER_SUBJECTS)[number];
  * Backend /teachers endpoint returns a flat object:
  * User fields + TeacherProfile fields merged together.
  */
+export type SalaryType = 'MONTHLY' | 'DAILY';
+
 export interface TeacherProfile {
   id: string;
   email: string;
@@ -31,6 +33,7 @@ export interface TeacherProfile {
   organization_id: string;
   subjects: string[];
   hourly_rate: number | null;
+  salary_type: SalaryType;
   qualifications: string | null;
   bio: string | null;
   status: TeacherStatus;
@@ -46,6 +49,7 @@ export interface CreateTeacherDto {
   password: string;
   subjects: string[];
   hourly_rate?: number;
+  salary_type?: SalaryType;
   qualifications?: string;
   bio?: string;
 }
@@ -55,6 +59,7 @@ export interface UpdateTeacherDto {
   phone?: string;
   subjects?: string[];
   hourly_rate?: number;
+  salary_type?: SalaryType;
   qualifications?: string;
   bio?: string;
   status?: TeacherStatus;
