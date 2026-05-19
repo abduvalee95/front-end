@@ -28,12 +28,11 @@ type StudentResult = {
   enrollments?: Array<{ group?: string; course?: string }>;
 };
 
-// AI SDK v3 DynamicToolUIPart with output-available state
+// AI SDK v6 tool part: type = 'tool-{toolName}', flat structure
 type DynamicToolOutputPart = {
-  type: 'dynamic-tool';
-  toolName: string;
+  type: `tool-${string}`;
   toolCallId: string;
-  state: 'output-available';
+  state: string;
   input: unknown;
   output: unknown;
 };
@@ -86,7 +85,7 @@ function ProposalCard({
             {state === 'loading' ? 'Yuklanmoqda…' : 'Tasdiqlash'}
           </button>
           <button
-            onClick={() => setState('error')}
+            onClick={() => setState('idle')}
             className="rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-medium text-slate-500 hover:bg-slate-50 transition-colors"
           >
             Bekor
@@ -107,7 +106,8 @@ function ToolResultCard({
   onConfirm: (p: ProposalResult) => Promise<void>;
 }) {
   const result = part.output as Record<string, unknown>;
-  const toolName = part.toolName;
+  // type is 'tool-find_student' → toolName is 'find_student'
+  const toolName = (part.type as string).replace(/^tool-/, '');
 
   // PROPOSAL card (propose_enroll_student, propose_record_payment)
   if (result?.kind === 'proposal') {
@@ -259,7 +259,12 @@ export function AICopilot() {
     }
   };
 
+  const ALLOWED_CONFIRM_PATHS = ['/api/proxy/enrollment', '/api/proxy/payment'];
+
   const handleConfirm = async (proposal: ProposalResult): Promise<void> => {
+    if (!ALLOWED_CONFIRM_PATHS.includes(proposal.confirmUrl)) {
+      throw new Error('Invalid confirm URL');
+    }
     const res = await fetch(proposal.confirmUrl, {
       method: proposal.confirmMethod,
       headers: { 'Content-Type': 'application/json' },
@@ -308,13 +313,11 @@ export function AICopilot() {
     return ((msg as unknown) as Record<string, unknown>).content as string || '';
   };
 
-  // Extract dynamic tool output parts from a message
+  // Extract tool result parts from a message
   const getDynamicToolParts = (msg: (typeof messages)[number]): DynamicToolOutputPart[] => {
     if (!msg.parts) return [];
-    return msg.parts.filter(
-      (p): p is DynamicToolOutputPart =>
-        p.type === 'dynamic-tool' &&
-        (p as Record<string, unknown>).state === 'output-available',
+    return (msg.parts as unknown as DynamicToolOutputPart[]).filter(
+      (p) => p.type.startsWith('tool-') && p.state === 'output-available',
     );
   };
 
