@@ -206,7 +206,7 @@ export function GroupsWorkspace() {
                 onChange={(e) => setCourseFilter(e.target.value)}
                 className="h-9 rounded-lg border border-input bg-background px-3 text-sm text-foreground outline-none transition-colors focus:ring-2 focus:ring-ring"
               >
-                <option value="">All courses</option>
+                <option value="">{t('all_courses')}</option>
                 {courses.map((c) => (
                   <option key={c.id} value={c.id}>{c.title}</option>
                 ))}
@@ -217,7 +217,7 @@ export function GroupsWorkspace() {
                   size="sm"
                   className={cn("h-7 px-2", viewMode === 'table' && "bg-background shadow-sm")}
                   onClick={() => setViewMode('table')}
-                  title="Table View"
+                  title={t('table_view')}
                 >
                   <List className="size-4" />
                 </Button>
@@ -226,12 +226,12 @@ export function GroupsWorkspace() {
                   size="sm"
                   className={cn("h-7 px-2", viewMode === 'kanban' && "bg-background shadow-sm")}
                   onClick={() => setViewMode('kanban')}
-                  title="Kanban Board"
+                  title={t('kanban_view')}
                 >
                   <LayoutGrid className="size-4" />
                 </Button>
               </div>
-              <Button variant="ghost" size="icon" onClick={refresh} className="size-9 shrink-0" title="Refresh">
+              <Button variant="ghost" size="icon" onClick={refresh} className="size-9 shrink-0" title={tCommon('refresh')}>
                 <RefreshCw className={cn('size-4', groupsQuery.isLoading && 'animate-spin')} />
               </Button>
             </div>
@@ -250,9 +250,9 @@ export function GroupsWorkspace() {
               <div className="mb-4 flex size-14 items-center justify-center rounded-2xl bg-destructive/10 text-destructive">
                 <AlertCircle className="size-7" />
               </div>
-              <h3 className="text-lg font-bold">Failed to load groups</h3>
+              <h3 className="text-lg font-bold">{t('failed_load')}</h3>
               <Button variant="outline" size="sm" onClick={refresh} className="mt-4">
-                <RefreshCw className="mr-2 size-3.5" /> Try again
+                <RefreshCw className="mr-2 size-3.5" /> {tCommon('try_again')}
               </Button>
             </div>
           ) : rows.length === 0 ? (
@@ -260,13 +260,13 @@ export function GroupsWorkspace() {
               <div className="mb-4 flex size-14 items-center justify-center rounded-2xl bg-muted text-muted-foreground">
                 <Users2 className="size-7" />
               </div>
-              <h3 className="text-lg font-bold">{search || courseFilter ? 'No matching groups' : 'No groups yet'}</h3>
+              <h3 className="text-lg font-bold">{search || courseFilter ? t('no_matching') : t('no_groups_yet')}</h3>
               <p className="mt-2 max-w-sm text-sm text-muted-foreground">
-                {canManage ? 'Click "Add Group" to create your first group.' : 'Groups will appear here once created.'}
+                {canManage ? t('empty_admin') : t('empty_viewer')}
               </p>
               {(search || courseFilter) && (
                 <Button variant="outline" size="sm" onClick={() => { clearSearch(); setCourseFilter(''); }} className="mt-4">
-                  Clear filters
+                  {t('clear_filters')}
                 </Button>
               )}
             </div>
@@ -275,11 +275,11 @@ export function GroupsWorkspace() {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead className="pl-4">Group</TableHead>
-                    <TableHead>Course</TableHead>
-                    <TableHead>Teacher</TableHead>
-                    <TableHead>Duration</TableHead>
-                    {canManage && <TableHead className="text-right">Actions</TableHead>}
+                    <TableHead className="pl-4">{t('th_group')}</TableHead>
+                    <TableHead>{t('th_course')}</TableHead>
+                    <TableHead>{t('th_teacher')}</TableHead>
+                    <TableHead>{t('th_duration')}</TableHead>
+                    {canManage && <TableHead className="text-right">{t('th_actions')}</TableHead>}
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -325,7 +325,7 @@ export function GroupsWorkspace() {
                               className="size-8 text-destructive hover:bg-destructive/10 hover:text-destructive"
                               disabled={isDeleting === group.id}
                               onClick={() => handleDelete(group.id, group.name)}
-                              title="Delete group"
+                              title={t('delete_group_title')}
                             >
                               {isDeleting === group.id ? (
                                 <RefreshCw className="size-4 animate-spin" />

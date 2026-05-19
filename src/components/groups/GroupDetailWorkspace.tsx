@@ -11,6 +11,7 @@ import {
   RefreshCw,
   Users2,
 } from 'lucide-react';
+import { useTranslations } from '@/i18n/index';
 import { useGroupDetail, useGroupSchedule } from '@/hooks/useGroups';
 import { enrollmentService } from '@/services/enrollments';
 import type { Enrollment } from '@/types/student';
@@ -20,8 +21,6 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { EnrollStudentModal } from './EnrollStudentModal';
-
-const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
 function getGroupStatus(startDate: string, endDate: string) {
   const now = new Date();
@@ -35,11 +34,11 @@ function getGroupStatus(startDate: string, endDate: string) {
   return 'active' as const;
 }
 
-const STATUS_MAP = {
-  forming: { label: 'Forming', className: 'border-amber-500/20 bg-amber-500/10 text-amber-700 dark:text-amber-400' },
-  active: { label: 'Active', className: 'border-emerald-500/20 bg-emerald-500/10 text-emerald-700 dark:text-emerald-400' },
-  completed: { label: 'Completed', className: 'border-slate-500/20 bg-slate-500/10 text-slate-700 dark:text-slate-400' },
-};
+const STATUS_CLASSES = {
+  forming: 'border-amber-500/20 bg-amber-500/10 text-amber-700 dark:text-amber-400',
+  active: 'border-emerald-500/20 bg-emerald-500/10 text-emerald-700 dark:text-emerald-400',
+  completed: 'border-slate-500/20 bg-slate-500/10 text-slate-700 dark:text-slate-400',
+} as const;
 
 function formatDate(d: string) {
   try {
@@ -54,6 +53,7 @@ interface GroupDetailWorkspaceProps {
 }
 
 export function GroupDetailWorkspace({ groupId }: GroupDetailWorkspaceProps) {
+  const t = useTranslations('groups');
   const groupQuery = useGroupDetail(groupId);
   const scheduleQuery = useGroupSchedule(groupId);
   const enrollmentsQuery = useQuery({
@@ -85,11 +85,11 @@ export function GroupDetailWorkspace({ groupId }: GroupDetailWorkspaceProps) {
         <div className="mx-auto mb-5 flex size-16 items-center justify-center rounded-2xl bg-muted text-muted-foreground">
           <AlertCircle className="size-8" />
         </div>
-        <h1 className="text-2xl font-black">Group not found</h1>
-        <p className="mt-2 text-sm text-muted-foreground">This group may have been deleted or you lack access.</p>
+        <h1 className="text-2xl font-black">{t('group_not_found')}</h1>
+        <p className="mt-2 text-sm text-muted-foreground">{t('group_not_found_desc')}</p>
         <Link href="/groups">
           <Button variant="outline" className="mt-6">
-            <ArrowLeft className="mr-2 size-4" /> Back to Groups
+            <ArrowLeft className="mr-2 size-4" /> {t('back_to_groups')}
           </Button>
         </Link>
       </div>
@@ -97,7 +97,8 @@ export function GroupDetailWorkspace({ groupId }: GroupDetailWorkspaceProps) {
   }
 
   const status = getGroupStatus(group.start_date, group.end_date);
-  const statusMeta = STATUS_MAP[status];
+  const statusClass = STATUS_CLASSES[status];
+  const DAYS = [t('day_sun'), t('day_mon'), t('day_tue'), t('day_wed'), t('day_thu'), t('day_fri'), t('day_sat')];
 
   return (
     <div className="space-y-7 animate-in fade-in duration-700">
@@ -106,7 +107,7 @@ export function GroupDetailWorkspace({ groupId }: GroupDetailWorkspaceProps) {
         <Link href="/groups">
           <Button variant="ghost" size="sm" className="gap-2 text-muted-foreground hover:text-foreground">
             <ArrowLeft className="size-4" />
-            Groups
+            {t('back_to_groups')}
           </Button>
         </Link>
         <span className="text-muted-foreground">/</span>
@@ -120,8 +121,8 @@ export function GroupDetailWorkspace({ groupId }: GroupDetailWorkspaceProps) {
           <div className="relative flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
             <div>
               <div className="mb-3 flex flex-wrap items-center gap-2">
-                <Badge variant="outline" className={statusMeta.className}>
-                  {statusMeta.label}
+                <Badge variant="outline" className={statusClass}>
+                  {t(`status_${status}`)}
                 </Badge>
                 {group.course && (
                   <Badge variant="outline" className="rounded-full border-blue-200 bg-blue-50 text-blue-700 dark:border-blue-500/30 dark:bg-blue-500/10 dark:text-blue-300">
@@ -144,19 +145,19 @@ export function GroupDetailWorkspace({ groupId }: GroupDetailWorkspaceProps) {
       <section className="grid grid-cols-1 gap-4 md:grid-cols-3">
         <InfoCard
           icon={GraduationCap}
-          label="Course"
+          label={t('th_course')}
           value={group.course?.title ?? '—'}
           tone="blue"
         />
         <InfoCard
           icon={Users2}
-          label="Teacher"
-          value={group.teacher?.full_name ?? 'Unassigned'}
+          label={t('th_teacher')}
+          value={group.teacher?.full_name ?? t('unassigned')}
           tone="violet"
         />
         <InfoCard
           icon={Users2}
-          label="Students"
+          label={t('th_students')}
           value={enrollmentsQuery.isLoading ? '…' : String(enrollments.length)}
           tone="amber"
         />
@@ -168,14 +169,14 @@ export function GroupDetailWorkspace({ groupId }: GroupDetailWorkspaceProps) {
           <div className="flex items-center justify-between">
             <CardTitle className="flex items-center gap-2 text-lg font-bold">
               <Clock className="size-5 text-muted-foreground" />
-              Weekly Schedule
+              {t('weekly_schedule')}
             </CardTitle>
             <Button
               variant="ghost"
               size="icon"
               className="size-8 shrink-0"
               onClick={() => scheduleQuery.refetch()}
-              title="Refresh schedule"
+              title={t('refresh_schedule')}
             >
               <RefreshCw className={`size-4 ${scheduleQuery.isFetching ? 'animate-spin' : ''}`} />
             </Button>
@@ -189,7 +190,7 @@ export function GroupDetailWorkspace({ groupId }: GroupDetailWorkspaceProps) {
           ) : schedule.length === 0 ? (
             <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-border px-6 py-10 text-center">
               <Clock className="mb-3 size-8 text-muted-foreground/50" />
-              <p className="text-sm font-medium text-muted-foreground">No schedule set yet.</p>
+              <p className="text-sm font-medium text-muted-foreground">{t('no_schedule')}</p>
             </div>
           ) : (
             <div className="space-y-2">
@@ -204,7 +205,7 @@ export function GroupDetailWorkspace({ groupId }: GroupDetailWorkspaceProps) {
                     </span>
                     <span className="text-sm font-semibold text-foreground">{item.start_time}</span>
                   </div>
-                  <span className="text-xs text-muted-foreground">{item.duration_minutes} min</span>
+                  <span className="text-xs text-muted-foreground">{item.duration_minutes} {t('min')}</span>
                 </div>
               ))}
             </div>
@@ -218,7 +219,7 @@ export function GroupDetailWorkspace({ groupId }: GroupDetailWorkspaceProps) {
           <div className="flex items-center justify-between">
             <CardTitle className="flex items-center gap-2 text-lg font-bold">
               <Users2 className="size-5 text-muted-foreground" />
-              Enrolled Students
+              {t('enrolled_students')}
               <Badge variant="secondary" className="ml-1 rounded-full">
                 {enrollments.length}
               </Badge>
@@ -228,7 +229,7 @@ export function GroupDetailWorkspace({ groupId }: GroupDetailWorkspaceProps) {
               size="icon"
               className="size-8 shrink-0"
               onClick={() => enrollmentsQuery.refetch()}
-              title="Refresh"
+              title={t('refresh_schedule')}
             >
               <RefreshCw className={`size-4 ${enrollmentsQuery.isFetching ? 'animate-spin' : ''}`} />
             </Button>
@@ -242,7 +243,7 @@ export function GroupDetailWorkspace({ groupId }: GroupDetailWorkspaceProps) {
           ) : enrollments.length === 0 ? (
             <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-border px-6 py-10 text-center">
               <Users2 className="mb-3 size-8 text-muted-foreground/50" />
-              <p className="text-sm font-medium text-muted-foreground">No students enrolled yet.</p>
+              <p className="text-sm font-medium text-muted-foreground">{t('no_enrolled')}</p>
             </div>
           ) : (
             <div className="space-y-2">
@@ -258,7 +259,7 @@ export function GroupDetailWorkspace({ groupId }: GroupDetailWorkspaceProps) {
                   </Avatar>
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-sm font-semibold text-foreground">
-                      {enrollment.student?.name ?? 'Unknown'}
+                      {enrollment.student?.name ?? t('unknown_student')}
                     </p>
                     <p className="truncate text-xs text-muted-foreground">
                       {enrollment.student?.phone ?? '—'}
