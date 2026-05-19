@@ -1,11 +1,10 @@
 'use client';
 
-import { Search, Bell, Command, Plus, HelpCircle, User, LogOut, Settings, GraduationCap, Users, BookOpen, UserPlus, Users2 } from 'lucide-react';
+import { Bell, Plus, HelpCircle, User, LogOut, Settings, GraduationCap, Users, BookOpen, UserPlus, Users2 } from 'lucide-react';
 import { useTranslations } from '@/i18n/index';
 import { useAuthStore } from '@/store/auth.store';
 import { useAuth } from '@/hooks/useAuth';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { LanguageSwitcher } from '@/components/language-switcher';
@@ -21,6 +20,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 
+import { GlobalSearch } from '@/components/layout/GlobalSearch';
 import { CreateStudentModal } from '@/components/students/CreateStudentModal';
 import { CreateLeadModal } from '@/components/leads/CreateLeadModal';
 import { CreateTeacherModal } from '@/components/dashboard/teachers/CreateTeacherModal';
@@ -41,11 +41,11 @@ export function DashboardHeader() {
   const [isGroupModalOpen, setIsGroupModalOpen] = useState(false);
 
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 10);
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    const scrollParent = document.querySelector('main');
+    if (!scrollParent) return;
+    const handleScroll = () => setIsScrolled(scrollParent.scrollTop > 10);
+    scrollParent.addEventListener('scroll', handleScroll, { passive: true });
+    return () => scrollParent.removeEventListener('scroll', handleScroll);
   }, []);
 
   return (
@@ -55,23 +55,9 @@ export function DashboardHeader() {
         ? "bg-background/70 backdrop-blur-2xl shadow-sm border-b border-border/50 supports-[backdrop-filter]:bg-background/40" 
         : "bg-transparent"
     )}>
-      {/* Left: Search Bar */}
+      {/* Left: Global Search */}
       <div className="flex flex-1 items-center max-w-md">
-        <div className="relative w-full group">
-          <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
-            <Search className="size-4 text-muted-foreground group-focus-within:text-indigo-500 transition-colors" />
-          </div>
-          <Input 
-            type="text" 
-            placeholder={t('search_placeholder')} 
-            className="w-full h-10 pl-11 pr-16 bg-muted/30 hover:bg-muted/50 border-transparent focus-visible:bg-background focus-visible:border-indigo-500/30 focus-visible:ring-4 focus-visible:ring-indigo-500/10 rounded-full shadow-none transition-all placeholder:text-muted-foreground/60 font-medium"
-          />
-          <div className="absolute inset-y-0 right-2 flex items-center pointer-events-none">
-            <kbd className="hidden sm:flex items-center gap-1 px-2 py-0.5 text-[10px] font-bold text-muted-foreground bg-background/80 border border-border/50 rounded-full shadow-sm">
-              <Command className="size-3" /> K
-            </kbd>
-          </div>
-        </div>
+        <GlobalSearch />
       </div>
 
       {/* Right: Actions */}
