@@ -9,6 +9,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import { useTranslations } from '@/i18n/index';
 import { Button } from '@/components/ui/button';
 import type { TeacherProfile } from '@/types/teacher';
 
@@ -25,6 +26,8 @@ export function TeacherStatusConfirmDialog({
   onConfirm,
   onCancel,
 }: TeacherStatusConfirmDialogProps) {
+  const t = useTranslations('teachers');
+  const tCommon = useTranslations('common');
   if (!teacher) return null;
 
   const isDeactivating = teacher.status === 'ACTIVE';
@@ -35,28 +38,28 @@ export function TeacherStatusConfirmDialog({
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <AlertCircle className={`size-5 ${isDeactivating ? 'text-destructive' : 'text-primary'}`} />
-            {isDeactivating ? 'Deactivate Teacher' : 'Activate Teacher'}
+            {isDeactivating ? t('deactivate_teacher') : t('activate_teacher')}
           </DialogTitle>
           <DialogDescription className="pt-2">
-            Are you sure you want to {isDeactivating ? 'deactivate' : 'activate'}{' '}
-            <span className="font-semibold text-foreground">{teacher.full_name}</span>?
+            <span className="font-semibold text-foreground">{teacher.full_name}</span>{' '}
+            {isDeactivating ? t('deactivate') : t('activate')}?
           </DialogDescription>
         </DialogHeader>
 
         {isDeactivating && (
           <div className="bg-destructive/10 text-destructive text-sm p-3 rounded-lg border border-destructive/20 mt-2">
-            <p className="font-medium mb-1">Warning:</p>
+            <p className="font-medium mb-1">{t('warning')}</p>
             <ul className="list-disc list-inside space-y-1 ml-1">
-              <li>They will not be able to log into the platform.</li>
-              <li>They will not be assigned to new groups.</li>
-              <li>Past data and history will be preserved.</li>
+              <li>{t('deactivate_warning_1')}</li>
+              <li>{t('deactivate_warning_2')}</li>
+              <li>{t('deactivate_warning_3')}</li>
             </ul>
           </div>
         )}
 
         <DialogFooter className="mt-4 gap-2 sm:gap-0">
           <Button type="button" variant="outline" onClick={onCancel} disabled={isLoading}>
-            Cancel
+            {tCommon('cancel')}
           </Button>
           <Button
             type="button"
@@ -66,7 +69,7 @@ export function TeacherStatusConfirmDialog({
             className={!isDeactivating ? 'edu-gradient-btn' : ''}
           >
             {isLoading && <Loader2 className="mr-2 size-3.5 animate-spin" />}
-            {isDeactivating ? 'Yes, Deactivate' : 'Yes, Activate'}
+            {isDeactivating ? t('yes_deactivate') : t('yes_activate')}
           </Button>
         </DialogFooter>
       </DialogContent>

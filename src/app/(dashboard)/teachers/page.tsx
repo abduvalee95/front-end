@@ -10,12 +10,14 @@ import { TeacherDetailSheet } from '@/components/dashboard/teachers/TeacherDetai
 import { BulkImportDialog } from '@/components/shared/BulkImportDialog';
 import { Button } from '@/components/ui/button';
 import { Plus, FileSpreadsheet } from 'lucide-react';
+import { useTranslations } from '@/i18n/index';
 import { api } from '@/lib/api/client';
 import { useDeleteTeacher } from '@/hooks/useTeachers';
 import type { TeacherProfile, CreateTeacherDto } from '@/types/teacher';
 import { toast } from 'sonner';
 
 export default function TeachersPage() {
+  const t = useTranslations('teachers');
   const queryClient = useQueryClient();
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [isImportOpen, setIsImportOpen] = useState(false);
@@ -49,12 +51,12 @@ export default function TeachersPage() {
       const result = await api.post<{ count: number }>('proxy/teachers/bulk', { teachers });
       const count = result.data.count;
       if (count > 0) {
-        toast.success(`${count} teacher(s) imported successfully`);
+        toast.success(`${count} ${t('imported_success')}`);
       } else {
-        toast.warning('No new teachers were imported (possible duplicates)');
+        toast.warning(t('imported_duplicates'));
       }
     } catch {
-      toast.error('Failed to import teachers');
+      toast.error(t('import_failed'));
     }
 
     queryClient.invalidateQueries({ queryKey: ['teachers'] });
@@ -64,8 +66,8 @@ export default function TeachersPage() {
     <div className="space-y-8 animate-in fade-in duration-700">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-slate-900">Teachers</h1>
-          <p className="text-slate-500 mt-1">Manage your educational staff and their profiles.</p>
+          <h1 className="text-3xl font-bold tracking-tight text-slate-900">{t('title')}</h1>
+          <p className="text-slate-500 mt-1">{t('subtitle')}</p>
         </div>
         <div className="flex items-center gap-3">
           <Button 
@@ -73,13 +75,13 @@ export default function TeachersPage() {
             onClick={() => setIsImportOpen(true)} 
             className="border-green-600 text-green-600 hover:bg-green-50 shadow-sm"
           >
-            <FileSpreadsheet className="mr-2 h-4 w-4" /> Import Excel
+            <FileSpreadsheet className="mr-2 h-4 w-4" /> {t('import_excel')}
           </Button>
           <Button 
             onClick={() => setIsCreateOpen(true)} 
             className="bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg shadow-indigo-600/20"
           >
-            <Plus className="mr-2 h-4 w-4" /> Add Teacher
+            <Plus className="mr-2 h-4 w-4" /> {t('add_teacher')}
           </Button>
         </div>
       </div>
@@ -119,8 +121,8 @@ export default function TeachersPage() {
         isOpen={isImportOpen}
         onClose={() => setIsImportOpen(false)}
         onImport={handleBulkImport}
-        title="Import Teachers"
-        description="Upload an Excel file to bulk add teachers to your organization."
+        title={t('import_teachers')}
+        description={t('import_desc')}
         requiredFields={['full_name', 'phone']}
         columnMapping={{
           'Full Name': 'full_name',

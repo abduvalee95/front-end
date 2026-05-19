@@ -156,7 +156,7 @@ export default function JournalPage() {
             <h1 className="text-3xl font-black tracking-tight text-slate-900">{t('title')}</h1>
             {isAdmin && (
               <Badge className="bg-amber-100 text-amber-700 border-amber-200 hover:bg-amber-100">
-                <ShieldCheck className="size-3 mr-1" /> Admin View
+                <ShieldCheck className="size-3 mr-1" /> {t('admin_view')}
               </Badge>
             )}
           </div>
@@ -181,7 +181,7 @@ export default function JournalPage() {
             <CardHeader className="bg-slate-50/50 pb-3 border-b">
               <CardTitle className="text-sm font-bold flex items-center gap-2 text-slate-600">
                 <Users className="size-4 text-indigo-500" />
-                {isTeacher ? tCommon('your_groups') : 'All Groups'}
+                {isTeacher ? tCommon('your_groups') : t('all_groups')}
               </CardTitle>
             </CardHeader>
             <CardContent className="p-2 pt-3 space-y-1">
@@ -289,7 +289,7 @@ export default function JournalPage() {
                 <CardDescription className="font-medium">
                   {selectedGroup
                     ? `${format(currentDate, 'EEEE, MMMM d yyyy')} — ${t('attendance')}`
-                    : 'Choose a group from the left panel'}
+                    : t('select_group_hint')}
                 </CardDescription>
               </div>
               {enrollments.length > 0 && (
@@ -297,7 +297,7 @@ export default function JournalPage() {
                   variant="outline"
                   className="bg-indigo-50 text-indigo-700 border-indigo-200 px-3 py-1 font-bold"
                 >
-                  {enrollments.length} students
+                  {enrollments.length} {t('n_students')}
                 </Badge>
               )}
             </CardHeader>
@@ -306,7 +306,7 @@ export default function JournalPage() {
                 <div className="flex flex-col items-center justify-center py-20 text-slate-400">
                   <BookOpen className="size-12 mb-3 opacity-30" />
                   <p className="font-bold text-slate-500">{t('group')}</p>
-                  <p className="text-sm mt-1">Select a group from the left panel</p>
+                  <p className="text-sm mt-1">{t('select_group_hint')}</p>
                 </div>
               ) : isLoading ? (
                 <div className="p-6 space-y-3">
@@ -317,8 +317,8 @@ export default function JournalPage() {
               ) : enrollments.length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-20 text-slate-400">
                   <AlertCircle className="size-12 mb-3 opacity-30" />
-                  <p className="font-bold text-slate-500">No students enrolled</p>
-                  <p className="text-sm mt-1">Enroll students in this group first</p>
+                  <p className="font-bold text-slate-500">{t('no_students')}</p>
+                  <p className="text-sm mt-1">{t('enroll_first')}</p>
                 </div>
               ) : (
                 <Table>
@@ -331,7 +331,7 @@ export default function JournalPage() {
                         {t('attendance')}
                       </TableHead>
                       <TableHead className="text-center font-bold text-slate-700">
-                        Score (0–100)
+                        {t('score')}
                       </TableHead>
                     </TableRow>
                   </TableHeader>
@@ -351,7 +351,7 @@ export default function JournalPage() {
                             <div className="flex items-center justify-center gap-2">
                               <button
                                 onClick={() => updateStatus(studentId, 'PRESENT')}
-                                title="Present"
+                                title={t('present')}
                                 className={cn(
                                   'size-9 flex items-center justify-center rounded-xl transition-all border',
                                   entry?.status === 'PRESENT'
@@ -363,7 +363,7 @@ export default function JournalPage() {
                               </button>
                               <button
                                 onClick={() => updateStatus(studentId, 'LATE')}
-                                title="Late"
+                                title={t('late')}
                                 className={cn(
                                   'size-9 flex items-center justify-center rounded-xl transition-all border',
                                   entry?.status === 'LATE'
@@ -375,7 +375,7 @@ export default function JournalPage() {
                               </button>
                               <button
                                 onClick={() => updateStatus(studentId, 'ABSENT')}
-                                title="Absent"
+                                title={t('absent')}
                                 className={cn(
                                   'size-9 flex items-center justify-center rounded-xl transition-all border',
                                   entry?.status === 'ABSENT'

@@ -140,9 +140,8 @@ export function OverviewTab() {
       </div>
 
       {/* Charts */}
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+      <div className="flex flex-col gap-6">
         <ChartFrame
-          className="lg:col-span-3"
           title="Revenue over time"
           subtitle="Daily payment totals"
           isLoading={paymentsByDay.isLoading}
@@ -157,7 +156,6 @@ export function OverviewTab() {
         </ChartFrame>
 
         <ChartFrame
-          className="lg:col-span-2"
           title="Payment methods"
           subtitle="Revenue share by channel"
           isLoading={paymentsByMethod.isLoading}

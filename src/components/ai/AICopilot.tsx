@@ -6,6 +6,7 @@ import { Bot, Send, X, Sparkles, User, Loader2, AlertCircle, Mic } from 'lucide-
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
+import { useTranslations } from '@/i18n/index';
 import { useAuthStore } from '@/store/auth.store';
 import { logger } from '@/lib/logger';
 
@@ -37,14 +38,6 @@ type DynamicToolOutputPart = {
   output: unknown;
 };
 
-// ─── Suggestion chips ─────────────────────────────────────────────────────────
-
-const SUGGESTIONS = [
-  "Bu oy kim to'lamadi?",
-  'Bugungi darslar',
-  'Moliyaviy xulosa',
-  'Talabalar statistikasi',
-];
 
 // ─── ProposalCard ─────────────────────────────────────────────────────────────
 
@@ -55,6 +48,7 @@ function ProposalCard({
   proposal: ProposalResult;
   onConfirm: (p: ProposalResult) => Promise<void>;
 }) {
+  const t = useTranslations('copilot');
   const [state, setState] = useState<'idle' | 'loading' | 'done' | 'error'>('idle');
 
   const handleConfirmClick = async () => {
@@ -69,12 +63,12 @@ function ProposalCard({
 
   return (
     <div className="rounded-xl border border-violet-200 bg-violet-50/60 p-3 my-1 space-y-2">
-      <p className="text-[10px] font-bold uppercase tracking-wider text-violet-500">Tasdiqlash kerak</p>
+      <p className="text-[10px] font-bold uppercase tracking-wider text-violet-500">{t('needs_confirm')}</p>
       <p className="text-xs font-semibold text-slate-800">{proposal.summary}</p>
       {state === 'done' ? (
-        <p className="text-xs text-emerald-600 font-bold">✓ Bajarildi</p>
+        <p className="text-xs text-emerald-600 font-bold">✓ {t('done')}</p>
       ) : state === 'error' ? (
-        <p className="text-xs text-red-500">Xatolik yuz berdi</p>
+        <p className="text-xs text-red-500">{t('action_error')}</p>
       ) : (
         <div className="flex gap-2">
           <button
@@ -82,13 +76,13 @@ function ProposalCard({
             disabled={state === 'loading'}
             className="flex-1 rounded-lg bg-violet-600 py-1.5 text-xs font-bold text-white hover:bg-violet-700 disabled:opacity-50 transition-colors"
           >
-            {state === 'loading' ? 'Yuklanmoqda…' : 'Tasdiqlash'}
+            {state === 'loading' ? t('typing') : t('confirm')}
           </button>
           <button
             onClick={() => setState('idle')}
             className="rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-medium text-slate-500 hover:bg-slate-50 transition-colors"
           >
-            Bekor
+            {t('cancel')}
           </button>
         </div>
       )}
@@ -105,6 +99,7 @@ function ToolResultCard({
   part: DynamicToolOutputPart;
   onConfirm: (p: ProposalResult) => Promise<void>;
 }) {
+  const t = useTranslations('copilot');
   const result = part.output as Record<string, unknown>;
   // type is 'tool-find_student' → toolName is 'find_student'
   const toolName = (part.type as string).replace(/^tool-/, '');
@@ -156,12 +151,12 @@ function ToolResultCard({
       (result?.students as Array<{ name: string; phone: string; debt: string | number }>) ?? [];
     if (!students.length)
       return (
-        <div className="text-xs text-slate-400 italic my-1">Qarzdor talabalar yo&apos;q ✓</div>
+        <div className="text-xs text-slate-400 italic my-1">{t('no_debtors')}</div>
       );
     return (
       <div className="rounded-xl border border-amber-100 bg-amber-50/60 p-3 my-1 space-y-1">
         <p className="text-[10px] font-bold uppercase tracking-wider text-amber-600">
-          Qarzdorlar ({students.length})
+          {t('debtors')} ({students.length})
         </p>
         {students.slice(0, 8).map((s, i) => (
           <div key={i} className="flex items-center justify-between text-xs">
@@ -180,7 +175,7 @@ function ToolResultCard({
     return (
       <div className="rounded-xl border border-slate-200 bg-white p-3 my-1 space-y-1.5">
         <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
-          Bugungi darslar
+          {t('today_lessons')}
         </p>
         {groups.slice(0, 6).map((g, i) => (
           <div key={i} className="flex items-center gap-2 text-xs">
@@ -189,7 +184,7 @@ function ToolResultCard({
             {g.teacher && <span className="text-slate-400 ml-auto">{g.teacher}</span>}
           </div>
         ))}
-        {!groups.length && <p className="text-xs text-slate-400">Bugun dars yo&apos;q</p>}
+        {!groups.length && <p className="text-xs text-slate-400">{t('no_lessons')}</p>}
       </div>
     );
   }
@@ -200,21 +195,21 @@ function ToolResultCard({
     return (
       <div className="rounded-xl border border-emerald-100 bg-emerald-50/60 p-3 my-1 grid grid-cols-2 gap-2">
         <div>
-          <p className="text-[10px] text-slate-400">Daromad</p>
+          <p className="text-[10px] text-slate-400">{t('revenue')}</p>
           <p className="font-bold text-emerald-700 text-sm">
             {Number(result?.revenue || 0).toLocaleString()} KGS
           </p>
         </div>
         <div>
-          <p className="text-[10px] text-slate-400">To&apos;lovlar</p>
+          <p className="text-[10px] text-slate-400">{t('payments')}</p>
           <p className="font-bold text-slate-700 text-sm">{String(result?.paymentsCount || 0)}</p>
         </div>
         <div>
-          <p className="text-[10px] text-slate-400">Talabalar</p>
+          <p className="text-[10px] text-slate-400">{t('students')}</p>
           <p className="font-bold text-slate-700 text-sm">{String(result?.studentsTotal || 0)}</p>
         </div>
         <div>
-          <p className="text-[10px] text-slate-400">Davomat</p>
+          <p className="text-[10px] text-slate-400">{t('attendance')}</p>
           <p className="font-bold text-slate-700 text-sm">
             {String(result?.attendanceRate || 0)}%
           </p>
@@ -229,11 +224,19 @@ function ToolResultCard({
 // ─── Main Component ───────────────────────────────────────────────────────────
 
 export function AICopilot() {
+  const t = useTranslations('copilot');
   const [isOpen, setIsOpen] = useState(false);
   const [input, setInput] = useState('');
   const [isListening, setIsListening] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const authUser = useAuthStore((s) => s.user);
+
+  const SUGGESTIONS = [
+    t('suggestion_1'),
+    t('suggestion_2'),
+    t('suggestion_3'),
+    t('suggestion_4'),
+  ];
 
   const { messages, status, error, sendMessage } = useChat({
     onError: (err) => {
@@ -371,10 +374,10 @@ export function AICopilot() {
               </div>
               <div>
                 <p className="text-sm font-bold">
-                  Salom, {authUser?.full_name?.split(' ')[0] || 'User'}! 👋
+                  {t('greeting')} {authUser?.full_name?.split(' ')[0] || 'User'}! 👋
                 </p>
                 <p className="text-xs text-muted-foreground max-w-[250px] mx-auto mt-1">
-                  Men sizning AI yordamchingizman. Talabalar, lidlar yoki moliya haqida so&apos;rang.
+                  {t('intro')}
                 </p>
               </div>
               <div className="flex flex-wrap gap-1.5 justify-center mt-3">
@@ -411,7 +414,7 @@ export function AICopilot() {
                       <div className="flex items-center gap-1.5 opacity-70">
                         {m.role === 'user' ? <User className="size-3" /> : <Bot className="size-3" />}
                         <span className="text-[10px] font-bold uppercase tracking-wider">
-                          {m.role === 'user' ? 'Siz' : 'Copilot'}
+                          {m.role === 'user' ? t('you') : 'Copilot'}
                         </span>
                       </div>
                       <div className="leading-relaxed whitespace-pre-wrap">{text}</div>
@@ -429,7 +432,7 @@ export function AICopilot() {
           {isLoading && (
             <div className="flex w-max max-w-[85%] items-center gap-2 rounded-2xl px-4 py-2.5 text-sm bg-muted text-foreground rounded-bl-none">
               <Loader2 className="size-4 animate-spin text-muted-foreground" />
-              <span className="text-xs text-muted-foreground">Javob yozilmoqda…</span>
+              <span className="text-xs text-muted-foreground">{t('typing')}</span>
             </div>
           )}
 
@@ -437,7 +440,7 @@ export function AICopilot() {
           {error && (
             <div className="flex items-center gap-2 rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-600 dark:border-red-900 dark:bg-red-950/30 dark:text-red-400">
               <AlertCircle className="size-4 shrink-0" />
-              <span>Xatolik: {error.message}</span>
+              <span>{t('error_prefix')} {error.message}</span>
             </div>
           )}
 
@@ -450,7 +453,7 @@ export function AICopilot() {
             <Input
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder="Savol yozing…"
+              placeholder={t('placeholder')}
               className="pr-20 rounded-xl border-border/50 bg-background/50 focus-visible:ring-primary/50"
               disabled={isLoading}
             />

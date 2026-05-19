@@ -205,8 +205,8 @@ export default function TeachersTable({
                     <EmptyState
                       hasFilters={isDeletedView ? !!search : !!(search || statusFilter !== 'ACTIVE')}
                       onClear={isDeletedView ? clearSearch : clearFilters}
-                      emptyMessage={isDeletedView ? 'No deleted teachers' : undefined}
-                      emptyDescription={isDeletedView ? 'No teachers have been deleted in this organization.' : undefined}
+                      emptyMessage={isDeletedView ? t('no_deleted') : undefined}
+                      emptyDescription={isDeletedView ? t('no_deleted_desc') : undefined}
                     />
                   </TableCell>
                 </TableRow>
@@ -294,8 +294,8 @@ export default function TeachersTable({
             <EmptyState
               hasFilters={isDeletedView ? !!search : !!(search || statusFilter !== 'ACTIVE')}
               onClear={isDeletedView ? clearSearch : clearFilters}
-              emptyMessage={isDeletedView ? 'No deleted teachers' : undefined}
-              emptyDescription={isDeletedView ? 'No teachers have been deleted in this organization.' : undefined}
+              emptyMessage={isDeletedView ? t('no_deleted') : undefined}
+              emptyDescription={isDeletedView ? t('no_deleted_desc') : undefined}
             />
           ) : (
             items.map((teacher) => (
@@ -331,9 +331,9 @@ export default function TeachersTable({
                   </div>
                   <p className="mt-3 text-xs text-muted-foreground">
                     {isDeletedView && teacher.deleted_at
-                      ? `Deleted ${format(new Date(teacher.deleted_at), 'MMM d, yyyy')}`
-                      : `Joined ${format(new Date(teacher.created_at), 'MMM d, yyyy')}`
-                    } · {teacher.subjects?.join(', ') || 'No subjects'}
+                      ? `${tCommon('deleted_on')} ${format(new Date(teacher.deleted_at), 'MMM d, yyyy')}`
+                      : `${t('joined')} ${format(new Date(teacher.created_at), 'MMM d, yyyy')}`
+                    } · {teacher.subjects?.join(', ') || t('no_subjects')}
                   </p>
                 </CardContent>
               </Card>
@@ -345,9 +345,9 @@ export default function TeachersTable({
         {meta && meta.pages > 1 && (
           <div className="flex items-center justify-between text-sm">
             <p className="text-muted-foreground">
-              Showing page <span className="font-medium text-foreground">{page}</span> of{' '}
+              {t('pagination_page')} <span className="font-medium text-foreground">{page}</span> {t('pagination_of')}{' '}
               <span className="font-medium text-foreground">{meta.pages}</span> ·{' '}
-              <span className="font-medium text-foreground">{meta.total}</span> total
+              <span className="font-medium text-foreground">{meta.total}</span> {t('pagination_total')}
             </p>
             <div className="flex items-center gap-1">
               <Button
@@ -396,6 +396,7 @@ function TeacherActionsMenu({
   onToggleStatus: () => void;
   onDelete: () => void;
 }) {
+  const tMenu = useTranslations('teachers');
   return (
     <DropdownMenu>
       <DropdownMenuTrigger render={
@@ -406,11 +407,11 @@ function TeacherActionsMenu({
       <DropdownMenuContent align="end">
         <DropdownMenuItem onClick={onView}>
           <Eye className="mr-2 size-4" />
-          View Profile
+          {tMenu('view_profile')}
         </DropdownMenuItem>
         <DropdownMenuItem onClick={onEdit}>
           <Pencil className="mr-2 size-4" />
-          Edit Profile
+          {tMenu('edit_profile')}
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem
@@ -418,14 +419,14 @@ function TeacherActionsMenu({
           className={teacher.status === 'ACTIVE' ? 'text-amber-600 focus:text-amber-600' : 'text-teal-600 focus:text-teal-600'}
         >
           <Power className="mr-2 size-4" />
-          {teacher.status === 'ACTIVE' ? 'Deactivate' : 'Activate'}
+          {teacher.status === 'ACTIVE' ? tMenu('deactivate') : tMenu('activate')}
         </DropdownMenuItem>
         <DropdownMenuItem
           onClick={onDelete}
           className="text-destructive focus:text-destructive"
         >
           <Trash2 className="mr-2 size-4" />
-          Delete Teacher
+          {tMenu('delete_teacher')}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
@@ -443,6 +444,8 @@ function EmptyState({
   emptyMessage?: string;
   emptyDescription?: string;
 }) {
+  const tT = useTranslations('teachers');
+  const tC = useTranslations('common');
   return (
     <div className="flex flex-col items-center justify-center py-16 gap-3">
       <div className="h-16 w-16 rounded-2xl bg-indigo-50 border border-indigo-100 flex items-center justify-center mb-4">
@@ -450,16 +453,16 @@ function EmptyState({
       </div>
       <div className="text-center">
         <h3 className="text-lg font-semibold">
-          {hasFilters ? 'No teachers found' : emptyMessage}
+          {hasFilters ? tT('no_teachers_found') : (emptyMessage ?? tT('no_teachers'))}
         </h3>
         <p className="text-muted-foreground text-sm mt-1 text-center max-w-sm">
           {hasFilters
-            ? 'Try adjusting your search or filters'
-            : emptyDescription}
+            ? tC('adjust_filters')
+            : (emptyDescription ?? tT('no_teachers_desc'))}
         </p>
       </div>
       {hasFilters && (
-        <Button variant="outline" size="sm" onClick={onClear}>Clear filters</Button>
+        <Button variant="outline" size="sm" onClick={onClear}>{tC('clear_filters')}</Button>
       )}
     </div>
   );

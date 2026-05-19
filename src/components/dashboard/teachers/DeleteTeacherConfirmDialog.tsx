@@ -9,6 +9,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import { useTranslations } from '@/i18n/index';
 import { Button } from '@/components/ui/button';
 import type { TeacherProfile } from '@/types/teacher';
 
@@ -25,6 +26,8 @@ export function DeleteTeacherConfirmDialog({
   onConfirm,
   onCancel,
 }: DeleteTeacherConfirmDialogProps) {
+  const t = useTranslations('teachers');
+  const tCommon = useTranslations('common');
   if (!teacher) return null;
 
   return (
@@ -33,26 +36,26 @@ export function DeleteTeacherConfirmDialog({
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Trash2 className="size-5 text-destructive" />
-            Delete Teacher
+            {t('delete_teacher')}
           </DialogTitle>
           <DialogDescription className="pt-2">
-            Are you sure you want to permanently delete{' '}
-            <span className="font-semibold text-foreground">{teacher.full_name}</span>?
+            <span className="font-semibold text-foreground">{teacher.full_name}</span>{' '}
+            {t('delete_confirm')}
           </DialogDescription>
         </DialogHeader>
 
         <div className="bg-destructive/10 text-destructive text-sm p-3 rounded-lg border border-destructive/20 mt-2">
-          <p className="font-medium mb-1">The following will happen:</p>
+          <p className="font-medium mb-1">{t('delete_warning_title')}</p>
           <ul className="list-disc list-inside space-y-1 ml-1">
-            <li>Teacher will be deactivated and hidden from the list.</li>
-            <li>Teacher will no longer be assignable to new groups.</li>
-            <li>Historical data (lessons, attendance) will be preserved.</li>
+            <li>{t('delete_warning_1')}</li>
+            <li>{t('delete_warning_2')}</li>
+            <li>{t('delete_warning_3')}</li>
           </ul>
         </div>
 
         <DialogFooter className="mt-4 gap-2 sm:gap-0">
           <Button type="button" variant="outline" onClick={onCancel} disabled={isLoading}>
-            Cancel
+            {tCommon('cancel')}
           </Button>
           <Button
             type="button"
@@ -61,7 +64,7 @@ export function DeleteTeacherConfirmDialog({
             disabled={isLoading}
           >
             {isLoading && <Loader2 className="mr-2 size-3.5 animate-spin" />}
-            Yes, Delete
+            {t('yes_delete')}
           </Button>
         </DialogFooter>
       </DialogContent>

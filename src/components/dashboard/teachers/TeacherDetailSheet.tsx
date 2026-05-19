@@ -26,6 +26,7 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
+import { useTranslations } from '@/i18n/index';
 import { TeacherStatusBadge } from './TeacherStatusBadge';
 import { journalService } from '@/services/journal';
 import type { TeacherProfile } from '@/types/teacher';
@@ -49,6 +50,7 @@ export function TeacherDetailSheet({
   onToggleStatus,
   onDelete,
 }: TeacherDetailSheetProps) {
+  const t = useTranslations('teachers');
   if (!teacher) return null;
 
   const isActive = teacher.status === 'ACTIVE';
@@ -98,13 +100,13 @@ export function TeacherDetailSheet({
           {/* Contact Info */}
           <div className="space-y-3">
             <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">
-              Contact Information
+              {t('contact_info')}
             </p>
-            <InfoRow icon={<Mail className="size-4" />} label="Email" value={teacher.email} />
-            <InfoRow icon={<Phone className="size-4" />} label="Phone" value={teacher.phone || '—'} />
+            <InfoRow icon={<Mail className="size-4" />} label={t('email')} value={teacher.email} />
+            <InfoRow icon={<Phone className="size-4" />} label={t('phone')} value={teacher.phone || '—'} />
             <InfoRow
               icon={<Calendar className="size-4" />}
-              label="Joined"
+              label={t('joined')}
               value={format(new Date(teacher.created_at), 'MMMM d, yyyy')}
             />
           </div>
@@ -114,13 +116,13 @@ export function TeacherDetailSheet({
           {/* Professional Info */}
           <div className="space-y-3">
             <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">
-              Professional Details
+              {t('professional_details')}
             </p>
             <div className="space-y-2">
               <div className="flex items-start gap-3">
                 <BookOpen className="size-4 text-muted-foreground mt-0.5 shrink-0" />
                 <div>
-                  <p className="text-xs text-muted-foreground">Subjects</p>
+                  <p className="text-xs text-muted-foreground">{t('subjects')}</p>
                   {teacher.subjects?.length > 0 ? (
                     <div className="flex flex-wrap gap-1.5 mt-1">
                       {teacher.subjects.map((s) => (
@@ -139,7 +141,7 @@ export function TeacherDetailSheet({
               <DollarSign className="size-4 text-muted-foreground shrink-0 mt-0.5" />
               <div className="min-w-0 flex-1">
                 <p className="text-xs text-muted-foreground">
-                  {teacher.salary_type === 'DAILY' ? 'Kunlik stavka' : 'Oylik maosh'}
+                  {teacher.salary_type === 'DAILY' ? t('daily_rate_label') : t('monthly_salary_label')}
                 </p>
                 <p className="text-sm font-medium">
                   {teacher.hourly_rate ? formatKGS(teacher.hourly_rate) : '—'}
@@ -147,17 +149,17 @@ export function TeacherDetailSheet({
                 {teacher.salary_type === 'DAILY' && teacher.hourly_rate && (
                   <div className="mt-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-500/10 px-2.5 py-1.5">
                     <p className="text-[11px] text-muted-foreground">
-                      {format(now, 'MMMM yyyy')} — ishlagan kunlar:{' '}
+                      {format(now, 'MMMM yyyy')} — {t('worked_days')}:{' '}
                       <span className="font-bold text-foreground">{workedDays}</span>
                     </p>
                     <p className="text-xs font-bold text-emerald-700 dark:text-emerald-400 mt-0.5">
-                      Hisoblangan: {formatKGS(calculatedSalary ?? 0)}
+                      {t('calculated')}: {formatKGS(calculatedSalary ?? 0)}
                     </p>
                   </div>
                 )}
                 {teacher.salary_type === 'MONTHLY' && teacher.hourly_rate && (
                   <div className="mt-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-500/10 px-2.5 py-1.5">
-                    <p className="text-[11px] text-muted-foreground">{format(now, 'MMMM yyyy')} — oylik</p>
+                    <p className="text-[11px] text-muted-foreground">{format(now, 'MMMM yyyy')} — {t('monthly_label')}</p>
                     <p className="text-xs font-bold text-emerald-700 dark:text-emerald-400 mt-0.5">
                       {formatKGS(teacher.hourly_rate)}
                     </p>
@@ -167,14 +169,14 @@ export function TeacherDetailSheet({
             </div>
             <InfoRow
               icon={<Award className="size-4" />}
-              label="Qualifications"
+              label={t('qualifications')}
               value={teacher.qualifications || '—'}
             />
             {teacher.bio && (
               <div className="flex items-start gap-3">
                 <GraduationCap className="size-4 text-muted-foreground mt-0.5 shrink-0" />
                 <div>
-                  <p className="text-xs text-muted-foreground">Bio</p>
+                  <p className="text-xs text-muted-foreground">{t('bio')}</p>
                   <p className="text-sm mt-0.5">{teacher.bio}</p>
                 </div>
               </div>
@@ -191,7 +193,7 @@ export function TeacherDetailSheet({
             onClick={() => { onClose(); onEdit(teacher); }}
           >
             <Pencil className="mr-2 size-3.5" />
-            Edit
+            {t('edit_teacher')}
           </Button>
           <Button
             variant="outline"
@@ -200,7 +202,7 @@ export function TeacherDetailSheet({
             onClick={() => { onClose(); onToggleStatus(teacher); }}
           >
             <Power className="mr-2 size-3.5" />
-            {isActive ? 'Deactivate' : 'Activate'}
+            {isActive ? t('deactivate') : t('activate')}
           </Button>
           <Button
             variant="outline"
@@ -209,7 +211,7 @@ export function TeacherDetailSheet({
             onClick={() => { onClose(); onDelete(teacher); }}
           >
             <Trash2 className="mr-2 size-3.5" />
-            Delete
+            {t('delete_teacher')}
           </Button>
         </div>
       </SheetContent>
