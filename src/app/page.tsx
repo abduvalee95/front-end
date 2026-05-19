@@ -103,14 +103,14 @@ export default function LandingPage() {
 
       {/* HERO */}
       <section className="relative overflow-hidden landing-mesh-bg landing-grain">
-        <div className="absolute inset-x-0 top-0 h-[680px] landing-dot-grid opacity-50 pointer-events-none"></div>
+        <div className="absolute inset-x-0 top-0 h-[480px] landing-dot-grid opacity-40 pointer-events-none"></div>
 
-        <div className="relative max-w-[1280px] mx-auto px-6 lg:px-8 pt-16 lg:pt-24 pb-20">
-          <div className="grid lg:grid-cols-[1.05fr_1fr] gap-12 lg:gap-16 items-center">
+        <div className="relative max-w-[1280px] mx-auto px-6 lg:px-8 pt-10 lg:pt-14 pb-10">
+          <div className="grid lg:grid-cols-[1.1fr_0.9fr] gap-8 lg:gap-12 items-center">
 
             {/* Copy */}
             <div className="relative z-10">
-              <div className="inline-flex items-center gap-2 pl-1.5 pr-3 py-1.5 rounded-full bg-white border border-slate-200 text-[11.5px] font-bold ring-soft">
+              <div className="inline-flex items-center gap-2 pl-1.5 pr-3 py-1 rounded-full bg-white border border-slate-200 text-[11px] font-bold ring-soft">
                 <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-white text-[10px] brand-grad">{t('badge_new')}</span>
                 <span className="text-slate-700">{t('badge_v2')}</span>
                 <svg viewBox="0 0 24 24" className="size-3.5 text-slate-400" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -118,23 +118,23 @@ export default function LandingPage() {
                 </svg>
               </div>
 
-              <h1 className="mt-6 text-[44px] sm:text-[54px] lg:text-[64px] leading-[1.02] font-black tracking-[-0.02em] text-slate-900">
+              <h1 className="mt-4 text-[32px] sm:text-[40px] lg:text-[48px] leading-[1.06] font-black tracking-[-0.025em] text-slate-900">
                 {t('hero_title_1')}<br />
                 <span className="brand-grad-text">{t('hero_title_2')}</span> {t('hero_title_3')}
               </h1>
 
-              <p className="mt-5 text-[16.5px] lg:text-[17.5px] leading-[1.55] text-slate-600 max-w-[520px]">
+              <p className="mt-4 text-[14.5px] lg:text-[15.5px] leading-[1.55] text-slate-600 max-w-[480px]">
                 {t('hero_desc')}
               </p>
 
-              <div className="mt-8 flex flex-wrap items-center gap-3">
-                <Link href="/login" className="inline-flex items-center gap-2 px-5 py-3.5 rounded-2xl text-white text-[14px] font-bold brand-grad" style={{ boxShadow: '0 16px 36px -14px rgba(14,110,234,0.55)' }}>
+              <div className="mt-5 flex flex-wrap items-center gap-2.5">
+                <Link href="/login" className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-white text-[13px] font-bold brand-grad" style={{ boxShadow: '0 12px 28px -12px rgba(14,110,234,0.55)' }}>
                   {t('hero_cta')}
                   <svg viewBox="0 0 24 24" className="size-4" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M5 12h14M13 6l6 6-6 6" />
                   </svg>
                 </Link>
-                <button className="inline-flex items-center gap-2 px-5 py-3.5 rounded-2xl text-slate-800 text-[14px] font-bold bg-white border border-slate-200 hover:bg-slate-50 ring-soft">
+                <button className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-slate-800 text-[13px] font-bold bg-white border border-slate-200 hover:bg-slate-50 ring-soft">
                   <span className="size-6 rounded-full bg-slate-900 text-white flex items-center justify-center">
                     <svg viewBox="0 0 24 24" className="size-3" fill="currentColor"><path d="M8 5v14l11-7z" /></svg>
                   </span>
@@ -142,16 +142,16 @@ export default function LandingPage() {
                 </button>
               </div>
 
-              <p className="mt-4 text-[12px] font-semibold text-slate-500">
+              <p className="mt-3 text-[11.5px] font-semibold text-slate-500">
                 {t('hero_trust')}
               </p>
 
-              <div className="mt-10 flex items-center gap-6">
+              <div className="mt-6 flex items-center gap-5">
                 <div className="flex -space-x-2">
-                  <div className="size-9 rounded-full ring-2 ring-white brand-grad text-white text-[11px] font-black flex items-center justify-center">MT</div>
-                  <div className="size-9 rounded-full ring-2 ring-white text-white text-[11px] font-black flex items-center justify-center" style={{ background: 'linear-gradient(135deg,#0E6EEA,#0f172a)' }}>AR</div>
-                  <div className="size-9 rounded-full ring-2 ring-white text-white text-[11px] font-black flex items-center justify-center" style={{ background: 'linear-gradient(135deg,#00EC81,#03CBE7)' }}>KS</div>
-                  <div className="size-9 rounded-full ring-2 ring-white bg-slate-100 text-slate-600 text-[11px] font-black flex items-center justify-center">+</div>
+                  <div className="size-8 rounded-full ring-2 ring-white brand-grad text-white text-[10px] font-black flex items-center justify-center">MT</div>
+                  <div className="size-8 rounded-full ring-2 ring-white text-white text-[10px] font-black flex items-center justify-center" style={{ background: 'linear-gradient(135deg,#0E6EEA,#0f172a)' }}>AR</div>
+                  <div className="size-8 rounded-full ring-2 ring-white text-white text-[10px] font-black flex items-center justify-center" style={{ background: 'linear-gradient(135deg,#00EC81,#03CBE7)' }}>KS</div>
+                  <div className="size-8 rounded-full ring-2 ring-white bg-slate-100 text-slate-600 text-[10px] font-black flex items-center justify-center">+</div>
                 </div>
                 <div className="leading-tight">
                   <div className="flex items-center gap-1.5 text-amber-500">
@@ -170,30 +170,30 @@ export default function LandingPage() {
             {/* MOCKUP */}
             <div className="relative">
               {/* Floating cards */}
-              <div className="absolute -left-6 top-10 z-20 rounded-2xl bg-white ring-soft border border-slate-200 px-3.5 py-3 w-[230px] landing-float-y" style={{ animationDelay: '.4s' }}>
-                <div className="flex items-center gap-2.5">
-                  <div className="size-9 rounded-xl brand-grad flex items-center justify-center text-white">
-                    <svg viewBox="0 0 24 24" className="size-4" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <div className="absolute -left-4 top-6 z-20 rounded-xl bg-white ring-soft border border-slate-200 px-3 py-2.5 w-[200px] landing-float-y" style={{ animationDelay: '.4s' }}>
+                <div className="flex items-center gap-2">
+                  <div className="size-8 rounded-lg brand-grad flex items-center justify-center text-white shrink-0">
+                    <svg viewBox="0 0 24 24" className="size-3.5" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M20 6L9 17l-5-5" />
                     </svg>
                   </div>
                   <div className="min-w-0">
-                    <p className="text-[11.5px] font-black text-slate-900">{t('float_saved')}</p>
-                    <p className="text-[10.5px] text-slate-500 font-medium">{t('float_saved_sub')}</p>
+                    <p className="text-[11px] font-black text-slate-900">{t('float_saved')}</p>
+                    <p className="text-[10px] text-slate-500 font-medium">{t('float_saved_sub')}</p>
                   </div>
                 </div>
               </div>
 
-              <div className="absolute -right-4 bottom-16 z-20 rounded-2xl bg-white ring-soft border border-slate-200 px-3.5 py-3 w-[240px] landing-float-y" style={{ animationDelay: '1.6s' }}>
-                <div className="flex items-center gap-2.5">
-                  <div className="size-9 rounded-xl flex items-center justify-center text-emerald-700" style={{ background: 'linear-gradient(135deg,#DCFCE7,#CFFAFE)' }}>
-                    <svg viewBox="0 0 24 24" className="size-4" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <div className="absolute -right-3 bottom-12 z-20 rounded-xl bg-white ring-soft border border-slate-200 px-3 py-2.5 w-[210px] landing-float-y" style={{ animationDelay: '1.6s' }}>
+                <div className="flex items-center gap-2">
+                  <div className="size-8 rounded-lg flex items-center justify-center text-emerald-700 shrink-0" style={{ background: 'linear-gradient(135deg,#DCFCE7,#CFFAFE)' }}>
+                    <svg viewBox="0 0 24 24" className="size-3.5" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                       <polyline points="3 17 9 11 13 15 21 7" /><polyline points="14 7 21 7 21 14" />
                     </svg>
                   </div>
                   <div className="min-w-0">
-                    <p className="text-[11.5px] font-black text-slate-900">{t('float_avg')}</p>
-                    <p className="text-[10.5px] text-slate-500 font-medium">{t('float_avg_sub')} <b className="text-emerald-600">+8%</b></p>
+                    <p className="text-[11px] font-black text-slate-900">{t('float_avg')}</p>
+                    <p className="text-[10px] text-slate-500 font-medium">{t('float_avg_sub')} <b className="text-emerald-600">+8%</b></p>
                   </div>
                 </div>
               </div>
@@ -214,7 +214,7 @@ export default function LandingPage() {
                   </div>
                 </div>
 
-                <div className="flex h-[420px]">
+                <div className="flex h-[300px]">
                   {/* Sidebar */}
                   <div className="w-[44px] shrink-0 text-white py-3 flex flex-col items-center gap-2" style={{ background: 'linear-gradient(180deg, #0f172a, #1e3a8a)' }}>
                     <div className="size-8 rounded-lg brand-grad flex items-center justify-center">
@@ -262,7 +262,7 @@ export default function LandingPage() {
                         ))}
                       </div>
                       {/* Data rows */}
-                      {STUDENTS.map((s) => (
+                      {STUDENTS.slice(0, 4).map((s) => (
                         <div key={s.init} className="grid border-b border-slate-100 last:border-0 hover:bg-slate-50 transition-colors" style={{ gridTemplateColumns: '80px repeat(12, 1fr)' }}>
                           <div className="px-2 py-2 flex items-center gap-1.5">
                             <div className="size-5 rounded-full brand-grad text-white text-[8px] font-black flex items-center justify-center shrink-0">{s.init[0]}</div>
@@ -294,7 +294,7 @@ export default function LandingPage() {
 
         {/* Logo strip / marquee */}
         <div className="relative border-t border-slate-200/70" style={{ backgroundColor: 'rgba(255,255,255,0.6)', backdropFilter: 'blur(12px)' }}>
-          <div className="max-w-[1280px] mx-auto px-6 lg:px-8 py-6 flex items-center gap-6">
+          <div className="max-w-[1280px] mx-auto px-6 lg:px-8 py-4 flex items-center gap-6">
             <p className="text-[10.5px] font-black uppercase tracking-[0.22em] text-slate-500 shrink-0 hidden md:block">
               {t('marquee_trust')}
             </p>
