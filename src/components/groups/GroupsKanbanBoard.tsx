@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
+import { useTranslations } from '@/i18n/index';
 import type { Group } from '@/types/group';
 import { EditGroupModal } from './EditGroupModal';
 import { EnrollStudentModal } from './EnrollStudentModal';
@@ -20,6 +21,8 @@ interface GroupsKanbanBoardProps {
 }
 
 export function GroupsKanbanBoard({ groups, canManage, isDeleting, onDelete }: GroupsKanbanBoardProps) {
+  const t = useTranslations('groups');
+
   // Logic to split groups into 3 categories
   const { forming, active, completed } = useMemo(() => {
     const now = new Date();
@@ -52,21 +55,21 @@ export function GroupsKanbanBoard({ groups, canManage, isDeleting, onDelete }: G
   const columns = [
     {
       id: 'forming',
-      title: 'Forming (Upcoming)',
+      title: t('kanban_forming'),
       color: 'bg-amber-500/10 border-amber-500/20 text-amber-700 dark:text-amber-400',
       dotColor: 'bg-amber-500',
       items: forming,
     },
     {
       id: 'active',
-      title: 'Active (In Progress)',
+      title: t('kanban_active'),
       color: 'bg-emerald-500/10 border-emerald-500/20 text-emerald-700 dark:text-emerald-400',
       dotColor: 'bg-emerald-500',
       items: active,
     },
     {
       id: 'completed',
-      title: 'Completed',
+      title: t('kanban_completed'),
       color: 'bg-slate-500/10 border-slate-500/20 text-slate-700 dark:text-slate-400',
       dotColor: 'bg-slate-500',
       items: completed,
@@ -100,7 +103,7 @@ export function GroupsKanbanBoard({ groups, canManage, isDeleting, onDelete }: G
           <div className="flex flex-col gap-4 rounded-3xl bg-muted/30 p-2 min-h-[500px]">
             {column.items.length === 0 ? (
               <div className="flex h-32 flex-col items-center justify-center rounded-2xl border border-dashed border-border/60 text-center">
-                <p className="text-sm font-medium text-muted-foreground">No groups here</p>
+                <p className="text-sm font-medium text-muted-foreground">{t('no_groups_column')}</p>
               </div>
             ) : (
               column.items.map((group) => (
@@ -112,7 +115,7 @@ export function GroupsKanbanBoard({ groups, canManage, isDeleting, onDelete }: G
                     {/* Course Badge & Actions */}
                     <div className="mb-3 flex items-start justify-between gap-2">
                       <Badge variant="outline" className="rounded-md border-indigo-500/20 bg-indigo-500/10 text-indigo-700 dark:text-indigo-400">
-                        {group.course?.title ?? 'No Course'}
+                        {group.course?.title ?? t('no_course')}
                       </Badge>
                       
                       {canManage && (
@@ -125,7 +128,7 @@ export function GroupsKanbanBoard({ groups, canManage, isDeleting, onDelete }: G
                             className="size-7 text-destructive hover:bg-destructive/10 hover:text-destructive"
                             disabled={isDeleting === group.id}
                             onClick={() => onDelete(group.id, group.name)}
-                            title="Delete group"
+                            title={t('delete_group_title')}
                           >
                             {isDeleting === group.id ? (
                               <RefreshCw className="size-3.5 animate-spin" />
@@ -153,7 +156,7 @@ export function GroupsKanbanBoard({ groups, canManage, isDeleting, onDelete }: G
                           </AvatarFallback>
                         </Avatar>
                         <span className="text-sm font-medium text-muted-foreground">
-                          {group.teacher?.full_name ?? 'Unassigned'}
+                          {group.teacher?.full_name ?? t('unassigned')}
                         </span>
                       </div>
                       
@@ -167,8 +170,8 @@ export function GroupsKanbanBoard({ groups, canManage, isDeleting, onDelete }: G
                     {column.id === 'active' && (
                       <div className="mt-4">
                         <div className="mb-1 flex justify-between text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
-                          <span>Progress</span>
-                          <span>In progress</span>
+                          <span>{t('duration_progress')}</span>
+                          <span>{t('in_progress_label')}</span>
                         </div>
                         <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted">
                           <div className="h-full bg-emerald-500 w-[50%] animate-pulse rounded-full" />
