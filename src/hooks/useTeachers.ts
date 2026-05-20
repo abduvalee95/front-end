@@ -149,3 +149,31 @@ export function useDeleteTeacher() {
     },
   });
 }
+
+export function useTeacherSalary(teacherId: string, month: string) {
+  return useQuery({
+    queryKey: ['teacher-salary', teacherId, month],
+    queryFn: () => teacherService.getSalaryPreview(teacherId, month),
+    enabled: !!teacherId,
+  });
+}
+
+export function useTeacherSalaryHistory(teacherId: string) {
+  return useQuery({
+    queryKey: ['teacher-salary-history', teacherId],
+    queryFn: () => teacherService.getSalaryHistory(teacherId),
+    enabled: !!teacherId,
+  });
+}
+
+export function usePayTeacherSalary() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ teacherId, month }: { teacherId: string; month: string }) =>
+      teacherService.paySalary(teacherId, month),
+    onSuccess: (_, { teacherId }) => {
+      queryClient.invalidateQueries({ queryKey: ['teacher-salary', teacherId] });
+      queryClient.invalidateQueries({ queryKey: ['teacher-salary-history', teacherId] });
+    },
+  });
+}

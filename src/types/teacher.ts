@@ -22,7 +22,7 @@ export type TeacherSubject = (typeof TEACHER_SUBJECTS)[number];
  * Backend /teachers endpoint returns a flat object:
  * User fields + TeacherProfile fields merged together.
  */
-export type SalaryType = 'MONTHLY' | 'DAILY';
+export type SalaryType = 'MONTHLY' | 'DAILY' | 'HOURLY' | 'FIXED' | 'GROUP_PERCENT';
 
 export interface TeacherProfile {
   id: string;
@@ -34,6 +34,8 @@ export interface TeacherProfile {
   subjects: string[];
   hourly_rate: number | null;
   salary_type: SalaryType;
+  fixed_salary: number | null;
+  percent_rate: number | null;
   qualifications: string | null;
   bio: string | null;
   status: TeacherStatus;
@@ -50,6 +52,8 @@ export interface CreateTeacherDto {
   subjects: string[];
   hourly_rate?: number;
   salary_type?: SalaryType;
+  fixed_salary?: number;
+  percent_rate?: number;
   qualifications?: string;
   bio?: string;
 }
@@ -60,9 +64,31 @@ export interface UpdateTeacherDto {
   subjects?: string[];
   hourly_rate?: number;
   salary_type?: SalaryType;
+  fixed_salary?: number;
+  percent_rate?: number;
   qualifications?: string;
   bio?: string;
   status?: TeacherStatus;
+}
+
+export interface TeacherSalaryPreview {
+  teacher_id: string;
+  period: string;
+  salary_type: SalaryType;
+  amount: number;
+  breakdown: Record<string, unknown>;
+}
+
+export interface TeacherSalaryRecord {
+  id: string;
+  teacher_id: string;
+  period: string;
+  salary_type: SalaryType;
+  amount: number;
+  status: 'PENDING' | 'PAID';
+  paid_at: string | null;
+  breakdown: Record<string, unknown>;
+  created_at: string;
 }
 
 export interface TeacherListResponse {

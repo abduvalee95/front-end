@@ -6,6 +6,8 @@ import type {
   TeacherListResponse,
   TeacherStatus,
   TeacherFilters,
+  TeacherSalaryPreview,
+  TeacherSalaryRecord,
 } from '@/types/teacher';
 
 const BASE = 'proxy/teachers';
@@ -43,6 +45,21 @@ export const teacherService = {
 
   async getDeletedTeachers(params?: { page?: number; limit?: number; search?: string }): Promise<TeacherListResponse> {
     const response = await api.get<TeacherListResponse>(`${BASE}/deleted`, { params });
+    return response.data;
+  },
+
+  async getSalaryPreview(teacherId: string, month: string): Promise<TeacherSalaryPreview> {
+    const response = await api.get<TeacherSalaryPreview>(`${BASE}/${teacherId}/salary?month=${month}`);
+    return response.data;
+  },
+
+  async getSalaryHistory(teacherId: string): Promise<TeacherSalaryRecord[]> {
+    const response = await api.get<TeacherSalaryRecord[]>(`${BASE}/${teacherId}/salary/history`);
+    return response.data;
+  },
+
+  async paySalary(teacherId: string, month: string): Promise<TeacherSalaryRecord> {
+    const response = await api.post<TeacherSalaryRecord>(`${BASE}/${teacherId}/salary/pay`, { month });
     return response.data;
   },
 };

@@ -48,7 +48,9 @@ export function CreateTeacherModal({ open, onClose }: CreateTeacherModalProps) {
   const tAuth = useTranslations('auth');
   const [selectedSubjects, setSelectedSubjects] = useState<string[]>([]);
   const [subjectError, setSubjectError] = useState('');
-  const [salaryType, setSalaryType] = useState<SalaryType>('MONTHLY');
+  const [salaryType, setSalaryType] = useState<SalaryType>('FIXED');
+  const [fixedSalary, setFixedSalary] = useState<number | undefined>(undefined);
+  const [percentRate, setPercentRate] = useState<number | undefined>(undefined);
 
   const {
     register,
@@ -89,14 +91,18 @@ export function CreateTeacherModal({ open, onClose }: CreateTeacherModalProps) {
       phone: values.phone,
       password: values.password,
       subjects: selectedSubjects,
-      hourly_rate: values.hourly_rate ? Number(values.hourly_rate) : undefined,
+      hourly_rate: salaryType === 'HOURLY' ? (values.hourly_rate ? Number(values.hourly_rate) : undefined) : undefined,
       salary_type: salaryType,
+      fixed_salary: salaryType === 'FIXED' ? fixedSalary : undefined,
+      percent_rate: salaryType === 'GROUP_PERCENT' ? percentRate : undefined,
       qualifications: values.qualifications || undefined,
     }, {
       onSuccess: () => {
         reset();
         setSelectedSubjects([]);
-        setSalaryType('MONTHLY');
+        setSalaryType('FIXED');
+        setFixedSalary(undefined);
+        setPercentRate(undefined);
         onClose();
       },
     });
@@ -107,7 +113,9 @@ export function CreateTeacherModal({ open, onClose }: CreateTeacherModalProps) {
       reset();
       setSelectedSubjects([]);
       setSubjectError('');
-      setSalaryType('MONTHLY');
+      setSalaryType('FIXED');
+      setFixedSalary(undefined);
+      setPercentRate(undefined);
       onClose();
     }
   };
@@ -191,32 +199,48 @@ export function CreateTeacherModal({ open, onClose }: CreateTeacherModalProps) {
               )}
             </Field>
             <div className="space-y-1.5">
-              <Label className="text-xs">Oylik turi</Label>
-              <div className="flex rounded-xl border border-border/60 bg-muted/40 p-0.5 w-fit">
-                {(['MONTHLY', 'DAILY'] as SalaryType[]).map((type) => (
-                  <button
-                    key={type}
-                    type="button"
-                    onClick={() => setSalaryType(type)}
-                    className={`h-7 rounded-lg px-3 text-xs font-semibold transition-all ${
-                      salaryType === type
-                        ? 'bg-background text-foreground shadow-sm'
-                        : 'text-muted-foreground hover:text-foreground'
-                    }`}
-                  >
-                    {type === 'MONTHLY' ? 'Oylik' : 'Kunlik'}
-                  </button>
-                ))}
-              </div>
+              <Label className="text-xs">Maosh turi</Label>
+              <Select value={salaryType} onValueChange={(v) => setSalaryType(v as SalaryType)}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="FIXED">Belgilangan (Фикс)</SelectItem>
+                  <SelectItem value="HOURLY">Soatbay (Часовой)</SelectItem>
+                  <SelectItem value="GROUP_PERCENT">Guruhdan foiz (%)</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
-            <Field label={salaryType === 'MONTHLY' ? 'Oylik maosh (KGS)' : 'Kunlik stavka (KGS)'} error={errors.hourly_rate?.message}>
-              <Input
-                type="number"
-                {...register('hourly_rate')}
-                placeholder={salaryType === 'MONTHLY' ? '15000' : '700'}
-                step="100"
-              />
-            </Field>
+            {salaryType === 'FIXED' && (
+              <Field label="Belgilangan oylik maosh (so'm)" error={undefined}>
+                <Input
+                  type="number"
+                  value={fixedSalary ?? ''}
+                  onChange={(e) => setFixedSalary(e.target.value ? Number(e.target.value) : undefined)}
+                  placeholder="3000000"
+                />
+              </Field>
+            )}
+            {salaryType === 'HOURLY' && (
+              <Field label="Soat narxi (so'm)" error={errors.hourly_rate?.message}>
+                <Input
+                  type="number"
+                  {...register('hourly_rate')}
+                  placeholder="50000"
+                  step="1000"
+                />
+              </Field>
+            )}
+            {salaryType === 'GROUP_PERCENT' && (
+              <Field label="Foiz (%)" error={undefined}>
+                <Input
+                  type="number"
+                  min="0"
+                  max="100"
+                  value={percentRate ?? ''}
+                  onChange={(e) => setPercentRate(e.target.value ? Number(e.target.value) : undefined)}
+                  placeholder="30"
+                />
+              </Field>
+            )}
             <Field label={t('qualifications')} error={errors.qualifications?.message}>
               <Input {...register('qualifications')} placeholder="e.g. PhD in Mathematics" />
             </Field>
