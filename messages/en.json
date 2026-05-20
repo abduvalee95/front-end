@@ -122,7 +122,8 @@
         "group_main": "Main",
         "group_management": "Management",
         "group_academic": "Academic",
-        "group_system": "System"
+        "group_system": "System",
+        "subjects": "Subjects"
     },
     "auth": {
         "sign_in": "Sign In",
@@ -910,5 +911,21 @@
         "mockup_top_group": "IELTS Intensive",
         "mockup_attention_group": "7-B Math",
         "mockup_url": "bilimnuru.uz/journal/5-A"
+    },
+    "subjects": {
+        "title": "Subjects",
+        "subtitle": "Manage academic subjects",
+        "add_subject": "Add Subject",
+        "edit_subject": "Edit Subject",
+        "delete_subject": "Delete Subject",
+        "delete_confirm": "Are you sure you want to delete this subject?",
+        "subject_name": "Subject Name",
+        "subject_name_placeholder": "e.g. Mathematics",
+        "no_subjects": "No subjects found",
+        "creating": "Saving...",
+        "create_subject": "Save",
+        "name_required": "Subject name is required",
+        "search_subjects": "Search subjects...",
+        "all_subjects": "All Subjects"
     }
 }

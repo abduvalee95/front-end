@@ -41,6 +41,7 @@ const NAV_GROUPS = [
       { key: 'journal',  href: '/journal',  icon: BookOpen,       roles: null },
       { key: 'leads',    href: '/leads',    icon: Users,          roles: ['SUPER_ADMIN','ADMIN','MANAGER','TEACHER'] },
       { key: 'courses',  href: '/courses',  icon: BookOpen,       roles: null },
+      { key: 'subjects', href: '/subjects', icon: BookOpen,       roles: ['SUPER_ADMIN', 'ADMIN', 'MANAGER'] },
       { key: 'teachers', href: '/teachers', icon: GraduationCap,  roles: ['SUPER_ADMIN','ADMIN','MANAGER'] },
       { key: 'students', href: '/students', icon: GraduationCap,  roles: null },
       { key: 'groups',   href: '/groups',   icon: Users,          roles: ['SUPER_ADMIN','ADMIN','MANAGER','TEACHER'] },

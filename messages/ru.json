@@ -122,7 +122,8 @@
         "group_main": "Основное",
         "group_management": "Управление",
         "group_academic": "Академическое",
-        "group_system": "Система"
+        "group_system": "Система",
+        "subjects": "Предметы"
     },
     "auth": {
         "sign_in": "Войти",
@@ -911,5 +912,21 @@
         "mockup_top_group": "IELTS Intensive",
         "mockup_attention_group": "7-Б Матем.",
         "mockup_url": "bilimnuru.kg/jurnal/5-А"
+    },
+    "subjects": {
+        "title": "Предметы",
+        "subtitle": "Управление учебными предметами",
+        "add_subject": "Добавить предмет",
+        "edit_subject": "Редактировать предмет",
+        "delete_subject": "Удалить предмет",
+        "delete_confirm": "Вы уверены, что хотите удалить этот предмет?",
+        "subject_name": "Название предмета",
+        "subject_name_placeholder": "Например: Математика",
+        "no_subjects": "Предметов не найдено",
+        "creating": "Сохранение...",
+        "create_subject": "Сохранить",
+        "name_required": "Название предмета обязательно",
+        "search_subjects": "Поиск предметов...",
+        "all_subjects": "Все предметы"
     }
 }

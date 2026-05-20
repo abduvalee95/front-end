@@ -122,7 +122,8 @@
         "group_main": "Asosiy",
         "group_management": "Boshqaruv",
         "group_academic": "Akademik",
-        "group_system": "Tizim"
+        "group_system": "Tizim",
+        "subjects": "Fanlar"
     },
     "auth": {
         "sign_in": "Kirish",
@@ -910,5 +911,21 @@
         "mockup_top_group": "IELTS Intensive",
         "mockup_attention_group": "7-B Matem.",
         "mockup_url": "bilimnuru.uz/jurnal/5-A"
+    },
+    "subjects": {
+        "title": "Fanlar",
+        "subtitle": "O'quv fanlari boshqaruvi",
+        "add_subject": "Fan qo'shish",
+        "edit_subject": "Fanni tahrirlash",
+        "delete_subject": "Fanni o'chirish",
+        "delete_confirm": "Ushbu fanni o'chirmoqchimisiz?",
+        "subject_name": "Fan nomi",
+        "subject_name_placeholder": "Masalan: Matematika",
+        "no_subjects": "Fanlar mavjud emas",
+        "creating": "Saqlanmoqda...",
+        "create_subject": "Saqlash",
+        "name_required": "Fan nomi kiritilishi shart",
+        "search_subjects": "Fan qidirish...",
+        "all_subjects": "Barcha fanlar"
     }
 }

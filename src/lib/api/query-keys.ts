@@ -64,6 +64,13 @@ export const queryKeys = {
       [...queryKeys.journal.all(orgId), 'teacher', teacherId, params] as const,
   },
 
+  // Subjects
+  subjects: {
+    all: (orgId: string | undefined) => ['subjects', orgId] as const,
+    list: (orgId: string | undefined) =>
+      [...queryKeys.subjects.all(orgId), 'list'] as const,
+  },
+
   // Finance
   finance: {
     all: (orgId: string | undefined) => ['finance', orgId] as const,
