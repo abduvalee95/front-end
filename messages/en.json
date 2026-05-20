@@ -465,6 +465,8 @@
         "students_count": "Students Count",
         "start_date": "Start Date",
         "end_date": "End Date",
+        "start_time": "Start Time",
+        "end_time": "End Time",
         "status_active": "Active",
         "status_inactive": "Inactive",
         "status_completed": "Completed",

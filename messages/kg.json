@@ -464,6 +464,8 @@
         "students_count": "Окуучулар саны",
         "start_date": "Башталуу датасы",
         "end_date": "Аяктоо датасы",
+        "start_time": "Башталуу убактысы",
+        "end_time": "Аяктоо убактысы",
         "status_active": "Активдүү",
         "status_inactive": "Активдүү эмес",
         "status_completed": "Аяктады",

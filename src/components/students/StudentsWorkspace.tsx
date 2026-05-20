@@ -119,6 +119,7 @@ export function StudentsWorkspace() {
   const effectiveTeacherId = teacherScoped ? user?.id ?? '' : selectedTeacherId;
   const shouldLoadAllStudents = canManageScope && effectiveViewMode === 'all';
   const shouldLoadTeacherStudents = !!effectiveTeacherId && effectiveViewMode === 'teacher';
+  const shouldLoadAllGroups = canManageScope && effectiveViewMode === 'all';
 
   const studentsQuery = useStudents(
     { page, limit: pageSize, search: debouncedSearch || undefined, status: statusFilter || undefined },
@@ -126,6 +127,7 @@ export function StudentsWorkspace() {
   );
 
   const teachersQuery = useTeachers({ page: 1, limit: 100 }, canManageScope);
+  const allGroupsQuery = useStudentGroups(shouldLoadAllGroups);
   const groupsQuery = useStudentGroups(shouldLoadTeacherStudents);
 
   const teacherGroups = useMemo(() => {
@@ -175,9 +177,36 @@ export function StudentsWorkspace() {
     });
   }, [enrollmentQueries, debouncedSearch, statusFilter]);
 
+  const allGroupIds = useMemo(() => (allGroupsQuery.data ?? []).map((g) => g.id), [allGroupsQuery.data]);
+  const allEnrollmentQueries = useGroupEnrollments(allGroupIds, shouldLoadAllGroups && allGroupIds.length > 0);
+
   const allRows = useMemo<StudentRow[]>(() => {
-    return (studentsQuery.data?.items ?? []).map((student) => ({ ...student, groups: [], courses: [], teachers: [] }));
-  }, [studentsQuery.data?.items]);
+    const enrollmentMap = new Map<string, { groups: string[]; courses: string[]; teachers: string[] }>();
+    allEnrollmentQueries.forEach((query) => {
+      (query.data ?? []).forEach((enrollment) => {
+        if (!enrollment.student) return;
+        const existing = enrollmentMap.get(enrollment.student.id);
+        const groupName = enrollment.group?.name;
+        const courseTitle = enrollment.group?.course?.title;
+        const teacherName = enrollment.group?.teacher?.full_name;
+        if (existing) {
+          if (groupName && !existing.groups.includes(groupName)) existing.groups.push(groupName);
+          if (courseTitle && !existing.courses.includes(courseTitle)) existing.courses.push(courseTitle);
+          if (teacherName && !existing.teachers.includes(teacherName)) existing.teachers.push(teacherName);
+        } else {
+          enrollmentMap.set(enrollment.student.id, {
+            groups: groupName ? [groupName] : [],
+            courses: courseTitle ? [courseTitle] : [],
+            teachers: teacherName ? [teacherName] : [],
+          });
+        }
+      });
+    });
+    return (studentsQuery.data?.items ?? []).map((student) => {
+      const info = enrollmentMap.get(student.id);
+      return { ...student, groups: info?.groups ?? [], courses: info?.courses ?? [], teachers: info?.teachers ?? [] };
+    });
+  }, [studentsQuery.data?.items, allEnrollmentQueries]);
 
   const rows = effectiveViewMode === 'all' ? allRows : teacherRows;
   const loading = effectiveViewMode === 'all' ? studentsQuery.isLoading : groupsQuery.isLoading || enrollmentQueries.some((q) => q.isLoading);
@@ -408,7 +437,7 @@ export function StudentsWorkspace() {
                 <TableHead className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">{t('col_status')}</TableHead>
                 <TableHead className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">{t('col_parent')}</TableHead>
                 <TableHead className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
-                  {teacherScoped ? t('col_group_course') : t('col_address')}
+                  {teacherScoped ? t('col_group_course') : t('col_group_course')}
                 </TableHead>
                 <TableHead className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
                   {teacherScoped ? t('col_teacher') : t('col_phone')}
@@ -532,14 +561,10 @@ function StudentTableRow({
         <span className="truncate block">{student.parent || <span className="text-border">—</span>}</span>
       </TableCell>
       <TableCell className="max-w-[200px] text-xs text-muted-foreground">
-        {teacherScoped ? (
-          <div>
-            <p className="truncate font-medium text-foreground/80">{student.groups.join(', ') || <span className="text-border">—</span>}</p>
-            <p className="truncate text-[11px] text-muted-foreground/70">{student.courses.join(', ') || t('no_course')}</p>
-          </div>
-        ) : (
-          <span className="line-clamp-1">{student.address || <span className="text-border">—</span>}</span>
-        )}
+        <div>
+          <p className="truncate font-medium text-foreground/80">{student.groups.join(', ') || <span className="text-border">—</span>}</p>
+          <p className="truncate text-[11px] text-muted-foreground/70">{student.courses.join(', ') || t('no_course')}</p>
+        </div>
       </TableCell>
       <TableCell className="text-xs font-mono text-muted-foreground max-w-[160px]">
         <span className="truncate block">

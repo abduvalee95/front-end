@@ -50,14 +50,16 @@ export function CreateGroupModal({ open: externalOpen, onClose }: CreateGroupMod
     teacher_id: '',
     start_date: '',
     end_date: '',
+    start_time: '',
+    end_time: '',
   });
 
-  const resetForm = () => setFormData({ name: '', course_id: '', teacher_id: '', start_date: '', end_date: '' });
+  const resetForm = () => setFormData({ name: '', course_id: '', teacher_id: '', start_date: '', end_date: '', start_time: '', end_time: '' });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const { name, course_id, teacher_id, start_date, end_date } = formData;
-    if (!name.trim() || !course_id || !teacher_id || !start_date || !end_date) {
+    const { name, course_id, teacher_id, start_date, end_date, start_time, end_time } = formData;
+    if (!name.trim() || !course_id || !teacher_id || !start_date || !end_date || !start_time || !end_time) {
       toast.error(t('fill_all_fields'));
       return;
     }
@@ -168,6 +170,29 @@ export function CreateGroupModal({ open: externalOpen, onClose }: CreateGroupMod
                 type="date"
                 value={formData.end_date}
                 onChange={(e) => setFormData((p) => ({ ...p, end_date: e.target.value }))}
+                disabled={isLoading}
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3">
+            <div className="space-y-2">
+              <Label htmlFor="group-start-time">{t('start_time')} *</Label>
+              <Input
+                id="group-start-time"
+                type="time"
+                value={formData.start_time}
+                onChange={(e) => setFormData((p) => ({ ...p, start_time: e.target.value }))}
+                disabled={isLoading}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="group-end-time">{t('end_time')} *</Label>
+              <Input
+                id="group-end-time"
+                type="time"
+                value={formData.end_time}
+                onChange={(e) => setFormData((p) => ({ ...p, end_time: e.target.value }))}
                 disabled={isLoading}
               />
             </div>

@@ -34,6 +34,8 @@ export interface Group {
   teacher_id: string;
   start_date: string;
   end_date: string;
+  start_time: string;
+  end_time: string;
   created_at: string;
   course?: {
     id: string;
@@ -51,6 +53,8 @@ export interface CreateGroupPayload {
   teacher_id: string;
   start_date: string;
   end_date: string;
+  start_time: string;
+  end_time: string;
 }
 
 export interface UpdateGroupPayload {
@@ -59,6 +63,8 @@ export interface UpdateGroupPayload {
   teacher_id?: string;
   start_date?: string;
   end_date?: string;
+  start_time?: string;
+  end_time?: string;
 }
 
 // ─── Schedule ───

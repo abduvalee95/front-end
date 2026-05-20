@@ -465,6 +465,8 @@
         "students_count": "Количество студентов",
         "start_date": "Дата начала",
         "end_date": "Дата окончания",
+        "start_time": "Время начала",
+        "end_time": "Время окончания",
         "status_active": "Активная",
         "status_inactive": "Неактивная",
         "status_completed": "Завершена",

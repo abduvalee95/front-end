@@ -515,6 +515,8 @@
         "students_count": "O'quvchilar soni",
         "start_date": "Boshlanish sanasi",
         "end_date": "Tugash sanasi",
+        "start_time": "Boshlanish vaqti",
+        "end_time": "Tugash vaqti",
         "status_active": "Faol",
         "status_inactive": "Nofaol",
         "status_completed": "Tugallandi",
