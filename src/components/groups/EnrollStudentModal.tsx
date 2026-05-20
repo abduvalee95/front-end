@@ -18,6 +18,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
+import { useTranslations } from '@/i18n/index';
 import { enrollmentService } from '@/services/enrollments';
 import { useStudents } from '@/hooks/useStudents';
 import { GROUPS_KEYS } from '@/hooks/useGroups';
@@ -30,6 +31,8 @@ interface EnrollStudentModalProps {
 }
 
 export function EnrollStudentModal({ groupId, groupName }: EnrollStudentModalProps) {
+  const t = useTranslations('enrollment');
+  const tCommon = useTranslations('common');
   const [open, setOpen] = useState(false);
   const [isEnrolling, setIsEnrolling] = useState(false);
   const [isRemoving, setIsRemoving] = useState<string | null>(null);
@@ -78,7 +81,7 @@ export function EnrollStudentModal({ groupId, groupName }: EnrollStudentModalPro
 
   const handleEnroll = async () => {
     if (selectedIds.size === 0) {
-      toast.error('Please select at least one student');
+      toast.error(t('select_at_least_one'));
       return;
     }
     try {
@@ -90,8 +93,8 @@ export function EnrollStudentModal({ groupId, groupName }: EnrollStudentModalPro
       );
       const succeeded = results.filter((r) => r.status === 'fulfilled').length;
       const failed = results.length - succeeded;
-      if (succeeded > 0) toast.success(`${succeeded} student${succeeded > 1 ? 's' : ''} enrolled`);
-      if (failed > 0) toast.error(`${failed} enrollment${failed > 1 ? 's' : ''} failed`);
+      if (succeeded > 0) toast.success(`${succeeded} ${t('success_enrolled')}`);
+      if (failed > 0) toast.error(`${failed} ${t('error_failed')}`);
       setSelectedIds(new Set());
       setSearch('');
       queryClient.invalidateQueries({ queryKey: ['enrollments', 'group', groupId] });
@@ -102,16 +105,16 @@ export function EnrollStudentModal({ groupId, groupName }: EnrollStudentModalPro
   };
 
   const handleRemove = async (enrollmentId: string) => {
-    if (!confirm('Remove this student from the group?')) return;
+    if (!confirm(t('remove_confirm'))) return;
     try {
       setIsRemoving(enrollmentId);
       await enrollmentService.remove(enrollmentId);
-      toast.success('Student removed from group');
+      toast.success(t('success_removed'));
       queryClient.invalidateQueries({ queryKey: ['enrollments', 'group', groupId] });
       queryClient.invalidateQueries({ queryKey: GROUPS_KEYS.all(user?.organization_id) });
     } catch (err: unknown) {
       const error = err as { response?: { data?: { message?: string } } };
-      toast.error(error.response?.data?.message || 'Failed to remove enrollment');
+      toast.error(error.response?.data?.message || t('error_remove'));
     } finally {
       setIsRemoving(null);
     }
@@ -124,7 +127,7 @@ export function EnrollStudentModal({ groupId, groupName }: EnrollStudentModalPro
     <Dialog open={open} onOpenChange={(v) => { setOpen(v); if (!v) { setSelectedIds(new Set()); setSearch(''); } }}>
       <DialogTrigger
         render={
-          <Button variant="ghost" size="icon" className="size-8" title="Manage enrollment">
+          <Button variant="ghost" size="icon" className="size-8" title={t('manage_enrollment')}>
             <UserPlus className="size-4" />
           </Button>
         }
@@ -136,9 +139,9 @@ export function EnrollStudentModal({ groupId, groupName }: EnrollStudentModalPro
               <UserPlus className="size-5" />
             </div>
             <div>
-              <DialogTitle>Enrollment — {groupName}</DialogTitle>
+              <DialogTitle>{t('enroll_button')} — {groupName}</DialogTitle>
               <DialogDescription>
-                Select one or more students to add to this group.
+                {t('available_students')}
               </DialogDescription>
             </div>
           </div>
@@ -148,7 +151,7 @@ export function EnrollStudentModal({ groupId, groupName }: EnrollStudentModalPro
         <div className="space-y-2">
           <div className="flex items-center justify-between">
             <Label className="text-xs font-medium">
-              Available Students
+              {t('available_students')}
               {availableStudents.length > 0 && (
                 <span className="ml-1.5 text-muted-foreground">({availableStudents.length})</span>
               )}
@@ -160,7 +163,7 @@ export function EnrollStudentModal({ groupId, groupName }: EnrollStudentModalPro
                 className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
               >
                 {allSelected ? <CheckSquare className="size-3.5 text-emerald-600" /> : <Square className="size-3.5" />}
-                {allSelected ? 'Deselect all' : 'Select all'}
+                {allSelected ? t('deselect_all') : t('select_all')}
               </button>
             )}
           </div>
@@ -169,7 +172,7 @@ export function EnrollStudentModal({ groupId, groupName }: EnrollStudentModalPro
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-3.5 text-muted-foreground pointer-events-none" />
             <Input
-              placeholder="Search by name or phone..."
+              placeholder={t('search_placeholder')}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="pl-9 h-9 rounded-xl"
@@ -184,7 +187,7 @@ export function EnrollStudentModal({ groupId, groupName }: EnrollStudentModalPro
           ) : availableStudents.length === 0 ? (
             <div className="rounded-xl border border-dashed border-border/60 px-4 py-5 text-center">
               <p className="text-sm text-muted-foreground">
-                {search ? 'No students match your search.' : 'All students are already enrolled.'}
+                {search ? t('no_match') : t('all_enrolled')}
               </p>
             </div>
           ) : (
@@ -224,11 +227,11 @@ export function EnrollStudentModal({ groupId, groupName }: EnrollStudentModalPro
               className="w-full rounded-xl h-9 bg-emerald-600 hover:bg-emerald-700 text-white"
             >
               {isEnrolling ? (
-                <><Loader2 className="mr-2 size-4 animate-spin" />Enrolling...</>
+                <><Loader2 className="mr-2 size-4 animate-spin" />{t('enrolling')}</>
               ) : (
                 <>
                   <UserPlus className="mr-2 size-4" />
-                  Enroll {selectedIds.size} Student{selectedIds.size > 1 ? 's' : ''}
+                  {t('enroll_button')} {selectedIds.size} {selectedIds.size > 1 ? 'Students' : 'Student'}
                 </>
               )}
             </Button>
@@ -238,7 +241,7 @@ export function EnrollStudentModal({ groupId, groupName }: EnrollStudentModalPro
         {/* Current enrollments */}
         <div className="space-y-2">
           <Label className="text-xs font-medium">
-            Enrolled Students
+            {t('enrolled_students')}
             <span className="ml-1.5 text-muted-foreground">({enrollments.length})</span>
           </Label>
           {enrollmentsQuery.isLoading ? (
@@ -247,7 +250,7 @@ export function EnrollStudentModal({ groupId, groupName }: EnrollStudentModalPro
             </div>
           ) : enrollments.length === 0 ? (
             <div className="rounded-xl border border-dashed border-border/60 px-4 py-5 text-center">
-              <p className="text-sm text-muted-foreground">No students enrolled yet.</p>
+              <p className="text-sm text-muted-foreground">{t('no_enrolled')}</p>
             </div>
           ) : (
             <div className="max-h-[180px] space-y-1.5 overflow-y-auto pr-1">
@@ -274,7 +277,7 @@ export function EnrollStudentModal({ groupId, groupName }: EnrollStudentModalPro
                       className="size-7 rounded-lg text-destructive/70 hover:text-destructive hover:bg-destructive/10"
                       disabled={isRemoving === enrollment.id}
                       onClick={() => handleRemove(enrollment.id)}
-                      title="Remove from group"
+                      title={t('remove_from_group')}
                     >
                       {isRemoving === enrollment.id ? <Loader2 className="size-3 animate-spin" /> : <X className="size-3.5" />}
                     </Button>
@@ -287,7 +290,7 @@ export function EnrollStudentModal({ groupId, groupName }: EnrollStudentModalPro
 
         <DialogFooter>
           <Button variant="outline" onClick={() => setOpen(false)} className="w-full sm:w-auto rounded-xl">
-            Close
+            {t('close')}
           </Button>
         </DialogFooter>
       </DialogContent>
