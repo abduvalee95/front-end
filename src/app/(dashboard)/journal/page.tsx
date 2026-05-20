@@ -3,38 +3,15 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useAuthStore } from '@/store/auth.store';
 import { useTranslations } from '@/i18n/index';
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
-import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
 import {
-  Calendar as CalendarIcon,
-  Users,
-  CheckCircle2,
-  XCircle,
-  Save,
   ChevronLeft,
   ChevronRight,
-  Clock,
-  Star,
-  ShieldCheck,
   BookOpen,
   AlertCircle,
+  ShieldCheck,
+  Save,
 } from 'lucide-react';
 import { format, addDays, subDays } from 'date-fns';
 import { cn } from '@/lib/utils';
@@ -149,278 +126,472 @@ export default function JournalPage() {
   }, [localEntries]);
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-700">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <div className="flex items-center gap-2">
-            <h1 className="text-3xl font-black tracking-tight text-slate-900">{t('title')}</h1>
+    <>
+      {/* Fonts */}
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=DM+Mono:ital,wght@0,400;0,500;1,400&display=swap');
+
+        .cg { font-family: 'Cormorant Garamond', Georgia, serif; }
+        .dm { font-family: 'DM Mono', 'Courier New', monospace; }
+
+        .ledger-row {
+          border-bottom: 1px solid rgba(110, 88, 58, 0.10);
+          transition: background 0.15s ease;
+        }
+        .ledger-row:hover {
+          background: rgba(110, 88, 58, 0.035);
+        }
+        .ledger-row:last-child {
+          border-bottom: none;
+        }
+
+        .status-seg {
+          flex: 1;
+          padding: 6px 0;
+          font-size: 11px;
+          font-weight: 600;
+          letter-spacing: 0.05em;
+          text-transform: uppercase;
+          border: none;
+          cursor: pointer;
+          transition: all 0.15s ease;
+          color: #8C7B6A;
+          background: transparent;
+        }
+        .status-seg:first-child { border-radius: 6px 0 0 6px; }
+        .status-seg:last-child  { border-radius: 0 6px 6px 0; }
+
+        .status-seg.present-active {
+          background: #166534;
+          color: #fff;
+          box-shadow: 0 1px 6px rgba(22,101,52,0.30);
+        }
+        .status-seg.late-active {
+          background: #92400E;
+          color: #fff;
+          box-shadow: 0 1px 6px rgba(146,64,14,0.30);
+        }
+        .status-seg.absent-active {
+          background: #991B1B;
+          color: #fff;
+          box-shadow: 0 1px 6px rgba(153,27,27,0.30);
+        }
+        .status-seg:hover:not(.present-active):not(.late-active):not(.absent-active) {
+          background: rgba(110, 88, 58, 0.08);
+          color: #4A3E30;
+        }
+
+        .score-input {
+          font-family: 'DM Mono', monospace;
+          font-size: 13px;
+          font-weight: 500;
+          text-align: center;
+          border: none;
+          border-bottom: 1.5px solid rgba(110, 88, 58, 0.25);
+          border-radius: 0;
+          background: transparent;
+          padding: 4px 4px 2px;
+          width: 48px;
+          color: #1A1410;
+          outline: none;
+          transition: border-color 0.15s;
+        }
+        .score-input:focus {
+          border-bottom-color: #2D3A8C;
+          box-shadow: none;
+        }
+        .score-input::placeholder { color: #C4B49A; }
+
+        .group-item {
+          padding: 10px 16px;
+          cursor: pointer;
+          border-left: 2px solid transparent;
+          transition: all 0.15s ease;
+          color: #8C7B68;
+          font-size: 13px;
+        }
+        .group-item:hover {
+          color: #D4C4A8;
+          border-left-color: rgba(212,196,168,0.4);
+          background: rgba(255,255,255,0.04);
+        }
+        .group-item.active {
+          color: #F4EFE4;
+          border-left-color: #C4A882;
+          background: rgba(255,255,255,0.06);
+        }
+
+        @keyframes ledger-in {
+          from { opacity: 0; transform: translateY(6px); }
+          to   { opacity: 1; transform: translateY(0); }
+        }
+        .ledger-animate { animation: ledger-in 0.35s ease forwards; }
+        .ledger-row-delay { opacity: 0; animation: ledger-in 0.3s ease forwards; }
+      `}</style>
+
+      <div
+        className="flex gap-0 rounded-2xl overflow-hidden shadow-xl ledger-animate"
+        style={{
+          minHeight: '78vh',
+          border: '1px solid rgba(110,88,58,0.12)',
+          background: '#F4EFE4',
+        }}
+      >
+        {/* ── SIDEBAR ─────────────────────────────────────── */}
+        <aside
+          className="flex flex-col w-64 shrink-0"
+          style={{ background: '#1C1917', borderRight: '1px solid rgba(255,255,255,0.05)' }}
+        >
+          {/* Sidebar header */}
+          <div className="px-5 pt-6 pb-5" style={{ borderBottom: '1px solid rgba(255,255,255,0.07)' }}>
+            <p className="dm text-[10px] tracking-[0.18em] uppercase" style={{ color: '#5A5045' }}>
+              BILIM NURU
+            </p>
+            <h2
+              className="cg mt-1 leading-none"
+              style={{ fontSize: '22px', fontWeight: 700, color: '#E8DFD0', letterSpacing: '-0.01em' }}
+            >
+              {t('title')}
+            </h2>
             {isAdmin && (
-              <Badge className="bg-amber-100 text-amber-700 border-amber-200 hover:bg-amber-100">
-                <ShieldCheck className="size-3 mr-1" /> {t('admin_view')}
-              </Badge>
+              <span
+                className="inline-flex items-center gap-1 mt-2 dm text-[9px] tracking-widest uppercase"
+                style={{ color: '#6B6050', background: 'rgba(255,255,255,0.05)', padding: '2px 6px', borderRadius: 4 }}
+              >
+                <ShieldCheck style={{ width: 9, height: 9 }} />
+                {t('admin_view')}
+              </span>
             )}
           </div>
-          <p className="text-slate-500 mt-1">{t('subtitle')}</p>
-        </div>
-        <div className="flex items-center gap-3">
-          <Button
-            onClick={handleSave}
-            disabled={upsert.isPending || !selectedGroupId || !enrollments.length}
-            className="bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg shadow-indigo-600/20 px-6 font-bold"
-          >
-            <Save className="mr-2 h-4 w-4" />
-            {upsert.isPending ? tCommon('loading') : t('save_attendance')}
-          </Button>
-        </div>
-      </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-        {/* Sidebar */}
-        <div className="space-y-6 lg:col-span-1">
-          <Card className="border-slate-200/60 shadow-sm overflow-hidden">
-            <CardHeader className="bg-slate-50/50 pb-3 border-b">
-              <CardTitle className="text-sm font-bold flex items-center gap-2 text-slate-600">
-                <Users className="size-4 text-indigo-500" />
-                {isTeacher ? tCommon('your_groups') : t('all_groups')}
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="p-2 pt-3 space-y-1">
-              {groupsLoading ? (
-                Array.from({ length: 3 }).map((_, i) => (
-                  <Skeleton key={i} className="h-10 rounded-xl" />
-                ))
-              ) : visibleGroups.length === 0 ? (
-                <p className="text-xs text-slate-400 text-center py-4">{tCommon('no_data')}</p>
-              ) : (
-                visibleGroups.map((group) => (
-                  <div
-                    key={group.id}
-                    onClick={() => setSelectedGroupId(group.id)}
-                    className={cn(
-                      'p-3 rounded-xl cursor-pointer transition-all border text-[13px] font-bold',
-                      selectedGroupId === group.id
-                        ? 'bg-indigo-600 border-indigo-600 text-white shadow-md'
-                        : 'border-transparent hover:bg-slate-100 text-slate-600',
-                    )}
-                  >
-                    <div className="flex items-center gap-2">
-                      <BookOpen className="size-3.5 shrink-0" />
-                      <span className="truncate">{group.name}</span>
-                    </div>
-                    {group.teacher && selectedGroupId !== group.id && (
-                      <p className="text-[10px] font-medium text-slate-400 mt-0.5 ml-5 truncate">
-                        {group.teacher.full_name}
-                      </p>
-                    )}
+          {/* Groups list */}
+          <div className="flex-1 py-3 overflow-y-auto">
+            <p className="dm text-[9px] tracking-[0.18em] uppercase px-5 mb-2" style={{ color: '#3D3530' }}>
+              {isTeacher ? tCommon('your_groups') : t('all_groups')}
+            </p>
+            {groupsLoading ? (
+              <div className="px-4 space-y-2">
+                {Array.from({ length: 4 }).map((_, i) => (
+                  <div key={i} className="h-8 rounded-lg" style={{ background: 'rgba(255,255,255,0.04)' }} />
+                ))}
+              </div>
+            ) : visibleGroups.length === 0 ? (
+              <p className="dm text-[11px] px-5" style={{ color: '#3D3530' }}>{tCommon('no_data')}</p>
+            ) : (
+              visibleGroups.map((group) => (
+                <div
+                  key={group.id}
+                  className={cn('group-item', selectedGroupId === group.id && 'active')}
+                  onClick={() => setSelectedGroupId(group.id)}
+                >
+                  <div className="flex items-center gap-2">
+                    <BookOpen style={{ width: 11, height: 11, opacity: 0.6, flexShrink: 0 }} />
+                    <span className="truncate font-semibold">{group.name}</span>
                   </div>
-                ))
-              )}
-            </CardContent>
-          </Card>
+                  {group.teacher && selectedGroupId !== group.id && (
+                    <p className="dm text-[10px] mt-0.5 ml-5 truncate" style={{ color: '#4A4038', opacity: 0.7 }}>
+                      {group.teacher.full_name}
+                    </p>
+                  )}
+                </div>
+              ))
+            )}
+          </div>
 
-          <Card className="border-slate-200/60 shadow-sm overflow-hidden">
-            <CardHeader className="bg-slate-50/50 pb-3 border-b">
-              <CardTitle className="text-sm font-bold flex items-center gap-2 text-slate-600">
-                <CalendarIcon className="size-4 text-indigo-500" /> {t('date')}
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between bg-white p-2 rounded-xl border shadow-sm">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-8 w-8 hover:bg-indigo-50 hover:text-indigo-600"
-                  onClick={() => setCurrentDate((d) => subDays(d, 1))}
-                >
-                  <ChevronLeft className="size-4" />
-                </Button>
-                <span className="text-sm font-black text-slate-700">
-                  {format(currentDate, 'MMM dd, yyyy')}
-                </span>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-8 w-8 hover:bg-indigo-50 hover:text-indigo-600"
-                  onClick={() => setCurrentDate((d) => addDays(d, 1))}
-                >
-                  <ChevronRight className="size-4" />
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-
+          {/* Stats block */}
           {enrollments.length > 0 && (
-            <Card className="border-slate-200/60 shadow-sm overflow-hidden">
-              <CardHeader className="bg-slate-50/50 pb-3 border-b">
-                <CardTitle className="text-sm font-bold text-slate-600">{t('today')}</CardTitle>
-              </CardHeader>
-              <CardContent className="p-4 space-y-2">
-                <div className="flex items-center justify-between text-sm">
-                  <span className="flex items-center gap-1.5 text-green-600 font-bold">
-                    <CheckCircle2 className="size-3.5" /> {t('present')}
-                  </span>
-                  <Badge className="bg-green-100 text-green-700 border-0">{stats.present}</Badge>
-                </div>
-                <div className="flex items-center justify-between text-sm">
-                  <span className="flex items-center gap-1.5 text-amber-600 font-bold">
-                    <Clock className="size-3.5" /> {t('late')}
-                  </span>
-                  <Badge className="bg-amber-100 text-amber-700 border-0">{stats.late}</Badge>
-                </div>
-                <div className="flex items-center justify-between text-sm">
-                  <span className="flex items-center gap-1.5 text-red-600 font-bold">
-                    <XCircle className="size-3.5" /> {t('absent')}
-                  </span>
-                  <Badge className="bg-red-100 text-red-700 border-0">{stats.absent}</Badge>
-                </div>
-              </CardContent>
-            </Card>
-          )}
-        </div>
-
-        {/* Main Content */}
-        <div className="lg:col-span-3">
-          <Card className="border-slate-200/60 shadow-md overflow-hidden">
-            <CardHeader className="flex flex-row items-center justify-between border-b bg-white">
-              <div>
-                <CardTitle className="text-lg font-black text-slate-800">
-                  {selectedGroup ? selectedGroup.name : t('group')}
-                </CardTitle>
-                <CardDescription className="font-medium">
-                  {selectedGroup
-                    ? `${format(currentDate, 'EEEE, MMMM d yyyy')} — ${t('attendance')}`
-                    : t('select_group_hint')}
-                </CardDescription>
+            <div className="px-5 py-5" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+              <p className="dm text-[9px] tracking-[0.18em] uppercase mb-4" style={{ color: '#3D3530' }}>
+                {t('today')}
+              </p>
+              <div className="space-y-3">
+                {[
+                  { label: t('present'), value: stats.present, color: '#166534', dot: '#4ADE80' },
+                  { label: t('late'), value: stats.late, color: '#92400E', dot: '#FB923C' },
+                  { label: t('absent'), value: stats.absent, color: '#991B1B', dot: '#F87171' },
+                ].map((s) => (
+                  <div key={s.label} className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <span className="size-1.5 rounded-full shrink-0" style={{ background: s.dot }} />
+                      <span className="text-[12px] font-medium" style={{ color: '#7A6B5C' }}>{s.label}</span>
+                    </div>
+                    <span
+                      className="cg"
+                      style={{ fontSize: '22px', fontWeight: 700, color: '#C4B49A', lineHeight: 1 }}
+                    >
+                      {String(s.value).padStart(2, '0')}
+                    </span>
+                  </div>
+                ))}
               </div>
-              {enrollments.length > 0 && (
-                <Badge
-                  variant="outline"
-                  className="bg-indigo-50 text-indigo-700 border-indigo-200 px-3 py-1 font-bold"
+            </div>
+          )}
+        </aside>
+
+        {/* ── MAIN PANEL ──────────────────────────────────── */}
+        <div className="flex-1 flex flex-col min-w-0">
+
+          {/* Main header: date nav + group name + save */}
+          <div
+            className="flex items-center justify-between px-8 pt-6 pb-5 shrink-0"
+            style={{
+              borderBottom: '1px solid rgba(110,88,58,0.10)',
+              background: '#F4EFE4',
+            }}
+          >
+            {/* Date navigation */}
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => setCurrentDate((d) => subDays(d, 1))}
+                className="flex items-center justify-center rounded-lg transition-all"
+                style={{
+                  width: 32, height: 32,
+                  border: '1px solid rgba(110,88,58,0.15)',
+                  background: 'rgba(110,88,58,0.04)',
+                  color: '#8C7B68',
+                  cursor: 'pointer',
+                }}
+              >
+                <ChevronLeft style={{ width: 15, height: 15 }} />
+              </button>
+
+              <div>
+                <p
+                  className="cg leading-none"
+                  style={{ fontSize: '32px', fontWeight: 700, color: '#1A1410', letterSpacing: '-0.02em' }}
                 >
-                  {enrollments.length} {t('n_students')}
-                </Badge>
+                  {format(currentDate, 'dd MMMM')}
+                </p>
+                <p className="dm text-[11px] mt-0.5" style={{ color: '#8C7B68' }}>
+                  {format(currentDate, 'EEEE · yyyy')}
+                </p>
+              </div>
+
+              <button
+                onClick={() => setCurrentDate((d) => addDays(d, 1))}
+                className="flex items-center justify-center rounded-lg transition-all"
+                style={{
+                  width: 32, height: 32,
+                  border: '1px solid rgba(110,88,58,0.15)',
+                  background: 'rgba(110,88,58,0.04)',
+                  color: '#8C7B68',
+                  cursor: 'pointer',
+                }}
+              >
+                <ChevronRight style={{ width: 15, height: 15 }} />
+              </button>
+            </div>
+
+            {/* Group name + save */}
+            <div className="flex items-center gap-4">
+              {selectedGroup && (
+                <div className="text-right">
+                  <p className="cg font-bold" style={{ fontSize: '18px', color: '#1A1410', lineHeight: 1.1 }}>
+                    {selectedGroup.name}
+                  </p>
+                  {enrollments.length > 0 && (
+                    <p className="dm text-[10px] mt-0.5" style={{ color: '#8C7B68' }}>
+                      {enrollments.length} {t('n_students')}
+                    </p>
+                  )}
+                </div>
               )}
-            </CardHeader>
-            <CardContent className="p-0">
-              {!selectedGroupId ? (
-                <div className="flex flex-col items-center justify-center py-20 text-slate-400">
-                  <BookOpen className="size-12 mb-3 opacity-30" />
-                  <p className="font-bold text-slate-500">{t('group')}</p>
-                  <p className="text-sm mt-1">{t('select_group_hint')}</p>
-                </div>
-              ) : isLoading ? (
-                <div className="p-6 space-y-3">
-                  {Array.from({ length: 5 }).map((_, i) => (
-                    <Skeleton key={i} className="h-12 rounded-xl" />
-                  ))}
-                </div>
-              ) : enrollments.length === 0 ? (
-                <div className="flex flex-col items-center justify-center py-20 text-slate-400">
-                  <AlertCircle className="size-12 mb-3 opacity-30" />
-                  <p className="font-bold text-slate-500">{t('no_students')}</p>
-                  <p className="text-sm mt-1">{t('enroll_first')}</p>
-                </div>
-              ) : (
-                <Table>
-                  <TableHeader className="bg-slate-50/50">
-                    <TableRow>
-                      <TableHead className="w-[250px] font-bold text-slate-700 pl-6">
-                        {tCommon('student')}
-                      </TableHead>
-                      <TableHead className="text-center font-bold text-slate-700">
-                        {t('attendance')}
-                      </TableHead>
-                      <TableHead className="text-center font-bold text-slate-700">
-                        {t('score')}
-                      </TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {enrollments.map((enrollment) => {
-                      const studentId = enrollment.student_id;
-                      const entry = localEntries[studentId];
-                      const name = enrollment.student?.name ?? studentId;
-                      return (
-                        <TableRow
-                          key={studentId}
-                          className="hover:bg-slate-50/50 transition-colors"
+              <button
+                onClick={handleSave}
+                disabled={upsert.isPending || !selectedGroupId || !enrollments.length}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 7,
+                  padding: '9px 20px',
+                  borderRadius: 8,
+                  border: 'none',
+                  background: !selectedGroupId || !enrollments.length
+                    ? 'rgba(110,88,58,0.10)'
+                    : '#1E2D6E',
+                  color: !selectedGroupId || !enrollments.length ? '#A09080' : '#fff',
+                  fontSize: 12,
+                  fontWeight: 700,
+                  fontFamily: 'inherit',
+                  letterSpacing: '0.06em',
+                  textTransform: 'uppercase',
+                  cursor: !selectedGroupId || !enrollments.length ? 'not-allowed' : 'pointer',
+                  boxShadow: !selectedGroupId || !enrollments.length
+                    ? 'none'
+                    : '0 4px 16px rgba(30,45,110,0.30)',
+                  transition: 'all 0.15s ease',
+                }}
+              >
+                <Save style={{ width: 13, height: 13 }} />
+                {upsert.isPending ? tCommon('loading') : t('save_attendance')}
+              </button>
+            </div>
+          </div>
+
+          {/* Column headers */}
+          {selectedGroupId && !isLoading && enrollments.length > 0 && (
+            <div
+              className="dm grid px-8 py-2.5 text-[10px] tracking-[0.14em] uppercase shrink-0"
+              style={{
+                gridTemplateColumns: '1fr 220px 120px',
+                borderBottom: '1px solid rgba(110,88,58,0.15)',
+                color: '#8C7B68',
+                background: 'rgba(110,88,58,0.03)',
+              }}
+            >
+              <span>{tCommon('student')}</span>
+              <span className="text-center">{t('attendance')}</span>
+              <span className="text-center">{t('score')}</span>
+            </div>
+          )}
+
+          {/* Content area */}
+          <div className="flex-1 overflow-y-auto">
+            {!selectedGroupId ? (
+              <div className="flex flex-col items-center justify-center h-full" style={{ color: '#C4B49A' }}>
+                <BookOpen style={{ width: 44, height: 44, opacity: 0.25, marginBottom: 12 }} />
+                <p className="cg font-semibold" style={{ fontSize: 20, color: '#8C7B68' }}>
+                  {t('group')}
+                </p>
+                <p className="dm text-[11px] mt-1" style={{ color: '#B4A490' }}>
+                  {t('select_group_hint')}
+                </p>
+              </div>
+            ) : isLoading ? (
+              <div className="px-8 py-4 space-y-0">
+                {Array.from({ length: 6 }).map((_, i) => (
+                  <div
+                    key={i}
+                    className="py-4 grid"
+                    style={{
+                      gridTemplateColumns: '1fr 220px 120px',
+                      borderBottom: '1px solid rgba(110,88,58,0.08)',
+                      animationDelay: `${i * 60}ms`,
+                    }}
+                  >
+                    <Skeleton className="h-4 w-36 rounded" style={{ background: 'rgba(110,88,58,0.10)' }} />
+                    <div className="flex justify-center">
+                      <Skeleton className="h-7 w-44 rounded-md" style={{ background: 'rgba(110,88,58,0.10)' }} />
+                    </div>
+                    <div className="flex justify-center">
+                      <Skeleton className="h-5 w-12 rounded" style={{ background: 'rgba(110,88,58,0.10)' }} />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : enrollments.length === 0 ? (
+              <div className="flex flex-col items-center justify-center h-full" style={{ color: '#C4B49A' }}>
+                <AlertCircle style={{ width: 44, height: 44, opacity: 0.25, marginBottom: 12 }} />
+                <p className="cg font-semibold" style={{ fontSize: 20, color: '#8C7B68' }}>
+                  {t('no_students')}
+                </p>
+                <p className="dm text-[11px] mt-1" style={{ color: '#B4A490' }}>
+                  {t('enroll_first')}
+                </p>
+              </div>
+            ) : (
+              <div>
+                {enrollments.map((enrollment, idx) => {
+                  const studentId = enrollment.student_id;
+                  const entry = localEntries[studentId];
+                  const name = enrollment.student?.name ?? studentId;
+
+                  return (
+                    <div
+                      key={studentId}
+                      className="ledger-row grid px-8"
+                      style={{
+                        gridTemplateColumns: '1fr 220px 120px',
+                        alignItems: 'center',
+                        paddingTop: 12,
+                        paddingBottom: 12,
+                        animationDelay: `${idx * 25}ms`,
+                      }}
+                    >
+                      {/* Name */}
+                      <div className="flex items-center gap-2.5">
+                        <span
+                          className="cg shrink-0 flex items-center justify-center font-bold"
+                          style={{
+                            width: 28, height: 28,
+                            borderRadius: 6,
+                            background: 'rgba(110,88,58,0.08)',
+                            color: '#6B5A48',
+                            fontSize: 13,
+                          }}
                         >
-                          <TableCell className="font-bold text-slate-700 pl-6">{name}</TableCell>
+                          {idx + 1}
+                        </span>
+                        <span style={{ fontSize: 14, fontWeight: 600, color: '#1A1410' }}>{name}</span>
+                      </div>
 
-                          <TableCell>
-                            <div className="flex items-center justify-center gap-2">
-                              <button
-                                onClick={() => updateStatus(studentId, 'PRESENT')}
-                                title={t('present')}
-                                className={cn(
-                                  'size-9 flex items-center justify-center rounded-xl transition-all border',
-                                  entry?.status === 'PRESENT'
-                                    ? 'bg-green-500 border-green-500 text-white shadow-lg shadow-green-500/20'
-                                    : 'bg-white border-slate-200 text-slate-400 hover:border-green-300 hover:text-green-500',
-                                )}
-                              >
-                                <CheckCircle2 className="size-5" />
-                              </button>
-                              <button
-                                onClick={() => updateStatus(studentId, 'LATE')}
-                                title={t('late')}
-                                className={cn(
-                                  'size-9 flex items-center justify-center rounded-xl transition-all border',
-                                  entry?.status === 'LATE'
-                                    ? 'bg-amber-500 border-amber-500 text-white shadow-lg shadow-amber-500/20'
-                                    : 'bg-white border-slate-200 text-slate-400 hover:border-amber-300 hover:text-amber-500',
-                                )}
-                              >
-                                <Clock className="size-5" />
-                              </button>
-                              <button
-                                onClick={() => updateStatus(studentId, 'ABSENT')}
-                                title={t('absent')}
-                                className={cn(
-                                  'size-9 flex items-center justify-center rounded-xl transition-all border',
-                                  entry?.status === 'ABSENT'
-                                    ? 'bg-red-500 border-red-500 text-white shadow-lg shadow-red-500/20'
-                                    : 'bg-white border-slate-200 text-slate-400 hover:border-red-300 hover:text-red-500',
-                                )}
-                              >
-                                <XCircle className="size-5" />
-                              </button>
-                            </div>
-                          </TableCell>
+                      {/* Status segmented control */}
+                      <div className="flex justify-center">
+                        <div
+                          style={{
+                            display: 'flex',
+                            border: '1px solid rgba(110,88,58,0.18)',
+                            borderRadius: 8,
+                            overflow: 'hidden',
+                            background: 'rgba(110,88,58,0.04)',
+                          }}
+                        >
+                          <button
+                            className={cn('status-seg', entry?.status === 'PRESENT' && 'present-active')}
+                            onClick={() => updateStatus(studentId, 'PRESENT')}
+                            title={t('present')}
+                          >
+                            ✓ {t('present')}
+                          </button>
+                          <button
+                            className={cn('status-seg', entry?.status === 'LATE' && 'late-active')}
+                            onClick={() => updateStatus(studentId, 'LATE')}
+                            title={t('late')}
+                            style={{ borderLeft: '1px solid rgba(110,88,58,0.12)', borderRight: '1px solid rgba(110,88,58,0.12)' }}
+                          >
+                            ⏱ {t('late')}
+                          </button>
+                          <button
+                            className={cn('status-seg', entry?.status === 'ABSENT' && 'absent-active')}
+                            onClick={() => updateStatus(studentId, 'ABSENT')}
+                            title={t('absent')}
+                          >
+                            ✗ {t('absent')}
+                          </button>
+                        </div>
+                      </div>
 
-                          <TableCell>
-                            <div className="flex items-center justify-center gap-2">
-                              <div className="relative w-24">
-                                <Star
-                                  className={cn(
-                                    'absolute left-2 top-1/2 -translate-y-1/2 size-3.5',
-                                    Number(entry?.score) > 0
-                                      ? 'text-amber-500 fill-amber-500'
-                                      : 'text-slate-300',
-                                  )}
-                                />
-                                <Input
-                                  type="number"
-                                  min="0"
-                                  max="100"
-                                  value={entry?.score ?? ''}
-                                  onChange={(e) => updateScore(studentId, e.target.value)}
-                                  className="pl-7 h-9 font-bold text-center border-slate-200 focus:ring-indigo-500"
-                                />
-                              </div>
-                              <span className="text-xs font-bold text-slate-400">/ 100</span>
-                            </div>
-                          </TableCell>
-                        </TableRow>
-                      );
-                    })}
-                  </TableBody>
-                </Table>
-              )}
-            </CardContent>
-          </Card>
+                      {/* Score */}
+                      <div className="flex items-center justify-center gap-1.5">
+                        <input
+                          type="number"
+                          min="0"
+                          max="100"
+                          value={entry?.score ?? ''}
+                          onChange={(e) => updateScore(studentId, e.target.value)}
+                          placeholder="—"
+                          className="score-input"
+                        />
+                        <span className="dm text-[10px]" style={{ color: '#B4A490' }}>/ 100</span>
+                      </div>
+                    </div>
+                  );
+                })}
+
+                {/* Ledger footer rule */}
+                <div
+                  className="mx-8 mt-4 mb-6 flex items-center gap-3"
+                  style={{ borderTop: '1.5px solid rgba(110,88,58,0.15)' }}
+                >
+                  <span className="dm text-[10px] pt-2" style={{ color: '#B4A490' }}>
+                    {enrollments.length} {t('n_students')} · {format(currentDate, 'dd.MM.yyyy')}
+                  </span>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
