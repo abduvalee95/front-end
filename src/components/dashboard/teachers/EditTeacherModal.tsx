@@ -25,8 +25,8 @@ import {
 } from '@/components/ui/select';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { useUpdateTeacher } from '@/hooks/useTeachers';
+import { useSubjects } from '@/hooks/useSubjects';
 import type { TeacherProfile, UpdateTeacherDto, SalaryType } from '@/types/teacher';
-import { TEACHER_SUBJECTS } from '@/types/teacher';
 import { useTranslations } from '@/i18n/index';
 
 interface EditTeacherModalProps {
@@ -44,6 +44,7 @@ type FormValues = {
 
 export function EditTeacherModal({ teacher, onClose }: EditTeacherModalProps) {
   const updateTeacher = useUpdateTeacher();
+  const { data: orgSubjects = [] } = useSubjects();
   const t = useTranslations('teachers');
   const tCommon = useTranslations('common');
   const tSettings = useTranslations('settings');
@@ -146,18 +147,21 @@ export function EditTeacherModal({ teacher, onClose }: EditTeacherModalProps) {
                     <SelectValue placeholder={t('add_subject')} />
                   </SelectTrigger>
                   <SelectContent>
-                    {TEACHER_SUBJECTS.filter((s) => !selectedSubjects.includes(s)).map((subject) => (
-                      <SelectItem key={subject} value={subject}>
-                        {subject.replace(/_/g, ' ')}
+                    {orgSubjects.filter((s) => !selectedSubjects.includes(s.name)).map((subject) => (
+                      <SelectItem key={subject.id} value={subject.name}>
+                        {subject.name}
                       </SelectItem>
                     ))}
+                    {orgSubjects.length === 0 && (
+                      <div className="px-3 py-2 text-xs text-muted-foreground">Avval predmet qo&apos;shing</div>
+                    )}
                   </SelectContent>
                 </Select>
                 {selectedSubjects.length > 0 && (
                   <div className="flex flex-wrap gap-1.5 mt-2">
                     {selectedSubjects.map((subject) => (
                       <Badge key={subject} variant="secondary" className="gap-1 text-xs">
-                        {subject.replace(/_/g, ' ')}
+                        {subject}
                         <button type="button" onClick={() => handleRemoveSubject(subject)} className="ml-0.5 hover:text-destructive">
                           <X className="size-3" />
                         </button>
@@ -178,7 +182,7 @@ export function EditTeacherModal({ teacher, onClose }: EditTeacherModalProps) {
                 </Select>
               </div>
               {salaryType === 'FIXED' && (
-                <Field label="Belgilangan oylik maosh (so'm)">
+                <Field label="Belgilangan oylik maosh (сом)">
                   <Input
                     type="number"
                     value={fixedSalary ?? ''}
@@ -188,7 +192,7 @@ export function EditTeacherModal({ teacher, onClose }: EditTeacherModalProps) {
                 </Field>
               )}
               {salaryType === 'HOURLY' && (
-                <Field label="Soat narxi (so'm)">
+                <Field label="Soat narxi (сом)">
                   <Input type="number" step="1000" {...register('hourly_rate')} placeholder="50000" />
                 </Field>
               )}

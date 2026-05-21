@@ -24,7 +24,8 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { useCreateTeacher } from '@/hooks/useTeachers';
-import { TEACHER_SUBJECTS, type SalaryType } from '@/types/teacher';
+import { useSubjects } from '@/hooks/useSubjects';
+import { type SalaryType } from '@/types/teacher';
 import { useTranslations } from '@/i18n/index';
 
 interface CreateTeacherModalProps {
@@ -43,6 +44,7 @@ type FormValues = {
 
 export function CreateTeacherModal({ open, onClose }: CreateTeacherModalProps) {
   const createTeacher = useCreateTeacher();
+  const { data: orgSubjects = [] } = useSubjects();
   const t = useTranslations('teachers');
   const tCommon = useTranslations('common');
   const tAuth = useTranslations('auth');
@@ -178,18 +180,21 @@ export function CreateTeacherModal({ open, onClose }: CreateTeacherModalProps) {
                   <SelectValue placeholder={t('select_subjects')} />
                 </SelectTrigger>
                 <SelectContent>
-                  {TEACHER_SUBJECTS.filter((s) => !selectedSubjects.includes(s)).map((subject) => (
-                    <SelectItem key={subject} value={subject}>
-                      {subject.replace(/_/g, ' ')}
+                  {orgSubjects.filter((s) => !selectedSubjects.includes(s.name)).map((subject) => (
+                    <SelectItem key={subject.id} value={subject.name}>
+                      {subject.name}
                     </SelectItem>
                   ))}
+                  {orgSubjects.length === 0 && (
+                    <div className="px-3 py-2 text-xs text-muted-foreground">Avval predmet qo&apos;shing</div>
+                  )}
                 </SelectContent>
               </Select>
               {selectedSubjects.length > 0 && (
                 <div className="flex flex-wrap gap-1.5 mt-2">
                   {selectedSubjects.map((subject) => (
                     <Badge key={subject} variant="secondary" className="gap-1 text-xs">
-                      {subject.replace(/_/g, ' ')}
+                      {subject}
                       <button type="button" onClick={() => handleRemoveSubject(subject)} className="ml-0.5 hover:text-destructive">
                         <X className="size-3" />
                       </button>
@@ -210,7 +215,7 @@ export function CreateTeacherModal({ open, onClose }: CreateTeacherModalProps) {
               </Select>
             </div>
             {salaryType === 'FIXED' && (
-              <Field label="Belgilangan oylik maosh (so'm)" error={undefined}>
+              <Field label="Belgilangan oylik maosh (сом)" error={undefined}>
                 <Input
                   type="number"
                   value={fixedSalary ?? ''}
@@ -220,7 +225,7 @@ export function CreateTeacherModal({ open, onClose }: CreateTeacherModalProps) {
               </Field>
             )}
             {salaryType === 'HOURLY' && (
-              <Field label="Soat narxi (so'm)" error={errors.hourly_rate?.message}>
+              <Field label="Soat narxi (сом)" error={errors.hourly_rate?.message}>
                 <Input
                   type="number"
                   {...register('hourly_rate')}
