@@ -145,18 +145,18 @@ export function EditTeacherModal({ teacher, onClose }: EditTeacherModalProps) {
                 <SubjectCombobox value={selectedSubjects} onChange={setSelectedSubjects} />
               </Field>
               <div className="space-y-1.5">
-                <Label className="text-xs">Maosh turi</Label>
+                <Label className="text-xs">{t('salary_type_label')}</Label>
                 <Select value={salaryType} onValueChange={(v) => setSalaryType(v as SalaryType)}>
                   <SelectTrigger><SelectValue /></SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="FIXED">Belgilangan (Фикс)</SelectItem>
-                    <SelectItem value="HOURLY">Soatbay (Часовой)</SelectItem>
-                    <SelectItem value="GROUP_PERCENT">Guruhdan foiz (%)</SelectItem>
+                    <SelectItem value="FIXED">{t('salary_fixed')}</SelectItem>
+                    <SelectItem value="HOURLY">{t('salary_hourly')}</SelectItem>
+                    <SelectItem value="GROUP_PERCENT">{t('salary_group_percent')}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
               {salaryType === 'FIXED' && (
-                <Field label="Belgilangan oylik maosh (сом)">
+                <Field label={t('fixed_salary_label')}>
                   <Input
                     type="number"
                     value={fixedSalary ?? ''}
@@ -166,12 +166,12 @@ export function EditTeacherModal({ teacher, onClose }: EditTeacherModalProps) {
                 </Field>
               )}
               {salaryType === 'HOURLY' && (
-                <Field label="Soat narxi (сом)">
+                <Field label={t('hourly_rate_label')}>
                   <Input type="number" step="1000" {...register('hourly_rate')} placeholder="50000" />
                 </Field>
               )}
               {salaryType === 'GROUP_PERCENT' && (
-                <Field label="Foiz (%)">
+                <Field label={t('percent_rate_label')}>
                   <Input
                     type="number"
                     min="0"

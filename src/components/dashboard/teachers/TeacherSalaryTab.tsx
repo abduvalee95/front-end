@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
 import { ChevronLeft, ChevronRight, CheckCircle2, Clock } from 'lucide-react';
+import { useTranslations } from '@/i18n/index';
 
 // Format month for display: "2026-05" -> "May 2026"
 function formatPeriod(period: string) {
@@ -36,6 +37,8 @@ interface Props {
 }
 
 export function TeacherSalaryTab({ teacherId, teacherName: _teacherName }: Props) {
+  const t = useTranslations('teachers');
+  const tCommon = useTranslations('common');
   const [month, setMonth] = useState(currentMonth());
   const { data: preview, isLoading } = useTeacherSalary(teacherId, month);
   const { data: history } = useTeacherSalaryHistory(teacherId);
@@ -46,17 +49,17 @@ export function TeacherSalaryTab({ teacherId, teacherName: _teacherName }: Props
 
   const handlePay = () => {
     payMutation.mutate({ teacherId, month }, {
-      onSuccess: () => toast.success(`${formatPeriod(month)} maoshi to'landi`),
-      onError: () => toast.error("Xatolik yuz berdi"),
+      onSuccess: () => toast.success(t('salary_paid_toast', { period: formatPeriod(month) })),
+      onError: () => toast.error(tCommon('error_generic')),
     });
   };
 
   const salaryTypeLabel: Record<string, string> = {
-    HOURLY: 'Soatbay',
-    FIXED: 'Belgilangan',
-    GROUP_PERCENT: 'Guruhdan foiz',
-    MONTHLY: 'Oylik',
-    DAILY: 'Kunlik',
+    HOURLY: t('hourly'),
+    FIXED: t('fixed'),
+    GROUP_PERCENT: t('group_percent'),
+    MONTHLY: t('monthly'),
+    DAILY: t('daily'),
   };
 
   return (
@@ -74,26 +77,26 @@ export function TeacherSalaryTab({ teacherId, teacherName: _teacherName }: Props
 
       {/* Salary card */}
       {isLoading ? (
-        <div className="text-center text-muted-foreground py-8">Hisoblanmoqda...</div>
+        <div className="text-center text-muted-foreground py-8">{t('calculating')}</div>
       ) : preview ? (
         <div className="rounded-xl border bg-muted/30 p-5 space-y-4">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-muted-foreground">Maosh turi</p>
+              <p className="text-sm text-muted-foreground">{t('salary_type')}</p>
               <p className="font-medium">{salaryTypeLabel[preview.salary_type] ?? preview.salary_type}</p>
             </div>
             {isPaid ? (
               <Badge className="bg-green-100 text-green-700 border-green-200">
-                <CheckCircle2 className="h-3 w-3 mr-1" /> To&apos;langan
+                <CheckCircle2 className="h-3 w-3 mr-1" /> {t('paid')}
               </Badge>
             ) : (
               <Badge variant="outline" className="text-orange-600 border-orange-300">
-                <Clock className="h-3 w-3 mr-1" /> Kutilmoqda
+                <Clock className="h-3 w-3 mr-1" /> {t('pending')}
               </Badge>
             )}
           </div>
           <div>
-            <p className="text-sm text-muted-foreground">Jami maosh</p>
+            <p className="text-sm text-muted-foreground">{t('total_salary')}</p>
             <p className="text-2xl font-bold">{formatMoney(preview.amount)}</p>
           </div>
 
@@ -101,15 +104,15 @@ export function TeacherSalaryTab({ teacherId, teacherName: _teacherName }: Props
           <div className="text-sm text-muted-foreground space-y-1 border-t pt-3">
             {preview.salary_type === 'HOURLY' && (
               <>
-                <p>Darslar soni: <span className="text-foreground font-medium">{String(preview.breakdown.lesson_count)}</span></p>
-                <p>Soat narxi: <span className="text-foreground font-medium">{formatMoney(Number(preview.breakdown.hourly_rate))}</span></p>
+                <p>{t('lessons_count')} <span className="text-foreground font-medium">{String(preview.breakdown.lesson_count)}</span></p>
+                <p>{t('hourly_rate')} <span className="text-foreground font-medium">{formatMoney(Number(preview.breakdown.hourly_rate))}</span></p>
               </>
             )}
             {preview.salary_type === 'GROUP_PERCENT' && (
               <>
-                <p>Talabalar to&apos;lovi: <span className="text-foreground font-medium">{formatMoney(Number(preview.breakdown.total_student_payments))}</span></p>
-                <p>Foiz: <span className="text-foreground font-medium">{String(preview.breakdown.percent_rate)}%</span></p>
-                <p>To&apos;lovlar soni: <span className="text-foreground font-medium">{String(preview.breakdown.payment_count)}</span></p>
+                <p>{t('student_payments')} <span className="text-foreground font-medium">{formatMoney(Number(preview.breakdown.total_student_payments))}</span></p>
+                <p>{t('percent_rate')} <span className="text-foreground font-medium">{String(preview.breakdown.percent_rate)}%</span></p>
+                <p>{t('payment_count')} <span className="text-foreground font-medium">{String(preview.breakdown.payment_count)}</span></p>
               </>
             )}
           </div>
@@ -120,7 +123,7 @@ export function TeacherSalaryTab({ teacherId, teacherName: _teacherName }: Props
               onClick={handlePay}
               disabled={payMutation.isPending || preview.amount === 0}
             >
-              {payMutation.isPending ? "To'lanmoqda..." : `${formatMoney(preview.amount)} to'lash`}
+              {payMutation.isPending ? t('paying') : t('pay_amount', { amount: formatMoney(preview.amount) })}
             </Button>
           )}
         </div>
@@ -129,7 +132,7 @@ export function TeacherSalaryTab({ teacherId, teacherName: _teacherName }: Props
       {/* History */}
       {history && history.length > 0 && (
         <div>
-          <h3 className="text-sm font-semibold text-muted-foreground mb-3">Tarix</h3>
+          <h3 className="text-sm font-semibold text-muted-foreground mb-3">{t('history')}</h3>
           <div className="space-y-2">
             {history.map(record => (
               <div key={record.id} className="flex items-center justify-between py-2 border-b last:border-0">
@@ -140,7 +143,7 @@ export function TeacherSalaryTab({ teacherId, teacherName: _teacherName }: Props
                 <div className="text-right">
                   <p className="text-sm font-semibold">{formatMoney(record.amount)}</p>
                   <Badge variant={record.status === 'PAID' ? 'default' : 'outline'} className="text-xs">
-                    {record.status === 'PAID' ? "To'langan" : 'Kutilmoqda'}
+                    {record.status === 'PAID' ? t('paid') : t('pending')}
                   </Badge>
                 </div>
               </div>

@@ -101,7 +101,8 @@
         "user_not_found": "User information not found",
         "address": "Address",
         "adjust_filters": "Filtr yoki qidiruvni o'zgartiring",
-        "clear_filters": "Filtrlarni tozalash"
+        "clear_filters": "Filtrlarni tozalash",
+        "error_generic": "Xatolik yuz berdi"
     },
     "nav": {
         "dashboard": "Boshqaruv paneli",
@@ -456,7 +457,29 @@
         "status_deleted": "O'chirilgan",
         "pagination_page": "Sahifa",
         "pagination_of": "dan",
-        "pagination_total": "jami"
+        "pagination_total": "jami",
+        "salary_fixed": "Belgilangan (Фикс)",
+        "salary_hourly": "Soatbay (Часовой)",
+        "salary_group_percent": "Guruhdan foiz (%)",
+        "fixed_salary_label": "Belgilangan oylik maosh (сом)",
+        "hourly_rate_label": "Soat narxi (сом)",
+        "percent_rate_label": "Foiz (%)",
+        "calculating": "Hisoblanmoqda...",
+        "salary_type": "Maosh turi",
+        "paid": "To'langan",
+        "pending": "Kutilmoqda",
+        "total_salary": "Jami maosh",
+        "lessons_count": "Darslar soni:",
+        "student_payments": "Talabalar to'lovi:",
+        "percent_rate": "Foiz:",
+        "payment_count": "To'lovlar soni:",
+        "paying": "To'lanmoqda...",
+        "pay_amount": "{amount} to'lash",
+        "history": "Tarix",
+        "salary_paid_toast": "{period} maoshi to'landi",
+        "hourly": "Soatbay",
+        "fixed": "Belgilangan",
+        "group_percent": "Guruhdan foiz"
     },
     "courses": {
         "title": "Kurslar",
@@ -997,6 +1020,12 @@
         "create_subject": "Saqlash",
         "name_required": "Fan nomi kiritilishi shart",
         "search_subjects": "Fan qidirish...",
-        "all_subjects": "Barcha fanlar"
+        "all_subjects": "Barcha fanlar",
+        "placeholder": "Predmet tanlang yoki yozing...",
+        "search_placeholder": "Qidiring yoki yangi predmet yozing...",
+        "not_found": "Hech narsa topilmadi",
+        "existing_subjects": "Mavjud predmetlar",
+        "new_subject": "Yangi predmet",
+        "add_subject_name": "\"{name}\" qo'shish"
     }
 }

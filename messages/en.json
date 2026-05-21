@@ -101,7 +101,8 @@
         "user_not_found": "User information not found",
         "address": "Address",
         "adjust_filters": "Try adjusting your search or filters",
-        "clear_filters": "Clear filters"
+        "clear_filters": "Clear filters",
+        "error_generic": "An error occurred"
     },
     "nav": {
         "dashboard": "Dashboard",
@@ -406,7 +407,29 @@
         "status_deleted": "Deleted",
         "pagination_page": "Showing page",
         "pagination_of": "of",
-        "pagination_total": "total"
+        "pagination_total": "total",
+        "salary_fixed": "Fixed (monthly)",
+        "salary_hourly": "Hourly",
+        "salary_group_percent": "Group percentage (%)",
+        "fixed_salary_label": "Monthly salary (KGS)",
+        "hourly_rate_label": "Hourly rate (KGS)",
+        "percent_rate_label": "Percentage (%)",
+        "calculating": "Calculating...",
+        "salary_type": "Salary type",
+        "paid": "Paid",
+        "pending": "Pending",
+        "total_salary": "Total salary",
+        "lessons_count": "Lessons:",
+        "student_payments": "Student payments:",
+        "percent_rate": "Percentage:",
+        "payment_count": "Payment count:",
+        "paying": "Paying...",
+        "pay_amount": "Pay {amount}",
+        "history": "History",
+        "salary_paid_toast": "{period} salary paid",
+        "hourly": "Hourly",
+        "fixed": "Fixed",
+        "group_percent": "Group %"
     },
     "courses": {
         "title": "Courses",
@@ -947,6 +970,12 @@
         "create_subject": "Save",
         "name_required": "Subject name is required",
         "search_subjects": "Search subjects...",
-        "all_subjects": "All Subjects"
+        "all_subjects": "All Subjects",
+        "placeholder": "Select or type a subject...",
+        "search_placeholder": "Search or type a new subject...",
+        "not_found": "Nothing found",
+        "existing_subjects": "Existing subjects",
+        "new_subject": "New subject",
+        "add_subject_name": "Add \"{name}\""
     }
 }

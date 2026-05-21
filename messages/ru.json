@@ -101,7 +101,8 @@
         "user_not_found": "User information not found",
         "address": "Address",
         "adjust_filters": "Попробуйте изменить поиск или фильтры",
-        "clear_filters": "Сбросить фильтры"
+        "clear_filters": "Сбросить фильтры",
+        "error_generic": "Произошла ошибка"
     },
     "nav": {
         "dashboard": "Панель управления",
@@ -406,7 +407,29 @@
         "status_deleted": "Удалён",
         "pagination_page": "Страница",
         "pagination_of": "из",
-        "pagination_total": "всего"
+        "pagination_total": "всего",
+        "salary_fixed": "Фикс (ежемесячно)",
+        "salary_hourly": "Почасовая",
+        "salary_group_percent": "% от группы",
+        "fixed_salary_label": "Фиксированная зарплата (сом)",
+        "hourly_rate_label": "Ставка в час (сом)",
+        "percent_rate_label": "Процент (%)",
+        "calculating": "Вычисляется...",
+        "salary_type": "Тип зарплаты",
+        "paid": "Выплачено",
+        "pending": "Ожидает",
+        "total_salary": "Итого зарплата",
+        "lessons_count": "Уроков:",
+        "student_payments": "Оплаты учеников:",
+        "percent_rate": "Процент:",
+        "payment_count": "Кол-во оплат:",
+        "paying": "Выплачивается...",
+        "pay_amount": "Выплатить {amount}",
+        "history": "История",
+        "salary_paid_toast": "Зарплата за {period} выплачена",
+        "hourly": "Почасовая",
+        "fixed": "Фиксированная",
+        "group_percent": "% от группы"
     },
     "courses": {
         "title": "Курсы",
@@ -948,6 +971,12 @@
         "create_subject": "Сохранить",
         "name_required": "Название предмета обязательно",
         "search_subjects": "Поиск предметов...",
-        "all_subjects": "Все предметы"
+        "all_subjects": "Все предметы",
+        "placeholder": "Выберите или введите предмет...",
+        "search_placeholder": "Поиск или новый предмет...",
+        "not_found": "Ничего не найдено",
+        "existing_subjects": "Существующие предметы",
+        "new_subject": "Новый предмет",
+        "add_subject_name": "Добавить \"{name}\""
     }
 }

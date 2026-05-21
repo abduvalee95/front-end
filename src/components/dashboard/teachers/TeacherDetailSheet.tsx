@@ -101,7 +101,7 @@ export function TeacherDetailSheet({
         <Tabs defaultValue="info" className="flex-1 flex flex-col overflow-hidden">
           <TabsList className="mx-6 mt-3 mb-0 w-auto justify-start shrink-0">
             <TabsTrigger value="info">{t('professional_details')}</TabsTrigger>
-            <TabsTrigger value="salary">Maosh</TabsTrigger>
+            <TabsTrigger value="salary">{t('salary')}</TabsTrigger>
           </TabsList>
 
           <TabsContent value="info" className="flex-1 overflow-y-auto px-6 py-5 space-y-6 mt-0">

@@ -19,6 +19,7 @@ import {
 import { useSubjects } from '@/hooks/useSubjects';
 import type { Subject } from '@/types/subject';
 import { cn } from '@/lib/utils';
+import { useTranslations } from '@/i18n/index';
 
 interface SubjectComboboxProps {
   /** Currently selected subject names */
@@ -29,6 +30,7 @@ interface SubjectComboboxProps {
 }
 
 export function SubjectCombobox({ value, onChange, onPendingChange }: SubjectComboboxProps) {
+  const t = useTranslations('subjects');
   const { data: orgSubjects = [] } = useSubjects();
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState('');
@@ -82,7 +84,7 @@ export function SubjectCombobox({ value, onChange, onPendingChange }: SubjectCom
             className="flex h-9 w-full items-center justify-between rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm ring-offset-background focus:outline-none focus:ring-1 focus:ring-ring"
           >
             <span className="text-muted-foreground">
-              Predmet tanlang yoki yozing...
+              {t('placeholder')}
             </span>
             <ChevronsUpDown className="ml-2 h-3.5 w-3.5 shrink-0 opacity-50" />
           </button>
@@ -90,16 +92,16 @@ export function SubjectCombobox({ value, onChange, onPendingChange }: SubjectCom
         <PopoverContent className="w-full p-0" align="start">
           <Command shouldFilter={false}>
             <CommandInput
-              placeholder="Qidiring yoki yangi predmet yozing..."
+              placeholder={t('search_placeholder')}
               value={query}
               onValueChange={setQuery}
             />
             <CommandList>
               {filtered.length === 0 && !canCreate && (
-                <CommandEmpty>Hech narsa topilmadi</CommandEmpty>
+                <CommandEmpty>{t('not_found')}</CommandEmpty>
               )}
               {filtered.length > 0 && (
-                <CommandGroup heading="Mavjud predmetlar">
+                <CommandGroup heading={t('existing_subjects')}>
                   {filtered.map((subject: Subject) => (
                     <CommandItem
                       key={subject.id}
@@ -119,11 +121,11 @@ export function SubjectCombobox({ value, onChange, onPendingChange }: SubjectCom
                 </CommandGroup>
               )}
               {canCreate && (
-                <CommandGroup heading="Yangi predmet">
+                <CommandGroup heading={t('new_subject')}>
                   <CommandItem onSelect={handleCreate} className="gap-2 text-primary">
                     <Plus className="h-3.5 w-3.5" />
                     <span>
-                      <strong>&quot;{queryTrimmed}&quot;</strong> qo&apos;shish
+                      {t('add_subject_name', { name: queryTrimmed })}
                     </span>
                   </CommandItem>
                 </CommandGroup>

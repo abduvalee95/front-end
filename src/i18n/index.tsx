@@ -15,10 +15,16 @@ function get(obj: Messages, path: string): string {
   return typeof current === 'string' ? current : path;
 }
 
+function interpolate(template: string, values: Record<string, string | number>): string {
+  return template.replace(/\{(\w+)\}/g, (_, key) =>
+    key in values ? String(values[key]) : `{${key}}`
+  );
+}
+
 interface I18nContextValue {
   locale: Locale;
   messages: Messages;
-  t: (namespace: string) => (key: string) => string;
+  t: (namespace: string) => (key: string, values?: Record<string, string | number>) => string;
 }
 
 const I18nContext = createContext<I18nContextValue | null>(null);
@@ -32,8 +38,10 @@ export function I18nProvider({
   messages: Messages;
   children: ReactNode;
 }) {
-  const t = (namespace: string) => (key: string) =>
-    get(messages, `${namespace}.${key}`);
+  const t = (namespace: string) => (key: string, values?: Record<string, string | number>) => {
+    const raw = get(messages, `${namespace}.${key}`);
+    return values ? interpolate(raw, values) : raw;
+  };
 
   return (
     <I18nContext.Provider value={{ locale, messages, t }}>

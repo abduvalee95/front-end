@@ -176,18 +176,18 @@ export function CreateTeacherModal({ open, onClose }: CreateTeacherModalProps) {
               <SubjectCombobox value={selectedSubjects} onChange={setSelectedSubjects} />
             </Field>
             <div className="space-y-1.5">
-              <Label className="text-xs">Maosh turi</Label>
+              <Label className="text-xs">{t('salary_type_label')}</Label>
               <Select value={salaryType} onValueChange={(v) => setSalaryType(v as SalaryType)}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="FIXED">Belgilangan (Фикс)</SelectItem>
-                  <SelectItem value="HOURLY">Soatbay (Часовой)</SelectItem>
-                  <SelectItem value="GROUP_PERCENT">Guruhdan foiz (%)</SelectItem>
+                  <SelectItem value="FIXED">{t('salary_fixed')}</SelectItem>
+                  <SelectItem value="HOURLY">{t('salary_hourly')}</SelectItem>
+                  <SelectItem value="GROUP_PERCENT">{t('salary_group_percent')}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
             {salaryType === 'FIXED' && (
-              <Field label="Belgilangan oylik maosh (сом)" error={undefined}>
+              <Field label={t('fixed_salary_label')} error={undefined}>
                 <Input
                   type="number"
                   value={fixedSalary ?? ''}
@@ -197,7 +197,7 @@ export function CreateTeacherModal({ open, onClose }: CreateTeacherModalProps) {
               </Field>
             )}
             {salaryType === 'HOURLY' && (
-              <Field label="Soat narxi (сом)" error={errors.hourly_rate?.message}>
+              <Field label={t('hourly_rate_label')} error={errors.hourly_rate?.message}>
                 <Input
                   type="number"
                   {...register('hourly_rate')}
@@ -207,7 +207,7 @@ export function CreateTeacherModal({ open, onClose }: CreateTeacherModalProps) {
               </Field>
             )}
             {salaryType === 'GROUP_PERCENT' && (
-              <Field label="Foiz (%)" error={undefined}>
+              <Field label={t('percent_rate_label')} error={undefined}>
                 <Input
                   type="number"
                   min="0"
