@@ -2,12 +2,11 @@
 
 import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { Loader2, GraduationCap, UserCircle2, X } from 'lucide-react';
+import { Loader2, GraduationCap, UserCircle2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
-import { Badge } from '@/components/ui/badge';
 import {
   Sheet,
   SheetContent,
@@ -25,8 +24,10 @@ import {
 } from '@/components/ui/select';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { useUpdateTeacher } from '@/hooks/useTeachers';
-import { useSubjects } from '@/hooks/useSubjects';
+import { useSubjects, useCreateSubject } from '@/hooks/useSubjects';
+import { SubjectCombobox } from './SubjectCombobox';
 import type { TeacherProfile, UpdateTeacherDto, SalaryType } from '@/types/teacher';
+import type { Subject } from '@/types/subject';
 import { useTranslations } from '@/i18n/index';
 
 interface EditTeacherModalProps {
@@ -44,6 +45,7 @@ type FormValues = {
 
 export function EditTeacherModal({ teacher, onClose }: EditTeacherModalProps) {
   const updateTeacher = useUpdateTeacher();
+  const createSubject = useCreateSubject();
   const { data: orgSubjects = [] } = useSubjects();
   const t = useTranslations('teachers');
   const tCommon = useTranslations('common');
@@ -76,18 +78,16 @@ export function EditTeacherModal({ teacher, onClose }: EditTeacherModalProps) {
     }
   }, [teacher, reset]);
 
-  const handleAddSubject = (value: string | null) => {
-    if (value && !selectedSubjects.includes(value)) {
-      setSelectedSubjects((prev) => [...prev, value]);
-    }
-  };
-
-  const handleRemoveSubject = (value: string) => {
-    setSelectedSubjects((prev) => prev.filter((s) => s !== value));
-  };
-
-  const onSubmit = (values: FormValues) => {
+  const onSubmit = async (values: FormValues) => {
     if (!teacher) return;
+
+    // Auto-create subjects that don't exist in org yet
+    const existingNames = new Set((orgSubjects as Subject[]).map((s) => s.name));
+    const newSubjects = selectedSubjects.filter((name) => !existingNames.has(name));
+    for (const name of newSubjects) {
+      await createSubject.mutateAsync({ name });
+    }
+
     const payload: UpdateTeacherDto = {
       full_name: values.full_name || undefined,
       phone: values.phone || undefined,
@@ -142,33 +142,7 @@ export function EditTeacherModal({ teacher, onClose }: EditTeacherModalProps) {
                 <GraduationCap className="size-3" /> {t('professional')}
               </p>
               <Field label={tCommon('subjects')}>
-                <Select onValueChange={handleAddSubject}>
-                  <SelectTrigger>
-                    <SelectValue placeholder={t('add_subject')} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {orgSubjects.filter((s) => !selectedSubjects.includes(s.name)).map((subject) => (
-                      <SelectItem key={subject.id} value={subject.name}>
-                        {subject.name}
-                      </SelectItem>
-                    ))}
-                    {orgSubjects.length === 0 && (
-                      <div className="px-3 py-2 text-xs text-muted-foreground">Avval predmet qo&apos;shing</div>
-                    )}
-                  </SelectContent>
-                </Select>
-                {selectedSubjects.length > 0 && (
-                  <div className="flex flex-wrap gap-1.5 mt-2">
-                    {selectedSubjects.map((subject) => (
-                      <Badge key={subject} variant="secondary" className="gap-1 text-xs">
-                        {subject}
-                        <button type="button" onClick={() => handleRemoveSubject(subject)} className="ml-0.5 hover:text-destructive">
-                          <X className="size-3" />
-                        </button>
-                      </Badge>
-                    ))}
-                  </div>
-                )}
+                <SubjectCombobox value={selectedSubjects} onChange={setSelectedSubjects} />
               </Field>
               <div className="space-y-1.5">
                 <Label className="text-xs">Maosh turi</Label>
