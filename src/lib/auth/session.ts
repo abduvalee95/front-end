@@ -62,11 +62,11 @@ export async function endSession(): Promise<void> {
     store.setLoading(true);
     await api.post('/auth/logout');
     store.clearAuth();
-    toast.success('Tizimdan muvaffaqiyatli chiqildi');
+    toast.success('Вы успешно вышли из системы');
   } catch (error) {
     logger.error('Logout error:', error);
     store.clearAuth();
-    toast.error('Logoutda xatolik, lekin profil tozalandi');
+    toast.error('Ошибка при выходе, профиль очищен');
   } finally {
     store.setLoading(false);
   }

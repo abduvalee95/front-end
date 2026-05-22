@@ -60,7 +60,8 @@ export default function JournalPage() {
     selectedGroupId ? [selectedGroupId] : [],
     !!selectedGroupId,
   );
-  const enrollments = enrollmentResults[0]?.data ?? [];
+  const enrollmentsData = enrollmentResults[0]?.data;
+  const enrollments = useMemo(() => enrollmentsData ?? [], [enrollmentsData]);
   const enrollmentsLoading = enrollmentResults[0]?.isLoading ?? false;
 
   const { data: journalData, isLoading: journalLoading } = useJournalByGroup(

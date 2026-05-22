@@ -8,9 +8,9 @@ export default function SchedulePage() {
       <div className="inline-flex h-16 w-16 rounded-2xl bg-muted items-center justify-center">
         <Calendar className="h-8 w-8 text-muted-foreground" />
       </div>
-      <h1 className="text-2xl font-bold">Dars jadvali</h1>
+      <h1 className="text-2xl font-bold">Расписание занятий</h1>
       <p className="text-sm text-muted-foreground">
-        Bu bo&apos;lim hozircha tayyorlanmoqda. Tez orada ishga tushiriladi.
+        Раздел находится в разработке. Скоро будет запущен.
       </p>
     </div>
   );

@@ -40,11 +40,11 @@ export default function GlobalError({ error, reset }: GlobalErrorProps) {
           </div>
 
           <h1 style={{ fontSize: 24, fontWeight: 700, marginBottom: 8 }}>
-            Jiddiy xatolik yuz berdi
+            Критическая ошибка
           </h1>
 
           <p style={{ fontSize: 14, color: '#666', lineHeight: 1.6, marginBottom: 24 }}>
-            Ilovada kutilmagan xatolik yuz berdi. Iltimos, sahifani qayta yuklang.
+            В приложении произошла непредвиденная ошибка. Пожалуйста, перезагрузите страницу.
           </p>
 
           <button
@@ -66,7 +66,7 @@ export default function GlobalError({ error, reset }: GlobalErrorProps) {
             onMouseOver={(e) => { (e.target as HTMLButtonElement).style.background = '#1d4ed8'; }}
             onMouseOut={(e) => { (e.target as HTMLButtonElement).style.background = '#2563eb'; }}
           >
-            🔄 Qayta yuklash
+            🔄 Перезагрузить
           </button>
         </div>
       </body>

@@ -26,10 +26,10 @@ export default function ErrorPage({ error, reset }: ErrorProps) {
         {/* Message */}
         <div className="space-y-2">
           <h2 className="text-2xl font-bold tracking-tight text-foreground">
-            Xatolik yuz berdi
+            Произошла ошибка
           </h2>
           <p className="text-sm text-muted-foreground max-w-sm mx-auto leading-relaxed">
-            Kutilmagan xatolik yuz berdi. Iltimos, qayta urinib ko&apos;ring yoki bosh sahifaga qayting.
+            Непредвиденная ошибка. Попробуйте ещё раз или вернитесь на главную.
           </p>
           {process.env.NODE_ENV === 'development' && error.message && (
             <pre className="mt-4 rounded-xl border border-red-200 bg-red-50 p-3 text-left text-xs text-red-700 dark:border-red-900 dark:bg-red-950/30 dark:text-red-400 overflow-auto max-h-32">
@@ -45,14 +45,14 @@ export default function ErrorPage({ error, reset }: ErrorProps) {
             className="inline-flex items-center gap-2 rounded-xl border border-border bg-background px-5 py-2.5 text-sm font-semibold text-foreground shadow-sm transition-colors hover:bg-muted"
           >
             <RefreshCw className="size-4" />
-            Qayta urinish
+            Попробовать снова
           </button>
           <Link
             href="/"
             className="inline-flex items-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-sm transition-colors hover:bg-primary/90"
           >
             <Home className="size-4" />
-            Bosh sahifa
+            На главную
           </Link>
         </div>
       </div>

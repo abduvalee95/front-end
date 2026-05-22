@@ -29,7 +29,7 @@ export function useAuth() {
       }
     },
     onError: (error: AxiosError<{ message?: string }>) => {
-      const message = error.response?.data?.message || 'Kirishda xatolik yuz berdi';
+      const message = error.response?.data?.message || 'Ошибка при входе';
       toast.error(message);
     },
   });
