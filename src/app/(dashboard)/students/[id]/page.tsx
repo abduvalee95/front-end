@@ -5,7 +5,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { useStudentDetail } from '@/hooks/useStudents';
 import { usePayments, useDeletePayment } from '@/hooks/useFinance';
 import { AddPaymentModal } from '@/components/finance/AddPaymentModal';
-import { ArrowLeft, BookOpen, Calendar, CreditCard, GraduationCap, Loader2, MapPin, Phone, Plus, Trash2, User, Users } from 'lucide-react';
+import { ArrowLeft, BookOpen, Calendar, Check, CreditCard, GraduationCap, Loader2, MapPin, Phone, Plus, Trash2, User, Users, X } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -28,6 +28,12 @@ export default function StudentDetailPage() {
   const deletePayment = useDeletePayment();
 
   const payments = paymentsQuery.data?.items ?? [];
+
+  const hasPaidThisMonth = payments.some((p) => {
+    const d = new Date(p.paid_at);
+    const now = new Date();
+    return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+  });
 
   if (isLoading) {
     return <LoadingSkeleton />;
@@ -55,8 +61,13 @@ export default function StudentDetailPage() {
         <Button variant="ghost" size="icon" onClick={() => router.push('/students')}>
           <ArrowLeft className="size-5" />
         </Button>
-        <div>
-          <h1 className="text-3xl font-black tracking-tight">{student.name}</h1>
+        <div className="flex-1">
+          <div className="flex items-center gap-3">
+            <h1 className="text-3xl font-black tracking-tight">{student.name}</h1>
+            {!paymentsQuery.isLoading && (
+              <PaymentStatusBadge paid={hasPaidThisMonth} />
+            )}
+          </div>
           <p className="text-sm text-muted-foreground">Student profile and enrollments</p>
         </div>
       </div>
@@ -83,6 +94,17 @@ export default function StudentDetailPage() {
               >
                 {student.status}
               </Badge>
+            </div>
+
+            <div>
+              <p className="text-xs font-medium text-muted-foreground">Joriy oy to&apos;lovi</p>
+              <div className="mt-2">
+                {paymentsQuery.isLoading ? (
+                  <div className="size-8 rounded-full bg-muted animate-pulse" />
+                ) : (
+                  <PaymentStatusCircle paid={hasPaidThisMonth} />
+                )}
+              </div>
             </div>
 
             <div>
@@ -250,6 +272,58 @@ export default function StudentDetailPage() {
         studentId={studentId}
         studentName={student.name}
       />
+    </div>
+  );
+}
+
+function PaymentStatusBadge({ paid }: { paid: boolean }) {
+  return (
+    <span
+      className={cn(
+        'inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold border',
+        paid
+          ? 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-300 dark:border-emerald-500/30'
+          : 'bg-red-50 text-red-600 border-red-200 dark:bg-red-500/10 dark:text-red-400 dark:border-red-500/30',
+      )}
+    >
+      <span
+        className={cn(
+          'flex size-4 items-center justify-center rounded-full',
+          paid ? 'bg-emerald-500' : 'bg-red-500',
+        )}
+      >
+        {paid ? <Check className="size-2.5 text-white stroke-[3]" /> : <X className="size-2.5 text-white stroke-[3]" />}
+      </span>
+      {paid ? 'To\'lov qilingan' : 'To\'lov qilinmagan'}
+    </span>
+  );
+}
+
+function PaymentStatusCircle({ paid }: { paid: boolean }) {
+  return (
+    <div className="flex items-center gap-2.5">
+      <div
+        className={cn(
+          'relative flex size-10 items-center justify-center rounded-full shadow-md ring-4',
+          paid
+            ? 'bg-emerald-500 ring-emerald-100 dark:ring-emerald-500/20'
+            : 'bg-red-500 ring-red-100 dark:ring-red-500/20',
+        )}
+      >
+        {paid ? (
+          <Check className="size-5 text-white stroke-[3]" />
+        ) : (
+          <X className="size-5 text-white stroke-[3]" />
+        )}
+      </div>
+      <div>
+        <p className={cn('text-sm font-bold', paid ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400')}>
+          {paid ? 'To\'lov qilindi' : 'To\'lov yo\'q'}
+        </p>
+        <p className="text-[11px] text-muted-foreground">
+          {new Date().toLocaleString('ru-RU', { month: 'long', year: 'numeric' })}
+        </p>
+      </div>
     </div>
   );
 }
