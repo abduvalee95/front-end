@@ -7,8 +7,15 @@ import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import { SectionHeader } from './SharedComponents';
 
+interface AuditLogEntry {
+  id: string;
+  action: string;
+  user: string;
+  time: string;
+}
+
 interface AuditLogSectionProps {
-  auditLogs: any[];
+  auditLogs: AuditLogEntry[];
 }
 
 export function AuditLogSection({ auditLogs }: AuditLogSectionProps) {

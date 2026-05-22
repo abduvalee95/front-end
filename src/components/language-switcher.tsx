@@ -34,6 +34,7 @@ export function LanguageSwitcher({ className, variant = 'header' }: LanguageSwit
 
   const handleLocaleChange = (nextLocale: Locale) => {
     if (nextLocale === locale) return;
+    // eslint-disable-next-line react-hooks/immutability
     document.cookie = `NEXT_LOCALE=${nextLocale}; path=/; max-age=31536000; SameSite=Lax`;
     startTransition(() => {
       router.refresh();

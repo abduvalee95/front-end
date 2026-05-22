@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { useAuthStore } from '@/store/auth.store';
 import { useTranslations } from '@/i18n/index';
 import { Input } from '@/components/ui/input';
@@ -47,11 +47,14 @@ export default function JournalPage() {
     return groups;
   }, [groups, isTeacher, user?.id]);
 
-  useEffect(() => {
+  // Adjust state during render instead of useEffect
+  const [prevVisibleGroups, setPrevVisibleGroups] = useState(visibleGroups);
+  if (prevVisibleGroups !== visibleGroups) {
+    setPrevVisibleGroups(visibleGroups);
     if (visibleGroups.length > 0 && !selectedGroupId) {
       setSelectedGroupId(visibleGroups[0].id);
     }
-  }, [visibleGroups, selectedGroupId]);
+  }
 
   const enrollmentResults = useGroupEnrollments(
     selectedGroupId ? [selectedGroupId] : [],
@@ -66,19 +69,25 @@ export default function JournalPage() {
     !!selectedGroupId,
   );
 
-  useEffect(() => {
-    if (!journalData || !enrollments.length) return;
-    const map: Record<string, LocalEntry> = {};
-    enrollments.forEach((e) => {
-      const existing = journalData.items.find((j) => j.student_id === e.student_id);
-      map[e.student_id] = {
-        status: existing?.status ?? 'PRESENT',
-        score: existing?.score != null ? String(existing.score) : '',
-        notes: existing?.notes ?? '',
-      };
-    });
-    setLocalEntries(map);
-  }, [journalData, enrollments]);
+  // Adjust state during render instead of useEffect when journalData changes
+  const [prevJournalData, setPrevJournalData] = useState(journalData);
+  const [prevEnrollments, setPrevEnrollments] = useState(enrollments);
+  if (prevJournalData !== journalData || prevEnrollments !== enrollments) {
+    setPrevJournalData(journalData);
+    setPrevEnrollments(enrollments);
+    if (journalData && enrollments.length) {
+      const map: Record<string, LocalEntry> = {};
+      enrollments.forEach((e) => {
+        const existing = journalData.items.find((j) => j.student_id === e.student_id);
+        map[e.student_id] = {
+          status: existing?.status ?? 'PRESENT',
+          score: existing?.score != null ? String(existing.score) : '',
+          notes: existing?.notes ?? '',
+        };
+      });
+      setLocalEntries(map);
+    }
+  }
 
   const upsert = useUpsertJournal();
 

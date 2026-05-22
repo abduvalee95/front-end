@@ -47,7 +47,7 @@ export function IntegrationsTab({
       await new Promise(resolve => setTimeout(resolve, 1500));
       setTelegramStatus('success');
       toast.success('Telegram connection successful!');
-    } catch (error) {
+    } catch {
       setTelegramStatus('error');
       toast.error('Connection test failed');
     } finally {
@@ -67,7 +67,7 @@ export function IntegrationsTab({
       await new Promise(resolve => setTimeout(resolve, 1500));
       setWhatsappStatus('success');
       toast.success('WhatsApp connection successful!');
-    } catch (error) {
+    } catch {
       setWhatsappStatus('error');
       toast.error('Connection test failed');
     } finally {

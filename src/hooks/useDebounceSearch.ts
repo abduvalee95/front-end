@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useLayoutEffect, useCallback, useRef } from 'react';
 
 interface UseDebounceSearchOptions {
   /** Debounce delay in ms (default: 300) */
@@ -33,7 +33,9 @@ export function useDebounceSearch(
 
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const callbackRef = useRef(onDebouncedChange);
-  callbackRef.current = onDebouncedChange;
+  useLayoutEffect(() => {
+    callbackRef.current = onDebouncedChange;
+  });
 
   const cleanup = useCallback(() => {
     if (timerRef.current) {

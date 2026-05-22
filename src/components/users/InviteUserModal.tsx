@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Mail, Phone, User, Shield, Briefcase, KeyRound, Loader2 } from 'lucide-react';
-import { toast } from 'sonner';
 
 import {
   Dialog,

@@ -4,16 +4,14 @@ import { useState } from 'react';
 import { useTranslations } from '@/i18n/index';
 import { LeadsKanban } from './LeadsKanban';
 import { useDebounceSearch } from '@/hooks/useDebounceSearch';
-import { 
-  Users, 
-  Search, 
-  Filter, 
-  Sparkles, 
-  MoreHorizontal, 
-  Phone, 
-  Mail, 
+import {
+  Users,
+  Search,
+  Filter,
+  Sparkles,
+  MoreHorizontal,
+  Phone,
   Clock,
-  ChevronRight,
   UserCheck,
   UserMinus,
   Loader2,

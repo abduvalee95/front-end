@@ -2,27 +2,27 @@
 
 import { useState, useRef } from 'react';
 import { useTranslations } from '@/i18n/index';
-import { 
-  Dialog, 
-  DialogContent, 
-  DialogDescription, 
-  DialogHeader, 
-  DialogTitle, 
-  DialogFooter 
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { 
-  Table, 
-  TableBody, 
-  TableCell, 
-  TableHead, 
-  TableHeader, 
-  TableRow 
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow
 } from '@/components/ui/table';
 import { parseExcelFile } from '@/lib/excel';
 import { toast } from 'sonner';
-import { Upload, FileSpreadsheet, CheckCircle2, AlertCircle, Loader2, XCircle } from 'lucide-react';
+import { Upload, FileSpreadsheet, CheckCircle2, Loader2, XCircle } from 'lucide-react';
 
 
 interface BulkImportDialogProps<T> {
@@ -59,7 +59,6 @@ export function BulkImportDialog<T extends Record<string, unknown>>({
     if (!selectedFile) return;
 
     if (!selectedFile.name.endsWith('.xlsx') && !selectedFile.name.endsWith('.xls')) {
-      const t = useTranslations('common');
       toast.error(t('excel_format_error'));
       return;
     }
@@ -67,20 +66,19 @@ export function BulkImportDialog<T extends Record<string, unknown>>({
     setFile(selectedFile);
     setIsParsing(true);
     setValidationErrors([]);
-    
+
     try {
       const result = await parseExcelFile<T>(selectedFile, columnMapping, requiredFields);
       setPreviewData(result.data);
       setValidationErrors(result.errors);
-      
+
       if (result.errors.length > 0) {
-        const t = useTranslations('common');
         toast.warning(t('validation_errors_found').replace('{count}', String(result.errors.length)));
       }
-    } catch (error: any) {
-      const t = useTranslations('common');
-      toast.error(error.message || t('excel_parse_error'));
-      console.error(error);
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : t('excel_parse_error');
+      toast.error(message);
+      console.error(err);
     } finally {
       setIsParsing(false);
     }
@@ -89,7 +87,6 @@ export function BulkImportDialog<T extends Record<string, unknown>>({
   const handleImport = async () => {
     if (previewData.length === 0) return;
     if (validationErrors.length > 0) {
-      const t = useTranslations('common');
       toast.error(t('fix_validation_errors'));
       return;
     }
@@ -97,11 +94,9 @@ export function BulkImportDialog<T extends Record<string, unknown>>({
     setIsImporting(true);
     try {
       await onImport(previewData);
-      const t = useTranslations('common');
       toast.success(t('import_success').replace('{count}', String(previewData.length)));
       handleClose();
-    } catch (error) {
-      const t = useTranslations('common');
+    } catch {
       toast.error(t('import_failed'));
     } finally {
       setIsImporting(false);
@@ -130,7 +125,7 @@ export function BulkImportDialog<T extends Record<string, unknown>>({
 
         <div className="flex-1 overflow-hidden px-6 py-4">
           {!file ? (
-            <div 
+            <div
               onClick={() => fileInputRef.current?.click()}
               className="h-64 border-2 border-dashed border-muted-foreground/20 rounded-2xl flex flex-col items-center justify-center gap-4 cursor-pointer hover:bg-muted/30 hover:border-primary/50 transition-all group"
             >
@@ -138,21 +133,21 @@ export function BulkImportDialog<T extends Record<string, unknown>>({
                 <Upload className="size-8 text-primary/70" />
               </div>
               <div className="text-center">
-                <p className="font-semibold text-lg">{useTranslations('common')('click_drag_excel')}</p>
-                <p className="text-sm text-muted-foreground mt-1">{useTranslations('common')('excel_formats_supported')}</p>
+                <p className="font-semibold text-lg">{t('click_drag_excel')}</p>
+                <p className="text-sm text-muted-foreground mt-1">{t('excel_formats_supported')}</p>
               </div>
-              <Input 
-                type="file" 
-                className="hidden" 
-                ref={fileInputRef} 
+              <Input
+                type="file"
+                className="hidden"
+                ref={fileInputRef}
                 onChange={handleFileChange}
                 accept=".xlsx, .xls"
               />
               {sampleTemplateUrl && (
-                <Button 
-                  variant="link" 
-                  size="sm" 
-                  onClick={(e) => e.stopPropagation()} 
+                <Button
+                  variant="link"
+                  size="sm"
+                  onClick={(e) => e.stopPropagation()}
                   render={<a href={sampleTemplateUrl} download>{t('download_template')}</a>}
                 />
               )}
@@ -166,16 +161,16 @@ export function BulkImportDialog<T extends Record<string, unknown>>({
                   </div>
                   <div>
                     <p className="font-bold text-sm">{file.name}</p>
-                    <p className="text-xs text-muted-foreground font-medium">{(file.size / 1024).toFixed(1)} KB • {previewData.length} {useTranslations('common')('rows_detected')}</p>
+                    <p className="text-xs text-muted-foreground font-medium">{(file.size / 1024).toFixed(1)} KB • {previewData.length} {t('rows_detected')}</p>
                   </div>
                 </div>
-                <Button variant="outline" size="sm" onClick={() => setFile(null)} className="h-9">{useTranslations('common')('change_file')}</Button>
+                <Button variant="outline" size="sm" onClick={() => setFile(null)} className="h-9">{t('change_file')}</Button>
               </div>
 
               {isParsing ? (
                 <div className="flex-1 flex flex-col items-center justify-center gap-4">
                   <Loader2 className="size-10 animate-spin text-primary" />
-                  <p className="text-base font-medium text-muted-foreground">{useTranslations('common')('analyzing_file')}</p>
+                  <p className="text-base font-medium text-muted-foreground">{t('analyzing_file')}</p>
                 </div>
               ) : (
                 <div className="flex-1 flex flex-col gap-6 overflow-hidden">
@@ -183,14 +178,14 @@ export function BulkImportDialog<T extends Record<string, unknown>>({
                     <div className="bg-destructive/5 border border-destructive/20 rounded-xl overflow-hidden shrink-0">
                       <div className="bg-destructive/10 px-4 py-2 flex items-center gap-2">
                         <XCircle className="size-4 text-destructive" />
-                        <span className="text-sm font-bold text-destructive">{useTranslations('common')('validation_errors')} ({validationErrors.length})</span>
+                        <span className="text-sm font-bold text-destructive">{t('validation_errors')} ({validationErrors.length})</span>
                       </div>
                       <div className="h-32 overflow-y-auto">
                         <div className="p-3 space-y-2">
                           {validationErrors.map((err, i) => (
                             <div key={i} className="text-xs flex items-start gap-2">
                               <span className="font-bold text-destructive min-w-[60px]">Row {err.row}:</span>
-                              <span className="text-muted-foreground font-medium">Column "{err.column}" - {err.message}</span>
+                              <span className="text-muted-foreground font-medium">Column {'"'}{err.column}{'"'} - {err.message}</span>
                             </div>
                           ))}
                         </div>
@@ -201,7 +196,7 @@ export function BulkImportDialog<T extends Record<string, unknown>>({
                   <div className="flex-1 flex flex-col min-h-0">
                     <h4 className="text-sm font-bold mb-2 flex items-center gap-2">
                       <CheckCircle2 className="size-4 text-primary" />
-                      {useTranslations('common')('data_preview')}
+                      {t('data_preview')}
                     </h4>
                     <div className="border rounded-xl overflow-hidden flex-1 flex flex-col">
                       <div className="flex-1 overflow-auto">
@@ -233,8 +228,8 @@ export function BulkImportDialog<T extends Record<string, unknown>>({
         </div>
 
         <DialogFooter className="p-6 pt-2 gap-3 border-t bg-muted/10">
-          <Button variant="ghost" onClick={handleClose} className="font-bold">{useTranslations('common')('cancel')}</Button>
-          <Button 
+          <Button variant="ghost" onClick={handleClose} className="font-bold">{t('cancel')}</Button>
+          <Button
             disabled={!file || previewData.length === 0 || validationErrors.length > 0 || isImporting || isParsing}
             onClick={handleImport}
             className="gap-2 px-8 font-bold shadow-lg shadow-primary/20"
@@ -244,7 +239,7 @@ export function BulkImportDialog<T extends Record<string, unknown>>({
             ) : (
               <CheckCircle2 className="size-4" />
             )}
-            {useTranslations('common')('import')} {previewData.length > 0 ? previewData.length : ''} {useTranslations('common')('records')}
+            {t('import')} {previewData.length > 0 ? previewData.length : ''} {t('records')}
           </Button>
         </DialogFooter>
       </DialogContent>

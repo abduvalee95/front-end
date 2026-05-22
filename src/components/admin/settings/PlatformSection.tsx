@@ -23,7 +23,7 @@ interface PlatformSectionProps {
   setMaxOrgs: (v: string) => void;
   savingSection: string | null;
   handleSave: (section: string) => void;
-  systemMetrics: any[];
+  systemMetrics: { label: string; value: string }[];
 }
 
 export function PlatformSection({

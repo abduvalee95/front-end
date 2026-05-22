@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useDebounceSearch } from '@/hooks/useDebounceSearch';
 import { useUsers } from '@/hooks/useUsers';
-import { User, UserRole } from '@/types/auth';
+import { UserRole } from '@/types/auth';
 import { format } from 'date-fns';
 import {
   MoreHorizontal,

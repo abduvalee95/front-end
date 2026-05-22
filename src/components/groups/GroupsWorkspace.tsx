@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { useTranslations } from '@/i18n/index';
 import { useDebounceSearch } from '@/hooks/useDebounceSearch';
 import { useQueryClient } from '@tanstack/react-query';
@@ -68,36 +68,34 @@ export function GroupsWorkspace() {
   const courses = coursesQuery.data ?? [];
 
   // Teacher sees only their groups
-  const scopedGroups = useMemo(() => {
+  const scopedGroups = (() => {
     if (teacherScoped && user?.id) {
       return allGroups.filter((g) => g.teacher_id === user.id);
     }
     return allGroups;
-  }, [allGroups, teacherScoped, user?.id]);
+  })();
 
   // Apply filters
-  const rows = useMemo(() => {
-    const normalizedSearch = debouncedSearch.trim().toLowerCase();
-    return scopedGroups.filter((g) => {
-      const matchesSearch =
-        !normalizedSearch ||
-        g.name.toLowerCase().includes(normalizedSearch) ||
-        g.course?.title?.toLowerCase().includes(normalizedSearch) ||
-        g.teacher?.full_name?.toLowerCase().includes(normalizedSearch);
-      const matchesCourse = !courseFilter || g.course_id === courseFilter;
-      return matchesSearch && matchesCourse;
-    });
-  }, [scopedGroups, debouncedSearch, courseFilter]);
+  const normalizedSearch = debouncedSearch.trim().toLowerCase();
+  const rows = scopedGroups.filter((g) => {
+    const matchesSearch =
+      !normalizedSearch ||
+      g.name.toLowerCase().includes(normalizedSearch) ||
+      g.course?.title?.toLowerCase().includes(normalizedSearch) ||
+      g.teacher?.full_name?.toLowerCase().includes(normalizedSearch);
+    const matchesCourse = !courseFilter || g.course_id === courseFilter;
+    return matchesSearch && matchesCourse;
+  });
 
-  const uniqueCourses = useMemo(() => {
+  const uniqueCourses = (() => {
     const set = new Set(scopedGroups.map((g) => g.course?.title).filter(Boolean));
     return set.size;
-  }, [scopedGroups]);
+  })();
 
-  const uniqueTeachers = useMemo(() => {
+  const uniqueTeachers = (() => {
     const set = new Set(scopedGroups.map((g) => g.teacher_id).filter(Boolean));
     return set.size;
-  }, [scopedGroups]);
+  })();
 
   const handleDelete = async (id: string, name: string) => {
     if (!confirm(`${tCommon('confirm_delete')} "${name}"? ${tCommon('groups_with_enrollments_cannot_delete')}`)) return;

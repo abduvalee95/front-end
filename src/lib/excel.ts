@@ -66,7 +66,7 @@ export async function parseExcelFile<T>(
         });
 
         resolve({ data: result, errors });
-      } catch (error) {
+      } catch {
         reject(new Error('Failed to read Excel file. Please ensure it is a valid .xlsx or .xls file.'));
       }
     };

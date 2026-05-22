@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useTranslations } from '@/i18n/index';
 import { toast } from 'sonner';
 import { BookOpen, Loader2 } from 'lucide-react';
@@ -28,11 +28,13 @@ export function EditSubjectModal({ subject, open, onClose }: EditSubjectModalPro
   const t = useTranslations('subjects');
   const tCommon = useTranslations('common');
   const [name, setName] = useState(subject.name);
+  const [prevOpen, setPrevOpen] = useState(open);
   const updateSubject = useUpdateSubject();
 
-  useEffect(() => {
+  if (open !== prevOpen) {
+    setPrevOpen(open);
     if (open) setName(subject.name);
-  }, [open, subject.name]);
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

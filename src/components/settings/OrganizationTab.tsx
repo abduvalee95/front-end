@@ -45,8 +45,8 @@ export function OrganizationTab({
     const file = e.target.files?.[0];
     if (!file) return;
     uploadLogo.mutate(file, {
-      onSuccess: (res: any) => {
-        setFormData((prev: any) => ({ ...prev, logo_url: res.logo_url }));
+      onSuccess: (res: { logo_url: string }) => {
+        setFormData((prev) => ({ ...prev, logo_url: res.logo_url }));
       },
     });
     e.target.value = '';

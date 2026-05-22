@@ -9,9 +9,22 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { toast } from 'sonner';
 import { SectionHeader } from './SharedComponents';
 
+interface RecentBackup {
+  id: string;
+  name: string;
+  date: string;
+  size: string;
+}
+
+interface ResourceMetric {
+  label: string;
+  value: number;
+  color: string;
+}
+
 interface InfrastructureSectionProps {
-  recentBackups: any[];
-  resourceMetrics: any[];
+  recentBackups: RecentBackup[];
+  resourceMetrics: ResourceMetric[];
 }
 
 export function InfrastructureSection({ recentBackups, resourceMetrics }: InfrastructureSectionProps) {

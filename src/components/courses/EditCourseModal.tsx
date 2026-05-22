@@ -57,7 +57,8 @@ export function EditCourseModal({ course }: EditCourseModalProps) {
       setOpen(false);
       const user = useAuthStore.getState().user;
       queryClient.invalidateQueries({ queryKey: queryKeys.courses.all(user?.organization_id) });
-    } catch (error: any) {
+    } catch (err: unknown) {
+      const error = err as { response?: { data?: { message?: string } } };
       toast.error(error.response?.data?.message || 'Failed to update course');
     } finally {
       setIsLoading(false);

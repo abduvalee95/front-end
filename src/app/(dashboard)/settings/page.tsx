@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useTranslations } from '@/i18n/index';
 import { 
   User, 
@@ -50,11 +50,14 @@ export default function SettingsPage() {
     avatar_url: user?.avatar_url || '',
   });
 
-  useEffect(() => {
+  // Adjust state during render instead of useEffect
+  const [prevSettings, setPrevSettings] = useState(settings);
+  if (prevSettings !== settings) {
+    setPrevSettings(settings);
     if (settings) {
       setFormData(settings);
     }
-  }, [settings]);
+  }
 
   if (isLoading) {
     return (

@@ -44,7 +44,7 @@ export function AppearanceTab() {
               <SelectValue placeholder="Select language" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="uz">O'zbekcha</SelectItem>
+              <SelectItem value="uz">O&apos;zbekcha</SelectItem>
               <SelectItem value="ru">Русский</SelectItem>
               <SelectItem value="en">English</SelectItem>
             </SelectContent>

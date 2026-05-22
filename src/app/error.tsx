@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
+import Link from 'next/link';
 import { AlertTriangle, RefreshCw, Home } from 'lucide-react';
 import { logger } from '@/lib/logger';
 
@@ -46,13 +47,13 @@ export default function ErrorPage({ error, reset }: ErrorProps) {
             <RefreshCw className="size-4" />
             Qayta urinish
           </button>
-          <a
+          <Link
             href="/"
             className="inline-flex items-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-sm transition-colors hover:bg-primary/90"
           >
             <Home className="size-4" />
             Bosh sahifa
-          </a>
+          </Link>
         </div>
       </div>
     </div>

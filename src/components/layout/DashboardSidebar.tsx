@@ -5,22 +5,19 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useTranslations } from '@/i18n/index';
 import { cn } from '@/lib/utils';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useAuthStore } from '@/store/auth.store';
 import { useAuth } from '@/hooks/useAuth';
 import { useOrganizationSettings } from '@/hooks/useOrganization';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { LanguageSwitcher } from '@/components/language-switcher';
-
-import { 
-  LayoutDashboard, 
-  Users, 
-  GraduationCap, 
-  Calendar, 
-  BookOpen, 
-  ClipboardCheck, 
-  BarChart3, 
-  UserPlus,
+import {
+  LayoutDashboard,
+  Users,
+  GraduationCap,
+  Calendar,
+  BookOpen,
+  ClipboardCheck,
+  BarChart3,
   Settings,
   CreditCard,
   LogOut,
@@ -66,17 +63,12 @@ const NAV_GROUPS = [
 
 export function DashboardSidebar() {
   const pathname = usePathname();
-  const [isCollapsed, setIsCollapsed] = useState(false);
-
-  useEffect(() => {
-    const isMobile = window.innerWidth < 768;
-    if (isMobile) {
-      setIsCollapsed(true);
-      return;
-    }
+  const [isCollapsed, setIsCollapsed] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    if (window.innerWidth < 768) return true;
     const saved = localStorage.getItem('sidebar-collapsed');
-    if (saved !== null) setIsCollapsed(saved === 'true');
-  }, []);
+    return saved !== null ? saved === 'true' : false;
+  });
 
   const handleToggle = () => {
     const next = !isCollapsed;
@@ -117,18 +109,22 @@ export function DashboardSidebar() {
         {orgSettings?.logo_url ? (
           isCollapsed ? (
             <div className="size-12 rounded-xl overflow-hidden ring-2 ring-white/10 shadow-lg">
-              <img
+              <Image
                 src={orgSettings.logo_url}
                 alt={orgSettings.name}
+                width={48}
+                height={48}
                 className="size-full object-cover"
               />
             </div>
           ) : (
             <div className="flex flex-col items-center gap-3 w-full">
               <div className="size-16 rounded-2xl overflow-hidden ring-2 ring-white/10 shadow-lg shadow-blue-900/30">
-                <img
+                <Image
                   src={orgSettings.logo_url}
                   alt={orgSettings.name}
+                  width={64}
+                  height={64}
                   className="size-full object-cover"
                 />
               </div>

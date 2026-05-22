@@ -66,7 +66,8 @@ export function CoursesWorkspace() {
       toast.success(t('delete_success'));
       const user = useAuthStore.getState().user;
       queryClient.invalidateQueries({ queryKey: queryKeys.courses.all(user?.organization_id) });
-    } catch (error: any) {
+    } catch (err: unknown) {
+      const error = err as { response?: { data?: { message?: string } } };
       toast.error(error.response?.data?.message || t('delete_failed'));
     } finally {
       setIsDeleting(null);

@@ -6,14 +6,12 @@ import { Lead, LeadStatus } from '@/types/analytics';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
-import { 
-  Phone, 
-  Clock, 
-  Sparkles, 
-  MoreVertical, 
-  UserCheck, 
-  UserMinus,
-  Loader2
+import {
+  Phone,
+  Clock,
+  Sparkles,
+  MoreVertical,
+  UserCheck,
 } from 'lucide-react';
 import { format, parseISO } from 'date-fns';
 import { cn } from '@/lib/utils';

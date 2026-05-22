@@ -41,19 +41,19 @@ Maqsad: Uni kursga yozilishga qiziqtirish.
 Matn juda uzun bo'lmasin, samimiy va professional bo'lsin. O'zbek tilida yoz.`;
 
     try {
-      await sendMessage({
-        role: 'user',
-        content: prompt,
-        parts: [{ type: 'text', text: prompt }]
-      } as any);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      await (sendMessage as any)({ role: 'user', content: prompt });
     } catch (error) {
       logger.error('AI Generation Error:', error);
     }
   };
 
   const aiMessage = messages.find(m => m.role === 'assistant');
-  const responseText = aiMessage ? 
-    (aiMessage.parts?.filter(p => p.type === 'text').map(p => (p as any).text).join('') || (aiMessage as any).content || '') 
+  const responseText = aiMessage
+    ? (aiMessage.parts
+        ?.filter(p => p.type === 'text')
+        .map(p => ('text' in p ? (p as { type: 'text'; text: string }).text : ''))
+        .join('') ?? '')
     : '';
 
   const copyToClipboard = () => {

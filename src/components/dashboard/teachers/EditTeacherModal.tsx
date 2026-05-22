@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Loader2, GraduationCap, UserCircle2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -62,7 +62,10 @@ export function EditTeacherModal({ teacher, onClose }: EditTeacherModalProps) {
     formState: { errors },
   } = useForm<FormValues>();
 
-  useEffect(() => {
+  // Adjust state during render instead of useEffect
+  const [prevTeacher, setPrevTeacher] = useState(teacher);
+  if (prevTeacher !== teacher) {
+    setPrevTeacher(teacher);
     if (teacher) {
       reset({
         full_name: teacher.full_name || '',
@@ -76,7 +79,7 @@ export function EditTeacherModal({ teacher, onClose }: EditTeacherModalProps) {
       setFixedSalary(teacher.fixed_salary ?? undefined);
       setPercentRate(teacher.percent_rate ?? undefined);
     }
-  }, [teacher, reset]);
+  }
 
   const onSubmit = async (values: FormValues) => {
     if (!teacher) return;

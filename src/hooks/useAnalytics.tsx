@@ -5,7 +5,7 @@
 'use client';
 
 import { createContext, useContext, useMemo, useState, type ReactNode } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { subDays, startOfMonth, endOfDay } from 'date-fns';
 import { analyticsService } from '@/services/analytics';
 import { leadService } from '@/services/leads';

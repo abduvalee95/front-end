@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { Loader2, Users } from 'lucide-react';
 import { useTranslations } from '@/i18n/index';
@@ -63,8 +62,9 @@ export function CreateLeadModal({ isOpen, onClose }: CreateLeadModalProps) {
       });
       setFormData({ full_name: '', phone: '', source: 'DIRECT' });
       onClose();
-    } catch (error: any) {
-      const errorMessage = error.response?.data?.message || error.message || t('failed_create');
+    } catch (error: unknown) {
+      const err = error as { response?: { data?: { message?: string } }; message?: string };
+      const errorMessage = err.response?.data?.message || err.message || t('failed_create');
       toast.error(errorMessage);
     }
   };

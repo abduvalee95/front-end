@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { Loader2, PenLine, Users2 } from 'lucide-react';
@@ -49,7 +49,12 @@ export function EditGroupModal({ group }: EditGroupModalProps) {
     end_time: group.end_time ?? '',
   });
 
-  useEffect(() => {
+  // Adjust state during render instead of useEffect
+  const [prevOpen, setPrevOpen] = useState(open);
+  const [prevGroup, setPrevGroup] = useState(group);
+  if (prevOpen !== open || prevGroup !== group) {
+    setPrevOpen(open);
+    setPrevGroup(group);
     if (open) {
       setFormData({
         name: group.name,
@@ -61,7 +66,7 @@ export function EditGroupModal({ group }: EditGroupModalProps) {
         end_time: group.end_time ?? '',
       });
     }
-  }, [open, group]);
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

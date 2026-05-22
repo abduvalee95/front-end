@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { format } from 'date-fns';
@@ -36,14 +36,14 @@ export default function OrganizationDetailPage() {
   const [statusTarget, setStatusTarget] = useState<PlatformOrganization | null>(null);
   const toggleStatus = useToggleOrganizationStatus();
 
-  const handleStatusConfirm = useCallback(() => {
+  const handleStatusConfirm = () => {
     if (!statusTarget) return;
     const newStatus: OrganizationStatus = statusTarget.status === 'ACTIVE' ? 'INACTIVE' : 'ACTIVE';
     toggleStatus.mutate(
       { id: statusTarget.id, status: newStatus },
       { onSettled: () => setStatusTarget(null) },
     );
-  }, [statusTarget, toggleStatus]);
+  };
 
   // --- Loading ---
   if (isLoading) {
@@ -59,7 +59,7 @@ export default function OrganizationDetailPage() {
     return (
       <div className="flex flex-col items-center justify-center py-32 gap-4">
         <AlertCircle className="h-10 w-10 text-red-400" />
-        <p className="text-white/50 text-sm">Ma'lumotlarni yuklashda xatolik</p>
+        <p className="text-white/50 text-sm">Ma&apos;lumotlarni yuklashda xatolik</p>
         <Button variant="outline" size="sm" onClick={() => refetch()} className="border-white/10 text-white">
           <RefreshCw className="mr-2 h-4 w-4" /> Qayta urinish
         </Button>
@@ -74,7 +74,7 @@ export default function OrganizationDetailPage() {
         <Building2 className="h-10 w-10 text-white/10" />
         <p className="text-white/40 font-bold">Tashkilot topilmadi</p>
         <Link href="/admin/organizations" className="text-primary hover:underline text-sm">
-          Ro'yxatga qaytish
+          Ro&apos;yxatga qaytish
         </Link>
       </div>
     );
@@ -128,7 +128,7 @@ export default function OrganizationDetailPage() {
                 : 'border-emerald-500/20 text-emerald-400 hover:bg-emerald-500/10'}
             >
               <Power className="mr-2 h-4 w-4" />
-              {org.status === 'ACTIVE' ? 'To\'xtatish' : 'Faollashtirish'}
+              {org.status === 'ACTIVE' ? "To'xtatish" : 'Faollashtirish'}
             </Button>
           </div>
         </div>

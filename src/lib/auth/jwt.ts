@@ -8,11 +8,11 @@ import { UserRole } from '@/types/auth';
 /**
  * Decodes a JWT payload without verifying the signature
  */
-export function decodeJwtPayload(token: string): any {
+export function decodeJwtPayload(token: string): Record<string, unknown> | null {
   try {
     const payload = token.split('.')[1];
     if (!payload) return null;
-    
+
     // Cross-environment base64 decoding (Works in Browser and Node.js)
     const base64 = payload.replace(/-/g, '+').replace(/_/g, '/');
     const jsonPayload = decodeURIComponent(
@@ -22,8 +22,8 @@ export function decodeJwtPayload(token: string): any {
         .join('')
     );
 
-    return JSON.parse(jsonPayload);
-  } catch (error) {
+    return JSON.parse(jsonPayload) as Record<string, unknown>;
+  } catch {
     return null;
   }
 }
@@ -33,7 +33,7 @@ export function decodeJwtPayload(token: string): any {
  */
 export function getRoleFromToken(token: string): UserRole | null {
   const payload = decodeJwtPayload(token);
-  return payload?.role ?? null;
+  return (payload?.role as UserRole) ?? null;
 }
 
 /**
@@ -41,5 +41,5 @@ export function getRoleFromToken(token: string): UserRole | null {
  */
 export function getOrgIdFromToken(token: string): string | null {
   const payload = decodeJwtPayload(token);
-  return payload?.organization_id ?? null;
+  return (payload?.organization_id as string) ?? null;
 }

@@ -51,7 +51,7 @@ export default function AdminDashboardPage() {
             <CardTitle className="text-foreground text-lg">last 5 active students</CardTitle>
           </CardHeader>
           <CardContent className="flex items-center justify-center h-full">
-            <span className="text-muted-foreground/50 text-sm italic">Ma'lumotlar yo'q</span>
+            <span className="text-muted-foreground/50 text-sm italic">Ma&apos;lumotlar yo&apos;q</span>
           </CardContent>
         </Card>
       </div>

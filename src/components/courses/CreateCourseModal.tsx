@@ -69,7 +69,8 @@ export function CreateCourseModal({ open: externalOpen, onClose }: CreateCourseM
       setOpen(false);
       const user = useAuthStore.getState().user;
       queryClient.invalidateQueries({ queryKey: queryKeys.courses.all(user?.organization_id) });
-    } catch (error: any) {
+    } catch (err: unknown) {
+      const error = err as { response?: { data?: { message?: string } } };
       toast.error(error.response?.data?.message || tCommon('failed_create_course'));
     } finally {
       setIsLoading(false);

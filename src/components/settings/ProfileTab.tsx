@@ -12,8 +12,8 @@ import { Progress } from '@/components/ui/progress';
 import { toast } from 'sonner';
 
 interface ProfileTabProps {
-  user: any;
-  profileData: any;
+  user: { role?: string } | null | undefined;
+  profileData: Record<string, string>;
   handleProfileChange: (field: string, value: string) => void;
 }
 

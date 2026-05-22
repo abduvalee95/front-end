@@ -43,7 +43,7 @@ export function useAuth() {
     onSuccess: () => {
       toast.success('Logged out successfully');
     },
-    onError: (error: AxiosError) => {
+    onError: () => {
       toast.error('Logout failed, but clearing local session');
     },
     onSettled: () => {

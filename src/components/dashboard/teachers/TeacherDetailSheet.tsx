@@ -53,18 +53,15 @@ export function TeacherDetailSheet({
   onDelete,
 }: TeacherDetailSheetProps) {
   const t = useTranslations('teachers');
-  if (!teacher) return null;
-
-  const isActive = teacher.status === 'ACTIVE';
 
   const now = new Date();
   const monthFrom = format(startOfMonth(now), 'yyyy-MM-dd');
   const monthTo = format(endOfMonth(now), 'yyyy-MM-dd');
 
   const journalQuery = useQuery({
-    queryKey: ['journal', 'teacher', teacher.id, monthFrom],
-    queryFn: () => journalService.findByTeacher(teacher.id, { date_from: monthFrom, date_to: monthTo, limit: 500 }),
-    enabled: !!teacher.id && teacher.salary_type === 'DAILY',
+    queryKey: ['journal', 'teacher', teacher?.id, monthFrom],
+    queryFn: () => journalService.findByTeacher(teacher!.id, { date_from: monthFrom, date_to: monthTo, limit: 500 }),
+    enabled: !!teacher?.id && teacher?.salary_type === 'DAILY',
   });
 
   const workedDays = useMemo(() => {
@@ -74,10 +71,14 @@ export function TeacherDetailSheet({
   }, [journalQuery.data]);
 
   const calculatedSalary = useMemo(() => {
-    if (!teacher.hourly_rate) return null;
-    if (teacher.salary_type === 'MONTHLY') return teacher.hourly_rate;
+    if (!teacher?.hourly_rate) return null;
+    if (teacher?.salary_type === 'MONTHLY') return teacher.hourly_rate;
     return teacher.hourly_rate * workedDays;
-  }, [teacher.hourly_rate, teacher.salary_type, workedDays]);
+  }, [teacher, workedDays]);
+
+  if (!teacher) return null;
+
+  const isActive = teacher.status === 'ACTIVE';
 
   return (
     <Sheet open={!!teacher} onOpenChange={(v) => !v && onClose()}>
