@@ -496,7 +496,9 @@
     "no_description": "No description provided.",
     "delete_confirm": "Are you sure you want to delete the course \"{title}\"? This might fail if there are groups associated with it.",
     "delete_success": "Course deleted successfully",
-    "delete_failed": "Failed to delete course"
+    "delete_failed": "Failed to delete course",
+    "tab_courses": "Courses",
+    "tab_subjects": "Subjects"
   },
   "groups": {
     "title": "Groups",
@@ -734,7 +736,9 @@
     "login_notifications": "Login Notifications",
     "login_notifications_desc": "Get notified of new logins",
     "coming_soon": "Coming Soon",
-    "security_features_coming": "Additional security features will be available in the next release."
+    "security_features_coming": "Additional security features will be available in the next release.",
+    "users": "Users",
+    "users_desc": "Staff management"
   },
   "header": {
     "search_placeholder": "Search students, teachers, classes...",

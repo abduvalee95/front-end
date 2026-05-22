@@ -546,7 +546,9 @@
     "no_description": "Tavsif berilmagan.",
     "delete_confirm": "\"{title}\" kursini o'chirishga ishonchingiz komilmi? Agar unga bog'liq guruhlar bo'lsa, o'chirish muvaffaqiyatsiz bo'lishi mumkin.",
     "delete_success": "Kurs muvaffaqiyatli o'chirildi",
-    "delete_failed": "Kursni o'chirib bo'lmadi"
+    "delete_failed": "Kursni o'chirib bo'lmadi",
+    "tab_courses": "Kurslar",
+    "tab_subjects": "Fanlar"
   },
   "groups": {
     "title": "Guruhlar",
@@ -784,7 +786,9 @@
     "login_notifications": "Login bildirishnomalar",
     "login_notifications_desc": "Yangi kirishlar haqida xabardor bo'ling",
     "coming_soon": "Tez orada",
-    "security_features_coming": "Qo'shimcha xavfsizlik xususiyatlari keyingi versiyada mavjud bo'ladi."
+    "security_features_coming": "Qo'shimcha xavfsizlik xususiyatlari keyingi versiyada mavjud bo'ladi.",
+    "users": "Foydalanuvchilar",
+    "users_desc": "Xodimlarni boshqarish"
   },
   "header": {
     "search_placeholder": "O'quvchi, o'qituvchi, sinflarni qidiring...",

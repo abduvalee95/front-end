@@ -18,7 +18,7 @@ import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
 
 function formatAmount(amount: number) {
-  return new Intl.NumberFormat('ky-KG').format(amount) + ' KGS';
+  return new Intl.NumberFormat('ru-RU').format(amount) + ' сом';
 }
 
 type PaymentStatus = 'full' | 'partial' | 'none' | 'future';
@@ -39,7 +39,7 @@ export default function StudentDetailPage() {
   const locale = useLocale();
 
   const { data: student, isLoading, isError } = useStudentDetail(studentId);
-  const paymentsQuery = usePayments({ student_id: studentId, limit: 200 }, !!studentId);
+  const paymentsQuery = usePayments({ student_id: studentId, limit: 100 }, !!studentId);
   const deletePayment = useDeletePayment();
 
   const payments = paymentsQuery.data?.items ?? [];
@@ -406,7 +406,7 @@ function MonthlyCalendar({
           <MonthCircle status={status} />
           {total > 0 && (
             <span className="text-[9px] font-bold tabular-nums text-muted-foreground leading-none">
-              {new Intl.NumberFormat('ky-KG', { notation: 'compact' }).format(total)}
+              {new Intl.NumberFormat('ru-RU', { notation: 'compact' }).format(total)} сом
             </span>
           )}
         </div>
