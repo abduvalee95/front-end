@@ -144,8 +144,8 @@ export function DashboardSidebar() {
               <Image
                 src="/logo.svg"
                 alt="Logo"
-                width={isCollapsed ? 40 : 250}
-                height={isCollapsed ? 40 : 250}
+                width={isCollapsed ? 40 : 136}
+                height={isCollapsed ? 40 : 136}
                 className="object-contain brightness-0 invert opacity-90"
                 priority
               />
