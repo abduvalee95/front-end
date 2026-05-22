@@ -347,6 +347,7 @@
     "month_not_paid": "Not paid",
     "month_future": "Upcoming",
     "current_month_payment": "Current month payment",
+    "per_month_short": "mo",
     "payment_badge_paid": "Paid",
     "payment_badge_unpaid": "Unpaid",
     "payment_badge_partial": "Partial"
@@ -1007,6 +1008,13 @@
     "add_subject_name": "Add \"{name}\""
   },
   "enrollment": {
+    "monthly_fee": "Monthly fee",
+    "discount": "Discount",
+    "discount_short": "disc.",
+    "edit_fee_discount": "Edit fee / discount",
+    "invalid_fee_or_discount": "Invalid fee or discount",
+    "fee_updated": "Fee updated",
+    "fee_update_failed": "Failed to update fee",
     "title": "Enrollment",
     "subtitle": "Manage enrollments",
     "add_enrollment": "Add enrollment",

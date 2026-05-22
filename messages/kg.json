@@ -345,6 +345,7 @@
     "month_not_paid": "Төлөнгөн жок",
     "month_future": "Алдыда",
     "current_month_payment": "Учурдагы айдын төлөмү",
+    "per_month_short": "ай",
     "payment_badge_paid": "Төлөндү",
     "payment_badge_unpaid": "Төлөнгөн жок",
     "payment_badge_partial": "Жарым"
@@ -961,6 +962,13 @@
     "mockup_url": "bilimnuru.kg/jurnal/5-А"
   },
   "enrollment": {
+    "monthly_fee": "Айлык төлөм",
+    "discount": "Жеңилдик",
+    "discount_short": "жең.",
+    "edit_fee_discount": "Төлөм / жеңилдикти өзгөртүү",
+    "invalid_fee_or_discount": "Туура эмес төлөм же жеңилдик",
+    "fee_updated": "Төлөм жаңыланды",
+    "fee_update_failed": "Төлөмдү жаңылоо ишке ашкан жок",
     "title": "Катталоо",
     "subtitle": "Катталоолорду башкаруу",
     "add_enrollment": "Катталоо кошуу",

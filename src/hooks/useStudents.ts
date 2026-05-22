@@ -45,24 +45,16 @@ export function useStudentDetail(id: string, enabled = true) {
   const orgId = user?.organization_id;
   const isEnabled = enabled && !!orgId && !!id;
 
-  const studentQuery = useQuery({
-    queryKey: [...queryKeys.students.all(orgId), 'student', id] as const,
-    queryFn: () => studentService.getStudentById(id),
-    enabled: isEnabled,
-  });
-
-  const enrollmentsQuery = useQuery({
-    queryKey: [...queryKeys.students.all(orgId), 'student-enrollments', id] as const,
-    queryFn: () => studentService.getEnrollmentsByStudent(id),
+  const detailQuery = useQuery({
+    queryKey: [...queryKeys.students.all(orgId), 'student-detail', id] as const,
+    queryFn: () => studentService.getStudentDetail(id),
     enabled: isEnabled,
   });
 
   return {
-    data: studentQuery.data
-      ? { ...studentQuery.data, enrollments: enrollmentsQuery.data ?? [] }
-      : undefined,
-    isLoading: studentQuery.isLoading || enrollmentsQuery.isLoading,
-    isError: studentQuery.isError || enrollmentsQuery.isError,
+    data: detailQuery.data,
+    isLoading: detailQuery.isLoading,
+    isError: detailQuery.isError,
   };
 }
 

@@ -347,6 +347,7 @@
     "month_not_paid": "Не оплачено",
     "month_future": "Ещё впереди",
     "current_month_payment": "Оплата текущего месяца",
+    "per_month_short": "мес",
     "payment_badge_paid": "Оплачено",
     "payment_badge_unpaid": "Не оплачено",
     "payment_badge_partial": "Частично"
@@ -1008,6 +1009,13 @@
     "add_subject_name": "Добавить \"{name}\""
   },
   "enrollment": {
+    "monthly_fee": "Месячный платёж",
+    "discount": "Скидка",
+    "discount_short": "ск.",
+    "edit_fee_discount": "Изменить платёж / скидку",
+    "invalid_fee_or_discount": "Неверный платёж или скидка",
+    "fee_updated": "Платёж обновлён",
+    "fee_update_failed": "Не удалось обновить платёж",
     "title": "Зачисление",
     "subtitle": "Управление зачислениями",
     "add_enrollment": "Добавить зачисление",

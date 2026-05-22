@@ -26,6 +26,7 @@ type PaymentStatus = 'full' | 'partial' | 'none' | 'future';
 interface MonthData {
   month: number;
   total: number;
+  ratio: number; // 0..1+ (paid / expected for that month)
   status: PaymentStatus;
   isCurrent: boolean;
 }
@@ -46,6 +47,7 @@ export default function StudentDetailPage() {
   const now = new Date();
   const currentYear = now.getFullYear();
   const currentMonth = now.getMonth();
+  const expectedMonthlyFee = Number(student?.expected_monthly_fee ?? 0);
 
   const monthlyData = useMemo<MonthData[]>(() => {
     const totals = new Array(12).fill(0);
@@ -55,22 +57,22 @@ export default function StudentDetailPage() {
         totals[d.getMonth()] += p.amount;
       }
     });
-    const maxPaid = Math.max(...totals.filter((a) => a > 0), 0);
 
     return totals.map((total, month) => {
+      const ratio = expectedMonthlyFee > 0 ? total / expectedMonthlyFee : (total > 0 ? 1 : 0);
       let status: PaymentStatus = 'none';
       if (month > currentMonth) {
         status = 'future';
       } else if (total === 0) {
         status = 'none';
-      } else if (maxPaid > 0 && total >= maxPaid) {
+      } else if (ratio >= 1) {
         status = 'full';
       } else {
         status = 'partial';
       }
-      return { month, total, status, isCurrent: month === currentMonth };
+      return { month, total, ratio, status, isCurrent: month === currentMonth };
     });
-  }, [payments, currentYear, currentMonth]);
+  }, [payments, currentYear, currentMonth, expectedMonthlyFee]);
 
   const currentMonthData = monthlyData[currentMonth];
   const hasPaidThisMonth = currentMonthData?.status === 'full' || currentMonthData?.status === 'partial';
@@ -149,6 +151,9 @@ export default function StudentDetailPage() {
                 ) : (
                   <PaymentStatusCircle
                     status={currentMonthData?.status ?? 'none'}
+                    ratio={currentMonthData?.ratio ?? 0}
+                    paid={currentMonthData?.total ?? 0}
+                    expected={expectedMonthlyFee}
                     paidLabel={t('month_paid_full')}
                     partialLabel={t('month_paid_partial')}
                     unpaidLabel={t('month_not_paid')}
@@ -206,33 +211,64 @@ export default function StudentDetailPage() {
               </div>
             ) : (
               <div className="space-y-3">
-                {student.enrollments.map((enrollment) => (
-                  <Card key={enrollment.id} className="border-border/50">
-                    <CardContent className="p-4">
-                      <div className="flex items-start justify-between">
-                        <div className="flex-1">
-                          <h4 className="font-bold text-foreground">{enrollment.group?.name ?? '-'}</h4>
-                          {enrollment.group?.course && (
-                            <p className="mt-1 text-sm text-muted-foreground">
-                              <BookOpen className="mr-1 inline size-3.5" />
-                              {enrollment.group.course.title}
+                {student.enrollments.map((enrollment) => {
+                  const monthlyFee = Number(enrollment.monthly_fee ?? 0);
+                  const coursePrice = Number(enrollment.group?.course?.price ?? 0);
+                  const baseFee = monthlyFee > 0 ? monthlyFee : coursePrice;
+                  const discount = Number(enrollment.discount_amount ?? 0);
+                  const netFee = Math.max(0, baseFee - discount);
+                  return (
+                    <Card key={enrollment.id} className="border-border/50">
+                      <CardContent className="p-4">
+                        <div className="flex items-start justify-between gap-4">
+                          <div className="flex-1 min-w-0">
+                            <h4 className="font-bold text-foreground">{enrollment.group?.name ?? '-'}</h4>
+                            {enrollment.group?.course && (
+                              <p className="mt-1 text-sm text-muted-foreground">
+                                <BookOpen className="mr-1 inline size-3.5" />
+                                {enrollment.group.course.title}
+                              </p>
+                            )}
+                            {enrollment.group?.teacher && (
+                              <p className="mt-1 text-sm text-muted-foreground">
+                                <User className="mr-1 inline size-3.5" />
+                                {enrollment.group.teacher.full_name}
+                              </p>
+                            )}
+                            <p className="mt-2 text-xs text-muted-foreground">
+                              <Calendar className="mr-1 inline size-3" />
+                              {format(new Date(enrollment.enrolled_at), 'MMM dd, yyyy')}
                             </p>
+                          </div>
+                          {baseFee > 0 && (
+                            <div className="shrink-0 text-right">
+                              {discount > 0 ? (
+                                <>
+                                  <p className="text-[11px] text-muted-foreground line-through tabular-nums">
+                                    {formatAmount(baseFee)}
+                                  </p>
+                                  <p className="text-sm font-black tabular-nums text-emerald-600 dark:text-emerald-400">
+                                    {formatAmount(netFee)}
+                                  </p>
+                                  <Badge variant="outline" className="mt-1 rounded-full border-amber-300/70 bg-amber-50 text-[10px] font-bold text-amber-700 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-300">
+                                    −{formatAmount(discount)}
+                                  </Badge>
+                                </>
+                              ) : (
+                                <p className="text-sm font-black tabular-nums text-foreground">
+                                  {formatAmount(baseFee)}
+                                </p>
+                              )}
+                              <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/60 mt-1">
+                                /{t('per_month_short')}
+                              </p>
+                            </div>
                           )}
-                          {enrollment.group?.teacher && (
-                            <p className="mt-1 text-sm text-muted-foreground">
-                              <User className="mr-1 inline size-3.5" />
-                              {enrollment.group.teacher.full_name}
-                            </p>
-                          )}
-                          <p className="mt-2 text-xs text-muted-foreground">
-                            <Calendar className="mr-1 inline size-3" />
-                            {format(new Date(enrollment.enrolled_at), 'MMM dd, yyyy')}
-                          </p>
                         </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
+                      </CardContent>
+                    </Card>
+                  );
+                })}
               </div>
             )}
           </CardContent>
@@ -387,7 +423,7 @@ function MonthlyCalendar({
 
   return (
     <div className="grid grid-cols-4 gap-2 sm:grid-cols-6 md:grid-cols-12">
-      {data.map(({ month, total, status, isCurrent }) => (
+      {data.map(({ month, total, ratio, status, isCurrent }) => (
         <div
           key={month}
           title={`${getMonthName(month)}: ${getLabel(status)}${total > 0 ? ' — ' + formatAmount(total) : ''}`}
@@ -403,7 +439,7 @@ function MonthlyCalendar({
           <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
             {getMonthName(month)}
           </span>
-          <MonthCircle status={status} />
+          <MonthCircle status={status} ratio={ratio} />
           {total > 0 && (
             <span className="text-[9px] font-bold tabular-nums text-muted-foreground leading-none">
               {new Intl.NumberFormat('ru-RU', { notation: 'compact' }).format(total)} сом
@@ -415,7 +451,7 @@ function MonthlyCalendar({
   );
 }
 
-function MonthCircle({ status }: { status: PaymentStatus }) {
+function MonthCircle({ status, ratio = 0 }: { status: PaymentStatus; ratio?: number }) {
   if (status === 'full') {
     return (
       <div className="flex size-9 items-center justify-center rounded-full bg-emerald-500 shadow-md ring-4 ring-emerald-100 dark:ring-emerald-500/20">
@@ -440,15 +476,23 @@ function MonthCircle({ status }: { status: PaymentStatus }) {
     );
   }
 
-  // partial — half green (left) / half red (right) with CSS conic-gradient
+  // partial — conic gradient reflects actual paid ratio (green) vs outstanding (red).
+  const clamped = Math.max(0, Math.min(1, ratio));
+  const paidDeg = clamped * 360;
+  const percent = Math.round(clamped * 100);
   return (
     <div
       className="size-9 rounded-full shadow-md ring-4 ring-amber-100 dark:ring-amber-500/20 flex items-center justify-center overflow-hidden"
       style={{
-        background: 'conic-gradient(#22c55e 0deg 180deg, #ef4444 180deg 360deg)',
+        background: `conic-gradient(#22c55e 0deg ${paidDeg}deg, #ef4444 ${paidDeg}deg 360deg)`,
       }}
+      title={`${percent}%`}
     >
-      <div className="size-4 rounded-full bg-white/90 dark:bg-background/90" />
+      <div className="flex size-5 items-center justify-center rounded-full bg-white/95 dark:bg-background/95">
+        <span className="text-[8px] font-black tabular-nums text-foreground/80 leading-none">
+          {percent}
+        </span>
+      </div>
     </div>
   );
 }
@@ -494,12 +538,18 @@ function PaymentStatusBadge({
 
 function PaymentStatusCircle({
   status,
+  ratio = 0,
+  paid,
+  expected,
   paidLabel,
   partialLabel,
   unpaidLabel,
   locale,
 }: {
   status: PaymentStatus;
+  ratio?: number;
+  paid?: number;
+  expected?: number;
   paidLabel: string;
   partialLabel: string;
   unpaidLabel: string;
@@ -519,10 +569,15 @@ function PaymentStatusCircle({
 
   return (
     <div className="flex items-center gap-2.5">
-      <MonthCircle status={status} />
+      <MonthCircle status={status} ratio={ratio} />
       <div>
         <p className={cn('text-sm font-bold', textColor)}>{label}</p>
         <p className="text-[11px] text-muted-foreground capitalize">{monthName}</p>
+        {expected !== undefined && expected > 0 && status !== 'future' && (
+          <p className="text-[10px] font-semibold tabular-nums text-muted-foreground/80 mt-0.5">
+            {formatAmount(paid ?? 0)} / {formatAmount(expected)}
+          </p>
+        )}
       </div>
     </div>
   );
