@@ -10,12 +10,16 @@ import { useAuthStore } from '@/store/auth.store';
 import { useAuth } from '@/hooks/useAuth';
 import { useOrganizationSettings } from '@/hooks/useOrganization';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import type { LucideIcon } from 'lucide-react';
 import {
   LayoutDashboard,
   Users,
   GraduationCap,
   Calendar,
-  BookOpen,
+  NotebookPen,
+  BookMarked,
+  Layers,
+  UsersRound,
   ClipboardCheck,
   BarChart3,
   Settings,
@@ -25,7 +29,15 @@ import {
   Menu
 } from 'lucide-react';
 
-const NAV_GROUPS = [
+type NavItem = {
+  key: string;
+  href: string;
+  icon: LucideIcon;
+  roles: string[] | null;
+  comingSoon?: true;
+};
+
+const NAV_GROUPS: { groupKey: string; items: NavItem[] }[] = [
   {
     groupKey: 'group_main',
     items: [
@@ -35,26 +47,26 @@ const NAV_GROUPS = [
   {
     groupKey: 'group_management',
     items: [
-      { key: 'journal',  href: '/journal',  icon: BookOpen,       roles: null },
+      { key: 'journal',  href: '/journal',  icon: NotebookPen,    roles: null },
       { key: 'leads',    href: '/leads',    icon: Users,          roles: ['SUPER_ADMIN','ADMIN','MANAGER','TEACHER'] },
-      { key: 'courses',  href: '/courses',  icon: BookOpen,       roles: null },
-      { key: 'subjects', href: '/subjects', icon: BookOpen,       roles: ['SUPER_ADMIN', 'ADMIN', 'MANAGER'] },
+      { key: 'courses',  href: '/courses',  icon: BookMarked,     roles: null },
+      { key: 'subjects', href: '/subjects', icon: Layers,         roles: ['SUPER_ADMIN', 'ADMIN', 'MANAGER'] },
       { key: 'teachers', href: '/teachers', icon: GraduationCap,  roles: ['SUPER_ADMIN','ADMIN','MANAGER'] },
       { key: 'students', href: '/students', icon: GraduationCap,  roles: null },
-      { key: 'groups',   href: '/groups',   icon: Users,          roles: ['SUPER_ADMIN','ADMIN','MANAGER','TEACHER'] },
+      { key: 'groups',   href: '/groups',   icon: UsersRound,     roles: ['SUPER_ADMIN','ADMIN','MANAGER','TEACHER'] },
     ]
   },
   {
     groupKey: 'group_academic',
     items: [
-      { key: 'attendance', href: '/attendance', icon: ClipboardCheck, roles: null },
-      { key: 'schedule',   href: '/schedule',   icon: Calendar,       roles: null },
+      { key: 'attendance', href: '/attendance', icon: ClipboardCheck, roles: null, comingSoon: true },
+      { key: 'schedule',   href: '/schedule',   icon: Calendar,       roles: null, comingSoon: true },
     ]
   },
   {
     groupKey: 'group_system',
     items: [
-      { key: 'reports',  href: '/reports',  icon: BarChart3, roles: ['SUPER_ADMIN','ADMIN','MANAGER'] },
+      { key: 'reports',  href: '/reports',  icon: BarChart3, roles: ['SUPER_ADMIN','ADMIN','MANAGER'], comingSoon: true },
       { key: 'finance',  href: '/finance',  icon: CreditCard,roles: ['SUPER_ADMIN','ADMIN','MANAGER'] },
       { key: 'settings', href: '/settings', icon: Settings,  roles: ['SUPER_ADMIN','ADMIN'] },
     ]
@@ -177,15 +189,19 @@ export function DashboardSidebar() {
                     href={item.href}
                     className={cn(
                       "flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all duration-300 group relative text-[14px] font-semibold",
-                      isActive 
+                      isActive
                         ? "bg-gradient-to-r from-blue-400 to-cyan-400 text-white shadow-lg shadow-blue-500/30"
                         : "text-blue-100/60 hover:bg-white/5 hover:text-white",
-                      isCollapsed && "justify-center px-2"
+                      isCollapsed && "justify-center px-2",
+                      item.comingSoon && "pointer-events-none opacity-50 cursor-not-allowed"
                     )}
                     aria-label={label}
                   >
                     <item.icon className={cn("size-5 shrink-0 transition-colors", isActive ? "text-white" : "text-blue-200/40 group-hover:text-blue-200")} />
                     {!isCollapsed && <span>{label}</span>}
+                    {!isCollapsed && item.comingSoon && (
+                      <span className="ml-auto text-[9px] font-bold uppercase tracking-wider text-blue-200/50 bg-white/5 px-1.5 py-0.5 rounded-full">Tez kunda</span>
+                    )}
                     {isCollapsed && (
                       <div className="absolute left-full ml-4 px-2 py-1 bg-[#22315e] border border-white/10 rounded-md text-[10px] text-white opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-50">
                         {label}
