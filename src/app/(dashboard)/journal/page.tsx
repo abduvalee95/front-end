@@ -486,8 +486,8 @@ export default function JournalPage() {
           <div
             className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 px-4 sm:px-8 pt-4 sm:pt-6 pb-4 sm:pb-5 shrink-0"
             style={{
-              borderBottom: '1px solid rgba(110,88,58,0.10)',
-              background: '#F4EFE4',
+              borderBottom: '1px solid var(--journal-line)',
+              background: 'var(--journal-paper)',
             }}
           >
             {/* Date navigation */}
@@ -497,9 +497,9 @@ export default function JournalPage() {
                 className="flex items-center justify-center rounded-lg transition-all"
                 style={{
                   width: 32, height: 32,
-                  border: '1px solid rgba(110,88,58,0.15)',
-                  background: 'rgba(110,88,58,0.04)',
-                  color: '#8C7B68',
+                  border: '1px solid var(--journal-line-strong)',
+                  background: 'var(--journal-row-tint-strong)',
+                  color: 'var(--journal-ink-soft)',
                   cursor: 'pointer',
                 }}
               >
@@ -509,11 +509,11 @@ export default function JournalPage() {
               <div>
                 <p
                   className="cg leading-none text-[24px] sm:text-[32px]"
-                  style={{ fontWeight: 700, color: '#1A1410', letterSpacing: '-0.02em' }}
+                  style={{ fontWeight: 700, color: 'var(--journal-ink)', letterSpacing: '-0.02em' }}
                 >
                   {format(currentDate, 'dd MMMM')}
                 </p>
-                <p className="dm text-[11px] mt-0.5" style={{ color: '#8C7B68' }}>
+                <p className="dm text-[11px] mt-0.5" style={{ color: 'var(--journal-ink-soft)' }}>
                   {format(currentDate, 'EEEE · yyyy')}
                 </p>
               </div>
@@ -523,9 +523,9 @@ export default function JournalPage() {
                 className="flex items-center justify-center rounded-lg transition-all"
                 style={{
                   width: 32, height: 32,
-                  border: '1px solid rgba(110,88,58,0.15)',
-                  background: 'rgba(110,88,58,0.04)',
-                  color: '#8C7B68',
+                  border: '1px solid var(--journal-line-strong)',
+                  background: 'var(--journal-row-tint-strong)',
+                  color: 'var(--journal-ink-soft)',
                   cursor: 'pointer',
                 }}
               >
@@ -537,11 +537,11 @@ export default function JournalPage() {
             <div className="flex items-center justify-between sm:justify-end gap-4 w-full sm:w-auto">
               {selectedGroup && (
                 <div className="text-left sm:text-right">
-                  <p className="cg font-bold" style={{ fontSize: '18px', color: '#1A1410', lineHeight: 1.1 }}>
+                  <p className="cg font-bold" style={{ fontSize: '18px', color: 'var(--journal-ink)', lineHeight: 1.1 }}>
                     {selectedGroup.name}
                   </p>
                   {enrollments.length > 0 && (
-                    <p className="dm text-[10px] mt-0.5" style={{ color: '#8C7B68' }}>
+                    <p className="dm text-[10px] mt-0.5" style={{ color: 'var(--journal-ink-soft)' }}>
                       {enrollments.length} {t('n_students')}
                     </p>
                   )}
@@ -558,9 +558,9 @@ export default function JournalPage() {
                   borderRadius: 8,
                   border: 'none',
                   background: !selectedGroupId || !enrollments.length
-                    ? 'rgba(110,88,58,0.10)'
-                    : '#1E2D6E',
-                  color: !selectedGroupId || !enrollments.length ? '#A09080' : '#fff',
+                    ? 'var(--journal-button-disabled-bg)'
+                    : 'var(--journal-button)',
+                  color: !selectedGroupId || !enrollments.length ? 'var(--journal-button-disabled-fg)' : '#fff',
                   fontSize: 12,
                   fontWeight: 700,
                   fontFamily: 'inherit',
@@ -569,7 +569,7 @@ export default function JournalPage() {
                   cursor: !selectedGroupId || !enrollments.length ? 'not-allowed' : 'pointer',
                   boxShadow: !selectedGroupId || !enrollments.length
                     ? 'none'
-                    : '0 4px 16px rgba(30,45,110,0.30)',
+                    : '0 4px 16px var(--journal-button-shadow)',
                   transition: 'all 0.15s ease',
                 }}
               >
@@ -585,9 +585,9 @@ export default function JournalPage() {
               className="dm hidden sm:grid px-8 py-2.5 text-[10px] tracking-[0.14em] uppercase shrink-0"
               style={{
                 gridTemplateColumns: '1fr 220px 130px',
-                borderBottom: '1px solid rgba(110,88,58,0.15)',
-                color: '#8C7B68',
-                background: 'rgba(110,88,58,0.03)',
+                borderBottom: '1px solid var(--journal-line-strong)',
+                color: 'var(--journal-ink-soft)',
+                background: 'var(--journal-row-tint)',
               }}
             >
               <span>{tCommon('student')}</span>
