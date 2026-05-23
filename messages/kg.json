@@ -101,7 +101,10 @@
     "user_not_found": "User information not found",
     "address": "Address",
     "adjust_filters": "Издөө жана фильтрлерди өзгөртүңүз",
-    "clear_filters": "Фильтрлерди тазалоо"
+    "clear_filters": "Фильтрлерди тазалоо",
+    "more": "Дагы",
+    "menu": "Меню",
+    "logout": "Чыгуу"
   },
   "nav": {
     "dashboard": "Башкаруу панели",

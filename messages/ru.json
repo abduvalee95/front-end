@@ -102,7 +102,10 @@
     "address": "Address",
     "adjust_filters": "Попробуйте изменить поиск или фильтры",
     "clear_filters": "Сбросить фильтры",
-    "error_generic": "Произошла ошибка"
+    "error_generic": "Произошла ошибка",
+    "more": "Еще",
+    "menu": "Меню",
+    "logout": "Выход"
   },
   "nav": {
     "dashboard": "Панель управления",

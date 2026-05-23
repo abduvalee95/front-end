@@ -102,7 +102,10 @@
     "address": "Address",
     "adjust_filters": "Filtr yoki qidiruvni o'zgartiring",
     "clear_filters": "Filtrlarni tozalash",
-    "error_generic": "Xatolik yuz berdi"
+    "error_generic": "Xatolik yuz berdi",
+    "more": "Yana",
+    "menu": "Menyu",
+    "logout": "Chiqish"
   },
   "nav": {
     "dashboard": "Boshqaruv paneli",

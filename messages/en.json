@@ -102,7 +102,10 @@
     "address": "Address",
     "adjust_filters": "Try adjusting your search or filters",
     "clear_filters": "Clear filters",
-    "error_generic": "An error occurred"
+    "error_generic": "An error occurred",
+    "more": "More",
+    "menu": "Menu",
+    "logout": "Logout"
   },
   "nav": {
     "dashboard": "Dashboard",
