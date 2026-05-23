@@ -1063,5 +1063,13 @@
     "existing_subjects": "Mavjud predmetlar",
     "new_subject": "Yangi predmet",
     "add_subject_name": "\"{name}\" qo'shish"
+  },
+  "toasts": {
+    "session_expired": "Sessiya muddati tugadi. Qaytadan kiring.",
+    "permission_denied": "Bu amalni bajarish uchun ruxsat yo'q.",
+    "server_error": "Server xatosi. Birozdan keyin qayta urinib ko'ring.",
+    "network_error": "Tarmoq xatosi. Internet aloqasini tekshiring.",
+    "logout_success": "Tizimdan muvaffaqiyatli chiqdingiz.",
+    "logout_error": "Chiqishda xatolik, profil tozalandi."
   }
 }

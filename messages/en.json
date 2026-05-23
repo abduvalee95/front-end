@@ -1082,5 +1082,13 @@
     "error_failed": "enrollment(s) failed",
     "error_remove": "Failed to remove from group",
     "remove_confirm": "Remove this student from the group?"
+  },
+  "toasts": {
+    "session_expired": "Session expired. Please log in again.",
+    "permission_denied": "You do not have permission to perform this action.",
+    "server_error": "Server error. Please try again later.",
+    "network_error": "Network error. Please check your connection.",
+    "logout_success": "Logged out successfully.",
+    "logout_error": "Logout failed, but profile was cleared."
   }
 }

@@ -3,7 +3,6 @@
 import { useState, useMemo } from 'react';
 import { useAuthStore } from '@/store/auth.store';
 import { useTranslations } from '@/i18n/index';
-import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
 import {
   ChevronLeft,
@@ -196,26 +195,6 @@ export default function JournalPage() {
           color: #4A3E30;
         }
 
-        .score-input {
-          font-family: 'DM Mono', monospace;
-          font-size: 13px;
-          font-weight: 500;
-          text-align: center;
-          border: none;
-          border-bottom: 1.5px solid rgba(110, 88, 58, 0.25);
-          border-radius: 0;
-          background: transparent;
-          padding: 4px 4px 2px;
-          width: 48px;
-          color: #1A1410;
-          outline: none;
-          transition: border-color 0.15s;
-        }
-        .score-input:focus {
-          border-bottom-color: #2D3A8C;
-          box-shadow: none;
-        }
-        .score-input::placeholder { color: #C4B49A; }
 
         .group-item {
           padding: 10px 16px;
@@ -512,7 +491,7 @@ export default function JournalPage() {
             <div
               className="dm hidden sm:grid px-8 py-2.5 text-[10px] tracking-[0.14em] uppercase shrink-0"
               style={{
-                gridTemplateColumns: '1fr 220px 120px',
+                gridTemplateColumns: '1fr 220px 130px',
                 borderBottom: '1px solid rgba(110,88,58,0.15)',
                 color: '#8C7B68',
                 background: 'rgba(110,88,58,0.03)',
@@ -543,7 +522,7 @@ export default function JournalPage() {
                     key={i}
                     className="py-4 flex flex-col gap-2 sm:grid sm:gap-0"
                     style={{
-                      gridTemplateColumns: '1fr 220px 120px',
+                      gridTemplateColumns: '1fr 220px 130px',
                       borderBottom: '1px solid rgba(110,88,58,0.08)',
                       animationDelay: `${i * 60}ms`,
                     }}
@@ -580,7 +559,7 @@ export default function JournalPage() {
                       key={studentId}
                       className="ledger-row flex flex-col gap-3 sm:grid sm:gap-0 px-4 sm:px-8 py-3 sm:py-3 sm:items-center"
                       style={{
-                        gridTemplateColumns: '1fr 220px 120px',
+                        gridTemplateColumns: '1fr 220px 130px',
                         animationDelay: `${idx * 25}ms`,
                       }}
                     >
@@ -642,18 +621,30 @@ export default function JournalPage() {
                         <span className="dm text-[10px] sm:hidden" style={{ color: '#8C7B68' }}>
                           {t('score')}
                         </span>
-                        <div className="flex items-center gap-1.5">
-                          <input
-                            type="number"
-                            min="0"
-                            max="100"
-                            value={entry?.score ?? ''}
-                            onChange={(e) => updateScore(studentId, e.target.value)}
-                            placeholder="—"
-                            className="score-input"
-                          />
-                          <span className="dm text-[10px]" style={{ color: '#B4A490' }}>/ 100</span>
-                        </div>
+                        <select
+                          value={entry?.score ?? ''}
+                          onChange={(e) => updateScore(studentId, e.target.value)}
+                          className="dm"
+                          style={{
+                            width: 72,
+                            height: 30,
+                            borderRadius: 6,
+                            border: '1px solid rgba(110,88,58,0.18)',
+                            background: entry?.score ? '#2D3A8C' : 'rgba(110,88,58,0.04)',
+                            color: entry?.score ? '#fff' : '#6B5A48',
+                            fontSize: 13,
+                            fontWeight: 600,
+                            textAlign: 'center',
+                            cursor: 'pointer',
+                            outline: 'none',
+                            transition: 'all 0.15s ease',
+                          }}
+                        >
+                          <option value="">—</option>
+                          {[10, 20, 30, 40, 50, 60, 70, 80, 90, 100].map((val) => (
+                            <option key={val} value={String(val)}>{val}</option>
+                          ))}
+                        </select>
                       </div>
                     </div>
                   );

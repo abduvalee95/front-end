@@ -6,6 +6,7 @@
 import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios';
 import { toast } from 'sonner';
 import { useAuthStore } from '@/store/auth.store';
+import { tt } from '@/lib/i18n/toast';
 
 // All API calls go through the Next.js proxy to handle cookies securely
 const API_URL = '/api/';
@@ -126,7 +127,7 @@ api.interceptors.response.use(
         useAuthStore.getState().clearAuth();
 
         // Show error toast
-        toast.error('Session expired. Please log in again.');
+        toast.error(tt('toasts.session_expired'));
 
         // Clear HttpOnly cookies via server route BEFORE redirecting
         // Without this, middleware sees stale refresh_token and loops back to dashboard
@@ -150,18 +151,18 @@ api.interceptors.response.use(
       // Don't show toast for auth endpoints (handled separately)
       if (!originalRequest.url?.includes('/auth/')) {
         if (status === 403) {
-          toast.error('You do not have permission to perform this action');
+          toast.error(tt('toasts.permission_denied'));
         } else if (status === 404) {
           // Silent - let component handle
         } else if (status >= 500) {
-          toast.error('Server error. Please try again later.');
+          toast.error(tt('toasts.server_error'));
         } else if (data?.message) {
           toast.error(data.message);
         }
       }
     } else if (error.request) {
       // Network error
-      toast.error('Network error. Please check your connection.');
+      toast.error(tt('toasts.network_error'));
     }
 
     return Promise.reject(error);
