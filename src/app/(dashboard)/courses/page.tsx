@@ -1,16 +1,20 @@
 'use client';
 
+import { useState } from 'react';
 import { useTranslations } from '@/i18n/index';
 import { BookMarked, Layers } from 'lucide-react';
 import { CoursesWorkspace } from '@/components/courses/CoursesWorkspace';
 import { SubjectsWorkspace } from '@/components/subjects/SubjectsWorkspace';
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { useCourses } from '@/hooks/useCourses';
 import { useSubjects } from '@/hooks/useSubjects';
 import { useAuthStore } from '@/store/auth.store';
+import { cn } from '@/lib/utils';
+
+type Tab = 'courses' | 'subjects';
 
 export default function CoursesPage() {
   const t = useTranslations('courses');
+  const [active, setActive] = useState<Tab>('courses');
   const role = useAuthStore((s) => s.user?.role);
   const canRead = !!role;
 
@@ -20,38 +24,73 @@ export default function CoursesPage() {
   const coursesCount = coursesQuery.data?.length ?? 0;
   const subjectsCount = subjectsQuery.data?.length ?? 0;
 
+  const tabs: { id: Tab; label: string; icon: typeof BookMarked; count: number; accent: string; countCls: string }[] = [
+    {
+      id: 'courses',
+      label: t('tab_courses'),
+      icon: BookMarked,
+      count: coursesCount,
+      accent: 'data-active:text-indigo-600 dark:data-active:text-indigo-400',
+      countCls: 'bg-indigo-500/12 text-indigo-700 dark:text-indigo-300',
+    },
+    {
+      id: 'subjects',
+      label: t('tab_subjects'),
+      icon: Layers,
+      count: subjectsCount,
+      accent: 'data-active:text-emerald-600 dark:data-active:text-emerald-400',
+      countCls: 'bg-emerald-500/12 text-emerald-700 dark:text-emerald-300',
+    },
+  ];
+
   return (
-    <Tabs defaultValue="courses" className="gap-5">
-      <div className="sticky top-0 z-20 -mx-3 sm:-mx-4 lg:-mx-6 px-3 sm:px-4 lg:px-6 pt-1 pb-3 bg-gradient-to-b from-background via-background/95 to-transparent backdrop-blur-md">
-        <TabsList className="h-12 rounded-2xl bg-muted/70 dark:bg-white/5 p-1.5 gap-1 inline-flex w-fit shadow-[0_2px_12px_rgba(15,23,42,0.04)] ring-1 ring-border/40">
-          <TabsTrigger
-            value="courses"
-            className="group/tab relative h-9 px-4 rounded-xl gap-2 text-[13px] font-semibold text-muted-foreground/80 hover:text-foreground hover:bg-background/50 data-active:bg-background data-active:text-foreground data-active:shadow-[0_4px_14px_rgba(15,23,42,0.08)] data-active:ring-1 data-active:ring-border/60 transition-all duration-200"
-          >
-            <BookMarked className="size-4 text-indigo-500 dark:text-indigo-400" />
-            <span>{t('tab_courses')}</span>
-            <span className="inline-flex items-center justify-center min-w-[22px] h-[20px] px-1.5 rounded-full bg-indigo-500/15 text-indigo-700 dark:text-indigo-300 text-[10.5px] font-black tabular-nums leading-none">
-              {coursesCount}
-            </span>
-          </TabsTrigger>
-          <TabsTrigger
-            value="subjects"
-            className="group/tab relative h-9 px-4 rounded-xl gap-2 text-[13px] font-semibold text-muted-foreground/80 hover:text-foreground hover:bg-background/50 data-active:bg-background data-active:text-foreground data-active:shadow-[0_4px_14px_rgba(15,23,42,0.08)] data-active:ring-1 data-active:ring-border/60 transition-all duration-200"
-          >
-            <Layers className="size-4 text-emerald-500 dark:text-emerald-400" />
-            <span>{t('tab_subjects')}</span>
-            <span className="inline-flex items-center justify-center min-w-[22px] h-[20px] px-1.5 rounded-full bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 text-[10.5px] font-black tabular-nums leading-none">
-              {subjectsCount}
-            </span>
-          </TabsTrigger>
-        </TabsList>
+    <div className="space-y-5">
+      {/* ── Tab bar ── */}
+      <div className="flex items-center gap-1 w-fit rounded-2xl bg-muted/60 dark:bg-white/5 p-1.5 ring-1 ring-border/40 shadow-sm">
+        {tabs.map(({ id, label, icon: Icon, count, countCls }) => {
+          const isActive = active === id;
+          return (
+            <button
+              key={id}
+              type="button"
+              onClick={() => setActive(id)}
+              data-active={isActive ? '' : undefined}
+              className={cn(
+                'flex items-center gap-2 h-9 px-3 sm:px-4 rounded-xl text-[13px] font-semibold transition-all duration-200 whitespace-nowrap',
+                isActive
+                  ? 'bg-background text-foreground shadow-[0_2px_10px_rgba(15,23,42,0.08)] ring-1 ring-border/50'
+                  : 'text-muted-foreground hover:text-foreground hover:bg-background/50',
+              )}
+            >
+              <Icon
+                className={cn(
+                  'size-4 shrink-0 transition-colors',
+                  isActive
+                    ? id === 'courses'
+                      ? 'text-indigo-500 dark:text-indigo-400'
+                      : 'text-emerald-500 dark:text-emerald-400'
+                    : 'text-muted-foreground/60',
+                )}
+              />
+              <span className="hidden sm:inline">{label}</span>
+              <span
+                className={cn(
+                  'inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full text-[10px] font-black tabular-nums leading-none transition-colors',
+                  isActive ? countCls : 'bg-muted-foreground/10 text-muted-foreground/60',
+                )}
+              >
+                {count}
+              </span>
+            </button>
+          );
+        })}
       </div>
-      <TabsContent value="courses" className="mt-0">
-        <CoursesWorkspace />
-      </TabsContent>
-      <TabsContent value="subjects" className="mt-0">
-        <SubjectsWorkspace />
-      </TabsContent>
-    </Tabs>
+
+      {/* ── Content ── */}
+      <div>
+        {active === 'courses' && <CoursesWorkspace />}
+        {active === 'subjects' && <SubjectsWorkspace />}
+      </div>
+    </div>
   );
 }

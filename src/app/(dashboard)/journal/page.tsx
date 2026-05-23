@@ -157,16 +157,21 @@ export default function JournalPage() {
 
         .status-seg {
           flex: 1;
-          padding: 6px 0;
-          font-size: 11px;
+          min-width: 0;
+          padding: 8px 6px;
+          font-size: 10px;
           font-weight: 600;
-          letter-spacing: 0.05em;
+          letter-spacing: 0.04em;
           text-transform: uppercase;
           border: none;
           cursor: pointer;
           transition: all 0.15s ease;
           color: #8C7B6A;
           background: transparent;
+          white-space: nowrap;
+        }
+        @media (min-width: 640px) {
+          .status-seg { font-size: 11px; padding: 6px 0; }
         }
         .status-seg:first-child { border-radius: 6px 0 0 6px; }
         .status-seg:last-child  { border-radius: 0 6px 6px 0; }
@@ -240,16 +245,80 @@ export default function JournalPage() {
       `}</style>
 
       <div
-        className="flex gap-0 rounded-2xl overflow-hidden shadow-xl ledger-animate"
+        className="flex flex-col lg:flex-row gap-0 rounded-2xl overflow-hidden shadow-xl ledger-animate"
         style={{
           minHeight: '78vh',
           border: '1px solid rgba(110,88,58,0.12)',
           background: '#F4EFE4',
         }}
       >
-        {/* ── SIDEBAR ─────────────────────────────────────── */}
+        {/* ── MOBILE GROUP SELECTOR (visible <lg) ─────────── */}
+        <div
+          className="lg:hidden flex flex-col gap-2 px-4 py-3"
+          style={{ background: '#1C1917', borderBottom: '1px solid rgba(255,255,255,0.07)' }}
+        >
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="dm text-[10px] tracking-[0.18em] uppercase" style={{ color: '#5A5045' }}>
+                BILIM NURU
+              </p>
+              <h2 className="cg leading-none" style={{ fontSize: '18px', fontWeight: 700, color: '#E8DFD0' }}>
+                {t('title')}
+              </h2>
+            </div>
+            {isAdmin && (
+              <span
+                className="inline-flex items-center gap-1 dm text-[9px] tracking-widest uppercase"
+                style={{ color: '#6B6050', background: 'rgba(255,255,255,0.05)', padding: '2px 6px', borderRadius: 4 }}
+              >
+                <ShieldCheck style={{ width: 9, height: 9 }} />
+                {t('admin_view')}
+              </span>
+            )}
+          </div>
+          <select
+            value={selectedGroupId}
+            onChange={(e) => setSelectedGroupId(e.target.value)}
+            disabled={groupsLoading || visibleGroups.length === 0}
+            className="w-full dm text-[12px] rounded-md px-3 py-2 outline-none"
+            style={{
+              background: 'rgba(255,255,255,0.06)',
+              color: '#E8DFD0',
+              border: '1px solid rgba(255,255,255,0.08)',
+            }}
+          >
+            {visibleGroups.length === 0 ? (
+              <option value="">{tCommon('no_data')}</option>
+            ) : (
+              visibleGroups.map((g) => (
+                <option key={g.id} value={g.id} style={{ background: '#1C1917' }}>
+                  {g.name}
+                </option>
+              ))
+            )}
+          </select>
+          {enrollments.length > 0 && (
+            <div className="flex items-center justify-between gap-3 pt-1">
+              {[
+                { label: t('present'), value: stats.present, dot: '#4ADE80' },
+                { label: t('late'), value: stats.late, dot: '#FB923C' },
+                { label: t('absent'), value: stats.absent, dot: '#F87171' },
+              ].map((s) => (
+                <div key={s.label} className="flex items-center gap-1.5">
+                  <span className="size-1.5 rounded-full" style={{ background: s.dot }} />
+                  <span className="text-[11px]" style={{ color: '#7A6B5C' }}>{s.label}</span>
+                  <span className="cg" style={{ fontSize: '16px', fontWeight: 700, color: '#C4B49A' }}>
+                    {String(s.value).padStart(2, '0')}
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* ── SIDEBAR (lg+) ───────────────────────────────── */}
         <aside
-          className="flex flex-col w-64 shrink-0"
+          className="hidden lg:flex flex-col w-64 shrink-0"
           style={{ background: '#1C1917', borderRight: '1px solid rgba(255,255,255,0.05)' }}
         >
           {/* Sidebar header */}
@@ -343,7 +412,7 @@ export default function JournalPage() {
 
           {/* Main header: date nav + group name + save */}
           <div
-            className="flex items-center justify-between px-8 pt-6 pb-5 shrink-0"
+            className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 px-4 sm:px-8 pt-4 sm:pt-6 pb-4 sm:pb-5 shrink-0"
             style={{
               borderBottom: '1px solid rgba(110,88,58,0.10)',
               background: '#F4EFE4',
@@ -367,8 +436,8 @@ export default function JournalPage() {
 
               <div>
                 <p
-                  className="cg leading-none"
-                  style={{ fontSize: '32px', fontWeight: 700, color: '#1A1410', letterSpacing: '-0.02em' }}
+                  className="cg leading-none text-[24px] sm:text-[32px]"
+                  style={{ fontWeight: 700, color: '#1A1410', letterSpacing: '-0.02em' }}
                 >
                   {format(currentDate, 'dd MMMM')}
                 </p>
@@ -393,9 +462,9 @@ export default function JournalPage() {
             </div>
 
             {/* Group name + save */}
-            <div className="flex items-center gap-4">
+            <div className="flex items-center justify-between sm:justify-end gap-4 w-full sm:w-auto">
               {selectedGroup && (
-                <div className="text-right">
+                <div className="text-left sm:text-right">
                   <p className="cg font-bold" style={{ fontSize: '18px', color: '#1A1410', lineHeight: 1.1 }}>
                     {selectedGroup.name}
                   </p>
@@ -438,10 +507,10 @@ export default function JournalPage() {
             </div>
           </div>
 
-          {/* Column headers */}
+          {/* Column headers (hidden on mobile) */}
           {selectedGroupId && !isLoading && enrollments.length > 0 && (
             <div
-              className="dm grid px-8 py-2.5 text-[10px] tracking-[0.14em] uppercase shrink-0"
+              className="dm hidden sm:grid px-8 py-2.5 text-[10px] tracking-[0.14em] uppercase shrink-0"
               style={{
                 gridTemplateColumns: '1fr 220px 120px',
                 borderBottom: '1px solid rgba(110,88,58,0.15)',
@@ -468,11 +537,11 @@ export default function JournalPage() {
                 </p>
               </div>
             ) : isLoading ? (
-              <div className="px-8 py-4 space-y-0">
+              <div className="px-4 sm:px-8 py-4 space-y-0">
                 {Array.from({ length: 6 }).map((_, i) => (
                   <div
                     key={i}
-                    className="py-4 grid"
+                    className="py-4 flex flex-col gap-2 sm:grid sm:gap-0"
                     style={{
                       gridTemplateColumns: '1fr 220px 120px',
                       borderBottom: '1px solid rgba(110,88,58,0.08)',
@@ -480,10 +549,10 @@ export default function JournalPage() {
                     }}
                   >
                     <Skeleton className="h-4 w-36 rounded" style={{ background: 'rgba(110,88,58,0.10)' }} />
-                    <div className="flex justify-center">
-                      <Skeleton className="h-7 w-44 rounded-md" style={{ background: 'rgba(110,88,58,0.10)' }} />
+                    <div className="flex sm:justify-center">
+                      <Skeleton className="h-7 w-full sm:w-44 rounded-md" style={{ background: 'rgba(110,88,58,0.10)' }} />
                     </div>
-                    <div className="flex justify-center">
+                    <div className="flex sm:justify-center">
                       <Skeleton className="h-5 w-12 rounded" style={{ background: 'rgba(110,88,58,0.10)' }} />
                     </div>
                   </div>
@@ -509,12 +578,9 @@ export default function JournalPage() {
                   return (
                     <div
                       key={studentId}
-                      className="ledger-row grid px-8"
+                      className="ledger-row flex flex-col gap-3 sm:grid sm:gap-0 px-4 sm:px-8 py-3 sm:py-3 sm:items-center"
                       style={{
                         gridTemplateColumns: '1fr 220px 120px',
-                        alignItems: 'center',
-                        paddingTop: 12,
-                        paddingBottom: 12,
                         animationDelay: `${idx * 25}ms`,
                       }}
                     >
@@ -536,10 +602,10 @@ export default function JournalPage() {
                       </div>
 
                       {/* Status segmented control */}
-                      <div className="flex justify-center">
+                      <div className="flex sm:justify-center">
                         <div
+                          className="flex w-full sm:w-auto"
                           style={{
-                            display: 'flex',
                             border: '1px solid rgba(110,88,58,0.18)',
                             borderRadius: 8,
                             overflow: 'hidden',
@@ -572,17 +638,22 @@ export default function JournalPage() {
                       </div>
 
                       {/* Score */}
-                      <div className="flex items-center justify-center gap-1.5">
-                        <input
-                          type="number"
-                          min="0"
-                          max="100"
-                          value={entry?.score ?? ''}
-                          onChange={(e) => updateScore(studentId, e.target.value)}
-                          placeholder="—"
-                          className="score-input"
-                        />
-                        <span className="dm text-[10px]" style={{ color: '#B4A490' }}>/ 100</span>
+                      <div className="flex items-center justify-between sm:justify-center gap-1.5">
+                        <span className="dm text-[10px] sm:hidden" style={{ color: '#8C7B68' }}>
+                          {t('score')}
+                        </span>
+                        <div className="flex items-center gap-1.5">
+                          <input
+                            type="number"
+                            min="0"
+                            max="100"
+                            value={entry?.score ?? ''}
+                            onChange={(e) => updateScore(studentId, e.target.value)}
+                            placeholder="—"
+                            className="score-input"
+                          />
+                          <span className="dm text-[10px]" style={{ color: '#B4A490' }}>/ 100</span>
+                        </div>
                       </div>
                     </div>
                   );
@@ -590,7 +661,7 @@ export default function JournalPage() {
 
                 {/* Ledger footer rule */}
                 <div
-                  className="mx-8 mt-4 mb-6 flex items-center gap-3"
+                  className="mx-4 sm:mx-8 mt-4 mb-6 flex items-center gap-3"
                   style={{ borderTop: '1.5px solid rgba(110,88,58,0.15)' }}
                 >
                   <span className="dm text-[10px] pt-2" style={{ color: '#B4A490' }}>
