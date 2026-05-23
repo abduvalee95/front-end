@@ -527,3 +527,82 @@ details > summary { list-style: none; cursor: pointer; }
 details > summary::-webkit-details-marker { display: none; }
 details[open] .faq-icon { transform: rotate(45deg); }
 .faq-icon { transition: transform .2s ease; }
+
+/* ===== PWA / App-like mobile ===== */
+:root {
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left: env(safe-area-inset-left, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
+  --bottom-nav-h: 64px;
+}
+
+html, body {
+  overscroll-behavior-y: none;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  padding-top: var(--safe-top);
+  padding-left: var(--safe-left);
+  padding-right: var(--safe-right);
+}
+
+/* Smooth momentum scroll on iOS */
+.scroll-momentum {
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+}
+
+/* Disable text selection on UI chrome (buttons, nav, headers) */
+button, [role="button"], nav, header, aside {
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* Re-enable in form inputs */
+input, textarea, [contenteditable="true"] {
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+/* Bottom nav safe-area padding */
+.bottom-nav-safe {
+  padding-bottom: calc(var(--safe-bottom) + 8px);
+}
+
+/* Add space at the end of scrollable areas so bottom nav doesn't cover content */
+@media (max-width: 1023px) {
+  .pb-mobile-nav {
+    padding-bottom: calc(var(--bottom-nav-h) + var(--safe-bottom) + 16px);
+  }
+}
+
+/* PWA standalone-only tweaks */
+@media (display-mode: standalone) {
+  body {
+    /* Disable pull-to-refresh in standalone */
+    overscroll-behavior: none;
+  }
+}
+
+/* ===== Dashboard shell theme-aware gradient ===== */
+.dashboard-shell {
+  background: linear-gradient(to top, #f3e7e9 0%, #e3eeff 99%, #e3eeff 100%);
+}
+.dark .dashboard-shell {
+  background: linear-gradient(to top, #050914 0%, #0b1330 70%, #0b1330 100%);
+}
+
+/* ===== Sidebar theme-aware ===== */
+.dashboard-sidebar {
+  background: linear-gradient(180deg, #0f172af5, #1e3a8af5);
+  border-color: rgba(255,255,255,0.05);
+}
+.dark .dashboard-sidebar {
+  background: linear-gradient(180deg, #03081c, #060e2a);
+  border-color: rgba(255,255,255,0.04);
+}

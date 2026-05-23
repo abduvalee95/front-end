@@ -3,7 +3,7 @@
 import { useState, useMemo } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
-import { Loader2, UserPlus, X, Search, CheckSquare, Square } from 'lucide-react';
+import { Loader2, UserPlus, X, Search, CheckSquare, Square, Pencil, Check } from 'lucide-react';
 import { useAuthStore } from '@/store/auth.store';
 import {
   Dialog,
@@ -38,6 +38,10 @@ export function EnrollStudentModal({ groupId, groupName }: EnrollStudentModalPro
   const [isRemoving, setIsRemoving] = useState<string | null>(null);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [search, setSearch] = useState('');
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editFee, setEditFee] = useState<string>('');
+  const [editDiscount, setEditDiscount] = useState<string>('');
+  const [isSavingFee, setIsSavingFee] = useState(false);
   const queryClient = useQueryClient();
   const user = useAuthStore((s) => s.user);
 
@@ -101,6 +105,40 @@ export function EnrollStudentModal({ groupId, groupName }: EnrollStudentModalPro
       queryClient.invalidateQueries({ queryKey: GROUPS_KEYS.all(user?.organization_id) });
     } finally {
       setIsEnrolling(false);
+    }
+  };
+
+  const startEdit = (enrollment: Enrollment) => {
+    setEditingId(enrollment.id);
+    setEditFee(enrollment.monthly_fee ?? '');
+    setEditDiscount(enrollment.discount_amount ?? '');
+  };
+
+  const cancelEdit = () => {
+    setEditingId(null);
+    setEditFee('');
+    setEditDiscount('');
+  };
+
+  const saveEdit = async (enrollmentId: string) => {
+    const fee = Number(editFee);
+    const discount = Number(editDiscount);
+    if (Number.isNaN(fee) || fee < 0 || Number.isNaN(discount) || discount < 0) {
+      toast.error(t('invalid_fee_or_discount'));
+      return;
+    }
+    try {
+      setIsSavingFee(true);
+      await enrollmentService.update(enrollmentId, { monthly_fee: fee, discount_amount: discount });
+      toast.success(t('fee_updated'));
+      queryClient.invalidateQueries({ queryKey: ['enrollments', 'group', groupId] });
+      queryClient.invalidateQueries({ queryKey: GROUPS_KEYS.all(user?.organization_id) });
+      cancelEdit();
+    } catch (err: unknown) {
+      const error = err as { response?: { data?: { message?: string } } };
+      toast.error(error.response?.data?.message || t('fee_update_failed'));
+    } finally {
+      setIsSavingFee(false);
     }
   };
 
@@ -254,36 +292,105 @@ export function EnrollStudentModal({ groupId, groupName }: EnrollStudentModalPro
             </div>
           ) : (
             <div className="max-h-[180px] space-y-1.5 overflow-y-auto pr-1">
-              {enrollments.map((enrollment: Enrollment) => (
-                <div
-                  key={enrollment.id}
-                  className="flex items-center justify-between rounded-xl border border-border/50 bg-muted/20 px-3 py-2.5 transition-colors hover:bg-muted/40"
-                >
-                  <div className="min-w-0">
-                    <p className="truncate text-sm font-medium text-foreground">
-                      {enrollment.student?.name ?? 'Unknown'}
-                    </p>
-                    <p className="truncate text-xs text-muted-foreground">
-                      {enrollment.student?.phone ?? '—'}
-                    </p>
+              {enrollments.map((enrollment: Enrollment) => {
+                const isEditing = editingId === enrollment.id;
+                const fee = Number(enrollment.monthly_fee ?? 0);
+                const discount = Number(enrollment.discount_amount ?? 0);
+                const net = Math.max(0, fee - discount);
+                return (
+                  <div
+                    key={enrollment.id}
+                    className="rounded-xl border border-border/50 bg-muted/20 transition-colors hover:bg-muted/40"
+                  >
+                    <div className="flex items-center justify-between px-3 py-2.5">
+                      <div className="min-w-0">
+                        <p className="truncate text-sm font-medium text-foreground">
+                          {enrollment.student?.name ?? 'Unknown'}
+                        </p>
+                        <p className="truncate text-xs text-muted-foreground">
+                          {enrollment.student?.phone ?? '—'}
+                        </p>
+                        {(fee > 0 || discount > 0) && !isEditing && (
+                          <p className="mt-1 text-[10.5px] font-semibold tabular-nums text-muted-foreground/80">
+                            {fee > 0 ? `${new Intl.NumberFormat('ru-RU').format(net)} сом` : '—'}
+                            {discount > 0 && (
+                              <span className="ml-1 text-amber-600 dark:text-amber-400">
+                                ({t('discount_short')} {new Intl.NumberFormat('ru-RU').format(discount)})
+                              </span>
+                            )}
+                          </p>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Badge variant="outline" className="rounded-full text-[10px] px-2 py-0.5">
+                          {enrollment.student?.status ?? 'N/A'}
+                        </Badge>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="size-7 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted"
+                          onClick={() => (isEditing ? cancelEdit() : startEdit(enrollment))}
+                          title={t('edit_fee_discount')}
+                        >
+                          {isEditing ? <X className="size-3.5" /> : <Pencil className="size-3.5" />}
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="size-7 rounded-lg text-destructive/70 hover:text-destructive hover:bg-destructive/10"
+                          disabled={isRemoving === enrollment.id}
+                          onClick={() => handleRemove(enrollment.id)}
+                          title={t('remove_from_group')}
+                        >
+                          {isRemoving === enrollment.id ? <Loader2 className="size-3 animate-spin" /> : <X className="size-3.5" />}
+                        </Button>
+                      </div>
+                    </div>
+                    {isEditing && (
+                      <div className="border-t border-border/40 px-3 py-2.5 bg-background/50">
+                        <div className="flex flex-wrap items-end gap-2">
+                          <div className="flex-1 min-w-[110px]">
+                            <Label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                              {t('monthly_fee')}
+                            </Label>
+                            <Input
+                              type="number"
+                              min={0}
+                              step={100}
+                              value={editFee}
+                              onChange={(e) => setEditFee(e.target.value)}
+                              className="mt-1 h-8 text-sm rounded-lg"
+                              placeholder="3000"
+                            />
+                          </div>
+                          <div className="flex-1 min-w-[110px]">
+                            <Label className="text-[10px] font-bold uppercase tracking-wider text-amber-700 dark:text-amber-400">
+                              {t('discount')}
+                            </Label>
+                            <Input
+                              type="number"
+                              min={0}
+                              step={100}
+                              value={editDiscount}
+                              onChange={(e) => setEditDiscount(e.target.value)}
+                              className="mt-1 h-8 text-sm rounded-lg"
+                              placeholder="0"
+                            />
+                          </div>
+                          <Button
+                            size="sm"
+                            className="h-8 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white"
+                            disabled={isSavingFee}
+                            onClick={() => saveEdit(enrollment.id)}
+                          >
+                            {isSavingFee ? <Loader2 className="size-3.5 animate-spin" /> : <><Check className="mr-1 size-3.5" />{tCommon('save')}</>}
+                          </Button>
+                        </div>
+                      </div>
+                    )}
                   </div>
-                  <div className="flex items-center gap-2">
-                    <Badge variant="outline" className="rounded-full text-[10px] px-2 py-0.5">
-                      {enrollment.student?.status ?? 'N/A'}
-                    </Badge>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="size-7 rounded-lg text-destructive/70 hover:text-destructive hover:bg-destructive/10"
-                      disabled={isRemoving === enrollment.id}
-                      onClick={() => handleRemove(enrollment.id)}
-                      title={t('remove_from_group')}
-                    >
-                      {isRemoving === enrollment.id ? <Loader2 className="size-3 animate-spin" /> : <X className="size-3.5" />}
-                    </Button>
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </div>

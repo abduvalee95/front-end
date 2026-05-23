@@ -101,20 +101,22 @@ interface LineChartWrapperProps {
 export function LineChartWrapper({ data, lines, yFormatter }: LineChartWrapperProps) {
   return (
     <LineChart data={data}>
-      <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" opacity={0.4} />
-      <XAxis dataKey="x" stroke="var(--muted-foreground)" fontSize={11} />
+      <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.4} />
+      <XAxis dataKey="x" stroke="hsl(var(--muted-foreground))" fontSize={11} />
       <YAxis
-        stroke="var(--muted-foreground)"
+        stroke="hsl(var(--muted-foreground))"
         fontSize={11}
         tickFormatter={yFormatter}
         width={60}
       />
       <Tooltip
+        cursor={{ fill: 'hsl(var(--muted))' }}
         contentStyle={{
-          background: 'var(--card)',
-          border: '1px solid var(--border)',
+          background: 'hsl(var(--popover))',
+          border: '1px solid hsl(var(--border))',
           borderRadius: 8,
           fontSize: 12,
+          color: 'hsl(var(--popover-foreground))',
         }}
         formatter={(v: unknown) => (yFormatter && typeof v === 'number' ? yFormatter(v) : String(v))}
       />
@@ -150,15 +152,17 @@ export function AreaChartWrapper({ data, lines, yFormatter }: LineChartWrapperPr
           );
         })}
       </defs>
-      <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" opacity={0.4} />
-      <XAxis dataKey="x" stroke="var(--muted-foreground)" fontSize={11} />
-      <YAxis stroke="var(--muted-foreground)" fontSize={11} tickFormatter={yFormatter} width={60} />
+      <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.4} />
+      <XAxis dataKey="x" stroke="hsl(var(--muted-foreground))" fontSize={11} />
+      <YAxis stroke="hsl(var(--muted-foreground))" fontSize={11} tickFormatter={yFormatter} width={60} />
       <Tooltip
+        cursor={{ fill: 'hsl(var(--muted))' }}
         contentStyle={{
-          background: 'var(--card)',
-          border: '1px solid var(--border)',
+          background: 'hsl(var(--popover))',
+          border: '1px solid hsl(var(--border))',
           borderRadius: 8,
           fontSize: 12,
+          color: 'hsl(var(--popover-foreground))',
         }}
         formatter={(v: unknown) => (yFormatter && typeof v === 'number' ? yFormatter(v) : String(v))}
       />
@@ -200,24 +204,26 @@ export function BarChartWrapper({
 }) {
   return (
     <BarChart data={data} layout={horizontal ? 'vertical' : 'horizontal'}>
-      <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" opacity={0.4} />
+      <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.4} />
       {horizontal ? (
         <>
-          <XAxis type="number" stroke="var(--muted-foreground)" fontSize={11} tickFormatter={yFormatter} />
-          <YAxis type="category" dataKey="x" stroke="var(--muted-foreground)" fontSize={11} width={110} />
+          <XAxis type="number" stroke="hsl(var(--muted-foreground))" fontSize={11} tickFormatter={yFormatter} />
+          <YAxis type="category" dataKey="x" stroke="hsl(var(--muted-foreground))" fontSize={11} width={110} />
         </>
       ) : (
         <>
-          <XAxis dataKey="x" stroke="var(--muted-foreground)" fontSize={11} />
-          <YAxis stroke="var(--muted-foreground)" fontSize={11} tickFormatter={yFormatter} width={60} />
+          <XAxis dataKey="x" stroke="hsl(var(--muted-foreground))" fontSize={11} />
+          <YAxis stroke="hsl(var(--muted-foreground))" fontSize={11} tickFormatter={yFormatter} width={60} />
         </>
       )}
       <Tooltip
+        cursor={{ fill: 'hsl(var(--muted))' }}
         contentStyle={{
-          background: 'var(--card)',
-          border: '1px solid var(--border)',
+          background: 'hsl(var(--popover))',
+          border: '1px solid hsl(var(--border))',
           borderRadius: 8,
           fontSize: 12,
+          color: 'hsl(var(--popover-foreground))',
         }}
         formatter={(v: unknown) => (yFormatter && typeof v === 'number' ? yFormatter(v) : String(v))}
       />
@@ -257,10 +263,11 @@ export function DonutChartWrapper({
       </Pie>
       <Tooltip
         contentStyle={{
-          background: 'var(--card)',
-          border: '1px solid var(--border)',
+          background: 'hsl(var(--popover))',
+          border: '1px solid hsl(var(--border))',
           borderRadius: 8,
           fontSize: 12,
+          color: 'hsl(var(--popover-foreground))',
         }}
       />
       <Legend

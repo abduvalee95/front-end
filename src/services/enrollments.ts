@@ -6,6 +6,13 @@ const ENROLLMENT_URL = 'proxy/enrollment';
 export interface CreateEnrollmentPayload {
   student_id: string;
   group_id: string;
+  monthly_fee?: number;
+  discount_amount?: number;
+}
+
+export interface UpdateEnrollmentPayload {
+  monthly_fee?: number;
+  discount_amount?: number;
 }
 
 export const enrollmentService = {
@@ -21,6 +28,11 @@ export const enrollmentService = {
 
   async create(data: CreateEnrollmentPayload): Promise<Enrollment> {
     const response = await api.post<Enrollment>(ENROLLMENT_URL, data);
+    return response.data;
+  },
+
+  async update(id: string, data: UpdateEnrollmentPayload): Promise<Enrollment> {
+    const response = await api.patch<Enrollment>(`${ENROLLMENT_URL}/${id}`, data);
     return response.data;
   },
 

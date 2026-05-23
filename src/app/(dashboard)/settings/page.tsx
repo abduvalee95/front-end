@@ -2,15 +2,17 @@
 
 import { useState } from 'react';
 import { useTranslations } from '@/i18n/index';
-import { 
-  User, 
-  Building2, 
-  Globe, 
-  ShieldCheck, 
-  Palette, 
-  Settings, 
-  ChevronRight, 
-  Loader2 
+import {
+  User,
+  Building2,
+  Globe,
+  ShieldCheck,
+  Palette,
+  Settings,
+  ChevronRight,
+  Loader2,
+  Users,
+  Plus,
 } from 'lucide-react';
 import { useOrganizationSettings, useUpdateOrganizationSettings, useUploadOrganizationLogo } from '@/hooks/useOrganization';
 import { useAuthStore } from '@/store/auth.store';
@@ -18,12 +20,13 @@ import { Card, CardContent } from '@/components/ui/card';
 import { toast } from 'sonner';
 import type { OrganizationSettings } from '@/services/organization';
 
-// Import new modular tab components
 import { ProfileTab } from '@/components/settings/ProfileTab';
 import { OrganizationTab } from '@/components/settings/OrganizationTab';
 import { IntegrationsTab } from '@/components/settings/IntegrationsTab';
 import { SecurityTab } from '@/components/settings/SecurityTab';
 import { AppearanceTab } from '@/components/settings/AppearanceTab';
+import { UsersTable } from '@/components/users/UsersTable';
+import { InviteUserModal } from '@/components/users/InviteUserModal';
 
 export default function SettingsPage() {
   const t = useTranslations('settings');
@@ -33,15 +36,19 @@ export default function SettingsPage() {
   const uploadLogo = useUploadOrganizationLogo();
   const user = useAuthStore((state) => state.user);
 
+  const canManageUsers = user?.role === 'SUPER_ADMIN' || user?.role === 'ADMIN' || user?.role === 'MANAGER';
+
   const settingsNav = [
     { id: 'profile', label: t('profile'), icon: User, desc: t('profile_desc') },
     { id: 'organization', label: t('organization'), icon: Building2, desc: t('organization_desc') },
     { id: 'integrations', label: t('integrations'), icon: Globe, desc: t('integrations_desc') },
     { id: 'security', label: t('security'), icon: ShieldCheck, desc: t('security_desc') },
     { id: 'appearance', label: t('appearance'), icon: Palette, desc: t('appearance_desc') },
+    ...(canManageUsers ? [{ id: 'users', label: t('users'), icon: Users, desc: t('users_desc') }] : []),
   ];
 
   const [activeTab, setActiveTab] = useState('profile');
+  const [inviteModalOpen, setInviteModalOpen] = useState(false);
   const [formData, setFormData] = useState<Partial<OrganizationSettings>>({});
   const [profileData, setProfileData] = useState({
     full_name: user?.full_name || '',
@@ -182,6 +189,30 @@ export default function SettingsPage() {
             )}
             {activeTab === 'security' && <SecurityTab />}
             {activeTab === 'appearance' && <AppearanceTab />}
+            {activeTab === 'users' && (
+              <div className="space-y-6">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="size-10 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center shrink-0">
+                      <Users className="size-5 text-primary" />
+                    </div>
+                    <div>
+                      <h2 className="text-xl font-bold tracking-tight">{t('users')}</h2>
+                      <p className="text-xs text-muted-foreground mt-0.5">{t('users_desc')}</p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => setInviteModalOpen(true)}
+                    className="inline-flex items-center gap-2 rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground shadow-sm hover:bg-primary/90 transition-colors"
+                  >
+                    <Plus className="size-4" />
+                    Invite User
+                  </button>
+                </div>
+                <UsersTable />
+                <InviteUserModal open={inviteModalOpen} onOpenChange={setInviteModalOpen} />
+              </div>
+            )}
           </div>
         </div>
       </div>

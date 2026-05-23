@@ -6,6 +6,7 @@
 import { api } from '@/lib/api/client';
 import { toast } from 'sonner';
 import { useAuthStore } from '@/store/auth.store';
+import { tt } from '@/lib/i18n/toast';
 import { User, MeResponse } from '@/types/auth';
 import { logger } from '@/lib/logger';
 import axios from 'axios';
@@ -62,11 +63,11 @@ export async function endSession(): Promise<void> {
     store.setLoading(true);
     await api.post('/auth/logout');
     store.clearAuth();
-    toast.success('Tizimdan muvaffaqiyatli chiqildi');
+    toast.success(tt('toasts.logout_success'));
   } catch (error) {
     logger.error('Logout error:', error);
     store.clearAuth();
-    toast.error('Logoutda xatolik, lekin profil tozalandi');
+    toast.error(tt('toasts.logout_error'));
   } finally {
     store.setLoading(false);
   }

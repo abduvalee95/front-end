@@ -57,7 +57,7 @@ export function CreateStudentModal({ open: externalOpen, onClose }: CreateStuden
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.name.trim() || !formData.phone.trim() || !formData.address.trim()) {
+    if (!formData.name.trim() || !formData.phone.trim() || !formData.address.trim() || !formData.groupId) {
       toast.error(t('fill_required'));
       return;
     }
@@ -70,9 +70,7 @@ export function CreateStudentModal({ open: externalOpen, onClose }: CreateStuden
         status: 'ACTIVE',
       });
 
-      if (groupId) {
-        await enrollmentService.create({ student_id: res.student.id, group_id: groupId });
-      }
+      await enrollmentService.create({ student_id: res.student.id, group_id: groupId });
 
       toast.success(t('created_success'));
 
@@ -159,18 +157,17 @@ export function CreateStudentModal({ open: externalOpen, onClose }: CreateStuden
           <div className="space-y-2">
             <Label className="flex items-center gap-1.5">
               <BookOpen className="size-3.5 text-muted-foreground" />
-              {t('group_optional')}
+              {t('group')} *
             </Label>
             <Select
-              value={formData.groupId || '_none_'}
-              onValueChange={(v) => setFormData((prev) => ({ ...prev, groupId: v === '_none_' ? '' : (v ?? '') }))}
+              value={formData.groupId}
+              onValueChange={(v) => setFormData((prev) => ({ ...prev, groupId: v ?? '' }))}
               disabled={isLoading}
             >
               <SelectTrigger>
                 <SelectValue placeholder={t('select_group')} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="_none_">{t('no_group')}</SelectItem>
                 {groups.map((g) => (
                   <SelectItem key={g.id} value={g.id}>
                     {g.name}

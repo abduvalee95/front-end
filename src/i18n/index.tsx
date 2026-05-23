@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, type ReactNode } from 'react';
+import { createContext, useCallback, useContext, useMemo, type ReactNode } from 'react';
 import type { Locale } from './routing';
 
 type Messages = Record<string, unknown>;
@@ -38,13 +38,17 @@ export function I18nProvider({
   messages: Messages;
   children: ReactNode;
 }) {
-  const t = (namespace: string) => (key: string, values?: Record<string, string | number>) => {
-    const raw = get(messages, `${namespace}.${key}`);
-    return values ? interpolate(raw, values) : raw;
-  };
+  const t = useCallback(
+    (namespace: string) => (key: string, values?: Record<string, string | number>) => {
+      const raw = get(messages, `${namespace}.${key}`);
+      return values ? interpolate(raw, values) : raw;
+    },
+    [messages]
+  );
 
+  const value = useMemo(() => ({ locale, messages, t }), [locale, messages, t]);
   return (
-    <I18nContext.Provider value={{ locale, messages, t }}>
+    <I18nContext.Provider value={value}>
       {children}
     </I18nContext.Provider>
   );

@@ -76,6 +76,8 @@ export interface Enrollment {
   student_id: string;
   group_id: string;
   enrolled_at: string;
+  monthly_fee?: string;
+  discount_amount?: string;
   student?: Pick<Student, 'id' | 'name' | 'phone' | 'status'>;
   group?: {
     id: string;
@@ -91,24 +93,32 @@ export interface Enrollment {
   };
 }
 
-export interface StudentDetail extends Student {
-  enrollments: {
+export interface StudentDetailEnrollment {
+  id: string;
+  group_id: string;
+  enrolled_at: string;
+  monthly_fee: string;
+  discount_amount: string;
+  billing_active: boolean;
+  group: {
     id: string;
-    group_id: string;
-    enrolled_at: string;
-    group: {
+    name: string;
+    course: {
       id: string;
-      name: string;
-      course: {
-        id: string;
-        title: string;
-      } | null;
-      teacher: {
-        id: string;
-        full_name: string;
-      } | null;
-    };
-  }[];
+      title: string;
+      price: string;
+    } | null;
+    teacher: {
+      id: string;
+      full_name: string;
+    } | null;
+  };
+}
+
+export interface StudentDetail extends Student {
+  expected_monthly_fee: string;
+  paid_current_month: string;
+  enrollments: StudentDetailEnrollment[];
 }
 
 export interface StudentStatistics {

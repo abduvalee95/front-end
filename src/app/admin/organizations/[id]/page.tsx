@@ -59,9 +59,9 @@ export default function OrganizationDetailPage() {
     return (
       <div className="flex flex-col items-center justify-center py-32 gap-4">
         <AlertCircle className="h-10 w-10 text-red-400" />
-        <p className="text-white/50 text-sm">Ma&apos;lumotlarni yuklashda xatolik</p>
+        <p className="text-white/50 text-sm">Ошибка при загрузке данных</p>
         <Button variant="outline" size="sm" onClick={() => refetch()} className="border-white/10 text-white">
-          <RefreshCw className="mr-2 h-4 w-4" /> Qayta urinish
+          <RefreshCw className="mr-2 h-4 w-4" /> Повторить
         </Button>
       </div>
     );

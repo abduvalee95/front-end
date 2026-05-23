@@ -237,40 +237,70 @@ export function FinanceWorkspace() {
   const expenseShare = totalFlow > 0 ? Math.round(((summary?.totalExpenses ?? 0) / totalFlow) * 100) : 0;
 
   return (
-    <div className="flex flex-col gap-5 p-6">
+    <Tabs defaultValue="payments" className="flex flex-col gap-5 p-6">
 
-      {/* ── Header ────────────────────────────────── */}
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <div className="flex items-center gap-2.5">
-            <div className="size-9 shrink-0 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-500 flex items-center justify-center text-white shadow-sm">
-              <Wallet className="size-4.5" />
-            </div>
-            <div>
-              <h1 className="text-[17px] font-black tracking-tight leading-none">{t('title')}</h1>
-              <p className="text-[12px] text-muted-foreground/70 font-medium mt-0.5">{t('subtitle')}</p>
+      {/* ── Header + Tabs (top strip) ─────────────── */}
+      <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <div className="flex items-center gap-2.5">
+              <div className="size-9 shrink-0 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-500 flex items-center justify-center text-white shadow-sm">
+                <Wallet className="size-4.5" />
+              </div>
+              <div>
+                <h1 className="text-[17px] font-black tracking-tight leading-none">{t('title')}</h1>
+                <p className="text-[12px] text-muted-foreground/70 font-medium mt-0.5">{t('subtitle')}</p>
+              </div>
             </div>
           </div>
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              className="rounded-xl gap-1.5 h-8 px-3.5 text-[12.5px] font-semibold border-rose-200/80 text-rose-600 hover:bg-rose-50 hover:border-rose-300 dark:border-rose-900 dark:text-rose-400 dark:hover:bg-rose-950/50"
+              onClick={() => setExpenseModalOpen(true)}
+            >
+              <TrendingDown className="size-3.5" />
+              {t('add_expense')}
+            </Button>
+            <Button
+              size="sm"
+              className="rounded-xl gap-1.5 h-8 px-3.5 text-[12.5px] font-semibold bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm"
+              onClick={() => setPaymentModalOpen(true)}
+            >
+              <Plus className="size-3.5" />
+              {t('add_payment')}
+            </Button>
+          </div>
         </div>
-        <div className="flex items-center gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            className="rounded-xl gap-1.5 h-8 px-3.5 text-[12.5px] font-semibold border-rose-200/80 text-rose-600 hover:bg-rose-50 hover:border-rose-300 dark:border-rose-900 dark:text-rose-400 dark:hover:bg-rose-950/50"
-            onClick={() => setExpenseModalOpen(true)}
+
+        {/* Modern segmented tabs at top */}
+        <TabsList className="h-12 rounded-2xl bg-muted/70 dark:bg-white/5 p-1.5 gap-1 inline-flex w-fit shadow-[0_2px_12px_rgba(15,23,42,0.04)] ring-1 ring-border/40">
+          <TabsTrigger
+            value="payments"
+            className="h-9 px-4 rounded-xl gap-2 text-[13px] font-semibold text-muted-foreground/80 hover:text-foreground hover:bg-background/50 data-active:bg-background data-active:text-foreground data-active:shadow-[0_4px_14px_rgba(15,23,42,0.08)] data-active:ring-1 data-active:ring-border/60 transition-all duration-200"
           >
-            <TrendingDown className="size-3.5" />
-            {t('add_expense')}
-          </Button>
-          <Button
-            size="sm"
-            className="rounded-xl gap-1.5 h-8 px-3.5 text-[12.5px] font-semibold bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm"
-            onClick={() => setPaymentModalOpen(true)}
+            <ReceiptText className="size-4 text-emerald-500 dark:text-emerald-400" />
+            <span>{t('payments')}</span>
+            {paymentsQuery.data?.meta.total !== undefined && (
+              <span className="inline-flex items-center justify-center min-w-[22px] h-[20px] px-1.5 rounded-full bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 text-[10.5px] font-black tabular-nums leading-none">
+                {paymentsQuery.data.meta.total}
+              </span>
+            )}
+          </TabsTrigger>
+          <TabsTrigger
+            value="expenses"
+            className="h-9 px-4 rounded-xl gap-2 text-[13px] font-semibold text-muted-foreground/80 hover:text-foreground hover:bg-background/50 data-active:bg-background data-active:text-foreground data-active:shadow-[0_4px_14px_rgba(15,23,42,0.08)] data-active:ring-1 data-active:ring-border/60 transition-all duration-200"
           >
-            <Plus className="size-3.5" />
-            {t('add_payment')}
-          </Button>
-        </div>
+            <ShoppingBag className="size-4 text-rose-500 dark:text-rose-400" />
+            <span>{t('expenses')}</span>
+            {expensesQuery.data?.meta.total !== undefined && (
+              <span className="inline-flex items-center justify-center min-w-[22px] h-[20px] px-1.5 rounded-full bg-rose-500/15 text-rose-700 dark:text-rose-300 text-[10.5px] font-black tabular-nums leading-none">
+                {expensesQuery.data.meta.total}
+              </span>
+            )}
+          </TabsTrigger>
+        </TabsList>
       </div>
 
       {/* ── Stat Cards ────────────────────────────── */}
@@ -305,38 +335,7 @@ export function FinanceWorkspace() {
         <CashflowBar income={summary.totalIncome} expenses={summary.totalExpenses} />
       )}
 
-      {/* ── Tabs ──────────────────────────────────── */}
-      <Tabs defaultValue="payments" className="space-y-3">
-        <div className="flex items-center justify-between">
-          <TabsList className="h-8 rounded-xl bg-muted/60 p-0.5 gap-0.5">
-            <TabsTrigger
-              value="payments"
-              className="h-7 rounded-[10px] px-3 text-[12px] gap-1.5 font-semibold data-[state=active]:bg-background data-[state=active]:shadow-sm"
-            >
-              <ReceiptText className="size-3" />
-              {t('payments')}
-              {paymentsQuery.data?.meta.total !== undefined && (
-                <span className="inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full bg-emerald-500/15 text-emerald-700 dark:text-emerald-400 text-[10px] font-black">
-                  {paymentsQuery.data.meta.total}
-                </span>
-              )}
-            </TabsTrigger>
-            <TabsTrigger
-              value="expenses"
-              className="h-7 rounded-[10px] px-3 text-[12px] gap-1.5 font-semibold data-[state=active]:bg-background data-[state=active]:shadow-sm"
-            >
-              <ShoppingBag className="size-3" />
-              {t('expenses')}
-              {expensesQuery.data?.meta.total !== undefined && (
-                <span className="inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full bg-rose-500/15 text-rose-700 dark:text-rose-400 text-[10px] font-black">
-                  {expensesQuery.data.meta.total}
-                </span>
-              )}
-            </TabsTrigger>
-          </TabsList>
-        </div>
-
-        {/* ── Payments Tab ──────────────────────────── */}
+      {/* ── Payments Tab ──────────────────────────── */}
         <TabsContent value="payments" className="mt-0">
           <div className="rounded-2xl border border-border/50 bg-card overflow-hidden shadow-sm">
             <Table>
@@ -512,10 +511,9 @@ export function FinanceWorkspace() {
             </Table>
           </div>
         </TabsContent>
-      </Tabs>
 
       <AddPaymentModal open={paymentModalOpen} onClose={() => setPaymentModalOpen(false)} />
       <AddExpenseModal open={expenseModalOpen} onClose={() => setExpenseModalOpen(false)} />
-    </div>
+    </Tabs>
   );
 }

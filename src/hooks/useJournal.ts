@@ -47,11 +47,11 @@ export function useUpsertJournal() {
   return useMutation({
     mutationFn: (data: CreateJournalDto) => journalService.upsertEntries(data),
     onSuccess: () => {
-      toast.success('Journal saqlandi');
+      toast.success('Журнал сохранён');
       queryClient.invalidateQueries({ queryKey: queryKeys.journal.all(orgId) });
     },
     onError: (error: unknown) => {
-      toast.error(getErrorMessage(error) || 'Saqlashda xatolik yuz berdi');
+      toast.error(getErrorMessage(error) || 'Ошибка при сохранении');
     },
   });
 }

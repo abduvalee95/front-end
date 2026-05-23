@@ -3,7 +3,6 @@
 import { useState, useMemo } from 'react';
 import { useAuthStore } from '@/store/auth.store';
 import { useTranslations } from '@/i18n/index';
-import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
 import {
   ChevronLeft,
@@ -60,7 +59,8 @@ export default function JournalPage() {
     selectedGroupId ? [selectedGroupId] : [],
     !!selectedGroupId,
   );
-  const enrollments = enrollmentResults[0]?.data ?? [];
+  const enrollmentsData = enrollmentResults[0]?.data;
+  const enrollments = useMemo(() => enrollmentsData ?? [], [enrollmentsData]);
   const enrollmentsLoading = enrollmentResults[0]?.isLoading ?? false;
 
   const { data: journalData, isLoading: journalLoading } = useJournalByGroup(
@@ -140,15 +140,108 @@ export default function JournalPage() {
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=DM+Mono:ital,wght@0,400;0,500;1,400&display=swap');
 
+        :root {
+          --journal-paper: #F4EFE4;
+          --journal-sidebar: #1C1917;
+          --journal-ink: #1A1410;
+          --journal-ink-soft: #8C7B68;
+          --journal-ink-faint: #B4A490;
+          --journal-line: rgba(110,88,58,0.10);
+          --journal-line-strong: rgba(110,88,58,0.15);
+          --journal-line-softer: rgba(110,88,58,0.08);
+          --journal-line-input: rgba(110,88,58,0.18);
+          --journal-row-hover: rgba(110,88,58,0.035);
+          --journal-row-tint: rgba(110,88,58,0.03);
+          --journal-row-tint-strong: rgba(110,88,58,0.04);
+          --journal-chip: rgba(110,88,58,0.08);
+          --journal-chip-ink: #6B5A48;
+          --journal-gold: #C4A882;
+          --journal-gold-soft: #C4B49A;
+          --journal-button: #1E2D6E;
+          --journal-button-shadow: rgba(30,45,110,0.30);
+          --journal-button-disabled-bg: rgba(110,88,58,0.10);
+          --journal-button-disabled-fg: #A09080;
+          --journal-score-active: #2D3A8C;
+          --journal-sidebar-fg: #E8DFD0;
+          --journal-sidebar-fg-dim: #5A5045;
+          --journal-sidebar-fg-fainter: #3D3530;
+          --journal-sidebar-fg-mid: #7A6B5C;
+          --journal-sidebar-border: rgba(255,255,255,0.07);
+          --journal-sidebar-border-soft: rgba(255,255,255,0.05);
+          --journal-sidebar-border-softer: rgba(255,255,255,0.06);
+          --journal-sidebar-input-bg: rgba(255,255,255,0.06);
+          --journal-sidebar-input-border: rgba(255,255,255,0.08);
+          --journal-sidebar-skel: rgba(255,255,255,0.04);
+          --journal-sidebar-chip-bg: rgba(255,255,255,0.05);
+          --journal-shell-border: rgba(110,88,58,0.12);
+          --journal-status-hover-bg: rgba(110,88,58,0.08);
+          --journal-status-hover-fg: #4A3E30;
+          --journal-status-seg-fg: #8C7B6A;
+          --journal-group-hover-fg: #D4C4A8;
+          --journal-group-hover-border: rgba(212,196,168,0.4);
+          --journal-group-hover-bg: rgba(255,255,255,0.04);
+          --journal-group-active-fg: #F4EFE4;
+          --journal-group-active-bg: rgba(255,255,255,0.06);
+          --journal-teacher-sub: #4A4038;
+          --journal-status-seg-border: rgba(110,88,58,0.12);
+          --journal-skel: rgba(110,88,58,0.10);
+        }
+        .dark {
+          --journal-paper: #0b0a08;
+          --journal-sidebar: #050505;
+          --journal-ink: #f4efe4;
+          --journal-ink-soft: #8C7B68;
+          --journal-ink-faint: #6b5c4a;
+          --journal-line: rgba(212,196,168,0.10);
+          --journal-line-strong: rgba(212,196,168,0.15);
+          --journal-line-softer: rgba(212,196,168,0.08);
+          --journal-line-input: rgba(212,196,168,0.18);
+          --journal-row-hover: rgba(212,196,168,0.04);
+          --journal-row-tint: rgba(212,196,168,0.03);
+          --journal-row-tint-strong: rgba(212,196,168,0.04);
+          --journal-chip: rgba(212,196,168,0.08);
+          --journal-chip-ink: #d4c4a8;
+          --journal-gold: #d4b890;
+          --journal-gold-soft: #C4B49A;
+          --journal-button: #2a3d8f;
+          --journal-button-shadow: rgba(42,61,143,0.40);
+          --journal-button-disabled-bg: rgba(212,196,168,0.08);
+          --journal-button-disabled-fg: #6b5c4a;
+          --journal-score-active: #3a4da0;
+          --journal-sidebar-fg: #E8DFD0;
+          --journal-sidebar-fg-dim: #6b6555;
+          --journal-sidebar-fg-fainter: #4a4438;
+          --journal-sidebar-fg-mid: #8C7B68;
+          --journal-sidebar-border: rgba(255,255,255,0.06);
+          --journal-sidebar-border-soft: rgba(255,255,255,0.04);
+          --journal-sidebar-border-softer: rgba(255,255,255,0.05);
+          --journal-sidebar-input-bg: rgba(255,255,255,0.04);
+          --journal-sidebar-input-border: rgba(255,255,255,0.06);
+          --journal-sidebar-skel: rgba(255,255,255,0.03);
+          --journal-sidebar-chip-bg: rgba(255,255,255,0.04);
+          --journal-shell-border: rgba(212,196,168,0.10);
+          --journal-status-hover-bg: rgba(212,196,168,0.08);
+          --journal-status-hover-fg: #d4c4a8;
+          --journal-status-seg-fg: #8C7B68;
+          --journal-group-hover-fg: #d4c4a8;
+          --journal-group-hover-border: rgba(212,196,168,0.4);
+          --journal-group-hover-bg: rgba(255,255,255,0.04);
+          --journal-group-active-fg: #f4efe4;
+          --journal-group-active-bg: rgba(255,255,255,0.06);
+          --journal-teacher-sub: #6b5c4a;
+          --journal-status-seg-border: rgba(212,196,168,0.12);
+          --journal-skel: rgba(212,196,168,0.08);
+        }
+
         .cg { font-family: 'Cormorant Garamond', Georgia, serif; }
         .dm { font-family: 'DM Mono', 'Courier New', monospace; }
 
         .ledger-row {
-          border-bottom: 1px solid rgba(110, 88, 58, 0.10);
+          border-bottom: 1px solid var(--journal-line);
           transition: background 0.15s ease;
         }
         .ledger-row:hover {
-          background: rgba(110, 88, 58, 0.035);
+          background: var(--journal-row-hover);
         }
         .ledger-row:last-child {
           border-bottom: none;
@@ -156,16 +249,21 @@ export default function JournalPage() {
 
         .status-seg {
           flex: 1;
-          padding: 6px 0;
-          font-size: 11px;
+          min-width: 0;
+          padding: 8px 6px;
+          font-size: 10px;
           font-weight: 600;
-          letter-spacing: 0.05em;
+          letter-spacing: 0.04em;
           text-transform: uppercase;
           border: none;
           cursor: pointer;
           transition: all 0.15s ease;
-          color: #8C7B6A;
+          color: var(--journal-status-seg-fg);
           background: transparent;
+          white-space: nowrap;
+        }
+        @media (min-width: 640px) {
+          .status-seg { font-size: 11px; padding: 6px 0; }
         }
         .status-seg:first-child { border-radius: 6px 0 0 6px; }
         .status-seg:last-child  { border-radius: 0 6px 6px 0; }
@@ -186,48 +284,28 @@ export default function JournalPage() {
           box-shadow: 0 1px 6px rgba(153,27,27,0.30);
         }
         .status-seg:hover:not(.present-active):not(.late-active):not(.absent-active) {
-          background: rgba(110, 88, 58, 0.08);
-          color: #4A3E30;
+          background: var(--journal-status-hover-bg);
+          color: var(--journal-status-hover-fg);
         }
 
-        .score-input {
-          font-family: 'DM Mono', monospace;
-          font-size: 13px;
-          font-weight: 500;
-          text-align: center;
-          border: none;
-          border-bottom: 1.5px solid rgba(110, 88, 58, 0.25);
-          border-radius: 0;
-          background: transparent;
-          padding: 4px 4px 2px;
-          width: 48px;
-          color: #1A1410;
-          outline: none;
-          transition: border-color 0.15s;
-        }
-        .score-input:focus {
-          border-bottom-color: #2D3A8C;
-          box-shadow: none;
-        }
-        .score-input::placeholder { color: #C4B49A; }
 
         .group-item {
           padding: 10px 16px;
           cursor: pointer;
           border-left: 2px solid transparent;
           transition: all 0.15s ease;
-          color: #8C7B68;
+          color: var(--journal-ink-soft);
           font-size: 13px;
         }
         .group-item:hover {
-          color: #D4C4A8;
-          border-left-color: rgba(212,196,168,0.4);
-          background: rgba(255,255,255,0.04);
+          color: var(--journal-group-hover-fg);
+          border-left-color: var(--journal-group-hover-border);
+          background: var(--journal-group-hover-bg);
         }
         .group-item.active {
-          color: #F4EFE4;
-          border-left-color: #C4A882;
-          background: rgba(255,255,255,0.06);
+          color: var(--journal-group-active-fg);
+          border-left-color: var(--journal-gold);
+          background: var(--journal-group-active-bg);
         }
 
         @keyframes ledger-in {
@@ -239,33 +317,97 @@ export default function JournalPage() {
       `}</style>
 
       <div
-        className="flex gap-0 rounded-2xl overflow-hidden shadow-xl ledger-animate"
+        className="flex flex-col lg:flex-row gap-0 rounded-2xl overflow-hidden shadow-xl ledger-animate"
         style={{
           minHeight: '78vh',
-          border: '1px solid rgba(110,88,58,0.12)',
-          background: '#F4EFE4',
+          border: '1px solid var(--journal-shell-border)',
+          background: 'var(--journal-paper)',
         }}
       >
-        {/* ── SIDEBAR ─────────────────────────────────────── */}
+        {/* ── MOBILE GROUP SELECTOR (visible <lg) ─────────── */}
+        <div
+          className="lg:hidden flex flex-col gap-2 px-4 py-3"
+          style={{ background: 'var(--journal-sidebar)', borderBottom: '1px solid var(--journal-sidebar-border)' }}
+        >
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="dm text-[10px] tracking-[0.18em] uppercase" style={{ color: 'var(--journal-sidebar-fg-dim)' }}>
+                BILIM NURU
+              </p>
+              <h2 className="cg leading-none" style={{ fontSize: '18px', fontWeight: 700, color: 'var(--journal-sidebar-fg)' }}>
+                {t('title')}
+              </h2>
+            </div>
+            {isAdmin && (
+              <span
+                className="inline-flex items-center gap-1 dm text-[9px] tracking-widest uppercase"
+                style={{ color: 'var(--journal-sidebar-fg-dim)', background: 'var(--journal-sidebar-chip-bg)', padding: '2px 6px', borderRadius: 4 }}
+              >
+                <ShieldCheck style={{ width: 9, height: 9 }} />
+                {t('admin_view')}
+              </span>
+            )}
+          </div>
+          <select
+            value={selectedGroupId}
+            onChange={(e) => setSelectedGroupId(e.target.value)}
+            disabled={groupsLoading || visibleGroups.length === 0}
+            className="w-full dm text-[12px] rounded-md px-3 py-2 outline-none"
+            style={{
+              background: 'var(--journal-sidebar-input-bg)',
+              color: 'var(--journal-sidebar-fg)',
+              border: '1px solid var(--journal-sidebar-input-border)',
+            }}
+          >
+            {visibleGroups.length === 0 ? (
+              <option value="">{tCommon('no_data')}</option>
+            ) : (
+              visibleGroups.map((g) => (
+                <option key={g.id} value={g.id} style={{ background: 'var(--journal-sidebar)' }}>
+                  {g.name}
+                </option>
+              ))
+            )}
+          </select>
+          {enrollments.length > 0 && (
+            <div className="flex items-center justify-between gap-3 pt-1">
+              {[
+                { label: t('present'), value: stats.present, dot: '#4ADE80' },
+                { label: t('late'), value: stats.late, dot: '#FB923C' },
+                { label: t('absent'), value: stats.absent, dot: '#F87171' },
+              ].map((s) => (
+                <div key={s.label} className="flex items-center gap-1.5">
+                  <span className="size-1.5 rounded-full" style={{ background: s.dot }} />
+                  <span className="text-[11px]" style={{ color: 'var(--journal-sidebar-fg-mid)' }}>{s.label}</span>
+                  <span className="cg" style={{ fontSize: '16px', fontWeight: 700, color: 'var(--journal-gold-soft)' }}>
+                    {String(s.value).padStart(2, '0')}
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* ── SIDEBAR (lg+) ───────────────────────────────── */}
         <aside
-          className="flex flex-col w-64 shrink-0"
-          style={{ background: '#1C1917', borderRight: '1px solid rgba(255,255,255,0.05)' }}
+          className="hidden lg:flex flex-col w-64 shrink-0"
+          style={{ background: 'var(--journal-sidebar)', borderRight: '1px solid var(--journal-sidebar-border-soft)' }}
         >
           {/* Sidebar header */}
-          <div className="px-5 pt-6 pb-5" style={{ borderBottom: '1px solid rgba(255,255,255,0.07)' }}>
-            <p className="dm text-[10px] tracking-[0.18em] uppercase" style={{ color: '#5A5045' }}>
+          <div className="px-5 pt-6 pb-5" style={{ borderBottom: '1px solid var(--journal-sidebar-border)' }}>
+            <p className="dm text-[10px] tracking-[0.18em] uppercase" style={{ color: 'var(--journal-sidebar-fg-dim)' }}>
               BILIM NURU
             </p>
             <h2
               className="cg mt-1 leading-none"
-              style={{ fontSize: '22px', fontWeight: 700, color: '#E8DFD0', letterSpacing: '-0.01em' }}
+              style={{ fontSize: '22px', fontWeight: 700, color: 'var(--journal-sidebar-fg)', letterSpacing: '-0.01em' }}
             >
               {t('title')}
             </h2>
             {isAdmin && (
               <span
                 className="inline-flex items-center gap-1 mt-2 dm text-[9px] tracking-widest uppercase"
-                style={{ color: '#6B6050', background: 'rgba(255,255,255,0.05)', padding: '2px 6px', borderRadius: 4 }}
+                style={{ color: 'var(--journal-sidebar-fg-dim)', background: 'var(--journal-sidebar-chip-bg)', padding: '2px 6px', borderRadius: 4 }}
               >
                 <ShieldCheck style={{ width: 9, height: 9 }} />
                 {t('admin_view')}
@@ -275,17 +417,17 @@ export default function JournalPage() {
 
           {/* Groups list */}
           <div className="flex-1 py-3 overflow-y-auto">
-            <p className="dm text-[9px] tracking-[0.18em] uppercase px-5 mb-2" style={{ color: '#3D3530' }}>
+            <p className="dm text-[9px] tracking-[0.18em] uppercase px-5 mb-2" style={{ color: 'var(--journal-sidebar-fg-fainter)' }}>
               {isTeacher ? tCommon('your_groups') : t('all_groups')}
             </p>
             {groupsLoading ? (
               <div className="px-4 space-y-2">
                 {Array.from({ length: 4 }).map((_, i) => (
-                  <div key={i} className="h-8 rounded-lg" style={{ background: 'rgba(255,255,255,0.04)' }} />
+                  <div key={i} className="h-8 rounded-lg" style={{ background: 'var(--journal-sidebar-skel)' }} />
                 ))}
               </div>
             ) : visibleGroups.length === 0 ? (
-              <p className="dm text-[11px] px-5" style={{ color: '#3D3530' }}>{tCommon('no_data')}</p>
+              <p className="dm text-[11px] px-5" style={{ color: 'var(--journal-sidebar-fg-fainter)' }}>{tCommon('no_data')}</p>
             ) : (
               visibleGroups.map((group) => (
                 <div
@@ -298,7 +440,7 @@ export default function JournalPage() {
                     <span className="truncate font-semibold">{group.name}</span>
                   </div>
                   {group.teacher && selectedGroupId !== group.id && (
-                    <p className="dm text-[10px] mt-0.5 ml-5 truncate" style={{ color: '#4A4038', opacity: 0.7 }}>
+                    <p className="dm text-[10px] mt-0.5 ml-5 truncate" style={{ color: 'var(--journal-teacher-sub)', opacity: 0.7 }}>
                       {group.teacher.full_name}
                     </p>
                   )}
@@ -309,8 +451,8 @@ export default function JournalPage() {
 
           {/* Stats block */}
           {enrollments.length > 0 && (
-            <div className="px-5 py-5" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
-              <p className="dm text-[9px] tracking-[0.18em] uppercase mb-4" style={{ color: '#3D3530' }}>
+            <div className="px-5 py-5" style={{ borderTop: '1px solid var(--journal-sidebar-border-softer)' }}>
+              <p className="dm text-[9px] tracking-[0.18em] uppercase mb-4" style={{ color: 'var(--journal-sidebar-fg-fainter)' }}>
                 {t('today')}
               </p>
               <div className="space-y-3">
@@ -322,11 +464,11 @@ export default function JournalPage() {
                   <div key={s.label} className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <span className="size-1.5 rounded-full shrink-0" style={{ background: s.dot }} />
-                      <span className="text-[12px] font-medium" style={{ color: '#7A6B5C' }}>{s.label}</span>
+                      <span className="text-[12px] font-medium" style={{ color: 'var(--journal-sidebar-fg-mid)' }}>{s.label}</span>
                     </div>
                     <span
                       className="cg"
-                      style={{ fontSize: '22px', fontWeight: 700, color: '#C4B49A', lineHeight: 1 }}
+                      style={{ fontSize: '22px', fontWeight: 700, color: 'var(--journal-gold-soft)', lineHeight: 1 }}
                     >
                       {String(s.value).padStart(2, '0')}
                     </span>
@@ -342,10 +484,10 @@ export default function JournalPage() {
 
           {/* Main header: date nav + group name + save */}
           <div
-            className="flex items-center justify-between px-8 pt-6 pb-5 shrink-0"
+            className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 px-4 sm:px-8 pt-4 sm:pt-6 pb-4 sm:pb-5 shrink-0"
             style={{
-              borderBottom: '1px solid rgba(110,88,58,0.10)',
-              background: '#F4EFE4',
+              borderBottom: '1px solid var(--journal-line)',
+              background: 'var(--journal-paper)',
             }}
           >
             {/* Date navigation */}
@@ -355,9 +497,9 @@ export default function JournalPage() {
                 className="flex items-center justify-center rounded-lg transition-all"
                 style={{
                   width: 32, height: 32,
-                  border: '1px solid rgba(110,88,58,0.15)',
-                  background: 'rgba(110,88,58,0.04)',
-                  color: '#8C7B68',
+                  border: '1px solid var(--journal-line-strong)',
+                  background: 'var(--journal-row-tint-strong)',
+                  color: 'var(--journal-ink-soft)',
                   cursor: 'pointer',
                 }}
               >
@@ -366,12 +508,12 @@ export default function JournalPage() {
 
               <div>
                 <p
-                  className="cg leading-none"
-                  style={{ fontSize: '32px', fontWeight: 700, color: '#1A1410', letterSpacing: '-0.02em' }}
+                  className="cg leading-none text-[24px] sm:text-[32px]"
+                  style={{ fontWeight: 700, color: 'var(--journal-ink)', letterSpacing: '-0.02em' }}
                 >
                   {format(currentDate, 'dd MMMM')}
                 </p>
-                <p className="dm text-[11px] mt-0.5" style={{ color: '#8C7B68' }}>
+                <p className="dm text-[11px] mt-0.5" style={{ color: 'var(--journal-ink-soft)' }}>
                   {format(currentDate, 'EEEE · yyyy')}
                 </p>
               </div>
@@ -381,9 +523,9 @@ export default function JournalPage() {
                 className="flex items-center justify-center rounded-lg transition-all"
                 style={{
                   width: 32, height: 32,
-                  border: '1px solid rgba(110,88,58,0.15)',
-                  background: 'rgba(110,88,58,0.04)',
-                  color: '#8C7B68',
+                  border: '1px solid var(--journal-line-strong)',
+                  background: 'var(--journal-row-tint-strong)',
+                  color: 'var(--journal-ink-soft)',
                   cursor: 'pointer',
                 }}
               >
@@ -392,14 +534,14 @@ export default function JournalPage() {
             </div>
 
             {/* Group name + save */}
-            <div className="flex items-center gap-4">
+            <div className="flex items-center justify-between sm:justify-end gap-4 w-full sm:w-auto">
               {selectedGroup && (
-                <div className="text-right">
-                  <p className="cg font-bold" style={{ fontSize: '18px', color: '#1A1410', lineHeight: 1.1 }}>
+                <div className="text-left sm:text-right">
+                  <p className="cg font-bold" style={{ fontSize: '18px', color: 'var(--journal-ink)', lineHeight: 1.1 }}>
                     {selectedGroup.name}
                   </p>
                   {enrollments.length > 0 && (
-                    <p className="dm text-[10px] mt-0.5" style={{ color: '#8C7B68' }}>
+                    <p className="dm text-[10px] mt-0.5" style={{ color: 'var(--journal-ink-soft)' }}>
                       {enrollments.length} {t('n_students')}
                     </p>
                   )}
@@ -416,9 +558,9 @@ export default function JournalPage() {
                   borderRadius: 8,
                   border: 'none',
                   background: !selectedGroupId || !enrollments.length
-                    ? 'rgba(110,88,58,0.10)'
-                    : '#1E2D6E',
-                  color: !selectedGroupId || !enrollments.length ? '#A09080' : '#fff',
+                    ? 'var(--journal-button-disabled-bg)'
+                    : 'var(--journal-button)',
+                  color: !selectedGroupId || !enrollments.length ? 'var(--journal-button-disabled-fg)' : '#fff',
                   fontSize: 12,
                   fontWeight: 700,
                   fontFamily: 'inherit',
@@ -427,7 +569,7 @@ export default function JournalPage() {
                   cursor: !selectedGroupId || !enrollments.length ? 'not-allowed' : 'pointer',
                   boxShadow: !selectedGroupId || !enrollments.length
                     ? 'none'
-                    : '0 4px 16px rgba(30,45,110,0.30)',
+                    : '0 4px 16px var(--journal-button-shadow)',
                   transition: 'all 0.15s ease',
                 }}
               >
@@ -437,15 +579,15 @@ export default function JournalPage() {
             </div>
           </div>
 
-          {/* Column headers */}
+          {/* Column headers (hidden on mobile) */}
           {selectedGroupId && !isLoading && enrollments.length > 0 && (
             <div
-              className="dm grid px-8 py-2.5 text-[10px] tracking-[0.14em] uppercase shrink-0"
+              className="dm hidden sm:grid px-8 py-2.5 text-[10px] tracking-[0.14em] uppercase shrink-0"
               style={{
-                gridTemplateColumns: '1fr 220px 120px',
-                borderBottom: '1px solid rgba(110,88,58,0.15)',
-                color: '#8C7B68',
-                background: 'rgba(110,88,58,0.03)',
+                gridTemplateColumns: '1fr 220px 130px',
+                borderBottom: '1px solid var(--journal-line-strong)',
+                color: 'var(--journal-ink-soft)',
+                background: 'var(--journal-row-tint)',
               }}
             >
               <span>{tCommon('student')}</span>
@@ -457,44 +599,44 @@ export default function JournalPage() {
           {/* Content area */}
           <div className="flex-1 overflow-y-auto">
             {!selectedGroupId ? (
-              <div className="flex flex-col items-center justify-center h-full" style={{ color: '#C4B49A' }}>
+              <div className="flex flex-col items-center justify-center h-full" style={{ color: 'var(--journal-gold-soft)' }}>
                 <BookOpen style={{ width: 44, height: 44, opacity: 0.25, marginBottom: 12 }} />
-                <p className="cg font-semibold" style={{ fontSize: 20, color: '#8C7B68' }}>
+                <p className="cg font-semibold" style={{ fontSize: 20, color: 'var(--journal-ink-soft)' }}>
                   {t('group')}
                 </p>
-                <p className="dm text-[11px] mt-1" style={{ color: '#B4A490' }}>
+                <p className="dm text-[11px] mt-1" style={{ color: 'var(--journal-ink-faint)' }}>
                   {t('select_group_hint')}
                 </p>
               </div>
             ) : isLoading ? (
-              <div className="px-8 py-4 space-y-0">
+              <div className="px-4 sm:px-8 py-4 space-y-0">
                 {Array.from({ length: 6 }).map((_, i) => (
                   <div
                     key={i}
-                    className="py-4 grid"
+                    className="py-4 flex flex-col gap-2 sm:grid sm:gap-0"
                     style={{
-                      gridTemplateColumns: '1fr 220px 120px',
-                      borderBottom: '1px solid rgba(110,88,58,0.08)',
+                      gridTemplateColumns: '1fr 220px 130px',
+                      borderBottom: '1px solid var(--journal-line-softer)',
                       animationDelay: `${i * 60}ms`,
                     }}
                   >
-                    <Skeleton className="h-4 w-36 rounded" style={{ background: 'rgba(110,88,58,0.10)' }} />
-                    <div className="flex justify-center">
-                      <Skeleton className="h-7 w-44 rounded-md" style={{ background: 'rgba(110,88,58,0.10)' }} />
+                    <Skeleton className="h-4 w-36 rounded" style={{ background: 'var(--journal-skel)' }} />
+                    <div className="flex sm:justify-center">
+                      <Skeleton className="h-7 w-full sm:w-44 rounded-md" style={{ background: 'var(--journal-skel)' }} />
                     </div>
-                    <div className="flex justify-center">
-                      <Skeleton className="h-5 w-12 rounded" style={{ background: 'rgba(110,88,58,0.10)' }} />
+                    <div className="flex sm:justify-center">
+                      <Skeleton className="h-5 w-12 rounded" style={{ background: 'var(--journal-skel)' }} />
                     </div>
                   </div>
                 ))}
               </div>
             ) : enrollments.length === 0 ? (
-              <div className="flex flex-col items-center justify-center h-full" style={{ color: '#C4B49A' }}>
+              <div className="flex flex-col items-center justify-center h-full" style={{ color: 'var(--journal-gold-soft)' }}>
                 <AlertCircle style={{ width: 44, height: 44, opacity: 0.25, marginBottom: 12 }} />
-                <p className="cg font-semibold" style={{ fontSize: 20, color: '#8C7B68' }}>
+                <p className="cg font-semibold" style={{ fontSize: 20, color: 'var(--journal-ink-soft)' }}>
                   {t('no_students')}
                 </p>
-                <p className="dm text-[11px] mt-1" style={{ color: '#B4A490' }}>
+                <p className="dm text-[11px] mt-1" style={{ color: 'var(--journal-ink-faint)' }}>
                   {t('enroll_first')}
                 </p>
               </div>
@@ -508,12 +650,9 @@ export default function JournalPage() {
                   return (
                     <div
                       key={studentId}
-                      className="ledger-row grid px-8"
+                      className="ledger-row flex flex-col gap-3 sm:grid sm:gap-0 px-4 sm:px-8 py-3 sm:py-3 sm:items-center"
                       style={{
-                        gridTemplateColumns: '1fr 220px 120px',
-                        alignItems: 'center',
-                        paddingTop: 12,
-                        paddingBottom: 12,
+                        gridTemplateColumns: '1fr 220px 130px',
                         animationDelay: `${idx * 25}ms`,
                       }}
                     >
@@ -524,25 +663,25 @@ export default function JournalPage() {
                           style={{
                             width: 28, height: 28,
                             borderRadius: 6,
-                            background: 'rgba(110,88,58,0.08)',
-                            color: '#6B5A48',
+                            background: 'var(--journal-chip)',
+                            color: 'var(--journal-chip-ink)',
                             fontSize: 13,
                           }}
                         >
                           {idx + 1}
                         </span>
-                        <span style={{ fontSize: 14, fontWeight: 600, color: '#1A1410' }}>{name}</span>
+                        <span style={{ fontSize: 14, fontWeight: 600, color: 'var(--journal-ink)' }}>{name}</span>
                       </div>
 
                       {/* Status segmented control */}
-                      <div className="flex justify-center">
+                      <div className="flex sm:justify-center">
                         <div
+                          className="flex w-full sm:w-auto"
                           style={{
-                            display: 'flex',
-                            border: '1px solid rgba(110,88,58,0.18)',
+                            border: '1px solid var(--journal-line-input)',
                             borderRadius: 8,
                             overflow: 'hidden',
-                            background: 'rgba(110,88,58,0.04)',
+                            background: 'var(--journal-row-tint-strong)',
                           }}
                         >
                           <button
@@ -556,7 +695,7 @@ export default function JournalPage() {
                             className={cn('status-seg', entry?.status === 'LATE' && 'late-active')}
                             onClick={() => updateStatus(studentId, 'LATE')}
                             title={t('late')}
-                            style={{ borderLeft: '1px solid rgba(110,88,58,0.12)', borderRight: '1px solid rgba(110,88,58,0.12)' }}
+                            style={{ borderLeft: '1px solid var(--journal-status-seg-border)', borderRight: '1px solid var(--journal-status-seg-border)' }}
                           >
                             ⏱ {t('late')}
                           </button>
@@ -571,17 +710,34 @@ export default function JournalPage() {
                       </div>
 
                       {/* Score */}
-                      <div className="flex items-center justify-center gap-1.5">
-                        <input
-                          type="number"
-                          min="0"
-                          max="100"
+                      <div className="flex items-center justify-between sm:justify-center gap-1.5">
+                        <span className="dm text-[10px] sm:hidden" style={{ color: 'var(--journal-ink-soft)' }}>
+                          {t('score')}
+                        </span>
+                        <select
                           value={entry?.score ?? ''}
                           onChange={(e) => updateScore(studentId, e.target.value)}
-                          placeholder="—"
-                          className="score-input"
-                        />
-                        <span className="dm text-[10px]" style={{ color: '#B4A490' }}>/ 100</span>
+                          className="dm"
+                          style={{
+                            width: 72,
+                            height: 30,
+                            borderRadius: 6,
+                            border: '1px solid var(--journal-line-input)',
+                            background: entry?.score ? 'var(--journal-score-active)' : 'var(--journal-row-tint-strong)',
+                            color: entry?.score ? '#fff' : 'var(--journal-chip-ink)',
+                            fontSize: 13,
+                            fontWeight: 600,
+                            textAlign: 'center',
+                            cursor: 'pointer',
+                            outline: 'none',
+                            transition: 'all 0.15s ease',
+                          }}
+                        >
+                          <option value="">—</option>
+                          {[10, 20, 30, 40, 50, 60, 70, 80, 90, 100].map((val) => (
+                            <option key={val} value={String(val)}>{val}</option>
+                          ))}
+                        </select>
                       </div>
                     </div>
                   );
@@ -589,10 +745,10 @@ export default function JournalPage() {
 
                 {/* Ledger footer rule */}
                 <div
-                  className="mx-8 mt-4 mb-6 flex items-center gap-3"
-                  style={{ borderTop: '1.5px solid rgba(110,88,58,0.15)' }}
+                  className="mx-4 sm:mx-8 mt-4 mb-6 flex items-center gap-3"
+                  style={{ borderTop: '1.5px solid var(--journal-line-strong)' }}
                 >
-                  <span className="dm text-[10px] pt-2" style={{ color: '#B4A490' }}>
+                  <span className="dm text-[10px] pt-2" style={{ color: 'var(--journal-ink-faint)' }}>
                     {enrollments.length} {t('n_students')} · {format(currentDate, 'dd.MM.yyyy')}
                   </span>
                 </div>

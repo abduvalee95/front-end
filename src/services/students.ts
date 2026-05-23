@@ -6,6 +6,7 @@ import type {
   GroupSummary,
   PaginatedStudentsResponse,
   Student,
+  StudentDetail,
   StudentQueryParams,
   StudentStatistics,
 } from '@/types/student';
@@ -32,6 +33,11 @@ export const studentService = {
 
   async getStudentById(id: string): Promise<Student> {
     const response = await api.get<Student>(`${STUDENTS_BASE_URL}/${id}`);
+    return response.data;
+  },
+
+  async getStudentDetail(id: string): Promise<StudentDetail> {
+    const response = await api.get<StudentDetail>(`${STUDENTS_BASE_URL}/${id}/detail`);
     return response.data;
   },
 
