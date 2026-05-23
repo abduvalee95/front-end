@@ -92,13 +92,12 @@ export function DashboardSidebar() {
   const { data: orgSettings } = useOrganizationSettings();
 
   return (
-    <aside 
+    <aside
       className={cn(
-        "relative z-20 flex h-screen flex-col border-r border-white/5 shadow-2xl transition-all duration-500 ease-in-out",
-        "text-white backdrop-blur-md", 
+        "dashboard-sidebar relative z-20 flex h-screen flex-col border-r shadow-2xl transition-all duration-500 ease-in-out",
+        "text-white backdrop-blur-md",
         isCollapsed ? "w-[80px]" : "w-[260px]"
       )}
-      style={{ background: 'linear-gradient(180deg, #0f172af5, #1e3a8af5)' }}
     >
       {/* Sidebar Toggle Button */}
       <button 

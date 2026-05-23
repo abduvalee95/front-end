@@ -15,12 +15,9 @@ export default function DashboardLayout({
     <SessionProvider>
       <DateRangeProvider>
         <AuthGuard>
-          <div
-            className="flex h-screen overflow-hidden relative"
-            style={{ background: 'linear-gradient(to top, #f3e7e9 0%, #e3eeff 99%, #e3eeff 100%)' }}
-          >
-            {/* Soft blue glow matching the image */}
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 size-[600px] bg-blue-300/20 rounded-full blur-[120px] pointer-events-none" />
+          <div className="dashboard-shell flex h-screen overflow-hidden relative bg-background">
+            {/* Soft glow — adapts to theme */}
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 size-[600px] rounded-full blur-[120px] pointer-events-none bg-blue-300/20 dark:bg-cyan-500/10" />
 
             {/* Sidebar — desktop only */}
             <div className="hidden lg:flex">

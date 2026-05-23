@@ -588,3 +588,21 @@ input, textarea, [contenteditable="true"] {
     overscroll-behavior: none;
   }
 }
+
+/* ===== Dashboard shell theme-aware gradient ===== */
+.dashboard-shell {
+  background: linear-gradient(to top, #f3e7e9 0%, #e3eeff 99%, #e3eeff 100%);
+}
+.dark .dashboard-shell {
+  background: linear-gradient(to top, #050914 0%, #0b1330 70%, #0b1330 100%);
+}
+
+/* ===== Sidebar theme-aware ===== */
+.dashboard-sidebar {
+  background: linear-gradient(180deg, #0f172af5, #1e3a8af5);
+  border-color: rgba(255,255,255,0.05);
+}
+.dark .dashboard-sidebar {
+  background: linear-gradient(180deg, #03081c, #060e2a);
+  border-color: rgba(255,255,255,0.04);
+}

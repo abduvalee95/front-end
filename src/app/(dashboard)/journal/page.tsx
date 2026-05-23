@@ -140,15 +140,108 @@ export default function JournalPage() {
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=DM+Mono:ital,wght@0,400;0,500;1,400&display=swap');
 
+        :root {
+          --journal-paper: #F4EFE4;
+          --journal-sidebar: #1C1917;
+          --journal-ink: #1A1410;
+          --journal-ink-soft: #8C7B68;
+          --journal-ink-faint: #B4A490;
+          --journal-line: rgba(110,88,58,0.10);
+          --journal-line-strong: rgba(110,88,58,0.15);
+          --journal-line-softer: rgba(110,88,58,0.08);
+          --journal-line-input: rgba(110,88,58,0.18);
+          --journal-row-hover: rgba(110,88,58,0.035);
+          --journal-row-tint: rgba(110,88,58,0.03);
+          --journal-row-tint-strong: rgba(110,88,58,0.04);
+          --journal-chip: rgba(110,88,58,0.08);
+          --journal-chip-ink: #6B5A48;
+          --journal-gold: #C4A882;
+          --journal-gold-soft: #C4B49A;
+          --journal-button: #1E2D6E;
+          --journal-button-shadow: rgba(30,45,110,0.30);
+          --journal-button-disabled-bg: rgba(110,88,58,0.10);
+          --journal-button-disabled-fg: #A09080;
+          --journal-score-active: #2D3A8C;
+          --journal-sidebar-fg: #E8DFD0;
+          --journal-sidebar-fg-dim: #5A5045;
+          --journal-sidebar-fg-fainter: #3D3530;
+          --journal-sidebar-fg-mid: #7A6B5C;
+          --journal-sidebar-border: rgba(255,255,255,0.07);
+          --journal-sidebar-border-soft: rgba(255,255,255,0.05);
+          --journal-sidebar-border-softer: rgba(255,255,255,0.06);
+          --journal-sidebar-input-bg: rgba(255,255,255,0.06);
+          --journal-sidebar-input-border: rgba(255,255,255,0.08);
+          --journal-sidebar-skel: rgba(255,255,255,0.04);
+          --journal-sidebar-chip-bg: rgba(255,255,255,0.05);
+          --journal-shell-border: rgba(110,88,58,0.12);
+          --journal-status-hover-bg: rgba(110,88,58,0.08);
+          --journal-status-hover-fg: #4A3E30;
+          --journal-status-seg-fg: #8C7B6A;
+          --journal-group-hover-fg: #D4C4A8;
+          --journal-group-hover-border: rgba(212,196,168,0.4);
+          --journal-group-hover-bg: rgba(255,255,255,0.04);
+          --journal-group-active-fg: #F4EFE4;
+          --journal-group-active-bg: rgba(255,255,255,0.06);
+          --journal-teacher-sub: #4A4038;
+          --journal-status-seg-border: rgba(110,88,58,0.12);
+          --journal-skel: rgba(110,88,58,0.10);
+        }
+        .dark {
+          --journal-paper: #0b0a08;
+          --journal-sidebar: #050505;
+          --journal-ink: #f4efe4;
+          --journal-ink-soft: #8C7B68;
+          --journal-ink-faint: #6b5c4a;
+          --journal-line: rgba(212,196,168,0.10);
+          --journal-line-strong: rgba(212,196,168,0.15);
+          --journal-line-softer: rgba(212,196,168,0.08);
+          --journal-line-input: rgba(212,196,168,0.18);
+          --journal-row-hover: rgba(212,196,168,0.04);
+          --journal-row-tint: rgba(212,196,168,0.03);
+          --journal-row-tint-strong: rgba(212,196,168,0.04);
+          --journal-chip: rgba(212,196,168,0.08);
+          --journal-chip-ink: #d4c4a8;
+          --journal-gold: #d4b890;
+          --journal-gold-soft: #C4B49A;
+          --journal-button: #2a3d8f;
+          --journal-button-shadow: rgba(42,61,143,0.40);
+          --journal-button-disabled-bg: rgba(212,196,168,0.08);
+          --journal-button-disabled-fg: #6b5c4a;
+          --journal-score-active: #3a4da0;
+          --journal-sidebar-fg: #E8DFD0;
+          --journal-sidebar-fg-dim: #6b6555;
+          --journal-sidebar-fg-fainter: #4a4438;
+          --journal-sidebar-fg-mid: #8C7B68;
+          --journal-sidebar-border: rgba(255,255,255,0.06);
+          --journal-sidebar-border-soft: rgba(255,255,255,0.04);
+          --journal-sidebar-border-softer: rgba(255,255,255,0.05);
+          --journal-sidebar-input-bg: rgba(255,255,255,0.04);
+          --journal-sidebar-input-border: rgba(255,255,255,0.06);
+          --journal-sidebar-skel: rgba(255,255,255,0.03);
+          --journal-sidebar-chip-bg: rgba(255,255,255,0.04);
+          --journal-shell-border: rgba(212,196,168,0.10);
+          --journal-status-hover-bg: rgba(212,196,168,0.08);
+          --journal-status-hover-fg: #d4c4a8;
+          --journal-status-seg-fg: #8C7B68;
+          --journal-group-hover-fg: #d4c4a8;
+          --journal-group-hover-border: rgba(212,196,168,0.4);
+          --journal-group-hover-bg: rgba(255,255,255,0.04);
+          --journal-group-active-fg: #f4efe4;
+          --journal-group-active-bg: rgba(255,255,255,0.06);
+          --journal-teacher-sub: #6b5c4a;
+          --journal-status-seg-border: rgba(212,196,168,0.12);
+          --journal-skel: rgba(212,196,168,0.08);
+        }
+
         .cg { font-family: 'Cormorant Garamond', Georgia, serif; }
         .dm { font-family: 'DM Mono', 'Courier New', monospace; }
 
         .ledger-row {
-          border-bottom: 1px solid rgba(110, 88, 58, 0.10);
+          border-bottom: 1px solid var(--journal-line);
           transition: background 0.15s ease;
         }
         .ledger-row:hover {
-          background: rgba(110, 88, 58, 0.035);
+          background: var(--journal-row-hover);
         }
         .ledger-row:last-child {
           border-bottom: none;
@@ -165,7 +258,7 @@ export default function JournalPage() {
           border: none;
           cursor: pointer;
           transition: all 0.15s ease;
-          color: #8C7B6A;
+          color: var(--journal-status-seg-fg);
           background: transparent;
           white-space: nowrap;
         }
@@ -191,8 +284,8 @@ export default function JournalPage() {
           box-shadow: 0 1px 6px rgba(153,27,27,0.30);
         }
         .status-seg:hover:not(.present-active):not(.late-active):not(.absent-active) {
-          background: rgba(110, 88, 58, 0.08);
-          color: #4A3E30;
+          background: var(--journal-status-hover-bg);
+          color: var(--journal-status-hover-fg);
         }
 
 
@@ -201,18 +294,18 @@ export default function JournalPage() {
           cursor: pointer;
           border-left: 2px solid transparent;
           transition: all 0.15s ease;
-          color: #8C7B68;
+          color: var(--journal-ink-soft);
           font-size: 13px;
         }
         .group-item:hover {
-          color: #D4C4A8;
-          border-left-color: rgba(212,196,168,0.4);
-          background: rgba(255,255,255,0.04);
+          color: var(--journal-group-hover-fg);
+          border-left-color: var(--journal-group-hover-border);
+          background: var(--journal-group-hover-bg);
         }
         .group-item.active {
-          color: #F4EFE4;
-          border-left-color: #C4A882;
-          background: rgba(255,255,255,0.06);
+          color: var(--journal-group-active-fg);
+          border-left-color: var(--journal-gold);
+          background: var(--journal-group-active-bg);
         }
 
         @keyframes ledger-in {
@@ -227,28 +320,28 @@ export default function JournalPage() {
         className="flex flex-col lg:flex-row gap-0 rounded-2xl overflow-hidden shadow-xl ledger-animate"
         style={{
           minHeight: '78vh',
-          border: '1px solid rgba(110,88,58,0.12)',
-          background: '#F4EFE4',
+          border: '1px solid var(--journal-shell-border)',
+          background: 'var(--journal-paper)',
         }}
       >
         {/* ── MOBILE GROUP SELECTOR (visible <lg) ─────────── */}
         <div
           className="lg:hidden flex flex-col gap-2 px-4 py-3"
-          style={{ background: '#1C1917', borderBottom: '1px solid rgba(255,255,255,0.07)' }}
+          style={{ background: 'var(--journal-sidebar)', borderBottom: '1px solid var(--journal-sidebar-border)' }}
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className="dm text-[10px] tracking-[0.18em] uppercase" style={{ color: '#5A5045' }}>
+              <p className="dm text-[10px] tracking-[0.18em] uppercase" style={{ color: 'var(--journal-sidebar-fg-dim)' }}>
                 BILIM NURU
               </p>
-              <h2 className="cg leading-none" style={{ fontSize: '18px', fontWeight: 700, color: '#E8DFD0' }}>
+              <h2 className="cg leading-none" style={{ fontSize: '18px', fontWeight: 700, color: 'var(--journal-sidebar-fg)' }}>
                 {t('title')}
               </h2>
             </div>
             {isAdmin && (
               <span
                 className="inline-flex items-center gap-1 dm text-[9px] tracking-widest uppercase"
-                style={{ color: '#6B6050', background: 'rgba(255,255,255,0.05)', padding: '2px 6px', borderRadius: 4 }}
+                style={{ color: 'var(--journal-sidebar-fg-dim)', background: 'var(--journal-sidebar-chip-bg)', padding: '2px 6px', borderRadius: 4 }}
               >
                 <ShieldCheck style={{ width: 9, height: 9 }} />
                 {t('admin_view')}
@@ -261,16 +354,16 @@ export default function JournalPage() {
             disabled={groupsLoading || visibleGroups.length === 0}
             className="w-full dm text-[12px] rounded-md px-3 py-2 outline-none"
             style={{
-              background: 'rgba(255,255,255,0.06)',
-              color: '#E8DFD0',
-              border: '1px solid rgba(255,255,255,0.08)',
+              background: 'var(--journal-sidebar-input-bg)',
+              color: 'var(--journal-sidebar-fg)',
+              border: '1px solid var(--journal-sidebar-input-border)',
             }}
           >
             {visibleGroups.length === 0 ? (
               <option value="">{tCommon('no_data')}</option>
             ) : (
               visibleGroups.map((g) => (
-                <option key={g.id} value={g.id} style={{ background: '#1C1917' }}>
+                <option key={g.id} value={g.id} style={{ background: 'var(--journal-sidebar)' }}>
                   {g.name}
                 </option>
               ))
@@ -285,8 +378,8 @@ export default function JournalPage() {
               ].map((s) => (
                 <div key={s.label} className="flex items-center gap-1.5">
                   <span className="size-1.5 rounded-full" style={{ background: s.dot }} />
-                  <span className="text-[11px]" style={{ color: '#7A6B5C' }}>{s.label}</span>
-                  <span className="cg" style={{ fontSize: '16px', fontWeight: 700, color: '#C4B49A' }}>
+                  <span className="text-[11px]" style={{ color: 'var(--journal-sidebar-fg-mid)' }}>{s.label}</span>
+                  <span className="cg" style={{ fontSize: '16px', fontWeight: 700, color: 'var(--journal-gold-soft)' }}>
                     {String(s.value).padStart(2, '0')}
                   </span>
                 </div>
@@ -298,23 +391,23 @@ export default function JournalPage() {
         {/* ── SIDEBAR (lg+) ───────────────────────────────── */}
         <aside
           className="hidden lg:flex flex-col w-64 shrink-0"
-          style={{ background: '#1C1917', borderRight: '1px solid rgba(255,255,255,0.05)' }}
+          style={{ background: 'var(--journal-sidebar)', borderRight: '1px solid var(--journal-sidebar-border-soft)' }}
         >
           {/* Sidebar header */}
-          <div className="px-5 pt-6 pb-5" style={{ borderBottom: '1px solid rgba(255,255,255,0.07)' }}>
-            <p className="dm text-[10px] tracking-[0.18em] uppercase" style={{ color: '#5A5045' }}>
+          <div className="px-5 pt-6 pb-5" style={{ borderBottom: '1px solid var(--journal-sidebar-border)' }}>
+            <p className="dm text-[10px] tracking-[0.18em] uppercase" style={{ color: 'var(--journal-sidebar-fg-dim)' }}>
               BILIM NURU
             </p>
             <h2
               className="cg mt-1 leading-none"
-              style={{ fontSize: '22px', fontWeight: 700, color: '#E8DFD0', letterSpacing: '-0.01em' }}
+              style={{ fontSize: '22px', fontWeight: 700, color: 'var(--journal-sidebar-fg)', letterSpacing: '-0.01em' }}
             >
               {t('title')}
             </h2>
             {isAdmin && (
               <span
                 className="inline-flex items-center gap-1 mt-2 dm text-[9px] tracking-widest uppercase"
-                style={{ color: '#6B6050', background: 'rgba(255,255,255,0.05)', padding: '2px 6px', borderRadius: 4 }}
+                style={{ color: 'var(--journal-sidebar-fg-dim)', background: 'var(--journal-sidebar-chip-bg)', padding: '2px 6px', borderRadius: 4 }}
               >
                 <ShieldCheck style={{ width: 9, height: 9 }} />
                 {t('admin_view')}
@@ -324,17 +417,17 @@ export default function JournalPage() {
 
           {/* Groups list */}
           <div className="flex-1 py-3 overflow-y-auto">
-            <p className="dm text-[9px] tracking-[0.18em] uppercase px-5 mb-2" style={{ color: '#3D3530' }}>
+            <p className="dm text-[9px] tracking-[0.18em] uppercase px-5 mb-2" style={{ color: 'var(--journal-sidebar-fg-fainter)' }}>
               {isTeacher ? tCommon('your_groups') : t('all_groups')}
             </p>
             {groupsLoading ? (
               <div className="px-4 space-y-2">
                 {Array.from({ length: 4 }).map((_, i) => (
-                  <div key={i} className="h-8 rounded-lg" style={{ background: 'rgba(255,255,255,0.04)' }} />
+                  <div key={i} className="h-8 rounded-lg" style={{ background: 'var(--journal-sidebar-skel)' }} />
                 ))}
               </div>
             ) : visibleGroups.length === 0 ? (
-              <p className="dm text-[11px] px-5" style={{ color: '#3D3530' }}>{tCommon('no_data')}</p>
+              <p className="dm text-[11px] px-5" style={{ color: 'var(--journal-sidebar-fg-fainter)' }}>{tCommon('no_data')}</p>
             ) : (
               visibleGroups.map((group) => (
                 <div
@@ -347,7 +440,7 @@ export default function JournalPage() {
                     <span className="truncate font-semibold">{group.name}</span>
                   </div>
                   {group.teacher && selectedGroupId !== group.id && (
-                    <p className="dm text-[10px] mt-0.5 ml-5 truncate" style={{ color: '#4A4038', opacity: 0.7 }}>
+                    <p className="dm text-[10px] mt-0.5 ml-5 truncate" style={{ color: 'var(--journal-teacher-sub)', opacity: 0.7 }}>
                       {group.teacher.full_name}
                     </p>
                   )}
@@ -358,8 +451,8 @@ export default function JournalPage() {
 
           {/* Stats block */}
           {enrollments.length > 0 && (
-            <div className="px-5 py-5" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
-              <p className="dm text-[9px] tracking-[0.18em] uppercase mb-4" style={{ color: '#3D3530' }}>
+            <div className="px-5 py-5" style={{ borderTop: '1px solid var(--journal-sidebar-border-softer)' }}>
+              <p className="dm text-[9px] tracking-[0.18em] uppercase mb-4" style={{ color: 'var(--journal-sidebar-fg-fainter)' }}>
                 {t('today')}
               </p>
               <div className="space-y-3">
@@ -371,11 +464,11 @@ export default function JournalPage() {
                   <div key={s.label} className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <span className="size-1.5 rounded-full shrink-0" style={{ background: s.dot }} />
-                      <span className="text-[12px] font-medium" style={{ color: '#7A6B5C' }}>{s.label}</span>
+                      <span className="text-[12px] font-medium" style={{ color: 'var(--journal-sidebar-fg-mid)' }}>{s.label}</span>
                     </div>
                     <span
                       className="cg"
-                      style={{ fontSize: '22px', fontWeight: 700, color: '#C4B49A', lineHeight: 1 }}
+                      style={{ fontSize: '22px', fontWeight: 700, color: 'var(--journal-gold-soft)', lineHeight: 1 }}
                     >
                       {String(s.value).padStart(2, '0')}
                     </span>
