@@ -599,12 +599,12 @@ export default function JournalPage() {
           {/* Content area */}
           <div className="flex-1 overflow-y-auto">
             {!selectedGroupId ? (
-              <div className="flex flex-col items-center justify-center h-full" style={{ color: '#C4B49A' }}>
+              <div className="flex flex-col items-center justify-center h-full" style={{ color: 'var(--journal-gold-soft)' }}>
                 <BookOpen style={{ width: 44, height: 44, opacity: 0.25, marginBottom: 12 }} />
-                <p className="cg font-semibold" style={{ fontSize: 20, color: '#8C7B68' }}>
+                <p className="cg font-semibold" style={{ fontSize: 20, color: 'var(--journal-ink-soft)' }}>
                   {t('group')}
                 </p>
-                <p className="dm text-[11px] mt-1" style={{ color: '#B4A490' }}>
+                <p className="dm text-[11px] mt-1" style={{ color: 'var(--journal-ink-faint)' }}>
                   {t('select_group_hint')}
                 </p>
               </div>
@@ -616,27 +616,27 @@ export default function JournalPage() {
                     className="py-4 flex flex-col gap-2 sm:grid sm:gap-0"
                     style={{
                       gridTemplateColumns: '1fr 220px 130px',
-                      borderBottom: '1px solid rgba(110,88,58,0.08)',
+                      borderBottom: '1px solid var(--journal-line-softer)',
                       animationDelay: `${i * 60}ms`,
                     }}
                   >
-                    <Skeleton className="h-4 w-36 rounded" style={{ background: 'rgba(110,88,58,0.10)' }} />
+                    <Skeleton className="h-4 w-36 rounded" style={{ background: 'var(--journal-skel)' }} />
                     <div className="flex sm:justify-center">
-                      <Skeleton className="h-7 w-full sm:w-44 rounded-md" style={{ background: 'rgba(110,88,58,0.10)' }} />
+                      <Skeleton className="h-7 w-full sm:w-44 rounded-md" style={{ background: 'var(--journal-skel)' }} />
                     </div>
                     <div className="flex sm:justify-center">
-                      <Skeleton className="h-5 w-12 rounded" style={{ background: 'rgba(110,88,58,0.10)' }} />
+                      <Skeleton className="h-5 w-12 rounded" style={{ background: 'var(--journal-skel)' }} />
                     </div>
                   </div>
                 ))}
               </div>
             ) : enrollments.length === 0 ? (
-              <div className="flex flex-col items-center justify-center h-full" style={{ color: '#C4B49A' }}>
+              <div className="flex flex-col items-center justify-center h-full" style={{ color: 'var(--journal-gold-soft)' }}>
                 <AlertCircle style={{ width: 44, height: 44, opacity: 0.25, marginBottom: 12 }} />
-                <p className="cg font-semibold" style={{ fontSize: 20, color: '#8C7B68' }}>
+                <p className="cg font-semibold" style={{ fontSize: 20, color: 'var(--journal-ink-soft)' }}>
                   {t('no_students')}
                 </p>
-                <p className="dm text-[11px] mt-1" style={{ color: '#B4A490' }}>
+                <p className="dm text-[11px] mt-1" style={{ color: 'var(--journal-ink-faint)' }}>
                   {t('enroll_first')}
                 </p>
               </div>
@@ -663,14 +663,14 @@ export default function JournalPage() {
                           style={{
                             width: 28, height: 28,
                             borderRadius: 6,
-                            background: 'rgba(110,88,58,0.08)',
-                            color: '#6B5A48',
+                            background: 'var(--journal-chip)',
+                            color: 'var(--journal-chip-ink)',
                             fontSize: 13,
                           }}
                         >
                           {idx + 1}
                         </span>
-                        <span style={{ fontSize: 14, fontWeight: 600, color: '#1A1410' }}>{name}</span>
+                        <span style={{ fontSize: 14, fontWeight: 600, color: 'var(--journal-ink)' }}>{name}</span>
                       </div>
 
                       {/* Status segmented control */}
@@ -678,10 +678,10 @@ export default function JournalPage() {
                         <div
                           className="flex w-full sm:w-auto"
                           style={{
-                            border: '1px solid rgba(110,88,58,0.18)',
+                            border: '1px solid var(--journal-line-input)',
                             borderRadius: 8,
                             overflow: 'hidden',
-                            background: 'rgba(110,88,58,0.04)',
+                            background: 'var(--journal-row-tint-strong)',
                           }}
                         >
                           <button
@@ -695,7 +695,7 @@ export default function JournalPage() {
                             className={cn('status-seg', entry?.status === 'LATE' && 'late-active')}
                             onClick={() => updateStatus(studentId, 'LATE')}
                             title={t('late')}
-                            style={{ borderLeft: '1px solid rgba(110,88,58,0.12)', borderRight: '1px solid rgba(110,88,58,0.12)' }}
+                            style={{ borderLeft: '1px solid var(--journal-status-seg-border)', borderRight: '1px solid var(--journal-status-seg-border)' }}
                           >
                             ⏱ {t('late')}
                           </button>
@@ -711,7 +711,7 @@ export default function JournalPage() {
 
                       {/* Score */}
                       <div className="flex items-center justify-between sm:justify-center gap-1.5">
-                        <span className="dm text-[10px] sm:hidden" style={{ color: '#8C7B68' }}>
+                        <span className="dm text-[10px] sm:hidden" style={{ color: 'var(--journal-ink-soft)' }}>
                           {t('score')}
                         </span>
                         <select
@@ -722,9 +722,9 @@ export default function JournalPage() {
                             width: 72,
                             height: 30,
                             borderRadius: 6,
-                            border: '1px solid rgba(110,88,58,0.18)',
-                            background: entry?.score ? '#2D3A8C' : 'rgba(110,88,58,0.04)',
-                            color: entry?.score ? '#fff' : '#6B5A48',
+                            border: '1px solid var(--journal-line-input)',
+                            background: entry?.score ? 'var(--journal-score-active)' : 'var(--journal-row-tint-strong)',
+                            color: entry?.score ? '#fff' : 'var(--journal-chip-ink)',
                             fontSize: 13,
                             fontWeight: 600,
                             textAlign: 'center',
@@ -746,9 +746,9 @@ export default function JournalPage() {
                 {/* Ledger footer rule */}
                 <div
                   className="mx-4 sm:mx-8 mt-4 mb-6 flex items-center gap-3"
-                  style={{ borderTop: '1.5px solid rgba(110,88,58,0.15)' }}
+                  style={{ borderTop: '1.5px solid var(--journal-line-strong)' }}
                 >
-                  <span className="dm text-[10px] pt-2" style={{ color: '#B4A490' }}>
+                  <span className="dm text-[10px] pt-2" style={{ color: 'var(--journal-ink-faint)' }}>
                     {enrollments.length} {t('n_students')} · {format(currentDate, 'dd.MM.yyyy')}
                   </span>
                 </div>
