@@ -461,7 +461,7 @@
     "add_new_educational_program": "Сиздин уюмуңузга жаңы билим берүү программасын кошуңуз.",
     "course_title_placeholder": "Мисалы: Толук стек веб-иштеп чыгуу",
     "course_description_placeholder": "Студенттер эмнени окушу керектигинин кыскача сүрөттөмөсү...",
-    "price_placeholder": "Мисалы: 500000",
+    "price_placeholder": "Мисалы: 500",
     "create_course": "Курс түзүү",
     "creating": "Түзүлүүдө...",
     "title_price_required": "Курстун аты жана баасы талап кылынуучу талаалар",
@@ -588,7 +588,7 @@
     "status_pending": "Күтүлүүдө",
     "record_new_payment": "Окуучунун жаңы төлөмүн жазыңыз.",
     "record_organization_expense": "Уюмдун чыгашасын жазыңыз.",
-    "amount_placeholder": "500000",
+    "amount_placeholder": "500",
     "description_placeholder": "мисалы: Январь окутуусу",
     "expense_description_placeholder": "мисалы: Май айынын офис иджарасы",
     "method_cash": "Нак акча",
@@ -1100,6 +1100,12 @@
     "error_failed": "катталоо ийгиликсиз болду",
     "error_remove": "Топтон алып салуу ийгиликсиз болду",
     "remove_confirm": "Бул окуучуну топтон алып салуу керекпи?"
+  },
+  "notFound": {
+    "code": "404",
+    "title": "Барак табылган жок",
+    "description": "Сиз издеген барак жок же башка жерге көчүрүлгөн.",
+    "back": "Башкы бетке кайтуу"
   },
   "toasts": {
     "session_expired": "Сессиянын мөөнөтү бүттү. Кайра кириңиз.",

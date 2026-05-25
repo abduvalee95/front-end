@@ -164,13 +164,13 @@ export function EditTeacherModal({ teacher, onClose }: EditTeacherModalProps) {
                     type="number"
                     value={fixedSalary ?? ''}
                     onChange={(e) => setFixedSalary(e.target.value ? Number(e.target.value) : undefined)}
-                    placeholder="3000000"
+                    placeholder="300"
                   />
                 </Field>
               )}
               {salaryType === 'HOURLY' && (
                 <Field label={t('hourly_rate_label')}>
-                  <Input type="number" step="1000" {...register('hourly_rate')} placeholder="50000" />
+                  <Input type="number" step="1000" {...register('hourly_rate')} placeholder="500" />
                 </Field>
               )}
               {salaryType === 'GROUP_PERCENT' && (

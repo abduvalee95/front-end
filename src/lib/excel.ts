@@ -1,7 +1,8 @@
-import * as XLSX from 'xlsx';
-
 /**
- * Excel Utility for parsing and exporting data
+ * Excel utilities (parse + export).
+ *
+ * xlsx is heavy (~500KB). Loaded dynamically only when actually used —
+ * keeps it out of the initial bundle.
  */
 
 export interface ExcelParseResult<T> {
@@ -10,13 +11,15 @@ export interface ExcelParseResult<T> {
 }
 
 /**
- * Parse an Excel file into an array of objects with validation
+ * Parse Excel file into array of objects with validation.
  */
 export async function parseExcelFile<T>(
   file: File,
   columnMapping: Record<string, keyof T>,
-  requiredFields: Array<keyof T> = []
+  requiredFields: Array<keyof T> = [],
 ): Promise<ExcelParseResult<T>> {
+  const XLSX = await import('xlsx');
+
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
 
@@ -26,38 +29,37 @@ export async function parseExcelFile<T>(
         const workbook = XLSX.read(data, { type: 'binary' });
         const firstSheetName = workbook.SheetNames[0];
         const worksheet = workbook.Sheets[firstSheetName];
-        
+
         const rawData = XLSX.utils.sheet_to_json<Record<string, unknown>>(worksheet);
-        
+
         const result: T[] = [];
         const errors: Array<{ row: number; column: string; message: string }> = [];
 
         rawData.forEach((row, index) => {
           const item: Partial<T> = {};
-          const rowIndex = index + 2; // +2 because Excel is 1-indexed and has a header row
+          const rowIndex = index + 2; // +2: Excel is 1-indexed and has a header row
 
           Object.entries(columnMapping).forEach(([excelColumn, objectKey]) => {
             const value = row[excelColumn];
             item[objectKey] = value as T[keyof T];
 
-            // Check if required field is missing
             if (requiredFields.includes(objectKey) && (value === undefined || value === null || value === '')) {
               errors.push({
                 row: rowIndex,
                 column: excelColumn,
-                message: `Required field "${excelColumn}" is missing or empty.`
+                message: `Required field "${excelColumn}" is missing or empty.`,
               });
             }
           });
 
-          // Basic phone validation example if needed
+          // Basic phone validation
           if (item['phone' as keyof T]) {
             const phoneStr = String(item['phone' as keyof T]);
             if (phoneStr.length < 5) {
               errors.push({
                 row: rowIndex,
                 column: 'Phone',
-                message: 'Invalid phone number format.'
+                message: 'Invalid phone number format.',
               });
             }
           }
@@ -77,9 +79,10 @@ export async function parseExcelFile<T>(
 }
 
 /**
- * Export data to Excel
+ * Export data to Excel file.
  */
-export function exportToExcel<T>(data: T[], fileName: string) {
+export async function exportToExcel<T>(data: T[], fileName: string) {
+  const XLSX = await import('xlsx');
   const worksheet = XLSX.utils.json_to_sheet(data);
   const workbook = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(workbook, worksheet, 'Data');

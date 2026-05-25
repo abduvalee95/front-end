@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { logger } from '@/lib/logger';
 import { getRoleFromToken } from '@/lib/auth/jwt';
+import { BACKEND_URL } from '@/lib/server-env';
 
 export default function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -14,11 +15,10 @@ export default function middleware(request: NextRequest) {
       requestHeaders.set('Authorization', `Bearer ${accessToken}`);
     }
 
-    const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
     const targetPath = pathname.replace(/^\/api\/proxy/, '');
 
     // Backend has a global `/api` prefix (NestJS setGlobalPrefix('api'))
-    const targetUrl = `${backendUrl.replace(/\/$/, '')}/api${targetPath}${request.nextUrl.search}`;
+    const targetUrl = `${BACKEND_URL.replace(/\/$/, '')}/api${targetPath}${request.nextUrl.search}`;
 
     logger.debug(`[Proxy] ${request.method} ${pathname} -> ${targetUrl}`);
 

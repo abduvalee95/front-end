@@ -485,7 +485,7 @@
     "add_new_educational_program": "Добавьте новую образовательную программу в вашу организацию.",
     "course_title_placeholder": "Например: Полнофункциональная веб-разработка",
     "course_description_placeholder": "Краткое описание того, что будут изучать студенты...",
-    "price_placeholder": "Например: 500000",
+    "price_placeholder": "Например: 500",
     "create_course": "Создать курс",
     "creating": "Создание...",
     "title_price_required": "Название и цена курса являются обязательными полями",
@@ -612,7 +612,7 @@
     "status_pending": "В ожидании",
     "record_new_payment": "Запишите новый платеж студента.",
     "record_organization_expense": "Запишите расход организации.",
-    "amount_placeholder": "500000",
+    "amount_placeholder": "500",
     "description_placeholder": "Например: Январское обучение",
     "expense_description_placeholder": "Например: Аренда офиса на май",
     "method_cash": "Наличные",
@@ -1147,6 +1147,12 @@
     "error_failed": "зачисление не удалось",
     "error_remove": "Не удалось удалить из группы",
     "remove_confirm": "Удалить этого студента из группы?"
+  },
+  "notFound": {
+    "code": "404",
+    "title": "Страница не найдена",
+    "description": "Запрашиваемая страница не существует или была перемещена.",
+    "back": "Вернуться на главную"
   },
   "toasts": {
     "session_expired": "Сессия истекла. Войдите снова.",

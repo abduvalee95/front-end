@@ -15,10 +15,14 @@ export const queryKeys = {
   // Dashboard
   dashboard: {
     all: (orgId: string | undefined) => ['dashboard', orgId] as const,
-    summary: (orgId: string | undefined, from: string, to: string) => 
-      [...queryKeys.dashboard.all(orgId), 'summary', { from, to }] as const,
-    charts: (orgId: string | undefined, from: string, to: string) => 
-      [...queryKeys.dashboard.all(orgId), 'charts', { from, to }] as const,
+    summary: (orgId: string | undefined, query?: Record<string, unknown>) =>
+      [...queryKeys.dashboard.all(orgId), 'summary', query] as const,
+    leadsByStatus: (orgId: string | undefined, query?: Record<string, unknown>) =>
+      [...queryKeys.dashboard.all(orgId), 'leads-by-status', query] as const,
+    paymentsByMethod: (orgId: string | undefined, query?: Record<string, unknown>) =>
+      [...queryKeys.dashboard.all(orgId), 'payments-by-method', query] as const,
+    paymentsByDay: (orgId: string | undefined, query?: Record<string, unknown>) =>
+      [...queryKeys.dashboard.all(orgId), 'payments-by-day', query] as const,
   },
   
   // Leads
@@ -74,11 +78,13 @@ export const queryKeys = {
   // Finance
   finance: {
     all: (orgId: string | undefined) => ['finance', orgId] as const,
-    payments: (orgId: string | undefined, from: string, to: string) => 
-      [...queryKeys.finance.all(orgId), 'payments', { from, to }] as const,
-    expenses: (orgId: string | undefined, from: string, to: string) => 
-      [...queryKeys.finance.all(orgId), 'expenses', { from, to }] as const,
-    invoices: (orgId: string | undefined, status?: string) => 
+    payments: (orgId: string | undefined, filters?: Record<string, unknown>) =>
+      [...queryKeys.finance.all(orgId), 'payments', filters] as const,
+    expenses: (orgId: string | undefined, filters?: Record<string, unknown>) =>
+      [...queryKeys.finance.all(orgId), 'expenses', filters] as const,
+    summary: (orgId: string | undefined, from?: string, to?: string) =>
+      [...queryKeys.finance.all(orgId), 'summary', { from, to }] as const,
+    invoices: (orgId: string | undefined, status?: string) =>
       [...queryKeys.finance.all(orgId), 'invoices', { status }] as const,
   }
 };

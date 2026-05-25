@@ -23,6 +23,7 @@ import {
 import { parseExcelFile } from '@/lib/excel';
 import { toast } from 'sonner';
 import { Upload, FileSpreadsheet, CheckCircle2, Loader2, XCircle } from 'lucide-react';
+import { logger } from '@/lib/logger';
 
 
 interface BulkImportDialogProps<T> {
@@ -78,7 +79,7 @@ export function BulkImportDialog<T extends Record<string, unknown>>({
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : t('excel_parse_error');
       toast.error(message);
-      console.error(err);
+      logger.error('[BulkImport] parse error', err);
     } finally {
       setIsParsing(false);
     }

@@ -542,7 +542,7 @@
     "add_new_educational_program": "Tashkilotingizga yangi ta'lim dasturini qo'shing.",
     "course_title_placeholder": "Masalan: To'liq stack veb-ishlab chiqish",
     "course_description_placeholder": "O'quvchilar nima o'rganishini qisqacha tavsiflang...",
-    "price_placeholder": "Masalan: 500000",
+    "price_placeholder": "Masalan: 500",
     "create_course": "Kurs yaratish",
     "creating": "Yaratilmoqda...",
     "title_price_required": "Kurs nomi va narxi majburiy maydonlar",
@@ -669,7 +669,7 @@
     "status_pending": "Kutilmoqda",
     "record_new_payment": "O'quvchining yangi to'lovini qayd qiling.",
     "record_organization_expense": "Tashkilot xarajatini qayd qiling.",
-    "amount_placeholder": "500000",
+    "amount_placeholder": "500",
     "description_placeholder": "Masalan: Yanvar tuition",
     "expense_description_placeholder": "Masalan: May oyining ofis ijarasi",
     "method_cash": "Naqd pul",
@@ -1127,6 +1127,12 @@
     "existing_subjects": "Mavjud predmetlar",
     "new_subject": "Yangi predmet",
     "add_subject_name": "\"{name}\" qo'shish"
+  },
+  "notFound": {
+    "code": "404",
+    "title": "Sahifa topilmadi",
+    "description": "Siz qidirayotgan sahifa mavjud emas yoki ko'chirilgan.",
+    "back": "Boshqaruv paneliga qaytish"
   },
   "toasts": {
     "session_expired": "Sessiya muddati tugadi. Qaytadan kiring.",

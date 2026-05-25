@@ -485,7 +485,7 @@
     "add_new_educational_program": "Add a new educational program to your organization.",
     "course_title_placeholder": "E.g. Full-Stack Web Development",
     "course_description_placeholder": "Brief overview of what students will learn...",
-    "price_placeholder": "E.g. 500000",
+    "price_placeholder": "E.g. 500",
     "create_course": "Create Course",
     "creating": "Creating...",
     "title_price_required": "Title and Price are required fields",
@@ -612,7 +612,7 @@
     "status_pending": "Pending",
     "record_new_payment": "Record a new student payment.",
     "record_organization_expense": "Record an organization expense.",
-    "amount_placeholder": "500000",
+    "amount_placeholder": "500",
     "description_placeholder": "e.g. January tuition",
     "expense_description_placeholder": "e.g. Office rent for May",
     "method_cash": "Cash",
@@ -1146,6 +1146,12 @@
     "error_failed": "enrollment(s) failed",
     "error_remove": "Failed to remove from group",
     "remove_confirm": "Remove this student from the group?"
+  },
+  "notFound": {
+    "code": "404",
+    "title": "Page not found",
+    "description": "The page you are looking for doesn't exist or has been moved.",
+    "back": "Back to dashboard"
   },
   "toasts": {
     "session_expired": "Session expired. Please log in again.",
