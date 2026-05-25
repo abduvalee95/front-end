@@ -3,7 +3,7 @@
 import { useState, useMemo } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
-import { BookOpen, Loader2, Plus, UsersRound } from 'lucide-react';
+import { BookOpen, Loader2, Plus, UsersRound, Percent } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -20,6 +20,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { studentService } from '@/services/students';
 import { enrollmentService } from '@/services/enrollments';
 import { useGroups } from '@/hooks/useGroups';
+import { useCourses } from '@/hooks/useCourses';
 import { queryKeys } from '@/lib/api/query-keys';
 import { useAuthStore } from '@/store/auth.store';
 import { getErrorMessage } from '@/lib/api/client';
@@ -50,10 +51,32 @@ export function CreateStudentModal({ open: externalOpen, onClose }: CreateStuden
     address: '',
     parent: '',
     groupId: '',
+    discount: '',
   });
 
   const { data: groupsData } = useGroups(open);
   const groups = useMemo(() => groupsData ?? [], [groupsData]);
+  const { data: coursesData } = useCourses(open);
+  const courses = useMemo(() => coursesData ?? [], [coursesData]);
+
+  const selectedGroup = useMemo(
+    () => groups.find((g) => g.id === formData.groupId),
+    [groups, formData.groupId],
+  );
+  const selectedCourse = useMemo(
+    () => courses.find((c) => c.id === selectedGroup?.course_id),
+    [courses, selectedGroup?.course_id],
+  );
+  const coursePrice = useMemo(
+    () => Number(selectedCourse?.price ?? 0),
+    [selectedCourse?.price],
+  );
+  const discountNumber = useMemo(() => {
+    const n = Number(formData.discount);
+    return Number.isFinite(n) && n > 0 ? n : 0;
+  }, [formData.discount]);
+  const netPrice = Math.max(coursePrice - discountNumber, 0);
+  const discountInvalid = discountNumber > coursePrice && coursePrice > 0;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -61,16 +84,25 @@ export function CreateStudentModal({ open: externalOpen, onClose }: CreateStuden
       toast.error(t('fill_required'));
       return;
     }
+    if (discountInvalid) {
+      toast.error(t('discount_too_high'));
+      return;
+    }
 
     try {
       setIsLoading(true);
-      const { groupId, ...studentData } = formData;
+      const { groupId, discount, ...studentData } = formData;
+      void discount;
       const res = await studentService.createStudent({
         ...studentData,
         status: 'ACTIVE',
       });
 
-      await enrollmentService.create({ student_id: res.student.id, group_id: groupId });
+      await enrollmentService.create({
+        student_id: res.student.id,
+        group_id: groupId,
+        ...(discountNumber > 0 ? { discount_amount: discountNumber } : {}),
+      });
 
       toast.success(t('created_success'));
 
@@ -78,7 +110,7 @@ export function CreateStudentModal({ open: externalOpen, onClose }: CreateStuden
         toast.info(`${t('temp_password')}: ${res.temporaryPassword}`, { duration: 10000 });
       }
 
-      setFormData({ name: '', phone: '', address: '', parent: '', groupId: '' });
+      setFormData({ name: '', phone: '', address: '', parent: '', groupId: '', discount: '' });
       setOpen(false);
 
       queryClient.invalidateQueries({ queryKey: queryKeys.students.all(orgId) });
@@ -177,6 +209,49 @@ export function CreateStudentModal({ open: externalOpen, onClose }: CreateStuden
               </SelectContent>
             </Select>
           </div>
+          {selectedGroup && (
+            <div className="rounded-xl border border-border bg-muted/40 p-3 space-y-3">
+              <div className="space-y-2">
+                <Label htmlFor="discount" className="flex items-center gap-1.5">
+                  <Percent className="size-3.5 text-muted-foreground" />
+                  {t('discount')}
+                </Label>
+                <Input
+                  id="discount"
+                  type="number"
+                  min="0"
+                  step="any"
+                  inputMode="decimal"
+                  placeholder="0"
+                  value={formData.discount}
+                  onChange={(e) => setFormData((prev) => ({ ...prev, discount: e.target.value }))}
+                  disabled={isLoading}
+                  aria-invalid={discountInvalid}
+                />
+                <p className={`text-[11px] ${discountInvalid ? 'text-destructive' : 'text-muted-foreground'}`}>
+                  {discountInvalid ? t('discount_too_high') : t('discount_hint')}
+                </p>
+              </div>
+              {coursePrice > 0 && (
+                <div className="flex flex-col gap-1 text-xs">
+                  <div className="flex items-center justify-between text-muted-foreground">
+                    <span>{t('course_price')}</span>
+                    <span className="tabular-nums">{coursePrice.toLocaleString()} сом</span>
+                  </div>
+                  {discountNumber > 0 && (
+                    <div className="flex items-center justify-between text-muted-foreground">
+                      <span>{t('discount')}</span>
+                      <span className="tabular-nums">- {discountNumber.toLocaleString()} сом</span>
+                    </div>
+                  )}
+                  <div className="flex items-center justify-between font-semibold text-foreground pt-1 border-t border-border">
+                    <span>{t('net_price')}</span>
+                    <span className="tabular-nums">{netPrice.toLocaleString()} сом</span>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
           <DialogFooter>
             <Button
               type="button"
