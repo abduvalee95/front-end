@@ -730,7 +730,7 @@ export default function AttendancePage() {
                                 fontSize: 12,
                                 color: 'var(--att-ink)',
                               }}
-                              formatter={(v: number) => [`${v}%`, t('attendance_rate')]}
+                              formatter={(v) => [`${Number(v) || 0}%`, t('attendance_rate')]}
                             />
                             <Area
                               type="monotone"
