@@ -98,7 +98,7 @@ export function AddExpenseModal({ open, onClose }: AddExpenseModalProps) {
               <Input
                 type="number"
                 min="0"
-                step="1000"
+                step="1"
                 placeholder={t('amount_placeholder')}
                 className="rounded-xl"
                 {...register('amount', { required: true, min: 1 })}
