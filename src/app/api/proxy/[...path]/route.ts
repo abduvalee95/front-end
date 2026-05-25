@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
-
-const BACKEND = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+import { BACKEND_URL as BACKEND } from '@/lib/server-env';
 
 async function handler(req: NextRequest, { params }: { params: Promise<{ path: string[] }> }) {
   const { path } = await params;

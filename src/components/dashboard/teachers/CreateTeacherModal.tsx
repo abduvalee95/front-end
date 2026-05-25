@@ -192,7 +192,7 @@ export function CreateTeacherModal({ open, onClose }: CreateTeacherModalProps) {
                   type="number"
                   value={fixedSalary ?? ''}
                   onChange={(e) => setFixedSalary(e.target.value ? Number(e.target.value) : undefined)}
-                  placeholder="3000000"
+                  placeholder="300"
                 />
               </Field>
             )}
@@ -201,7 +201,7 @@ export function CreateTeacherModal({ open, onClose }: CreateTeacherModalProps) {
                 <Input
                   type="number"
                   {...register('hourly_rate')}
-                  placeholder="50000"
+                  placeholder="500"
                   step="1000"
                 />
               </Field>

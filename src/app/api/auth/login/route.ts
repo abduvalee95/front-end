@@ -11,6 +11,7 @@ import {
   REFRESH_COOKIE_OPTIONS,
 } from '@/lib/auth/token-config';
 import { serverLogger } from '@/lib/logger';
+import { BACKEND_URL } from '@/lib/server-env';
 
 export async function POST(request: NextRequest) {
   try {
@@ -25,10 +26,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
-    
     // Forward login request to backend (uses phone, not email)
-    const response = await fetch(`${backendUrl}/api/auth/login`, {
+    const response = await fetch(`${BACKEND_URL}/api/auth/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ phone, password, remember_me }),

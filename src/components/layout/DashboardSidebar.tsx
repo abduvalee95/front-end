@@ -57,8 +57,8 @@ const NAV_GROUPS: { groupKey: string; items: NavItem[] }[] = [
   {
     groupKey: 'group_academic',
     items: [
-      { key: 'attendance', href: '/attendance', icon: ClipboardCheck, roles: null, comingSoon: true },
-      { key: 'schedule',   href: '/schedule',   icon: Calendar,       roles: null, comingSoon: true },
+      { key: 'attendance', href: '/attendance', icon: ClipboardCheck, roles: null },
+      { key: 'schedule',   href: '/schedule',   icon: Calendar,       roles: null },
     ]
   },
   {

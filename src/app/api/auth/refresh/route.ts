@@ -12,6 +12,7 @@ import {
   CLEAR_COOKIE_OPTIONS,
 } from '@/lib/auth/token-config';
 import { serverLogger } from '@/lib/logger';
+import { BACKEND_URL } from '@/lib/server-env';
 
 export async function POST(request: NextRequest) {
   try {
@@ -24,9 +25,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
-    
-    const response = await fetch(`${backendUrl}/api/auth/refresh`, {
+    const response = await fetch(`${BACKEND_URL}/api/auth/refresh`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ refreshToken }),

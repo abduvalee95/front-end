@@ -7,6 +7,7 @@ import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios';
 import { toast } from 'sonner';
 import { useAuthStore } from '@/store/auth.store';
 import { tt } from '@/lib/i18n/toast';
+import { logger } from '@/lib/logger';
 
 // All API calls go through the Next.js proxy to handle cookies securely
 const API_URL = '/api/';
@@ -62,9 +63,9 @@ api.interceptors.response.use(
     if (config._startTime) {
       const duration = Date.now() - config._startTime;
       if (duration > 1000) {
-        console.warn(`[API Performance] SLOW REQUEST: ${config.method?.toUpperCase()} ${config.url} took ${duration}ms`);
+        logger.warn(`[API Performance] SLOW REQUEST: ${config.method?.toUpperCase()} ${config.url} took ${duration}ms`);
       } else {
-        console.debug(`[API Performance] ${config.method?.toUpperCase()} ${config.url} took ${duration}ms`);
+        logger.debug(`[API Performance] ${config.method?.toUpperCase()} ${config.url} took ${duration}ms`);
       }
     }
     return response;
@@ -73,7 +74,7 @@ api.interceptors.response.use(
     const config = error.config as InternalAxiosRequestConfig & { _startTime?: number };
     if (config?._startTime) {
       const duration = Date.now() - config._startTime;
-      console.error(`[API Error] ${config.method?.toUpperCase()} ${config.url} failed after ${duration}ms`);
+      logger.error(`[API Error] ${config.method?.toUpperCase()} ${config.url} failed after ${duration}ms`);
     }
     const originalRequest = error.config as InternalAxiosRequestConfig & { _retry?: boolean };
 

@@ -4,7 +4,7 @@ import { BottomNav } from "@/components/layout/BottomNav";
 import { SessionProvider } from "@/components/auth/SessionProvider";
 import { AuthGuard } from "@/components/auth/AuthGuard";
 import { DateRangeProvider } from "@/hooks/useAnalytics";
-import { AICopilot } from "@/components/ai/AICopilot";
+import { AICopilot } from "@/components/ai/AICopilotLazy";
 
 export default function DashboardLayout({
   children,

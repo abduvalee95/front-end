@@ -7,16 +7,16 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { TOKEN_CONFIG, CLEAR_COOKIE_OPTIONS } from '@/lib/auth/token-config';
 import { serverLogger } from '@/lib/logger';
+import { BACKEND_URL } from '@/lib/server-env';
 
 export async function POST(request: NextRequest) {
   try {
-    const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
     const accessToken = request.cookies.get(TOKEN_CONFIG.access.cookieName)?.value;
 
     // Optional: Tell backend to invalidate the session
     if (accessToken) {
       try {
-        await fetch(`${backendUrl}/api/auth/logout`, {
+        await fetch(`${BACKEND_URL}/api/auth/logout`, {
           method: 'POST',
           headers: {
             Authorization: `Bearer ${accessToken}`,

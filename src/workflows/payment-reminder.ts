@@ -1,14 +1,14 @@
 import { sleep, FatalError, RetryableError } from 'workflow';
 import type { Invoice } from '@/types/analytics';
+import { BACKEND_URL } from '@/lib/server-env';
 
 // ── Step: fetch overdue invoices from backend ────────────────────────
 async function fetchOverdueInvoices(): Promise<Invoice[]> {
   'use step';
 
-  const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
   const apiKey = process.env.WORKFLOW_API_SECRET;
 
-  const res = await fetch(`${backendUrl}/api/billing/invoices?status=OVERDUE&limit=100`, {
+  const res = await fetch(`${BACKEND_URL}/api/billing/invoices?status=OVERDUE&limit=100`, {
     headers: {
       'Content-Type': 'application/json',
       ...(apiKey ? { 'x-api-key': apiKey } : {}),
