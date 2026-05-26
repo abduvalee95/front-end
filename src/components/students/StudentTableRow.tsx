@@ -76,8 +76,28 @@ export function StudentTableRow({ student, index, teacherScoped, canManageScope,
           {student.status === 'ACTIVE' ? t('status_active') : t('status_inactive')}
         </span>
       </TableCell>
-      <TableCell className="text-xs text-muted-foreground max-w-[160px]">
-        <span className="truncate block">{student.parent || <span className="text-border">—</span>}</span>
+      <TableCell>
+        {student.paymentStatus === 'paid' && (
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-0.5 text-[11px] font-bold text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-300">
+            <span className="size-1.5 rounded-full bg-emerald-500" />
+            {t('pay_paid')}
+          </span>
+        )}
+        {student.paymentStatus === 'partial' && (
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-50 px-2.5 py-0.5 text-[11px] font-bold text-amber-700 dark:bg-amber-500/10 dark:text-amber-300">
+            <span className="size-1.5 rounded-full bg-amber-500" />
+            {t('pay_partial')}
+          </span>
+        )}
+        {student.paymentStatus === 'unpaid' && (
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-rose-50 px-2.5 py-0.5 text-[11px] font-bold text-rose-700 dark:bg-rose-500/10 dark:text-rose-300">
+            <span className="size-1.5 rounded-full bg-rose-500" />
+            {t('pay_unpaid')}
+          </span>
+        )}
+        {student.paymentStatus === 'unknown' && (
+          <span className="text-muted-foreground/40 text-xs">—</span>
+        )}
       </TableCell>
       <TableCell className="max-w-[200px] text-xs text-muted-foreground">
         <div>

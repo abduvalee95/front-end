@@ -6,7 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { useTranslations } from '@/i18n/index';
 import { cn } from '@/lib/utils';
 import type { StudentStatus } from '@/types/student';
-import type { ViewMode } from './types';
+import type { ViewMode, PaymentStatus } from './types';
 
 interface TeacherOption {
   id: string;
@@ -20,6 +20,8 @@ interface StudentsFiltersProps {
   onClearSearch: () => void;
   statusFilter: StudentStatus | '';
   onStatusChange: (status: StudentStatus | '') => void;
+  paymentFilter: PaymentStatus | '';
+  onPaymentFilterChange: (status: PaymentStatus | '') => void;
   effectiveViewMode: ViewMode;
   onViewModeChange: (mode: ViewMode) => void;
   selectedTeacherId: string;
@@ -36,6 +38,8 @@ export function StudentsFilters({
   onClearSearch,
   statusFilter,
   onStatusChange,
+  paymentFilter,
+  onPaymentFilterChange,
   effectiveViewMode,
   onViewModeChange,
   selectedTeacherId,
@@ -95,6 +99,32 @@ export function StudentsFilters({
                     : val === 'INACTIVE'
                       ? 'bg-slate-600 text-white shadow-sm'
                       : 'bg-background text-foreground shadow-sm'
+                  : 'text-muted-foreground hover:text-foreground',
+              )}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+
+        {/* Payment filter pills */}
+        <div className="flex rounded-xl border border-border/60 bg-muted/40 p-0.5">
+          {(
+            [
+              { val: '', label: t('pay_filter_all'), activeClass: 'bg-background text-foreground shadow-sm' },
+              { val: 'paid', label: t('pay_paid'), activeClass: 'bg-emerald-600 text-white shadow-sm' },
+              { val: 'partial', label: t('pay_partial'), activeClass: 'bg-amber-500 text-white shadow-sm' },
+              { val: 'unpaid', label: t('pay_unpaid'), activeClass: 'bg-rose-600 text-white shadow-sm' },
+            ]
+          ).map(({ val, label, activeClass }) => (
+            <button
+              key={val}
+              type="button"
+              onClick={() => onPaymentFilterChange(val as PaymentStatus | '')}
+              className={cn(
+                'h-7 rounded-lg px-3 text-xs font-semibold transition-all',
+                paymentFilter === val
+                  ? activeClass
                   : 'text-muted-foreground hover:text-foreground',
               )}
             >
