@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { logger } from '@/lib/logger';
 import { getRoleFromToken } from '@/lib/auth/jwt';
 import { BACKEND_URL } from '@/lib/server-env';
+import { canAccess } from '@/lib/rbac';
 
 export default function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -59,11 +60,11 @@ export default function middleware(request: NextRequest) {
     return NextResponse.redirect(loginUrl);
   }
 
-  // /admin is restricted to SUPER_ADMIN only
-  if (pathname.startsWith('/admin') && isAuth) {
+  // Generic RBAC: enforce role restrictions for all ROUTE_ROLES entries
+  if (isAuth && isProtectedRoute) {
     const accessToken = request.cookies.get('access_token')?.value;
     const role = accessToken ? getRoleFromToken(accessToken) : null;
-    if (role !== 'SUPER_ADMIN') {
+    if (!canAccess(pathname, role)) {
       return NextResponse.redirect(new URL('/dashboard', request.url));
     }
   }

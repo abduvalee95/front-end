@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from 'react';
 import { useAuthStore } from '@/store/auth.store';
+import { usePermissions } from '@/hooks/usePermissions';
 import { useTranslations } from '@/i18n/index';
 import { Skeleton } from '@/components/ui/skeleton';
 import {
@@ -53,8 +54,7 @@ export default function AttendancePage() {
   const tJ = useTranslations('journal');
   const tCommon = useTranslations('common');
   const user = useAuthStore((s) => s.user);
-  const isTeacher = user?.role === 'TEACHER';
-  const isAdmin = user?.role === 'ADMIN' || user?.role === 'MANAGER';
+  const { isTeacher, isAdmin } = usePermissions();
 
   const [selectedGroupId, setSelectedGroupId] = useState<string>('');
   const [period, setPeriod] = useState<Period>('week');

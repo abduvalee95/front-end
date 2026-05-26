@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from 'react';
 import { useAuthStore } from '@/store/auth.store';
+import { usePermissions } from '@/hooks/usePermissions';
 import { useTranslations } from '@/i18n/index';
 import { Skeleton } from '@/components/ui/skeleton';
 import {
@@ -29,8 +30,7 @@ export default function JournalPage() {
   const t = useTranslations('journal');
   const tCommon = useTranslations('common');
   const user = useAuthStore((state) => state.user);
-  const isTeacher = user?.role === 'TEACHER';
-  const isAdmin = user?.role === 'ADMIN' || user?.role === 'MANAGER';
+  const { isTeacher, isAdmin } = usePermissions();
 
   const [selectedGroupId, setSelectedGroupId] = useState<string>('');
   const [currentDate, setCurrentDate] = useState(new Date());

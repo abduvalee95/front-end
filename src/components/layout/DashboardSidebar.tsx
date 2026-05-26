@@ -27,49 +27,34 @@ import {
   ChevronLeft,
   Menu
 } from 'lucide-react';
+import { navItemsForRole, type NavKey, type NavItemConfig } from '@/lib/nav-config';
 
-type NavItem = {
-  key: string;
-  href: string;
-  icon: LucideIcon;
-  roles: string[] | null;
-  comingSoon?: true;
+// UI-specific icon mapping (kept in the sidebar — not part of access logic)
+const ICONS: Record<NavKey, LucideIcon> = {
+  dashboard: LayoutDashboard,
+  journal: NotebookPen,
+  leads: Users,
+  courses: BookMarked,
+  teachers: GraduationCap,
+  students: GraduationCap,
+  groups: UsersRound,
+  attendance: ClipboardCheck,
+  schedule: Calendar,
+  reports: BarChart3,
+  finance: CreditCard,
+  settings: Settings,
+  analytics: BarChart3,
+  subjects: BookMarked,
 };
 
-const NAV_GROUPS: { groupKey: string; items: NavItem[] }[] = [
-  {
-    groupKey: 'group_main',
-    items: [
-      { key: 'dashboard', href: '/dashboard', icon: LayoutDashboard, roles: null },
-    ]
-  },
-  {
-    groupKey: 'group_management',
-    items: [
-      { key: 'journal',  href: '/journal',  icon: NotebookPen,    roles: null },
-      { key: 'leads',    href: '/leads',    icon: Users,          roles: ['SUPER_ADMIN','ADMIN','MANAGER','TEACHER'] },
-      { key: 'courses',  href: '/courses',  icon: BookMarked,     roles: null },
-      { key: 'teachers', href: '/teachers', icon: GraduationCap,  roles: ['SUPER_ADMIN','ADMIN','MANAGER'] },
-      { key: 'students', href: '/students', icon: GraduationCap,  roles: null },
-      { key: 'groups',   href: '/groups',   icon: UsersRound,     roles: ['SUPER_ADMIN','ADMIN','MANAGER','TEACHER'] },
-    ]
-  },
-  {
-    groupKey: 'group_academic',
-    items: [
-      { key: 'attendance', href: '/attendance', icon: ClipboardCheck, roles: null },
-      { key: 'schedule',   href: '/schedule',   icon: Calendar,       roles: null },
-    ]
-  },
-  {
-    groupKey: 'group_system',
-    items: [
-      { key: 'reports',  href: '/reports',  icon: BarChart3, roles: ['SUPER_ADMIN','ADMIN','MANAGER'] },
-      { key: 'finance',  href: '/finance',  icon: CreditCard,roles: ['SUPER_ADMIN','ADMIN','MANAGER'] },
-      { key: 'settings', href: '/settings', icon: Settings,  roles: ['SUPER_ADMIN','ADMIN'] },
-    ]
-  }
+const SIDEBAR_GROUPS: { groupKey: string; keys: NavKey[] }[] = [
+  { groupKey: 'group_main',       keys: ['dashboard'] },
+  { groupKey: 'group_management', keys: ['journal', 'leads', 'courses', 'teachers', 'students', 'groups'] },
+  { groupKey: 'group_academic',   keys: ['attendance', 'schedule'] },
+  { groupKey: 'group_system',     keys: ['reports', 'finance', 'settings'] },
 ];
+
+type RenderItem = NavItemConfig & { icon: LucideIcon };
 
 export function DashboardSidebar() {
   const pathname = usePathname();
@@ -90,6 +75,18 @@ export function DashboardSidebar() {
   const tNav = useTranslations('nav');
   const tAuth = useTranslations('auth');
   const { data: orgSettings } = useOrganizationSettings();
+
+  // Filter allowed items by role, then group by SIDEBAR_GROUPS
+  const allowed = navItemsForRole(user?.role);
+  const allowedByKey = new Map<NavKey, RenderItem>(
+    allowed.map((item) => [item.key, { ...item, icon: ICONS[item.key] }]),
+  );
+  const groups = SIDEBAR_GROUPS
+    .map((g) => ({
+      groupKey: g.groupKey,
+      items: g.keys.map((k) => allowedByKey.get(k)).filter((v): v is RenderItem => !!v),
+    }))
+    .filter((g) => g.items.length > 0);
 
   return (
     <aside
@@ -165,7 +162,7 @@ export function DashboardSidebar() {
 
       {/* Navigation */}
       <div className="scrollbar-hide relative flex-1 overflow-y-auto px-4 py-2 space-y-6">
-        {NAV_GROUPS.map((group) => (
+        {groups.map((group) => (
           <div key={group.groupKey} className="space-y-1.5">
             {!isCollapsed && (
               <div className="px-4 mb-2">
@@ -176,8 +173,6 @@ export function DashboardSidebar() {
             )}
             <nav className="flex flex-col space-y-1">
               {group.items.map((item) => {
-                if (item.roles && !item.roles.includes(user?.role || '')) return null;
-
                 const label = tNav(item.key as Parameters<typeof tNav>[0]);
                 const isActive = pathname === item.href || (item.href !== '/dashboard' && pathname.startsWith(item.href));
                 return (
@@ -189,16 +184,12 @@ export function DashboardSidebar() {
                       isActive
                         ? "bg-gradient-to-r from-blue-400 to-cyan-400 text-white shadow-lg shadow-blue-500/30"
                         : "text-blue-100/60 hover:bg-white/5 hover:text-white",
-                      isCollapsed && "justify-center px-2",
-                      item.comingSoon && "pointer-events-none opacity-50 cursor-not-allowed"
+                      isCollapsed && "justify-center px-2"
                     )}
                     aria-label={label}
                   >
                     <item.icon className={cn("size-5 shrink-0 transition-colors", isActive ? "text-white" : "text-blue-200/40 group-hover:text-blue-200")} />
                     {!isCollapsed && <span>{label}</span>}
-                    {!isCollapsed && item.comingSoon && (
-                      <span className="ml-auto text-[9px] font-bold uppercase tracking-wider text-blue-200/50 bg-white/5 px-1.5 py-0.5 rounded-full">Tez kunda</span>
-                    )}
                     {isCollapsed && (
                       <div className="absolute left-full ml-4 px-2 py-1 bg-[#22315e] border border-white/10 rounded-md text-[10px] text-white opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-50">
                         {label}
