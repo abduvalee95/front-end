@@ -46,7 +46,6 @@ export default function JournalPage() {
     return groups;
   }, [groups, isTeacher, user?.id]);
 
-  // Adjust state during render instead of useEffect
   const [prevVisibleGroups, setPrevVisibleGroups] = useState(visibleGroups);
   if (prevVisibleGroups !== visibleGroups) {
     setPrevVisibleGroups(visibleGroups);
@@ -69,7 +68,6 @@ export default function JournalPage() {
     !!selectedGroupId,
   );
 
-  // Adjust state during render instead of useEffect when journalData changes
   const [prevJournalData, setPrevJournalData] = useState(journalData);
   const [prevEnrollments, setPrevEnrollments] = useState(enrollments);
   if (prevJournalData !== journalData || prevEnrollments !== enrollments) {
@@ -136,212 +134,178 @@ export default function JournalPage() {
 
   return (
     <>
-      {/* Fonts */}
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=DM+Mono:ital,wght@0,400;0,500;1,400&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap');
 
         :root {
-          --journal-paper: #F4EFE4;
-          --journal-sidebar: #1C1917;
-          --journal-ink: #1A1410;
-          --journal-ink-soft: #8C7B68;
-          --journal-ink-faint: #B4A490;
-          --journal-line: rgba(110,88,58,0.10);
-          --journal-line-strong: rgba(110,88,58,0.15);
-          --journal-line-softer: rgba(110,88,58,0.08);
-          --journal-line-input: rgba(110,88,58,0.18);
-          --journal-row-hover: rgba(110,88,58,0.035);
-          --journal-row-tint: rgba(110,88,58,0.03);
-          --journal-row-tint-strong: rgba(110,88,58,0.04);
-          --journal-chip: rgba(110,88,58,0.08);
-          --journal-chip-ink: #6B5A48;
-          --journal-gold: #C4A882;
-          --journal-gold-soft: #C4B49A;
-          --journal-button: #1E2D6E;
-          --journal-button-shadow: rgba(30,45,110,0.30);
-          --journal-button-disabled-bg: rgba(110,88,58,0.10);
-          --journal-button-disabled-fg: #A09080;
-          --journal-score-active: #2D3A8C;
-          --journal-sidebar-fg: #E8DFD0;
-          --journal-sidebar-fg-dim: #5A5045;
-          --journal-sidebar-fg-fainter: #3D3530;
-          --journal-sidebar-fg-mid: #7A6B5C;
-          --journal-sidebar-border: rgba(255,255,255,0.07);
-          --journal-sidebar-border-soft: rgba(255,255,255,0.05);
-          --journal-sidebar-border-softer: rgba(255,255,255,0.06);
-          --journal-sidebar-input-bg: rgba(255,255,255,0.06);
-          --journal-sidebar-input-border: rgba(255,255,255,0.08);
-          --journal-sidebar-skel: rgba(255,255,255,0.04);
-          --journal-sidebar-chip-bg: rgba(255,255,255,0.05);
-          --journal-shell-border: rgba(110,88,58,0.12);
-          --journal-status-hover-bg: rgba(110,88,58,0.08);
-          --journal-status-hover-fg: #4A3E30;
-          --journal-status-seg-fg: #8C7B6A;
-          --journal-group-hover-fg: #D4C4A8;
-          --journal-group-hover-border: rgba(212,196,168,0.4);
-          --journal-group-hover-bg: rgba(255,255,255,0.04);
-          --journal-group-active-fg: #F4EFE4;
-          --journal-group-active-bg: rgba(255,255,255,0.06);
-          --journal-teacher-sub: #4A4038;
-          --journal-status-seg-border: rgba(110,88,58,0.12);
-          --journal-skel: rgba(110,88,58,0.10);
+          --p-bg: #FAFAF8;
+          --p-sidebar: #1C1C1C;
+          --p-ink: #1A1A1A;
+          --p-ink-soft: #6B6B6B;
+          --p-ink-faint: #AAAAAA;
+          --p-accent: #D97706;
+          --p-card: #F4F4F2;
+          --p-line: rgba(26,26,26,0.07);
+          --p-line-strong: rgba(26,26,26,0.11);
+          --p-row-hover: rgba(26,26,26,0.025);
+          --p-sidebar-fg: #F0EDEA;
+          --p-sidebar-fg-dim: rgba(240,237,234,0.38);
+          --p-sidebar-fg-mid: rgba(240,237,234,0.65);
+          --p-sidebar-border: rgba(255,255,255,0.07);
+          --p-sidebar-hover: rgba(255,255,255,0.04);
+          --p-sidebar-active-bg: rgba(217,119,6,0.12);
+          --p-sidebar-active-border: #D97706;
+          --p-sidebar-skel: rgba(255,255,255,0.05);
+          --p-chip: rgba(26,26,26,0.06);
+          --p-chip-ink: #737373;
+          --p-shell-border: rgba(26,26,26,0.09);
+          --p-button: #1A1A1A;
+          --p-button-fg: #FAFAF8;
+          --p-skel: rgba(26,26,26,0.07);
+          --p-seg-bg: rgba(26,26,26,0.04);
+          --p-seg-border: rgba(26,26,26,0.09);
+          --p-seg-fg: #9A9A9A;
+          --p-score-active: #1D4ED8;
+          --p-score-bg: rgba(26,26,26,0.05);
+          --p-score-border: rgba(26,26,26,0.10);
         }
         .dark {
-          --journal-paper: #0b0a08;
-          --journal-sidebar: #050505;
-          --journal-ink: #f4efe4;
-          --journal-ink-soft: #8C7B68;
-          --journal-ink-faint: #6b5c4a;
-          --journal-line: rgba(212,196,168,0.10);
-          --journal-line-strong: rgba(212,196,168,0.15);
-          --journal-line-softer: rgba(212,196,168,0.08);
-          --journal-line-input: rgba(212,196,168,0.18);
-          --journal-row-hover: rgba(212,196,168,0.04);
-          --journal-row-tint: rgba(212,196,168,0.03);
-          --journal-row-tint-strong: rgba(212,196,168,0.04);
-          --journal-chip: rgba(212,196,168,0.08);
-          --journal-chip-ink: #d4c4a8;
-          --journal-gold: #d4b890;
-          --journal-gold-soft: #C4B49A;
-          --journal-button: #2a3d8f;
-          --journal-button-shadow: rgba(42,61,143,0.40);
-          --journal-button-disabled-bg: rgba(212,196,168,0.08);
-          --journal-button-disabled-fg: #6b5c4a;
-          --journal-score-active: #3a4da0;
-          --journal-sidebar-fg: #E8DFD0;
-          --journal-sidebar-fg-dim: #6b6555;
-          --journal-sidebar-fg-fainter: #4a4438;
-          --journal-sidebar-fg-mid: #8C7B68;
-          --journal-sidebar-border: rgba(255,255,255,0.06);
-          --journal-sidebar-border-soft: rgba(255,255,255,0.04);
-          --journal-sidebar-border-softer: rgba(255,255,255,0.05);
-          --journal-sidebar-input-bg: rgba(255,255,255,0.04);
-          --journal-sidebar-input-border: rgba(255,255,255,0.06);
-          --journal-sidebar-skel: rgba(255,255,255,0.03);
-          --journal-sidebar-chip-bg: rgba(255,255,255,0.04);
-          --journal-shell-border: rgba(212,196,168,0.10);
-          --journal-status-hover-bg: rgba(212,196,168,0.08);
-          --journal-status-hover-fg: #d4c4a8;
-          --journal-status-seg-fg: #8C7B68;
-          --journal-group-hover-fg: #d4c4a8;
-          --journal-group-hover-border: rgba(212,196,168,0.4);
-          --journal-group-hover-bg: rgba(255,255,255,0.04);
-          --journal-group-active-fg: #f4efe4;
-          --journal-group-active-bg: rgba(255,255,255,0.06);
-          --journal-teacher-sub: #6b5c4a;
-          --journal-status-seg-border: rgba(212,196,168,0.12);
-          --journal-skel: rgba(212,196,168,0.08);
+          --p-bg: #111111;
+          --p-sidebar: #090909;
+          --p-ink: #EFEFEC;
+          --p-ink-soft: #909090;
+          --p-ink-faint: #555555;
+          --p-accent: #F59E0B;
+          --p-card: #1A1A1A;
+          --p-line: rgba(239,239,236,0.07);
+          --p-line-strong: rgba(239,239,236,0.11);
+          --p-row-hover: rgba(239,239,236,0.025);
+          --p-sidebar-fg: #F0EDEA;
+          --p-sidebar-fg-dim: rgba(240,237,234,0.33);
+          --p-sidebar-fg-mid: rgba(240,237,234,0.62);
+          --p-sidebar-border: rgba(255,255,255,0.05);
+          --p-sidebar-hover: rgba(255,255,255,0.04);
+          --p-sidebar-active-bg: rgba(245,158,11,0.10);
+          --p-sidebar-active-border: #F59E0B;
+          --p-sidebar-skel: rgba(255,255,255,0.04);
+          --p-chip: rgba(239,239,236,0.07);
+          --p-chip-ink: #909090;
+          --p-shell-border: rgba(239,239,236,0.08);
+          --p-button: #EFEFEC;
+          --p-button-fg: #111111;
+          --p-skel: rgba(239,239,236,0.07);
+          --p-seg-bg: rgba(239,239,236,0.04);
+          --p-seg-border: rgba(239,239,236,0.09);
+          --p-seg-fg: #666666;
+          --p-score-active: #2563EB;
+          --p-score-bg: rgba(239,239,236,0.05);
+          --p-score-border: rgba(239,239,236,0.10);
         }
 
-        .cg { font-family: 'Cormorant Garamond', Georgia, serif; }
-        .dm { font-family: 'DM Mono', 'Courier New', monospace; }
+        .syne { font-family: 'Syne', system-ui, sans-serif; }
+        .jm   { font-family: 'JetBrains Mono', 'Courier New', monospace; }
 
-        .ledger-row {
-          border-bottom: 1px solid var(--journal-line);
-          transition: background 0.15s ease;
+        .p-group {
+          padding: 9px 16px;
+          cursor: pointer;
+          border-left: 2px solid transparent;
+          transition: all 0.12s ease;
+          font-size: 13px;
+          font-weight: 600;
+          color: var(--p-sidebar-fg-mid);
+          font-family: 'Syne', system-ui, sans-serif;
         }
-        .ledger-row:hover {
-          background: var(--journal-row-hover);
+        .p-group:hover {
+          color: var(--p-sidebar-fg);
+          background: var(--p-sidebar-hover);
         }
-        .ledger-row:last-child {
-          border-bottom: none;
+        .p-group.active {
+          color: var(--p-accent);
+          border-left-color: var(--p-accent);
+          background: var(--p-sidebar-active-bg);
         }
 
-        .status-seg {
+        .p-seg {
           flex: 1;
           min-width: 0;
-          padding: 8px 6px;
+          padding: 7px 5px;
           font-size: 10px;
-          font-weight: 600;
-          letter-spacing: 0.04em;
+          font-weight: 700;
+          letter-spacing: 0.06em;
           text-transform: uppercase;
           border: none;
           cursor: pointer;
-          transition: all 0.15s ease;
-          color: var(--journal-status-seg-fg);
+          transition: all 0.12s ease;
+          color: var(--p-seg-fg);
           background: transparent;
           white-space: nowrap;
+          font-family: 'Syne', system-ui, sans-serif;
         }
-        @media (min-width: 640px) {
-          .status-seg { font-size: 11px; padding: 6px 0; }
-        }
-        .status-seg:first-child { border-radius: 6px 0 0 6px; }
-        .status-seg:last-child  { border-radius: 0 6px 6px 0; }
+        @media (min-width: 640px) { .p-seg { font-size: 11px; padding: 7px 0; } }
+        .p-seg:first-child { border-radius: 8px 0 0 8px; }
+        .p-seg:last-child  { border-radius: 0 8px 8px 0; }
 
-        .status-seg.present-active {
-          background: #166534;
+        .p-seg.p-present {
+          background: #15803D;
           color: #fff;
-          box-shadow: 0 1px 6px rgba(22,101,52,0.30);
+          box-shadow: 0 2px 10px rgba(21,128,61,0.22);
         }
-        .status-seg.late-active {
-          background: #92400E;
+        .p-seg.p-late {
+          background: #D97706;
           color: #fff;
-          box-shadow: 0 1px 6px rgba(146,64,14,0.30);
+          box-shadow: 0 2px 10px rgba(217,119,6,0.22);
         }
-        .status-seg.absent-active {
-          background: #991B1B;
+        .p-seg.p-absent {
+          background: #DC2626;
           color: #fff;
-          box-shadow: 0 1px 6px rgba(153,27,27,0.30);
+          box-shadow: 0 2px 10px rgba(220,38,38,0.22);
         }
-        .status-seg:hover:not(.present-active):not(.late-active):not(.absent-active) {
-          background: var(--journal-status-hover-bg);
-          color: var(--journal-status-hover-fg);
-        }
-
-
-        .group-item {
-          padding: 10px 16px;
-          cursor: pointer;
-          border-left: 2px solid transparent;
-          transition: all 0.15s ease;
-          color: var(--journal-ink-soft);
-          font-size: 13px;
-        }
-        .group-item:hover {
-          color: var(--journal-group-hover-fg);
-          border-left-color: var(--journal-group-hover-border);
-          background: var(--journal-group-hover-bg);
-        }
-        .group-item.active {
-          color: var(--journal-group-active-fg);
-          border-left-color: var(--journal-gold);
-          background: var(--journal-group-active-bg);
+        .p-seg:hover:not(.p-present):not(.p-late):not(.p-absent) {
+          background: var(--p-seg-bg);
+          color: var(--p-ink-soft);
         }
 
-        @keyframes ledger-in {
-          from { opacity: 0; transform: translateY(6px); }
+        .p-row {
+          border-bottom: 1px solid var(--p-line);
+          transition: background 0.12s ease;
+        }
+        .p-row:hover { background: var(--p-row-hover); }
+        .p-row:last-child { border-bottom: none; }
+
+        @keyframes p-in {
+          from { opacity: 0; transform: translateY(10px); }
           to   { opacity: 1; transform: translateY(0); }
         }
-        .ledger-animate { animation: ledger-in 0.35s ease forwards; }
-        .ledger-row-delay { opacity: 0; animation: ledger-in 0.3s ease forwards; }
+        .p-enter { animation: p-in 0.45s cubic-bezier(0.22,1,0.36,1) forwards; }
+        .p-row-in { opacity: 0; animation: p-in 0.35s cubic-bezier(0.22,1,0.36,1) forwards; }
       `}</style>
 
       <div
-        className="flex flex-col lg:flex-row gap-0 rounded-2xl overflow-hidden shadow-xl ledger-animate"
+        className="flex flex-col lg:flex-row gap-0 rounded-2xl overflow-hidden shadow-2xl p-enter"
         style={{
           minHeight: '78vh',
-          border: '1px solid var(--journal-shell-border)',
-          background: 'var(--journal-paper)',
+          border: '1px solid var(--p-shell-border)',
+          background: 'var(--p-bg)',
         }}
       >
-        {/* ── MOBILE GROUP SELECTOR (visible <lg) ─────────── */}
+        {/* ── MOBILE GROUP SELECTOR ───────────────────────── */}
         <div
-          className="lg:hidden flex flex-col gap-2 px-4 py-3"
-          style={{ background: 'var(--journal-sidebar)', borderBottom: '1px solid var(--journal-sidebar-border)' }}
+          className="lg:hidden flex flex-col gap-3 px-4 py-4"
+          style={{ background: 'var(--p-sidebar)', borderBottom: '1px solid var(--p-sidebar-border)' }}
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className="dm text-[10px] tracking-[0.18em] uppercase" style={{ color: 'var(--journal-sidebar-fg-dim)' }}>
+              <p className="jm text-[9px] tracking-[0.22em] uppercase" style={{ color: 'var(--p-sidebar-fg-dim)' }}>
                 BILIM NURU
               </p>
-              <h2 className="cg leading-none" style={{ fontSize: '18px', fontWeight: 700, color: 'var(--journal-sidebar-fg)' }}>
+              <h2 className="syne font-extrabold mt-0.5" style={{ fontSize: 18, color: 'var(--p-sidebar-fg)', letterSpacing: '-0.01em' }}>
                 {t('title')}
               </h2>
             </div>
             {isAdmin && (
               <span
-                className="inline-flex items-center gap-1 dm text-[9px] tracking-widest uppercase"
-                style={{ color: 'var(--journal-sidebar-fg-dim)', background: 'var(--journal-sidebar-chip-bg)', padding: '2px 6px', borderRadius: 4 }}
+                className="inline-flex items-center gap-1 jm text-[9px] tracking-wider uppercase"
+                style={{ color: 'var(--p-accent)', background: 'var(--p-sidebar-active-bg)', padding: '2px 8px', borderRadius: 4 }}
               >
                 <ShieldCheck style={{ width: 9, height: 9 }} />
                 {t('admin_view')}
@@ -352,34 +316,34 @@ export default function JournalPage() {
             value={selectedGroupId}
             onChange={(e) => setSelectedGroupId(e.target.value)}
             disabled={groupsLoading || visibleGroups.length === 0}
-            className="w-full dm text-[12px] rounded-md px-3 py-2 outline-none"
+            className="w-full jm text-[12px] rounded-lg px-3 py-2.5 outline-none"
             style={{
-              background: 'var(--journal-sidebar-input-bg)',
-              color: 'var(--journal-sidebar-fg)',
-              border: '1px solid var(--journal-sidebar-input-border)',
+              background: 'rgba(255,255,255,0.06)',
+              color: 'var(--p-sidebar-fg)',
+              border: '1px solid var(--p-sidebar-border)',
             }}
           >
             {visibleGroups.length === 0 ? (
               <option value="">{tCommon('no_data')}</option>
             ) : (
               visibleGroups.map((g) => (
-                <option key={g.id} value={g.id} style={{ background: 'var(--journal-sidebar)' }}>
+                <option key={g.id} value={g.id} style={{ background: 'var(--p-sidebar)' }}>
                   {g.name}
                 </option>
               ))
             )}
           </select>
           {enrollments.length > 0 && (
-            <div className="flex items-center justify-between gap-3 pt-1">
+            <div className="flex items-center gap-5 pt-1">
               {[
                 { label: t('present'), value: stats.present, dot: '#4ADE80' },
-                { label: t('late'), value: stats.late, dot: '#FB923C' },
+                { label: t('late'), value: stats.late, dot: '#FBBF24' },
                 { label: t('absent'), value: stats.absent, dot: '#F87171' },
               ].map((s) => (
                 <div key={s.label} className="flex items-center gap-1.5">
-                  <span className="size-1.5 rounded-full" style={{ background: s.dot }} />
-                  <span className="text-[11px]" style={{ color: 'var(--journal-sidebar-fg-mid)' }}>{s.label}</span>
-                  <span className="cg" style={{ fontSize: '16px', fontWeight: 700, color: 'var(--journal-gold-soft)' }}>
+                  <span className="size-1.5 rounded-full shrink-0" style={{ background: s.dot }} />
+                  <span className="syne text-[11px] font-medium" style={{ color: 'var(--p-sidebar-fg-mid)' }}>{s.label}</span>
+                  <span className="jm font-bold" style={{ fontSize: 15, color: 'var(--p-accent)' }}>
                     {String(s.value).padStart(2, '0')}
                   </span>
                 </div>
@@ -391,23 +355,22 @@ export default function JournalPage() {
         {/* ── SIDEBAR (lg+) ───────────────────────────────── */}
         <aside
           className="hidden lg:flex flex-col w-64 shrink-0"
-          style={{ background: 'var(--journal-sidebar)', borderRight: '1px solid var(--journal-sidebar-border-soft)' }}
+          style={{ background: 'var(--p-sidebar)', borderRight: '1px solid var(--p-sidebar-border)' }}
         >
-          {/* Sidebar header */}
-          <div className="px-5 pt-6 pb-5" style={{ borderBottom: '1px solid var(--journal-sidebar-border)' }}>
-            <p className="dm text-[10px] tracking-[0.18em] uppercase" style={{ color: 'var(--journal-sidebar-fg-dim)' }}>
+          <div className="px-5 pt-6 pb-5" style={{ borderBottom: '1px solid var(--p-sidebar-border)' }}>
+            <p className="jm text-[9px] tracking-[0.22em] uppercase" style={{ color: 'var(--p-sidebar-fg-dim)' }}>
               BILIM NURU
             </p>
             <h2
-              className="cg mt-1 leading-none"
-              style={{ fontSize: '22px', fontWeight: 700, color: 'var(--journal-sidebar-fg)', letterSpacing: '-0.01em' }}
+              className="syne mt-1.5 leading-none"
+              style={{ fontSize: 21, fontWeight: 800, color: 'var(--p-sidebar-fg)', letterSpacing: '-0.02em' }}
             >
               {t('title')}
             </h2>
             {isAdmin && (
               <span
-                className="inline-flex items-center gap-1 mt-2 dm text-[9px] tracking-widest uppercase"
-                style={{ color: 'var(--journal-sidebar-fg-dim)', background: 'var(--journal-sidebar-chip-bg)', padding: '2px 6px', borderRadius: 4 }}
+                className="inline-flex items-center gap-1 mt-2.5 jm text-[9px] tracking-wider uppercase"
+                style={{ color: 'var(--p-accent)', background: 'var(--p-sidebar-active-bg)', padding: '2px 8px', borderRadius: 4 }}
               >
                 <ShieldCheck style={{ width: 9, height: 9 }} />
                 {t('admin_view')}
@@ -415,32 +378,31 @@ export default function JournalPage() {
             )}
           </div>
 
-          {/* Groups list */}
           <div className="flex-1 py-3 overflow-y-auto">
-            <p className="dm text-[9px] tracking-[0.18em] uppercase px-5 mb-2" style={{ color: 'var(--journal-sidebar-fg-fainter)' }}>
+            <p className="jm text-[9px] tracking-[0.18em] uppercase px-5 mb-2" style={{ color: 'var(--p-sidebar-fg-dim)' }}>
               {isTeacher ? tCommon('your_groups') : t('all_groups')}
             </p>
             {groupsLoading ? (
-              <div className="px-4 space-y-2">
+              <div className="px-4 space-y-1.5">
                 {Array.from({ length: 4 }).map((_, i) => (
-                  <div key={i} className="h-8 rounded-lg" style={{ background: 'var(--journal-sidebar-skel)' }} />
+                  <div key={i} className="h-9 rounded-lg" style={{ background: 'var(--p-sidebar-skel)' }} />
                 ))}
               </div>
             ) : visibleGroups.length === 0 ? (
-              <p className="dm text-[11px] px-5" style={{ color: 'var(--journal-sidebar-fg-fainter)' }}>{tCommon('no_data')}</p>
+              <p className="jm text-[11px] px-5" style={{ color: 'var(--p-sidebar-fg-dim)' }}>{tCommon('no_data')}</p>
             ) : (
               visibleGroups.map((group) => (
                 <div
                   key={group.id}
-                  className={cn('group-item', selectedGroupId === group.id && 'active')}
+                  className={cn('p-group', selectedGroupId === group.id && 'active')}
                   onClick={() => setSelectedGroupId(group.id)}
                 >
                   <div className="flex items-center gap-2">
-                    <BookOpen style={{ width: 11, height: 11, opacity: 0.6, flexShrink: 0 }} />
-                    <span className="truncate font-semibold">{group.name}</span>
+                    <BookOpen style={{ width: 11, height: 11, opacity: 0.45, flexShrink: 0 }} />
+                    <span className="truncate">{group.name}</span>
                   </div>
                   {group.teacher && selectedGroupId !== group.id && (
-                    <p className="dm text-[10px] mt-0.5 ml-5 truncate" style={{ color: 'var(--journal-teacher-sub)', opacity: 0.7 }}>
+                    <p className="jm text-[10px] mt-0.5 ml-[22px] truncate" style={{ color: 'var(--p-sidebar-fg-dim)' }}>
                       {group.teacher.full_name}
                     </p>
                   )}
@@ -449,27 +411,23 @@ export default function JournalPage() {
             )}
           </div>
 
-          {/* Stats block */}
           {enrollments.length > 0 && (
-            <div className="px-5 py-5" style={{ borderTop: '1px solid var(--journal-sidebar-border-softer)' }}>
-              <p className="dm text-[9px] tracking-[0.18em] uppercase mb-4" style={{ color: 'var(--journal-sidebar-fg-fainter)' }}>
+            <div className="px-5 py-5" style={{ borderTop: '1px solid var(--p-sidebar-border)' }}>
+              <p className="jm text-[9px] tracking-[0.18em] uppercase mb-4" style={{ color: 'var(--p-sidebar-fg-dim)' }}>
                 {t('today')}
               </p>
-              <div className="space-y-3">
+              <div className="space-y-4">
                 {[
-                  { label: t('present'), value: stats.present, color: '#166534', dot: '#4ADE80' },
-                  { label: t('late'), value: stats.late, color: '#92400E', dot: '#FB923C' },
-                  { label: t('absent'), value: stats.absent, color: '#991B1B', dot: '#F87171' },
+                  { label: t('present'), value: stats.present, dot: '#4ADE80' },
+                  { label: t('late'), value: stats.late, dot: '#FBBF24' },
+                  { label: t('absent'), value: stats.absent, dot: '#F87171' },
                 ].map((s) => (
                   <div key={s.label} className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <span className="size-1.5 rounded-full shrink-0" style={{ background: s.dot }} />
-                      <span className="text-[12px] font-medium" style={{ color: 'var(--journal-sidebar-fg-mid)' }}>{s.label}</span>
+                      <span className="syne font-medium" style={{ fontSize: 12, color: 'var(--p-sidebar-fg-mid)' }}>{s.label}</span>
                     </div>
-                    <span
-                      className="cg"
-                      style={{ fontSize: '22px', fontWeight: 700, color: 'var(--journal-gold-soft)', lineHeight: 1 }}
-                    >
+                    <span className="jm font-bold" style={{ fontSize: 22, color: 'var(--p-accent)', lineHeight: 1 }}>
                       {String(s.value).padStart(2, '0')}
                     </span>
                   </div>
@@ -482,25 +440,22 @@ export default function JournalPage() {
         {/* ── MAIN PANEL ──────────────────────────────────── */}
         <div className="flex-1 flex flex-col min-w-0">
 
-          {/* Main header: date nav + group name + save */}
+          {/* Header */}
           <div
-            className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 px-4 sm:px-8 pt-4 sm:pt-6 pb-4 sm:pb-5 shrink-0"
-            style={{
-              borderBottom: '1px solid var(--journal-line)',
-              background: 'var(--journal-paper)',
-            }}
+            className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 px-4 sm:px-8 pt-5 sm:pt-6 pb-4 sm:pb-5 shrink-0"
+            style={{ borderBottom: '1px solid var(--p-line)', background: 'var(--p-bg)' }}
           >
-            {/* Date navigation */}
             <div className="flex items-center gap-3">
               <button
                 onClick={() => setCurrentDate((d) => subDays(d, 1))}
-                className="flex items-center justify-center rounded-lg transition-all"
+                className="flex items-center justify-center rounded-xl transition-opacity hover:opacity-60"
                 style={{
-                  width: 32, height: 32,
-                  border: '1px solid var(--journal-line-strong)',
-                  background: 'var(--journal-row-tint-strong)',
-                  color: 'var(--journal-ink-soft)',
+                  width: 34, height: 34,
+                  border: '1px solid var(--p-line-strong)',
+                  background: 'var(--p-card)',
+                  color: 'var(--p-ink-soft)',
                   cursor: 'pointer',
+                  flexShrink: 0,
                 }}
               >
                 <ChevronLeft style={{ width: 15, height: 15 }} />
@@ -508,40 +463,40 @@ export default function JournalPage() {
 
               <div>
                 <p
-                  className="cg leading-none text-[24px] sm:text-[32px]"
-                  style={{ fontWeight: 700, color: 'var(--journal-ink)', letterSpacing: '-0.02em' }}
+                  className="syne leading-none"
+                  style={{ fontSize: 'clamp(22px,4vw,32px)', fontWeight: 800, color: 'var(--p-ink)', letterSpacing: '-0.02em' }}
                 >
                   {format(currentDate, 'dd MMMM')}
                 </p>
-                <p className="dm text-[11px] mt-0.5" style={{ color: 'var(--journal-ink-soft)' }}>
+                <p className="jm text-[11px] mt-1" style={{ color: 'var(--p-ink-soft)' }}>
                   {format(currentDate, 'EEEE · yyyy')}
                 </p>
               </div>
 
               <button
                 onClick={() => setCurrentDate((d) => addDays(d, 1))}
-                className="flex items-center justify-center rounded-lg transition-all"
+                className="flex items-center justify-center rounded-xl transition-opacity hover:opacity-60"
                 style={{
-                  width: 32, height: 32,
-                  border: '1px solid var(--journal-line-strong)',
-                  background: 'var(--journal-row-tint-strong)',
-                  color: 'var(--journal-ink-soft)',
+                  width: 34, height: 34,
+                  border: '1px solid var(--p-line-strong)',
+                  background: 'var(--p-card)',
+                  color: 'var(--p-ink-soft)',
                   cursor: 'pointer',
+                  flexShrink: 0,
                 }}
               >
                 <ChevronRight style={{ width: 15, height: 15 }} />
               </button>
             </div>
 
-            {/* Group name + save */}
             <div className="flex items-center justify-between sm:justify-end gap-4 w-full sm:w-auto">
               {selectedGroup && (
                 <div className="text-left sm:text-right">
-                  <p className="cg font-bold" style={{ fontSize: '18px', color: 'var(--journal-ink)', lineHeight: 1.1 }}>
+                  <p className="syne font-bold" style={{ fontSize: 16, color: 'var(--p-ink)', lineHeight: 1.2 }}>
                     {selectedGroup.name}
                   </p>
                   {enrollments.length > 0 && (
-                    <p className="dm text-[10px] mt-0.5" style={{ color: 'var(--journal-ink-soft)' }}>
+                    <p className="jm text-[10px] mt-0.5" style={{ color: 'var(--p-ink-soft)' }}>
                       {enrollments.length} {t('n_students')}
                     </p>
                   )}
@@ -555,23 +510,19 @@ export default function JournalPage() {
                   alignItems: 'center',
                   gap: 7,
                   padding: '9px 20px',
-                  borderRadius: 8,
-                  border: 'none',
-                  background: !selectedGroupId || !enrollments.length
-                    ? 'var(--journal-button-disabled-bg)'
-                    : 'var(--journal-button)',
-                  color: !selectedGroupId || !enrollments.length ? 'var(--journal-button-disabled-fg)' : '#fff',
-                  fontSize: 12,
+                  borderRadius: 10,
+                  border: !selectedGroupId || !enrollments.length ? '1px solid var(--p-line)' : '1px solid var(--p-line-strong)',
+                  background: !selectedGroupId || !enrollments.length ? 'var(--p-card)' : 'var(--p-button)',
+                  color: !selectedGroupId || !enrollments.length ? 'var(--p-ink-faint)' : 'var(--p-button-fg)',
+                  fontSize: 11,
                   fontWeight: 700,
-                  fontFamily: 'inherit',
-                  letterSpacing: '0.06em',
+                  fontFamily: "'Syne', system-ui, sans-serif",
+                  letterSpacing: '0.07em',
                   textTransform: 'uppercase',
                   cursor: !selectedGroupId || !enrollments.length ? 'not-allowed' : 'pointer',
-                  boxShadow: !selectedGroupId || !enrollments.length
-                    ? 'none'
-                    : '0 4px 16px var(--journal-button-shadow)',
-                  transition: 'all 0.15s ease',
-                }}
+                  boxShadow: !selectedGroupId || !enrollments.length ? 'none' : '0 4px 18px rgba(0,0,0,0.14)',
+                  transition: 'all 0.12s ease',
+                } as React.CSSProperties}
               >
                 <Save style={{ width: 13, height: 13 }} />
                 {upsert.isPending ? tCommon('loading') : t('save_attendance')}
@@ -579,15 +530,15 @@ export default function JournalPage() {
             </div>
           </div>
 
-          {/* Column headers (hidden on mobile) */}
+          {/* Column headers */}
           {selectedGroupId && !isLoading && enrollments.length > 0 && (
             <div
-              className="dm hidden sm:grid px-8 py-2.5 text-[10px] tracking-[0.14em] uppercase shrink-0"
+              className="jm hidden sm:grid px-8 py-2.5 text-[9px] tracking-[0.16em] uppercase shrink-0"
               style={{
                 gridTemplateColumns: '1fr 220px 130px',
-                borderBottom: '1px solid var(--journal-line-strong)',
-                color: 'var(--journal-ink-soft)',
-                background: 'var(--journal-row-tint)',
+                borderBottom: '1px solid var(--p-line-strong)',
+                color: 'var(--p-ink-faint)',
+                background: 'var(--p-card)',
               }}
             >
               <span>{tCommon('student')}</span>
@@ -596,17 +547,26 @@ export default function JournalPage() {
             </div>
           )}
 
-          {/* Content area */}
+          {/* Content */}
           <div className="flex-1 overflow-y-auto">
             {!selectedGroupId ? (
-              <div className="flex flex-col items-center justify-center h-full" style={{ color: 'var(--journal-gold-soft)' }}>
-                <BookOpen style={{ width: 44, height: 44, opacity: 0.25, marginBottom: 12 }} />
-                <p className="cg font-semibold" style={{ fontSize: 20, color: 'var(--journal-ink-soft)' }}>
-                  {t('group')}
-                </p>
-                <p className="dm text-[11px] mt-1" style={{ color: 'var(--journal-ink-faint)' }}>
-                  {t('select_group_hint')}
-                </p>
+              <div className="flex flex-col items-center justify-center h-full gap-3">
+                <div style={{
+                  width: 56, height: 56, borderRadius: 16,
+                  background: 'var(--p-card)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  border: '1px solid var(--p-line)',
+                }}>
+                  <BookOpen style={{ width: 22, height: 22, color: 'var(--p-ink-faint)' }} />
+                </div>
+                <div className="text-center">
+                  <p className="syne font-bold" style={{ fontSize: 16, color: 'var(--p-ink-soft)' }}>
+                    {t('group')}
+                  </p>
+                  <p className="jm text-[11px] mt-1" style={{ color: 'var(--p-ink-faint)' }}>
+                    {t('select_group_hint')}
+                  </p>
+                </div>
               </div>
             ) : isLoading ? (
               <div className="px-4 sm:px-8 py-4 space-y-0">
@@ -614,31 +574,36 @@ export default function JournalPage() {
                   <div
                     key={i}
                     className="py-4 flex flex-col gap-2 sm:grid sm:gap-0"
-                    style={{
-                      gridTemplateColumns: '1fr 220px 130px',
-                      borderBottom: '1px solid var(--journal-line-softer)',
-                      animationDelay: `${i * 60}ms`,
-                    }}
+                    style={{ gridTemplateColumns: '1fr 220px 130px', borderBottom: '1px solid var(--p-line)' }}
                   >
-                    <Skeleton className="h-4 w-36 rounded" style={{ background: 'var(--journal-skel)' }} />
+                    <Skeleton className="h-4 w-36 rounded-lg" style={{ background: 'var(--p-skel)' }} />
                     <div className="flex sm:justify-center">
-                      <Skeleton className="h-7 w-full sm:w-44 rounded-md" style={{ background: 'var(--journal-skel)' }} />
+                      <Skeleton className="h-8 w-full sm:w-44 rounded-lg" style={{ background: 'var(--p-skel)' }} />
                     </div>
                     <div className="flex sm:justify-center">
-                      <Skeleton className="h-5 w-12 rounded" style={{ background: 'var(--journal-skel)' }} />
+                      <Skeleton className="h-5 w-12 rounded-lg" style={{ background: 'var(--p-skel)' }} />
                     </div>
                   </div>
                 ))}
               </div>
             ) : enrollments.length === 0 ? (
-              <div className="flex flex-col items-center justify-center h-full" style={{ color: 'var(--journal-gold-soft)' }}>
-                <AlertCircle style={{ width: 44, height: 44, opacity: 0.25, marginBottom: 12 }} />
-                <p className="cg font-semibold" style={{ fontSize: 20, color: 'var(--journal-ink-soft)' }}>
-                  {t('no_students')}
-                </p>
-                <p className="dm text-[11px] mt-1" style={{ color: 'var(--journal-ink-faint)' }}>
-                  {t('enroll_first')}
-                </p>
+              <div className="flex flex-col items-center justify-center h-full gap-3">
+                <div style={{
+                  width: 56, height: 56, borderRadius: 16,
+                  background: 'var(--p-card)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  border: '1px solid var(--p-line)',
+                }}>
+                  <AlertCircle style={{ width: 22, height: 22, color: 'var(--p-ink-faint)' }} />
+                </div>
+                <div className="text-center">
+                  <p className="syne font-bold" style={{ fontSize: 16, color: 'var(--p-ink-soft)' }}>
+                    {t('no_students')}
+                  </p>
+                  <p className="jm text-[11px] mt-1" style={{ color: 'var(--p-ink-faint)' }}>
+                    {t('enroll_first')}
+                  </p>
+                </div>
               </div>
             ) : (
               <div>
@@ -650,57 +615,58 @@ export default function JournalPage() {
                   return (
                     <div
                       key={studentId}
-                      className="ledger-row flex flex-col gap-3 sm:grid sm:gap-0 px-4 sm:px-8 py-3 sm:py-3 sm:items-center"
+                      className="p-row p-row-in flex flex-col gap-3 sm:grid sm:gap-0 px-4 sm:px-8 py-3 sm:items-center"
                       style={{
                         gridTemplateColumns: '1fr 220px 130px',
-                        animationDelay: `${idx * 25}ms`,
+                        animationDelay: `${idx * 22}ms`,
                       }}
                     >
                       {/* Name */}
-                      <div className="flex items-center gap-2.5">
+                      <div className="flex items-center gap-3">
                         <span
-                          className="cg shrink-0 flex items-center justify-center font-bold"
+                          className="jm font-bold shrink-0 flex items-center justify-center"
                           style={{
                             width: 28, height: 28,
-                            borderRadius: 6,
-                            background: 'var(--journal-chip)',
-                            color: 'var(--journal-chip-ink)',
-                            fontSize: 13,
+                            borderRadius: 8,
+                            background: 'var(--p-card)',
+                            color: 'var(--p-ink-faint)',
+                            fontSize: 11,
+                            border: '1px solid var(--p-line)',
                           }}
                         >
-                          {idx + 1}
+                          {String(idx + 1).padStart(2, '0')}
                         </span>
-                        <span style={{ fontSize: 14, fontWeight: 600, color: 'var(--journal-ink)' }}>{name}</span>
+                        <span className="syne font-semibold" style={{ fontSize: 14, color: 'var(--p-ink)' }}>{name}</span>
                       </div>
 
-                      {/* Status segmented control */}
+                      {/* Status segmented */}
                       <div className="flex sm:justify-center">
                         <div
                           className="flex w-full sm:w-auto"
                           style={{
-                            border: '1px solid var(--journal-line-input)',
-                            borderRadius: 8,
+                            border: '1px solid var(--p-seg-border)',
+                            borderRadius: 9,
                             overflow: 'hidden',
-                            background: 'var(--journal-row-tint-strong)',
+                            background: 'var(--p-seg-bg)',
                           }}
                         >
                           <button
-                            className={cn('status-seg', entry?.status === 'PRESENT' && 'present-active')}
+                            className={cn('p-seg', entry?.status === 'PRESENT' && 'p-present')}
                             onClick={() => updateStatus(studentId, 'PRESENT')}
                             title={t('present')}
                           >
                             ✓ {t('present')}
                           </button>
                           <button
-                            className={cn('status-seg', entry?.status === 'LATE' && 'late-active')}
+                            className={cn('p-seg', entry?.status === 'LATE' && 'p-late')}
                             onClick={() => updateStatus(studentId, 'LATE')}
                             title={t('late')}
-                            style={{ borderLeft: '1px solid var(--journal-status-seg-border)', borderRight: '1px solid var(--journal-status-seg-border)' }}
+                            style={{ borderLeft: '1px solid var(--p-seg-border)', borderRight: '1px solid var(--p-seg-border)' }}
                           >
                             ⏱ {t('late')}
                           </button>
                           <button
-                            className={cn('status-seg', entry?.status === 'ABSENT' && 'absent-active')}
+                            className={cn('p-seg', entry?.status === 'ABSENT' && 'p-absent')}
                             onClick={() => updateStatus(studentId, 'ABSENT')}
                             title={t('absent')}
                           >
@@ -711,26 +677,26 @@ export default function JournalPage() {
 
                       {/* Score */}
                       <div className="flex items-center justify-between sm:justify-center gap-1.5">
-                        <span className="dm text-[10px] sm:hidden" style={{ color: 'var(--journal-ink-soft)' }}>
+                        <span className="jm text-[10px] sm:hidden" style={{ color: 'var(--p-ink-soft)' }}>
                           {t('score')}
                         </span>
                         <select
                           value={entry?.score ?? ''}
                           onChange={(e) => updateScore(studentId, e.target.value)}
-                          className="dm"
+                          className="jm"
                           style={{
                             width: 72,
-                            height: 30,
-                            borderRadius: 6,
-                            border: '1px solid var(--journal-line-input)',
-                            background: entry?.score ? 'var(--journal-score-active)' : 'var(--journal-row-tint-strong)',
-                            color: entry?.score ? '#fff' : 'var(--journal-chip-ink)',
+                            height: 32,
+                            borderRadius: 8,
+                            border: '1px solid var(--p-score-border)',
+                            background: entry?.score ? 'var(--p-score-active)' : 'var(--p-score-bg)',
+                            color: entry?.score ? '#fff' : 'var(--p-chip-ink)',
                             fontSize: 13,
                             fontWeight: 600,
                             textAlign: 'center',
                             cursor: 'pointer',
                             outline: 'none',
-                            transition: 'all 0.15s ease',
+                            transition: 'all 0.12s ease',
                           }}
                         >
                           <option value="">—</option>
@@ -743,12 +709,11 @@ export default function JournalPage() {
                   );
                 })}
 
-                {/* Ledger footer rule */}
                 <div
-                  className="mx-4 sm:mx-8 mt-4 mb-6 flex items-center gap-3"
-                  style={{ borderTop: '1.5px solid var(--journal-line-strong)' }}
+                  className="mx-4 sm:mx-8 mt-4 mb-6 pt-3"
+                  style={{ borderTop: '1px solid var(--p-line-strong)' }}
                 >
-                  <span className="dm text-[10px] pt-2" style={{ color: 'var(--journal-ink-faint)' }}>
+                  <span className="jm text-[10px]" style={{ color: 'var(--p-ink-faint)' }}>
                     {enrollments.length} {t('n_students')} · {format(currentDate, 'dd.MM.yyyy')}
                   </span>
                 </div>

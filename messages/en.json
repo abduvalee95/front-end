@@ -356,6 +356,7 @@
     "month_future": "Upcoming",
     "current_month_payment": "Current month payment",
     "per_month_short": "mo",
+    "edit_discount": "Set discount",
     "payment_badge_paid": "Paid",
     "payment_badge_unpaid": "Unpaid",
     "payment_badge_partial": "Partial",

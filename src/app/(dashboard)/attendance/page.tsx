@@ -13,7 +13,6 @@ import {
   TrendingUp,
   Users,
   CheckCircle2,
-  Clock,
   XCircle,
   CalendarRange,
 } from 'lucide-react';
@@ -117,7 +116,6 @@ export default function AttendancePage() {
   const selectedGroup = visibleGroups.find((g) => g.id === selectedGroupId);
   const isLoading = enrollmentsLoading || journalLoading;
 
-  // ── Aggregations ───────────────────────────────────────────────────
   const totals = useMemo(() => {
     let present = 0, late = 0, absent = 0;
     const scoreVals: number[] = [];
@@ -141,12 +139,7 @@ export default function AttendancePage() {
       map.set(e.student_id, {
         student_id: e.student_id,
         name: e.student?.name ?? e.student_id,
-        present: 0,
-        late: 0,
-        absent: 0,
-        total: 0,
-        rate: 0,
-        avgScore: null,
+        present: 0, late: 0, absent: 0, total: 0, rate: 0, avgScore: null,
       });
     });
     const scoreBuckets = new Map<string, number[]>();
@@ -205,9 +198,9 @@ export default function AttendancePage() {
 
   const donutData = useMemo(() => {
     return [
-      { name: tJ('present'), value: totals.present, color: '#166534' },
-      { name: tJ('late'), value: totals.late, color: '#92400E' },
-      { name: tJ('absent'), value: totals.absent, color: '#991B1B' },
+      { name: tJ('present'), value: totals.present, color: '#15803D' },
+      { name: tJ('late'),    value: totals.late,    color: '#D97706' },
+      { name: tJ('absent'),  value: totals.absent,  color: '#DC2626' },
     ].filter((d) => d.value > 0);
   }, [totals, tJ]);
 
@@ -224,10 +217,7 @@ export default function AttendancePage() {
     ];
     const rows = filteredRows.map((r) => [
       `"${r.name.replace(/"/g, '""')}"`,
-      r.present,
-      r.late,
-      r.absent,
-      r.total,
+      r.present, r.late, r.absent, r.total,
       `${r.rate}%`,
       r.avgScore == null ? '—' : r.avgScore,
     ]);
@@ -253,193 +243,165 @@ export default function AttendancePage() {
   return (
     <>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=DM+Mono:ital,wght@0,400;0,500;1,400&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap');
 
         :root {
-          --att-paper: #F4EFE4;
-          --att-sidebar: #1C1917;
-          --att-ink: #1A1410;
-          --att-ink-soft: #8C7B68;
-          --att-ink-faint: #B4A490;
-          --att-line: rgba(110,88,58,0.10);
-          --att-line-strong: rgba(110,88,58,0.15);
-          --att-line-softer: rgba(110,88,58,0.08);
-          --att-line-input: rgba(110,88,58,0.18);
-          --att-row-hover: rgba(110,88,58,0.035);
-          --att-row-tint: rgba(110,88,58,0.03);
-          --att-row-tint-strong: rgba(110,88,58,0.04);
-          --att-chip: rgba(110,88,58,0.08);
-          --att-chip-ink: #6B5A48;
-          --att-gold: #C4A882;
-          --att-gold-soft: #C4B49A;
-          --att-button: #1E2D6E;
-          --att-button-shadow: rgba(30,45,110,0.30);
-          --att-sidebar-fg: #E8DFD0;
-          --att-sidebar-fg-dim: #5A5045;
-          --att-sidebar-fg-fainter: #3D3530;
-          --att-sidebar-fg-mid: #7A6B5C;
-          --att-sidebar-border: rgba(255,255,255,0.07);
-          --att-sidebar-border-soft: rgba(255,255,255,0.05);
-          --att-sidebar-border-softer: rgba(255,255,255,0.06);
-          --att-sidebar-input-bg: rgba(255,255,255,0.06);
-          --att-sidebar-input-border: rgba(255,255,255,0.08);
-          --att-sidebar-skel: rgba(255,255,255,0.04);
-          --att-sidebar-chip-bg: rgba(255,255,255,0.05);
-          --att-shell-border: rgba(110,88,58,0.12);
-          --att-skel: rgba(110,88,58,0.10);
-          --att-group-hover-fg: #D4C4A8;
-          --att-group-hover-border: rgba(212,196,168,0.4);
-          --att-group-hover-bg: rgba(255,255,255,0.04);
-          --att-group-active-fg: #F4EFE4;
-          --att-group-active-bg: rgba(255,255,255,0.06);
-          --att-teacher-sub: #4A4038;
-          --att-card: #FAF6EC;
-          --att-bar-bg: rgba(110,88,58,0.10);
+          --p-bg: #FAFAF8;
+          --p-sidebar: #1C1C1C;
+          --p-ink: #1A1A1A;
+          --p-ink-soft: #6B6B6B;
+          --p-ink-faint: #AAAAAA;
+          --p-accent: #D97706;
+          --p-card: #F4F4F2;
+          --p-line: rgba(26,26,26,0.07);
+          --p-line-strong: rgba(26,26,26,0.11);
+          --p-row-hover: rgba(26,26,26,0.025);
+          --p-sidebar-fg: #F0EDEA;
+          --p-sidebar-fg-dim: rgba(240,237,234,0.38);
+          --p-sidebar-fg-mid: rgba(240,237,234,0.65);
+          --p-sidebar-border: rgba(255,255,255,0.07);
+          --p-sidebar-hover: rgba(255,255,255,0.04);
+          --p-sidebar-active-bg: rgba(217,119,6,0.12);
+          --p-sidebar-active-border: #D97706;
+          --p-sidebar-skel: rgba(255,255,255,0.05);
+          --p-chip: rgba(26,26,26,0.06);
+          --p-chip-ink: #737373;
+          --p-shell-border: rgba(26,26,26,0.09);
+          --p-button: #1A1A1A;
+          --p-button-fg: #FAFAF8;
+          --p-skel: rgba(26,26,26,0.07);
+          --p-bar-bg: rgba(26,26,26,0.07);
         }
         .dark {
-          --att-paper: #0b0a08;
-          --att-sidebar: #050505;
-          --att-ink: #f4efe4;
-          --att-ink-soft: #8C7B68;
-          --att-ink-faint: #6b5c4a;
-          --att-line: rgba(212,196,168,0.10);
-          --att-line-strong: rgba(212,196,168,0.15);
-          --att-line-softer: rgba(212,196,168,0.08);
-          --att-line-input: rgba(212,196,168,0.18);
-          --att-row-hover: rgba(212,196,168,0.04);
-          --att-row-tint: rgba(212,196,168,0.03);
-          --att-row-tint-strong: rgba(212,196,168,0.04);
-          --att-chip: rgba(212,196,168,0.08);
-          --att-chip-ink: #d4c4a8;
-          --att-gold: #d4b890;
-          --att-gold-soft: #C4B49A;
-          --att-button: #2a3d8f;
-          --att-button-shadow: rgba(42,61,143,0.40);
-          --att-sidebar-fg: #E8DFD0;
-          --att-sidebar-fg-dim: #6b6555;
-          --att-sidebar-fg-fainter: #4a4438;
-          --att-sidebar-fg-mid: #8C7B68;
-          --att-sidebar-border: rgba(255,255,255,0.06);
-          --att-sidebar-border-soft: rgba(255,255,255,0.04);
-          --att-sidebar-border-softer: rgba(255,255,255,0.05);
-          --att-sidebar-input-bg: rgba(255,255,255,0.04);
-          --att-sidebar-input-border: rgba(255,255,255,0.06);
-          --att-sidebar-skel: rgba(255,255,255,0.03);
-          --att-sidebar-chip-bg: rgba(255,255,255,0.04);
-          --att-shell-border: rgba(212,196,168,0.10);
-          --att-skel: rgba(212,196,168,0.08);
-          --att-group-hover-fg: #d4c4a8;
-          --att-group-hover-border: rgba(212,196,168,0.4);
-          --att-group-hover-bg: rgba(255,255,255,0.04);
-          --att-group-active-fg: #f4efe4;
-          --att-group-active-bg: rgba(255,255,255,0.06);
-          --att-teacher-sub: #6b5c4a;
-          --att-card: #11100d;
-          --att-bar-bg: rgba(212,196,168,0.08);
+          --p-bg: #111111;
+          --p-sidebar: #090909;
+          --p-ink: #EFEFEC;
+          --p-ink-soft: #909090;
+          --p-ink-faint: #555555;
+          --p-accent: #F59E0B;
+          --p-card: #1A1A1A;
+          --p-line: rgba(239,239,236,0.07);
+          --p-line-strong: rgba(239,239,236,0.11);
+          --p-row-hover: rgba(239,239,236,0.025);
+          --p-sidebar-fg: #F0EDEA;
+          --p-sidebar-fg-dim: rgba(240,237,234,0.33);
+          --p-sidebar-fg-mid: rgba(240,237,234,0.62);
+          --p-sidebar-border: rgba(255,255,255,0.05);
+          --p-sidebar-hover: rgba(255,255,255,0.04);
+          --p-sidebar-active-bg: rgba(245,158,11,0.10);
+          --p-sidebar-active-border: #F59E0B;
+          --p-sidebar-skel: rgba(255,255,255,0.04);
+          --p-chip: rgba(239,239,236,0.07);
+          --p-chip-ink: #909090;
+          --p-shell-border: rgba(239,239,236,0.08);
+          --p-button: #EFEFEC;
+          --p-button-fg: #111111;
+          --p-skel: rgba(239,239,236,0.07);
+          --p-bar-bg: rgba(239,239,236,0.07);
         }
 
-        .cg { font-family: 'Cormorant Garamond', Georgia, serif; }
-        .dm { font-family: 'DM Mono', 'Courier New', monospace; }
+        .syne { font-family: 'Syne', system-ui, sans-serif; }
+        .jm   { font-family: 'JetBrains Mono', 'Courier New', monospace; }
 
-        .att-group-item {
-          padding: 10px 16px;
+        .p-group {
+          padding: 9px 16px;
           cursor: pointer;
           border-left: 2px solid transparent;
-          transition: all 0.15s ease;
-          color: var(--att-ink-soft);
+          transition: all 0.12s ease;
           font-size: 13px;
-        }
-        .att-group-item:hover {
-          color: var(--att-group-hover-fg);
-          border-left-color: var(--att-group-hover-border);
-          background: var(--att-group-hover-bg);
-        }
-        .att-group-item.active {
-          color: var(--att-group-active-fg);
-          border-left-color: var(--att-gold);
-          background: var(--att-group-active-bg);
-        }
-
-        .att-period-btn {
-          padding: 7px 14px;
-          font-size: 11px;
           font-weight: 600;
-          letter-spacing: 0.06em;
+          color: var(--p-sidebar-fg-mid);
+          font-family: 'Syne', system-ui, sans-serif;
+        }
+        .p-group:hover {
+          color: var(--p-sidebar-fg);
+          background: var(--p-sidebar-hover);
+        }
+        .p-group.active {
+          color: var(--p-accent);
+          border-left-color: var(--p-accent);
+          background: var(--p-sidebar-active-bg);
+        }
+
+        .p-period-btn {
+          padding: 7px 14px;
+          font-size: 10px;
+          font-weight: 700;
+          letter-spacing: 0.07em;
           text-transform: uppercase;
-          border: 1px solid var(--att-line-input);
+          border: 1px solid var(--p-line-strong);
           background: transparent;
-          color: var(--att-ink-soft);
+          color: var(--p-ink-soft);
           cursor: pointer;
-          transition: all 0.15s ease;
+          transition: all 0.12s ease;
+          font-family: 'Syne', system-ui, sans-serif;
         }
-        .att-period-btn:first-child { border-radius: 8px 0 0 8px; }
-        .att-period-btn:last-child  { border-radius: 0 8px 8px 0; }
-        .att-period-btn:not(:first-child) { border-left: none; }
-        .att-period-btn:hover {
-          background: var(--att-row-hover);
-          color: var(--att-ink);
+        .p-period-btn:first-child { border-radius: 9px 0 0 9px; }
+        .p-period-btn:last-child  { border-radius: 0 9px 9px 0; }
+        .p-period-btn:not(:first-child) { border-left: none; }
+        .p-period-btn:hover {
+          background: var(--p-row-hover);
+          color: var(--p-ink);
         }
-        .att-period-btn.active {
-          background: var(--att-button);
-          color: #fff;
-          border-color: var(--att-button);
-          box-shadow: 0 1px 6px var(--att-button-shadow);
+        .p-period-btn.active {
+          background: var(--p-button);
+          color: var(--p-button-fg);
+          border-color: var(--p-button);
         }
 
-        .att-row {
-          border-bottom: 1px solid var(--att-line);
-          transition: background 0.15s ease;
+        .p-att-row {
+          border-bottom: 1px solid var(--p-line);
+          transition: background 0.12s ease;
         }
-        .att-row:hover { background: var(--att-row-hover); }
-        .att-row:last-child { border-bottom: none; }
+        .p-att-row:hover { background: var(--p-row-hover); }
+        .p-att-row:last-child { border-bottom: none; }
 
-        .att-bar {
-          height: 6px;
-          background: var(--att-bar-bg);
+        .p-bar {
+          height: 5px;
+          background: var(--p-bar-bg);
           border-radius: 3px;
           overflow: hidden;
-          position: relative;
         }
-        .att-bar-fill {
+        .p-bar-fill {
           height: 100%;
           border-radius: 3px;
-          transition: width 0.4s ease;
+          transition: width 0.5s cubic-bezier(0.22,1,0.36,1);
         }
 
-        @keyframes att-in {
-          from { opacity: 0; transform: translateY(6px); }
+        @keyframes p-in {
+          from { opacity: 0; transform: translateY(10px); }
           to   { opacity: 1; transform: translateY(0); }
         }
-        .att-animate { animation: att-in 0.35s ease forwards; }
-        .att-delay { opacity: 0; animation: att-in 0.3s ease forwards; }
+        .p-enter { animation: p-in 0.45s cubic-bezier(0.22,1,0.36,1) forwards; }
+        .p-delay  { opacity: 0; animation: p-in 0.35s cubic-bezier(0.22,1,0.36,1) forwards; }
       `}</style>
 
       <div
-        className="flex flex-col lg:flex-row gap-0 rounded-2xl overflow-hidden shadow-xl att-animate"
+        className="flex flex-col lg:flex-row gap-0 rounded-2xl overflow-hidden shadow-2xl p-enter"
         style={{
           minHeight: '78vh',
-          border: '1px solid var(--att-shell-border)',
-          background: 'var(--att-paper)',
+          border: '1px solid var(--p-shell-border)',
+          background: 'var(--p-bg)',
         }}
       >
-        {/* ── MOBILE GROUP/PERIOD ─────────────────────────── */}
+        {/* ── MOBILE GROUP SELECTOR ──────────────────── */}
         <div
-          className="lg:hidden flex flex-col gap-2 px-4 py-3"
-          style={{ background: 'var(--att-sidebar)', borderBottom: '1px solid var(--att-sidebar-border)' }}
+          className="lg:hidden flex flex-col gap-3 px-4 py-4"
+          style={{ background: 'var(--p-sidebar)', borderBottom: '1px solid var(--p-sidebar-border)' }}
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className="dm text-[10px] tracking-[0.18em] uppercase" style={{ color: 'var(--att-sidebar-fg-dim)' }}>
+              <p className="jm text-[9px] tracking-[0.22em] uppercase" style={{ color: 'var(--p-sidebar-fg-dim)' }}>
                 BILIM NURU
               </p>
-              <h2 className="cg leading-none" style={{ fontSize: '18px', fontWeight: 700, color: 'var(--att-sidebar-fg)' }}>
+              <h2 className="syne font-extrabold mt-0.5" style={{ fontSize: 18, color: 'var(--p-sidebar-fg)', letterSpacing: '-0.01em' }}>
                 {t('title')}
               </h2>
             </div>
             {isAdmin && (
               <span
-                className="inline-flex items-center gap-1 dm text-[9px] tracking-widest uppercase"
-                style={{ color: 'var(--att-sidebar-fg-dim)', background: 'var(--att-sidebar-chip-bg)', padding: '2px 6px', borderRadius: 4 }}
+                className="inline-flex items-center gap-1 jm text-[9px] tracking-wider uppercase"
+                style={{ color: 'var(--p-accent)', background: 'var(--p-sidebar-active-bg)', padding: '2px 8px', borderRadius: 4 }}
               >
                 <ShieldCheck style={{ width: 9, height: 9 }} />
                 {tJ('admin_view')}
@@ -450,44 +412,42 @@ export default function AttendancePage() {
             value={selectedGroupId}
             onChange={(e) => setSelectedGroupId(e.target.value)}
             disabled={groupsLoading || visibleGroups.length === 0}
-            className="w-full dm text-[12px] rounded-md px-3 py-2 outline-none"
+            className="w-full jm text-[12px] rounded-lg px-3 py-2.5 outline-none"
             style={{
-              background: 'var(--att-sidebar-input-bg)',
-              color: 'var(--att-sidebar-fg)',
-              border: '1px solid var(--att-sidebar-input-border)',
+              background: 'rgba(255,255,255,0.06)',
+              color: 'var(--p-sidebar-fg)',
+              border: '1px solid var(--p-sidebar-border)',
             }}
           >
             {visibleGroups.length === 0 ? (
               <option value="">{tCommon('no_data')}</option>
             ) : (
               visibleGroups.map((g) => (
-                <option key={g.id} value={g.id} style={{ background: 'var(--att-sidebar)' }}>
-                  {g.name}
-                </option>
+                <option key={g.id} value={g.id} style={{ background: 'var(--p-sidebar)' }}>{g.name}</option>
               ))
             )}
           </select>
         </div>
 
-        {/* ── SIDEBAR (lg+) ───────────────────────────────── */}
+        {/* ── SIDEBAR (lg+) ──────────────────────────── */}
         <aside
           className="hidden lg:flex flex-col w-64 shrink-0"
-          style={{ background: 'var(--att-sidebar)', borderRight: '1px solid var(--att-sidebar-border-soft)' }}
+          style={{ background: 'var(--p-sidebar)', borderRight: '1px solid var(--p-sidebar-border)' }}
         >
-          <div className="px-5 pt-6 pb-5" style={{ borderBottom: '1px solid var(--att-sidebar-border)' }}>
-            <p className="dm text-[10px] tracking-[0.18em] uppercase" style={{ color: 'var(--att-sidebar-fg-dim)' }}>
+          <div className="px-5 pt-6 pb-5" style={{ borderBottom: '1px solid var(--p-sidebar-border)' }}>
+            <p className="jm text-[9px] tracking-[0.22em] uppercase" style={{ color: 'var(--p-sidebar-fg-dim)' }}>
               BILIM NURU
             </p>
             <h2
-              className="cg mt-1 leading-none"
-              style={{ fontSize: '22px', fontWeight: 700, color: 'var(--att-sidebar-fg)', letterSpacing: '-0.01em' }}
+              className="syne mt-1.5 leading-none"
+              style={{ fontSize: 21, fontWeight: 800, color: 'var(--p-sidebar-fg)', letterSpacing: '-0.02em' }}
             >
               {t('title')}
             </h2>
             {isAdmin && (
               <span
-                className="inline-flex items-center gap-1 mt-2 dm text-[9px] tracking-widest uppercase"
-                style={{ color: 'var(--att-sidebar-fg-dim)', background: 'var(--att-sidebar-chip-bg)', padding: '2px 6px', borderRadius: 4 }}
+                className="inline-flex items-center gap-1 mt-2.5 jm text-[9px] tracking-wider uppercase"
+                style={{ color: 'var(--p-accent)', background: 'var(--p-sidebar-active-bg)', padding: '2px 8px', borderRadius: 4 }}
               >
                 <ShieldCheck style={{ width: 9, height: 9 }} />
                 {tJ('admin_view')}
@@ -496,30 +456,30 @@ export default function AttendancePage() {
           </div>
 
           <div className="flex-1 py-3 overflow-y-auto">
-            <p className="dm text-[9px] tracking-[0.18em] uppercase px-5 mb-2" style={{ color: 'var(--att-sidebar-fg-fainter)' }}>
+            <p className="jm text-[9px] tracking-[0.18em] uppercase px-5 mb-2" style={{ color: 'var(--p-sidebar-fg-dim)' }}>
               {isTeacher ? tCommon('your_groups') : tJ('all_groups')}
             </p>
             {groupsLoading ? (
-              <div className="px-4 space-y-2">
+              <div className="px-4 space-y-1.5">
                 {Array.from({ length: 4 }).map((_, i) => (
-                  <div key={i} className="h-8 rounded-lg" style={{ background: 'var(--att-sidebar-skel)' }} />
+                  <div key={i} className="h-9 rounded-lg" style={{ background: 'var(--p-sidebar-skel)' }} />
                 ))}
               </div>
             ) : visibleGroups.length === 0 ? (
-              <p className="dm text-[11px] px-5" style={{ color: 'var(--att-sidebar-fg-fainter)' }}>{tCommon('no_data')}</p>
+              <p className="jm text-[11px] px-5" style={{ color: 'var(--p-sidebar-fg-dim)' }}>{tCommon('no_data')}</p>
             ) : (
               visibleGroups.map((group) => (
                 <div
                   key={group.id}
-                  className={cn('att-group-item', selectedGroupId === group.id && 'active')}
+                  className={cn('p-group', selectedGroupId === group.id && 'active')}
                   onClick={() => setSelectedGroupId(group.id)}
                 >
                   <div className="flex items-center gap-2">
-                    <BookOpen style={{ width: 11, height: 11, opacity: 0.6, flexShrink: 0 }} />
-                    <span className="truncate font-semibold">{group.name}</span>
+                    <BookOpen style={{ width: 11, height: 11, opacity: 0.45, flexShrink: 0 }} />
+                    <span className="truncate">{group.name}</span>
                   </div>
                   {group.teacher && selectedGroupId !== group.id && (
-                    <p className="dm text-[10px] mt-0.5 ml-5 truncate" style={{ color: 'var(--att-teacher-sub)', opacity: 0.7 }}>
+                    <p className="jm text-[10px] mt-0.5 ml-[22px] truncate" style={{ color: 'var(--p-sidebar-fg-dim)' }}>
                       {group.teacher.full_name}
                     </p>
                   )}
@@ -528,27 +488,23 @@ export default function AttendancePage() {
             )}
           </div>
 
-          {/* Period summary in sidebar */}
           {!isLoading && totals.total > 0 && (
-            <div className="px-5 py-5" style={{ borderTop: '1px solid var(--att-sidebar-border-softer)' }}>
-              <p className="dm text-[9px] tracking-[0.18em] uppercase mb-4" style={{ color: 'var(--att-sidebar-fg-fainter)' }}>
+            <div className="px-5 py-5" style={{ borderTop: '1px solid var(--p-sidebar-border)' }}>
+              <p className="jm text-[9px] tracking-[0.18em] uppercase mb-4" style={{ color: 'var(--p-sidebar-fg-dim)' }}>
                 {periodLabel[period]}
               </p>
-              <div className="space-y-3">
+              <div className="space-y-4">
                 {[
                   { label: tJ('present'), value: totals.present, dot: '#4ADE80' },
-                  { label: tJ('late'), value: totals.late, dot: '#FB923C' },
-                  { label: tJ('absent'), value: totals.absent, dot: '#F87171' },
+                  { label: tJ('late'),    value: totals.late,    dot: '#FBBF24' },
+                  { label: tJ('absent'),  value: totals.absent,  dot: '#F87171' },
                 ].map((s) => (
                   <div key={s.label} className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <span className="size-1.5 rounded-full shrink-0" style={{ background: s.dot }} />
-                      <span className="text-[12px] font-medium" style={{ color: 'var(--att-sidebar-fg-mid)' }}>{s.label}</span>
+                      <span className="syne font-medium" style={{ fontSize: 12, color: 'var(--p-sidebar-fg-mid)' }}>{s.label}</span>
                     </div>
-                    <span
-                      className="cg"
-                      style={{ fontSize: '22px', fontWeight: 700, color: 'var(--att-gold-soft)', lineHeight: 1 }}
-                    >
+                    <span className="jm font-bold" style={{ fontSize: 22, color: 'var(--p-accent)', lineHeight: 1 }}>
                       {String(s.value).padStart(2, '0')}
                     </span>
                   </div>
@@ -558,34 +514,36 @@ export default function AttendancePage() {
           )}
         </aside>
 
-        {/* ── MAIN PANEL ──────────────────────────────────── */}
+        {/* ── MAIN PANEL ─────────────────────────────── */}
         <div className="flex-1 flex flex-col min-w-0">
           {/* Header */}
           <div
-            className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 px-4 sm:px-8 pt-4 sm:pt-6 pb-4 sm:pb-5 shrink-0"
-            style={{ borderBottom: '1px solid var(--att-line)', background: 'var(--att-paper)' }}
+            className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 px-4 sm:px-8 pt-5 sm:pt-6 pb-4 sm:pb-5 shrink-0"
+            style={{ borderBottom: '1px solid var(--p-line)', background: 'var(--p-bg)' }}
           >
             <div className="flex items-center gap-3">
               <div
-                className="flex items-center justify-center rounded-lg"
+                className="flex items-center justify-center rounded-xl shrink-0"
                 style={{
                   width: 40, height: 40,
-                  border: '1px solid var(--att-line-strong)',
-                  background: 'var(--att-row-tint-strong)',
-                  color: 'var(--att-chip-ink)',
+                  border: '1px solid var(--p-line-strong)',
+                  background: 'var(--p-card)',
+                  color: 'var(--p-ink-soft)',
                 }}
               >
                 <CalendarRange style={{ width: 18, height: 18 }} />
               </div>
               <div>
                 <p
-                  className="cg leading-none text-[24px] sm:text-[28px]"
-                  style={{ fontWeight: 700, color: 'var(--att-ink)', letterSpacing: '-0.02em' }}
+                  className="syne leading-none"
+                  style={{ fontSize: 'clamp(18px,3vw,26px)', fontWeight: 800, color: 'var(--p-ink)', letterSpacing: '-0.02em' }}
                 >
                   {selectedGroup?.name ?? t('title')}
                 </p>
-                <p className="dm text-[11px] mt-0.5" style={{ color: 'var(--att-ink-soft)' }}>
-                  {dateFrom ? `${format(parseISO(dateFrom), 'dd MMM')} → ${format(parseISO(dateTo!), 'dd MMM yyyy')}` : t('all_time')}
+                <p className="jm text-[11px] mt-1" style={{ color: 'var(--p-ink-soft)' }}>
+                  {dateFrom
+                    ? `${format(parseISO(dateFrom), 'dd MMM')} → ${format(parseISO(dateTo!), 'dd MMM yyyy')}`
+                    : t('all_time')}
                 </p>
               </div>
             </div>
@@ -596,7 +554,7 @@ export default function AttendancePage() {
                   <button
                     key={p}
                     onClick={() => setPeriod(p)}
-                    className={cn('att-period-btn dm', period === p && 'active')}
+                    className={cn('p-period-btn', period === p && 'active')}
                   >
                     {periodLabel[p]}
                   </button>
@@ -610,19 +568,19 @@ export default function AttendancePage() {
                   alignItems: 'center',
                   gap: 6,
                   padding: '7px 14px',
-                  borderRadius: 8,
-                  border: '1px solid var(--att-line-input)',
-                  background: 'var(--att-row-tint-strong)',
-                  color: 'var(--att-chip-ink)',
-                  fontSize: 11,
+                  borderRadius: 9,
+                  border: '1px solid var(--p-line-strong)',
+                  background: 'var(--p-card)',
+                  color: 'var(--p-ink-soft)',
+                  fontSize: 10,
                   fontWeight: 700,
-                  fontFamily: 'inherit',
-                  letterSpacing: '0.06em',
+                  fontFamily: "'Syne', system-ui, sans-serif",
+                  letterSpacing: '0.07em',
                   textTransform: 'uppercase',
                   cursor: filteredRows.length ? 'pointer' : 'not-allowed',
-                  opacity: filteredRows.length ? 1 : 0.5,
-                  transition: 'all 0.15s ease',
-                }}
+                  opacity: filteredRows.length ? 1 : 0.45,
+                  transition: 'all 0.12s ease',
+                } as React.CSSProperties}
               >
                 <Download style={{ width: 12, height: 12 }} />
                 CSV
@@ -633,111 +591,126 @@ export default function AttendancePage() {
           {/* Body */}
           <div className="flex-1 overflow-y-auto px-4 sm:px-8 py-5">
             {!selectedGroupId ? (
-              <div className="flex flex-col items-center justify-center h-full py-20">
-                <BookOpen style={{ width: 44, height: 44, opacity: 0.25, marginBottom: 12, color: 'var(--att-gold-soft)' }} />
-                <p className="cg font-semibold" style={{ fontSize: 20, color: 'var(--att-ink-soft)' }}>
-                  {tJ('group')}
-                </p>
-                <p className="dm text-[11px] mt-1" style={{ color: 'var(--att-ink-faint)' }}>
-                  {tJ('select_group_hint')}
-                </p>
+              <div className="flex flex-col items-center justify-center h-full gap-3">
+                <div style={{
+                  width: 56, height: 56, borderRadius: 16,
+                  background: 'var(--p-card)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  border: '1px solid var(--p-line)',
+                }}>
+                  <BookOpen style={{ width: 22, height: 22, color: 'var(--p-ink-faint)' }} />
+                </div>
+                <div className="text-center">
+                  <p className="syne font-bold" style={{ fontSize: 16, color: 'var(--p-ink-soft)' }}>{tJ('group')}</p>
+                  <p className="jm text-[11px] mt-1" style={{ color: 'var(--p-ink-faint)' }}>{tJ('select_group_hint')}</p>
+                </div>
               </div>
             ) : isLoading ? (
               <div className="space-y-4">
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                   {Array.from({ length: 4 }).map((_, i) => (
-                    <Skeleton key={i} className="h-24 rounded-xl" style={{ background: 'var(--att-skel)' }} />
+                    <Skeleton key={i} className="h-24 rounded-2xl" style={{ background: 'var(--p-skel)' }} />
                   ))}
                 </div>
-                <Skeleton className="h-64 rounded-xl" style={{ background: 'var(--att-skel)' }} />
+                <Skeleton className="h-72 rounded-2xl" style={{ background: 'var(--p-skel)' }} />
               </div>
             ) : enrollments.length === 0 ? (
-              <div className="flex flex-col items-center justify-center h-full py-20">
-                <AlertCircle style={{ width: 44, height: 44, opacity: 0.25, marginBottom: 12, color: 'var(--att-gold-soft)' }} />
-                <p className="cg font-semibold" style={{ fontSize: 20, color: 'var(--att-ink-soft)' }}>
-                  {tJ('no_students')}
-                </p>
-                <p className="dm text-[11px] mt-1" style={{ color: 'var(--att-ink-faint)' }}>
-                  {tJ('enroll_first')}
-                </p>
+              <div className="flex flex-col items-center justify-center h-full gap-3">
+                <div style={{
+                  width: 56, height: 56, borderRadius: 16,
+                  background: 'var(--p-card)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  border: '1px solid var(--p-line)',
+                }}>
+                  <AlertCircle style={{ width: 22, height: 22, color: 'var(--p-ink-faint)' }} />
+                </div>
+                <div className="text-center">
+                  <p className="syne font-bold" style={{ fontSize: 16, color: 'var(--p-ink-soft)' }}>{tJ('no_students')}</p>
+                  <p className="jm text-[11px] mt-1" style={{ color: 'var(--p-ink-faint)' }}>{tJ('enroll_first')}</p>
+                </div>
               </div>
             ) : (
-              <div className="space-y-5">
-                {/* ── STAT CARDS ─────────────────────────── */}
+              <div className="space-y-4">
+
+                {/* ── STAT CARDS ─────────────────────── */}
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                  <StatCard
-                    icon={<TrendingUp style={{ width: 16, height: 16 }} />}
+                  <AttStatCard
+                    icon={<TrendingUp style={{ width: 15, height: 15 }} />}
                     label={t('attendance_rate')}
                     value={`${totals.rate}%`}
-                    accent="#1E2D6E"
+                    accentColor="var(--p-accent)"
                   />
-                  <StatCard
-                    icon={<Users style={{ width: 16, height: 16 }} />}
+                  <AttStatCard
+                    icon={<Users style={{ width: 15, height: 15 }} />}
                     label={t('total_lessons')}
                     value={String(totals.lessons)}
                     sub={`${enrollments.length} ${tJ('n_students')}`}
                   />
-                  <StatCard
-                    icon={<CheckCircle2 style={{ width: 16, height: 16, color: '#166534' }} />}
+                  <AttStatCard
+                    icon={<CheckCircle2 style={{ width: 15, height: 15, color: '#15803D' }} />}
                     label={tJ('present')}
                     value={String(totals.present)}
                     sub={totals.total ? `${Math.round((totals.present / totals.total) * 100)}%` : '—'}
+                    accentColor="#15803D"
                   />
-                  <StatCard
-                    icon={<XCircle style={{ width: 16, height: 16, color: '#991B1B' }} />}
+                  <AttStatCard
+                    icon={<XCircle style={{ width: 15, height: 15, color: '#DC2626' }} />}
                     label={tJ('absent')}
                     value={String(totals.absent)}
                     sub={totals.total ? `${Math.round((totals.absent / totals.total) * 100)}%` : '—'}
+                    accentColor="#DC2626"
                   />
                 </div>
 
-                {/* ── CHARTS ─────────────────────────────── */}
+                {/* ── CHARTS ─────────────────────────── */}
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
+                  {/* Area chart */}
                   <div
-                    className="lg:col-span-2 rounded-xl p-4"
-                    style={{ background: 'var(--att-card)', border: '1px solid var(--att-line-strong)' }}
+                    className="lg:col-span-2 rounded-2xl p-4"
+                    style={{ background: 'var(--p-card)', border: '1px solid var(--p-line-strong)' }}
                   >
-                    <div className="flex items-center justify-between mb-3">
-                      <h3 className="cg font-bold" style={{ fontSize: 16, color: 'var(--att-ink)' }}>
+                    <div className="flex items-center justify-between mb-4">
+                      <p className="syne font-bold" style={{ fontSize: 14, color: 'var(--p-ink)' }}>
                         {t('attendance_trend')}
-                      </h3>
-                      <span className="dm text-[10px]" style={{ color: 'var(--att-ink-soft)' }}>
+                      </p>
+                      <span className="jm text-[10px]" style={{ color: 'var(--p-ink-faint)' }}>
                         {periodLabel[period]}
                       </span>
                     </div>
                     <div style={{ height: 220 }}>
                       {trendData.length === 0 ? (
-                        <div className="h-full w-full flex items-center justify-center dm text-[11px]" style={{ color: 'var(--att-ink-faint)' }}>
+                        <div className="h-full flex items-center justify-center jm text-[11px]" style={{ color: 'var(--p-ink-faint)' }}>
                           {tCommon('no_data')}
                         </div>
                       ) : (
                         <ResponsiveContainer width="100%" height="100%">
                           <AreaChart data={trendData}>
                             <defs>
-                              <linearGradient id="att-rate" x1="0" y1="0" x2="0" y2="1">
-                                <stop offset="0%" stopColor="#1E2D6E" stopOpacity={0.4} />
-                                <stop offset="100%" stopColor="#1E2D6E" stopOpacity={0.02} />
+                              <linearGradient id="att-grad" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="0%" stopColor="#D97706" stopOpacity={0.35} />
+                                <stop offset="100%" stopColor="#D97706" stopOpacity={0.02} />
                               </linearGradient>
                             </defs>
-                            <CartesianGrid strokeDasharray="3 3" stroke="var(--att-line-strong)" opacity={0.5} />
-                            <XAxis dataKey="x" stroke="var(--att-ink-soft)" fontSize={10} />
-                            <YAxis stroke="var(--att-ink-soft)" fontSize={10} width={36} tickFormatter={(v) => `${v}%`} />
+                            <CartesianGrid strokeDasharray="3 3" stroke="var(--p-line-strong)" opacity={0.6} />
+                            <XAxis dataKey="x" stroke="var(--p-ink-faint)" fontSize={10} fontFamily="'JetBrains Mono', monospace" />
+                            <YAxis stroke="var(--p-ink-faint)" fontSize={10} width={34} tickFormatter={(v) => `${v}%`} fontFamily="'JetBrains Mono', monospace" />
                             <Tooltip
                               contentStyle={{
-                                background: 'var(--att-card)',
-                                border: '1px solid var(--att-line-strong)',
-                                borderRadius: 8,
+                                background: 'var(--p-bg)',
+                                border: '1px solid var(--p-line-strong)',
+                                borderRadius: 10,
                                 fontSize: 12,
-                                color: 'var(--att-ink)',
+                                color: 'var(--p-ink)',
+                                fontFamily: "'JetBrains Mono', monospace",
                               }}
                               formatter={(v) => [`${Number(v) || 0}%`, t('attendance_rate')]}
                             />
                             <Area
                               type="monotone"
                               dataKey="rate"
-                              stroke="#1E2D6E"
+                              stroke="#D97706"
                               strokeWidth={2}
-                              fill="url(#att-rate)"
+                              fill="url(#att-grad)"
                             />
                           </AreaChart>
                         </ResponsiveContainer>
@@ -745,18 +718,17 @@ export default function AttendancePage() {
                     </div>
                   </div>
 
+                  {/* Donut chart */}
                   <div
-                    className="rounded-xl p-4"
-                    style={{ background: 'var(--att-card)', border: '1px solid var(--att-line-strong)' }}
+                    className="rounded-2xl p-4"
+                    style={{ background: 'var(--p-card)', border: '1px solid var(--p-line-strong)' }}
                   >
-                    <div className="flex items-center justify-between mb-3">
-                      <h3 className="cg font-bold" style={{ fontSize: 16, color: 'var(--att-ink)' }}>
-                        {t('distribution')}
-                      </h3>
-                    </div>
-                    <div style={{ height: 220 }}>
+                    <p className="syne font-bold mb-4" style={{ fontSize: 14, color: 'var(--p-ink)' }}>
+                      {t('distribution')}
+                    </p>
+                    <div style={{ height: 180 }}>
                       {donutData.length === 0 ? (
-                        <div className="h-full w-full flex items-center justify-center dm text-[11px]" style={{ color: 'var(--att-ink-faint)' }}>
+                        <div className="h-full flex items-center justify-center jm text-[11px]" style={{ color: 'var(--p-ink-faint)' }}>
                           {tCommon('no_data')}
                         </div>
                       ) : (
@@ -764,11 +736,9 @@ export default function AttendancePage() {
                           <PieChart>
                             <Pie
                               data={donutData}
-                              cx="50%"
-                              cy="50%"
-                              innerRadius={45}
-                              outerRadius={75}
-                              paddingAngle={2}
+                              cx="50%" cy="50%"
+                              innerRadius={42} outerRadius={70}
+                              paddingAngle={3}
                               dataKey="value"
                             >
                               {donutData.map((d) => (
@@ -777,69 +747,71 @@ export default function AttendancePage() {
                             </Pie>
                             <Tooltip
                               contentStyle={{
-                                background: 'var(--att-card)',
-                                border: '1px solid var(--att-line-strong)',
-                                borderRadius: 8,
+                                background: 'var(--p-bg)',
+                                border: '1px solid var(--p-line-strong)',
+                                borderRadius: 10,
                                 fontSize: 12,
-                                color: 'var(--att-ink)',
+                                color: 'var(--p-ink)',
+                                fontFamily: "'JetBrains Mono', monospace",
                               }}
                             />
                           </PieChart>
                         </ResponsiveContainer>
                       )}
                     </div>
-                    <div className="space-y-1.5 mt-2">
+                    <div className="space-y-2 mt-3">
                       {donutData.map((d) => (
-                        <div key={d.name} className="flex items-center justify-between text-[11px]">
+                        <div key={d.name} className="flex items-center justify-between">
                           <div className="flex items-center gap-2">
-                            <span className="size-2 rounded-sm" style={{ background: d.color }} />
-                            <span className="dm" style={{ color: 'var(--att-ink-soft)' }}>{d.name}</span>
+                            <span className="size-2 rounded-sm shrink-0" style={{ background: d.color }} />
+                            <span className="syne font-medium text-[12px]" style={{ color: 'var(--p-ink-soft)' }}>{d.name}</span>
                           </div>
-                          <span className="dm font-semibold" style={{ color: 'var(--att-ink)' }}>{d.value}</span>
+                          <span className="jm font-bold text-[12px]" style={{ color: 'var(--p-ink)' }}>{d.value}</span>
                         </div>
                       ))}
                     </div>
                   </div>
                 </div>
 
-                {/* ── STUDENT TABLE ──────────────────────── */}
+                {/* ── STUDENT TABLE ───────────────────── */}
                 <div
-                  className="rounded-xl overflow-hidden"
-                  style={{ background: 'var(--att-card)', border: '1px solid var(--att-line-strong)' }}
+                  className="rounded-2xl overflow-hidden"
+                  style={{ background: 'var(--p-card)', border: '1px solid var(--p-line-strong)' }}
                 >
+                  {/* Table header controls */}
                   <div
-                    className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-4"
-                    style={{ borderBottom: '1px solid var(--att-line-strong)' }}
+                    className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4"
+                    style={{ borderBottom: '1px solid var(--p-line-strong)' }}
                   >
-                    <h3 className="cg font-bold" style={{ fontSize: 16, color: 'var(--att-ink)' }}>
+                    <p className="syne font-bold" style={{ fontSize: 14, color: 'var(--p-ink)' }}>
                       {t('by_student')}
-                    </h3>
+                    </p>
                     <div className="flex items-center gap-2 flex-wrap">
                       <div
-                        className="flex items-center gap-1.5 px-2 py-1.5 rounded-md"
+                        className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl"
                         style={{
-                          background: 'var(--att-row-tint-strong)',
-                          border: '1px solid var(--att-line-input)',
+                          background: 'var(--p-bg)',
+                          border: '1px solid var(--p-line-strong)',
                           minWidth: 180,
                         }}
                       >
-                        <Search style={{ width: 12, height: 12, color: 'var(--att-ink-soft)' }} />
+                        <Search style={{ width: 12, height: 12, color: 'var(--p-ink-soft)', flexShrink: 0 }} />
                         <input
                           value={search}
                           onChange={(e) => setSearch(e.target.value)}
                           placeholder={t('search_student')}
-                          className="dm bg-transparent outline-none w-full text-[12px]"
-                          style={{ color: 'var(--att-ink)' }}
+                          className="jm bg-transparent outline-none w-full text-[12px]"
+                          style={{ color: 'var(--p-ink)' }}
                         />
                       </div>
                       <select
                         value={statusFilter}
                         onChange={(e) => setStatusFilter(e.target.value as typeof statusFilter)}
-                        className="dm text-[11px] px-2 py-1.5 rounded-md outline-none"
+                        className="jm text-[11px] px-2.5 py-1.5 rounded-xl outline-none"
                         style={{
-                          background: 'var(--att-row-tint-strong)',
-                          border: '1px solid var(--att-line-input)',
-                          color: 'var(--att-ink)',
+                          background: 'var(--p-bg)',
+                          border: '1px solid var(--p-line-strong)',
+                          color: 'var(--p-ink)',
                         }}
                       >
                         <option value="ALL">{t('all_statuses')}</option>
@@ -850,14 +822,14 @@ export default function AttendancePage() {
                     </div>
                   </div>
 
-                  {/* Header row */}
+                  {/* Column headers */}
                   <div
-                    className="dm hidden sm:grid px-4 py-2.5 text-[10px] tracking-[0.14em] uppercase"
+                    className="jm hidden sm:grid px-4 py-2.5 text-[9px] tracking-[0.16em] uppercase"
                     style={{
                       gridTemplateColumns: '1.4fr 0.6fr 0.6fr 0.6fr 1.4fr 0.6fr',
-                      borderBottom: '1px solid var(--att-line-strong)',
-                      color: 'var(--att-ink-soft)',
-                      background: 'var(--att-row-tint)',
+                      borderBottom: '1px solid var(--p-line-strong)',
+                      color: 'var(--p-ink-faint)',
+                      background: 'var(--p-bg)',
                     }}
                   >
                     <span>{tCommon('student')}</span>
@@ -869,75 +841,73 @@ export default function AttendancePage() {
                   </div>
 
                   {filteredRows.length === 0 ? (
-                    <div className="flex flex-col items-center justify-center py-12">
-                      <AlertCircle style={{ width: 32, height: 32, opacity: 0.25, marginBottom: 8, color: 'var(--att-gold-soft)' }} />
-                      <p className="dm text-[12px]" style={{ color: 'var(--att-ink-faint)' }}>
-                        {tCommon('no_data')}
-                      </p>
+                    <div className="flex flex-col items-center justify-center py-12 gap-2">
+                      <AlertCircle style={{ width: 28, height: 28, opacity: 0.2, color: 'var(--p-ink-soft)' }} />
+                      <p className="jm text-[12px]" style={{ color: 'var(--p-ink-faint)' }}>{tCommon('no_data')}</p>
                     </div>
                   ) : (
                     filteredRows.map((row, idx) => (
                       <div
                         key={row.student_id}
-                        className="att-row att-delay px-4 py-3 flex flex-col gap-2 sm:grid sm:items-center sm:gap-0"
+                        className="p-att-row p-delay px-4 py-3 flex flex-col gap-2 sm:grid sm:items-center sm:gap-0"
                         style={{
                           gridTemplateColumns: '1.4fr 0.6fr 0.6fr 0.6fr 1.4fr 0.6fr',
-                          animationDelay: `${idx * 20}ms`,
+                          animationDelay: `${idx * 18}ms`,
                         }}
                       >
                         {/* Name */}
-                        <div className="flex items-center gap-2.5">
+                        <div className="flex items-center gap-3">
                           <span
-                            className="cg shrink-0 flex items-center justify-center font-bold"
+                            className="jm font-bold shrink-0 flex items-center justify-center"
                             style={{
-                              width: 26, height: 26,
-                              borderRadius: 6,
-                              background: 'var(--att-chip)',
-                              color: 'var(--att-chip-ink)',
-                              fontSize: 12,
+                              width: 28, height: 28, borderRadius: 8,
+                              background: 'var(--p-bg)',
+                              color: 'var(--p-ink-faint)',
+                              fontSize: 11,
+                              border: '1px solid var(--p-line)',
                             }}
                           >
-                            {idx + 1}
+                            {String(idx + 1).padStart(2, '0')}
                           </span>
-                          <span style={{ fontSize: 13, fontWeight: 600, color: 'var(--att-ink)' }}>{row.name}</span>
+                          <span className="syne font-semibold" style={{ fontSize: 13, color: 'var(--p-ink)' }}>{row.name}</span>
                         </div>
 
                         {/* Counts */}
-                        <Pill value={row.present} hint={tJ('present')} dot="#4ADE80" />
-                        <Pill value={row.late} hint={tJ('late')} dot="#FB923C" />
-                        <Pill value={row.absent} hint={tJ('absent')} dot="#F87171" />
+                        <AttPill value={row.present} hint={tJ('present')} dot="#4ADE80" />
+                        <AttPill value={row.late}    hint={tJ('late')}    dot="#FBBF24" />
+                        <AttPill value={row.absent}  hint={tJ('absent')}  dot="#F87171" />
 
                         {/* Rate bar */}
                         <div className="flex items-center gap-2">
-                          <div className="flex-1 att-bar">
+                          <div className="flex-1 p-bar">
                             <div
-                              className="att-bar-fill"
+                              className="p-bar-fill"
                               style={{
                                 width: `${row.rate}%`,
-                                background: row.rate >= 80 ? '#166534' : row.rate >= 50 ? '#92400E' : '#991B1B',
+                                background: row.rate >= 80 ? '#15803D' : row.rate >= 50 ? '#D97706' : '#DC2626',
                               }}
                             />
                           </div>
-                          <span className="dm text-[12px] font-bold tabular-nums" style={{ color: 'var(--att-ink)' }}>
+                          <span className="jm text-[12px] font-bold tabular-nums" style={{ color: 'var(--p-ink)', minWidth: 36 }}>
                             {row.rate}%
                           </span>
                         </div>
 
                         {/* Avg score */}
                         <div className="flex items-center justify-between sm:justify-center gap-2">
-                          <span className="dm text-[10px] sm:hidden" style={{ color: 'var(--att-ink-soft)' }}>
+                          <span className="jm text-[10px] sm:hidden" style={{ color: 'var(--p-ink-soft)' }}>
                             {t('avg_score')}
                           </span>
                           {row.avgScore == null ? (
-                            <span className="dm text-[12px]" style={{ color: 'var(--att-ink-faint)' }}>—</span>
+                            <span className="jm text-[12px]" style={{ color: 'var(--p-ink-faint)' }}>—</span>
                           ) : (
                             <span
-                              className="dm text-[12px] font-bold"
+                              className="jm text-[12px] font-bold"
                               style={{
                                 color: '#fff',
-                                background: row.avgScore >= 70 ? '#166534' : row.avgScore >= 50 ? '#92400E' : '#991B1B',
-                                padding: '3px 8px',
-                                borderRadius: 4,
+                                background: row.avgScore >= 70 ? '#15803D' : row.avgScore >= 50 ? '#D97706' : '#DC2626',
+                                padding: '3px 9px',
+                                borderRadius: 6,
                               }}
                             >
                               {row.avgScore}
@@ -950,17 +920,18 @@ export default function AttendancePage() {
 
                   {filteredRows.length > 0 && (
                     <div
-                      className="dm text-[10px] px-4 py-2.5"
+                      className="jm text-[10px] px-4 py-2.5"
                       style={{
-                        borderTop: '1.5px solid var(--att-line-strong)',
-                        color: 'var(--att-ink-faint)',
-                        background: 'var(--att-row-tint)',
+                        borderTop: '1px solid var(--p-line-strong)',
+                        color: 'var(--p-ink-faint)',
+                        background: 'var(--p-bg)',
                       }}
                     >
                       {filteredRows.length} {tJ('n_students')} · {totals.lessons} {t('lessons')}
                     </div>
                   )}
                 </div>
+
               </div>
             )}
           </div>
@@ -970,72 +941,60 @@ export default function AttendancePage() {
   );
 }
 
-function StatCard({
+function AttStatCard({
   icon,
   label,
   value,
   sub,
-  accent,
+  accentColor,
 }: {
   icon: React.ReactNode;
   label: string;
   value: string;
   sub?: string;
-  accent?: string;
+  accentColor?: string;
 }) {
   return (
     <div
-      className="rounded-xl p-3 sm:p-4 flex flex-col gap-1.5"
-      style={{
-        background: 'var(--att-card)',
-        border: '1px solid var(--att-line-strong)',
-      }}
+      className="rounded-2xl p-3 sm:p-4 flex flex-col gap-2"
+      style={{ background: 'var(--p-card)', border: '1px solid var(--p-line-strong)' }}
     >
       <div className="flex items-center gap-2">
         <span
-          className="flex items-center justify-center rounded-md"
-          style={{
-            width: 26, height: 26,
-            background: 'var(--att-chip)',
-            color: accent ?? 'var(--att-chip-ink)',
-          }}
+          className="flex items-center justify-center rounded-lg"
+          style={{ width: 26, height: 26, background: 'var(--p-bg)', border: '1px solid var(--p-line)' }}
         >
           {icon}
         </span>
-        <span className="dm text-[10px] tracking-[0.1em] uppercase" style={{ color: 'var(--att-ink-soft)' }}>
+        <span className="jm text-[9px] tracking-[0.1em] uppercase" style={{ color: 'var(--p-ink-faint)' }}>
           {label}
         </span>
       </div>
       <div className="flex items-baseline gap-2">
         <span
-          className="cg leading-none"
-          style={{ fontSize: 28, fontWeight: 700, color: accent ?? 'var(--att-ink)', letterSpacing: '-0.02em' }}
+          className="syne leading-none"
+          style={{ fontSize: 30, fontWeight: 800, color: accentColor ?? 'var(--p-ink)', letterSpacing: '-0.02em' }}
         >
           {value}
         </span>
         {sub && (
-          <span className="dm text-[11px]" style={{ color: 'var(--att-ink-soft)' }}>
-            {sub}
-          </span>
+          <span className="jm text-[11px]" style={{ color: 'var(--p-ink-soft)' }}>{sub}</span>
         )}
       </div>
     </div>
   );
 }
 
-function Pill({ value, hint, dot }: { value: number; hint: string; dot: string }) {
+function AttPill({ value, hint, dot }: { value: number; hint: string; dot: string }) {
   return (
     <div className="flex items-center justify-between sm:justify-center gap-1.5">
       <div className="flex items-center gap-1.5 sm:hidden">
-        <span className="size-1.5 rounded-full" style={{ background: dot }} />
-        <span className="dm text-[10px]" style={{ color: 'var(--att-ink-soft)' }}>{hint}</span>
+        <span className="size-1.5 rounded-full shrink-0" style={{ background: dot }} />
+        <span className="jm text-[10px]" style={{ color: 'var(--p-ink-soft)' }}>{hint}</span>
       </div>
       <span
-        className="dm font-bold tabular-nums"
-        style={{
-          fontSize: 13,
-          color: value > 0 ? 'var(--att-ink)' : 'var(--att-ink-faint)',
-        }}
+        className="jm font-bold tabular-nums"
+        style={{ fontSize: 13, color: value > 0 ? 'var(--p-ink)' : 'var(--p-ink-faint)' }}
       >
         {String(value).padStart(2, '0')}
       </span>

@@ -202,7 +202,7 @@ export function CreateTeacherModal({ open, onClose }: CreateTeacherModalProps) {
                   type="number"
                   {...register('hourly_rate')}
                   placeholder="500"
-                  step="1000"
+                  step="1"
                 />
               </Field>
             )}

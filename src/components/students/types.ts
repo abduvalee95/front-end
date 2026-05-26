@@ -8,6 +8,7 @@ export type StudentRow = Pick<Student, 'id' | 'name' | 'phone' | 'status'> & {
   groups: string[];
   courses: string[];
   teachers: string[];
+  totalDiscount: number;
 };
 
 export const PAGE_SIZE = 10;

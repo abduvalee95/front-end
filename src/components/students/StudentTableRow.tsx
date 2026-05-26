@@ -90,6 +90,15 @@ export function StudentTableRow({ student, index, teacherScoped, canManageScope,
       <TableCell className="text-xs font-mono text-muted-foreground max-w-[160px]">
         <span className="truncate block">{teacherScoped ? student.teachers.join(', ') || '—' : student.phone}</span>
       </TableCell>
+      <TableCell>
+        {student.totalDiscount > 0 ? (
+          <span className="inline-flex items-center gap-1 rounded-full bg-amber-50 px-2.5 py-0.5 text-[11px] font-bold text-amber-700 dark:bg-amber-500/10 dark:text-amber-300">
+            −{new Intl.NumberFormat('ru-RU').format(student.totalDiscount)} с
+          </span>
+        ) : (
+          <span className="text-muted-foreground/40">—</span>
+        )}
+      </TableCell>
       {canManageScope && (
         <TableCell className="pr-4 text-right">
           <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">

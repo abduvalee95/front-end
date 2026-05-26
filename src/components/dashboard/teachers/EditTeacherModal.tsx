@@ -170,7 +170,7 @@ export function EditTeacherModal({ teacher, onClose }: EditTeacherModalProps) {
               )}
               {salaryType === 'HOURLY' && (
                 <Field label={t('hourly_rate_label')}>
-                  <Input type="number" step="1000" {...register('hourly_rate')} placeholder="500" />
+                  <Input type="number" step="1" {...register('hourly_rate')} placeholder="500" />
                 </Field>
               )}
               {salaryType === 'GROUP_PERCENT' && (

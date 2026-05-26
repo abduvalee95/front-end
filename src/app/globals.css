@@ -538,11 +538,14 @@ details[open] .faq-icon { transform: rotate(45deg); }
 }
 
 html, body {
-  overscroll-behavior-y: none;
+  overflow: hidden;
+  overscroll-behavior: none;
   -webkit-tap-highlight-color: transparent;
   -webkit-touch-callout: none;
   text-size-adjust: 100%;
   -webkit-text-size-adjust: 100%;
+  /* Prevent horizontal scroll bleed on any child */
+  max-width: 100vw;
 }
 
 body {

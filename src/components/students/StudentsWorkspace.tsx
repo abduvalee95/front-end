@@ -95,10 +95,12 @@ export function StudentsWorkspace() {
         const groupName = enrollment.group?.name;
         const courseTitle = enrollment.group?.course?.title;
         const teacherName = enrollment.group?.teacher?.full_name;
+        const discount = parseFloat(enrollment.discount_amount ?? '0') || 0;
         if (existing) {
           if (groupName && !existing.groups.includes(groupName)) existing.groups.push(groupName);
           if (courseTitle && !existing.courses.includes(courseTitle)) existing.courses.push(courseTitle);
           if (teacherName && !existing.teachers.includes(teacherName)) existing.teachers.push(teacherName);
+          existing.totalDiscount += discount;
           return;
         }
         rows.set(enrollment.student.id, {
@@ -109,6 +111,7 @@ export function StudentsWorkspace() {
           groups: groupName ? [groupName] : [],
           courses: courseTitle ? [courseTitle] : [],
           teachers: teacherName ? [teacherName] : [],
+          totalDiscount: discount,
         });
       });
     });
@@ -127,7 +130,7 @@ export function StudentsWorkspace() {
   const allEnrollmentQueries = useGroupEnrollments(allGroupIds, shouldLoadAllGroups && allGroupIds.length > 0);
 
   const allRows = useMemo<StudentRow[]>(() => {
-    const enrollmentMap = new Map<string, { groups: string[]; courses: string[]; teachers: string[] }>();
+    const enrollmentMap = new Map<string, { groups: string[]; courses: string[]; teachers: string[]; totalDiscount: number }>();
     allEnrollmentQueries.forEach((query) => {
       (query.data ?? []).forEach((enrollment) => {
         if (!enrollment.student) return;
@@ -135,22 +138,25 @@ export function StudentsWorkspace() {
         const groupName = enrollment.group?.name;
         const courseTitle = enrollment.group?.course?.title;
         const teacherName = enrollment.group?.teacher?.full_name;
+        const discount = parseFloat(enrollment.discount_amount ?? '0') || 0;
         if (existing) {
           if (groupName && !existing.groups.includes(groupName)) existing.groups.push(groupName);
           if (courseTitle && !existing.courses.includes(courseTitle)) existing.courses.push(courseTitle);
           if (teacherName && !existing.teachers.includes(teacherName)) existing.teachers.push(teacherName);
+          existing.totalDiscount += discount;
         } else {
           enrollmentMap.set(enrollment.student.id, {
             groups: groupName ? [groupName] : [],
             courses: courseTitle ? [courseTitle] : [],
             teachers: teacherName ? [teacherName] : [],
+            totalDiscount: discount,
           });
         }
       });
     });
     return (studentsQuery.data?.items ?? []).map((student) => {
       const info = enrollmentMap.get(student.id);
-      return { ...student, groups: info?.groups ?? [], courses: info?.courses ?? [], teachers: info?.teachers ?? [] };
+      return { ...student, groups: info?.groups ?? [], courses: info?.courses ?? [], teachers: info?.teachers ?? [], totalDiscount: info?.totalDiscount ?? 0 };
     });
   }, [studentsQuery.data?.items, allEnrollmentQueries]);
 
@@ -283,6 +289,9 @@ export function StudentsWorkspace() {
                 </TableHead>
                 <TableHead className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
                   {teacherScoped ? t('col_teacher') : t('col_phone')}
+                </TableHead>
+                <TableHead className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
+                  {t('discount')}
                 </TableHead>
                 {canManageScope && (
                   <TableHead className="w-20 pr-4 text-right text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
