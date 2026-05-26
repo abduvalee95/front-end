@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useTranslations } from '@/i18n/index';
 import { toast } from 'sonner';
 import { Search, Pencil, Trash2 } from 'lucide-react';
-import { useAuthStore } from '@/store/auth.store';
+import { usePermissions } from '@/hooks/usePermissions';
 import { useSubjects, useDeleteSubject } from '@/hooks/useSubjects';
 import { CreateSubjectModal } from '@/components/subjects/CreateSubjectModal';
 import { EditSubjectModal } from '@/components/subjects/EditSubjectModal';
@@ -26,10 +26,10 @@ import type { Subject } from '@/types/subject';
 export function SubjectsWorkspace() {
   const t = useTranslations('subjects');
   const tCommon = useTranslations('common');
-  const { user } = useAuthStore();
-  const role = user?.role ?? '';
-  const canManage = role === 'ADMIN' || role === 'MANAGER' || role === 'SUPER_ADMIN';
-  const isAdmin = role === 'ADMIN' || role === 'SUPER_ADMIN';
+  const { role, isSuperAdmin, isAdmin: isAdminOrManager } = usePermissions();
+  const canManage = isAdminOrManager || isSuperAdmin;
+  // Existing semantics: ADMIN or SUPER_ADMIN (excludes MANAGER)
+  const isAdmin = role === 'ADMIN' || isSuperAdmin;
 
   const [search, setSearch] = useState('');
   const [editSubject, setEditSubject] = useState<Subject | null>(null);

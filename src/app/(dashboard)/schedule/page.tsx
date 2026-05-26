@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useQueries } from '@tanstack/react-query';
 import { useAuthStore } from '@/store/auth.store';
+import { usePermissions } from '@/hooks/usePermissions';
 import { useTranslations } from '@/i18n/index';
 import {
   CalendarDays,
@@ -49,8 +50,7 @@ export default function SchedulePage() {
   const tCommon = useTranslations('common');
   const tGroups = useTranslations('groups');
   const user = useAuthStore((s) => s.user);
-  const isTeacher = user?.role === 'TEACHER';
-  const isAdmin = user?.role === 'ADMIN' || user?.role === 'MANAGER';
+  const { isTeacher, isAdmin } = usePermissions();
   const orgId = user?.organization_id;
 
   const [tab, setTab] = useState<Tab>('schedule');

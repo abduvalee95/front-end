@@ -21,6 +21,7 @@ import {
   X,
 } from 'lucide-react';
 import { useAuthStore } from '@/store/auth.store';
+import { usePermissions } from '@/hooks/usePermissions';
 import { useGroups, GROUPS_KEYS } from '@/hooks/useGroups';
 import { useCourses } from '@/hooks/useCourses';
 import { groupService } from '@/services/groups';
@@ -50,10 +51,7 @@ export function GroupsWorkspace() {
   const t = useTranslations('groups');
   const tCommon = useTranslations('common');
   const user = useAuthStore((s) => s.user);
-  const role = user?.role;
-  const canManage = role === 'ADMIN' || role === 'MANAGER';
-  const teacherScoped = role === 'TEACHER';
-  const canRead = canManage || teacherScoped;
+  const { role, canManageGroups: canManage, teacherScoped, canReadGroups: canRead } = usePermissions();
 
   const { value: search, debouncedValue: debouncedSearch, handleChange: setSearch, clearSearch, isPending: isSearching } = useDebounceSearch({ delay: 300 });
   const [courseFilter, setCourseFilter] = useState('');

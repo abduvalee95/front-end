@@ -5,6 +5,7 @@ import { ChevronLeft, ChevronRight, X } from 'lucide-react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useTranslations } from '@/i18n/index';
 import { useAuthStore } from '@/store/auth.store';
+import { usePermissions } from '@/hooks/usePermissions';
 import { useDebounceSearch } from '@/hooks/useDebounceSearch';
 import { useTeachers } from '@/hooks/useTeachers';
 import { useGroupEnrollments, useStudentGroups, useStudents } from '@/hooks/useStudents';
@@ -26,10 +27,7 @@ import { PAGE_SIZE, type StudentRow, type ViewMode, type PaymentStatus } from '.
 export function StudentsWorkspace() {
   const t = useTranslations('students');
   const user = useAuthStore((state) => state.user);
-  const role = user?.role;
-  const canManageScope = role === 'ADMIN' || role === 'MANAGER';
-  const teacherScoped = role === 'TEACHER';
-  const canReadStudents = canManageScope || teacherScoped;
+  const { role, canManageStudents: canManageScope, teacherScoped, canReadStudents } = usePermissions();
 
   const queryClient = useQueryClient();
   const [page, setPage] = useState(1);
@@ -55,6 +53,7 @@ export function StudentsWorkspace() {
       phone: String(item.phone || '').trim(),
       address: String(item.address || '').trim(),
       parent: item.parent ? String(item.parent).trim() : undefined,
+      parent_phone: item.parent_phone ? String(item.parent_phone).trim() : undefined,
       status: 'ACTIVE' as const,
     }));
     await studentService.bulkCreate(students);

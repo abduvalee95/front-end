@@ -266,6 +266,7 @@
     "address": "Address",
     "parent_info": "Parent Info (Optional)",
     "parent_info_label": "Parent Info",
+    "parent_phone": "Parent phone",
     "group_optional": "Group (Optional)",
     "no_group": "No group",
     "creating": "Creating...",

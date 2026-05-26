@@ -24,32 +24,29 @@ import {
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
+import { navItemsForRole, type NavKey, type NavItemConfig } from '@/lib/nav-config';
 
-type Item = { key: string; href: string; icon: LucideIcon; roles: string[] | null };
+const ICONS: Record<NavKey, LucideIcon> = {
+  dashboard: LayoutDashboard,
+  journal: NotebookPen,
+  leads: Users,
+  courses: BookMarked,
+  teachers: GraduationCap,
+  students: GraduationCap,
+  groups: UsersRound,
+  attendance: ClipboardCheck,
+  schedule: Calendar,
+  reports: BarChart3,
+  finance: CreditCard,
+  settings: Settings,
+  analytics: BarChart3,
+  subjects: BookMarked,
+};
 
-const PRIMARY: Item[] = [
-  { key: 'dashboard', href: '/dashboard', icon: LayoutDashboard, roles: null },
-  { key: 'students',  href: '/students',  icon: GraduationCap,   roles: null },
-  { key: 'groups',    href: '/groups',    icon: UsersRound,      roles: ['SUPER_ADMIN','ADMIN','MANAGER','TEACHER'] },
-  { key: 'finance',   href: '/finance',   icon: CreditCard,      roles: ['SUPER_ADMIN','ADMIN','MANAGER'] },
-];
+const PRIMARY_KEYS: NavKey[] = ['dashboard', 'students', 'groups', 'finance'];
+const OVERFLOW_KEYS: NavKey[] = ['journal', 'leads', 'courses', 'teachers', 'attendance', 'schedule', 'reports', 'settings'];
 
-const OVERFLOW: Item[] = [
-  { key: 'journal',    href: '/journal',    icon: NotebookPen,    roles: null },
-  { key: 'leads',      href: '/leads',      icon: Users,          roles: ['SUPER_ADMIN','ADMIN','MANAGER','TEACHER'] },
-  { key: 'courses',    href: '/courses',    icon: BookMarked,     roles: null },
-  { key: 'teachers',   href: '/teachers',   icon: GraduationCap,  roles: ['SUPER_ADMIN','ADMIN','MANAGER'] },
-  { key: 'attendance', href: '/attendance', icon: ClipboardCheck, roles: null },
-  { key: 'schedule',   href: '/schedule',   icon: Calendar,       roles: null },
-  { key: 'reports',    href: '/reports',    icon: BarChart3,      roles: ['SUPER_ADMIN','ADMIN','MANAGER'] },
-  { key: 'settings',   href: '/settings',   icon: Settings,       roles: ['SUPER_ADMIN','ADMIN'] },
-];
-
-function isAllowed(item: Item, role: string | undefined): boolean {
-  if (item.roles === null) return true;
-  if (!role) return false;
-  return item.roles.includes(role);
-}
+type RenderItem = NavItemConfig & { icon: LucideIcon };
 
 export function BottomNav() {
   const pathname = usePathname();
@@ -59,8 +56,16 @@ export function BottomNav() {
   const [open, setOpen] = useState(false);
   const { logout } = useAuth();
 
-  const primary = PRIMARY.filter((i) => isAllowed(i, role));
-  const overflow = OVERFLOW.filter((i) => isAllowed(i, role));
+  const allowed = navItemsForRole(role);
+  const allowedByKey = new Map<NavKey, RenderItem>(
+    allowed.map((item) => [item.key, { ...item, icon: ICONS[item.key] }]),
+  );
+  const primary: RenderItem[] = PRIMARY_KEYS
+    .map((k) => allowedByKey.get(k))
+    .filter((v): v is RenderItem => !!v);
+  const overflow: RenderItem[] = OVERFLOW_KEYS
+    .map((k) => allowedByKey.get(k))
+    .filter((v): v is RenderItem => !!v);
 
   const isActive = (href: string) =>
     pathname === href || (href !== '/dashboard' && pathname.startsWith(href));

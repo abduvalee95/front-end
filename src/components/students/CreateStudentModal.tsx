@@ -50,6 +50,7 @@ export function CreateStudentModal({ open: externalOpen, onClose }: CreateStuden
     phone: '',
     address: '',
     parent: '',
+    parent_phone: '',
     groupId: '',
     discount: '',
   });
@@ -91,10 +92,11 @@ export function CreateStudentModal({ open: externalOpen, onClose }: CreateStuden
 
     try {
       setIsLoading(true);
-      const { groupId, discount, ...studentData } = formData;
+      const { groupId, discount, parent_phone, ...studentData } = formData;
       void discount;
       const res = await studentService.createStudent({
         ...studentData,
+        parent_phone: parent_phone.trim() || undefined,
         status: 'ACTIVE',
       });
 
@@ -110,7 +112,7 @@ export function CreateStudentModal({ open: externalOpen, onClose }: CreateStuden
         toast.info(`${t('temp_password')}: ${res.temporaryPassword}`, { duration: 10000 });
       }
 
-      setFormData({ name: '', phone: '', address: '', parent: '', groupId: '', discount: '' });
+      setFormData({ name: '', phone: '', address: '', parent: '', parent_phone: '', groupId: '', discount: '' });
       setOpen(false);
 
       queryClient.invalidateQueries({ queryKey: queryKeys.students.all(orgId) });
@@ -183,6 +185,16 @@ export function CreateStudentModal({ open: externalOpen, onClose }: CreateStuden
               placeholder="E.g. Father: +996 90 000 00 00"
               value={formData.parent}
               onChange={(e) => setFormData((prev) => ({ ...prev, parent: e.target.value }))}
+              disabled={isLoading}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="parent_phone">{t('parent_phone')}</Label>
+            <Input
+              id="parent_phone"
+              placeholder="+996 90 000 00 00"
+              value={formData.parent_phone}
+              onChange={(e) => setFormData((prev) => ({ ...prev, parent_phone: e.target.value }))}
               disabled={isLoading}
             />
           </div>
