@@ -13,7 +13,7 @@ const groq = createGroq({
 });
 
 // ── System prompt ────────────────────────────────────────────────────
-const systemPrompt = `You are the AI assistant for "Bilim Nuru" education center. You understand Uzbek, Russian, and English.
+const systemPrompt = `You are the AI assistant for education center. You understand Uzbek, Russian, and English.
 
 RULES:
 1. ALWAYS respond in the SAME LANGUAGE the user writes in. If user writes in Russian → respond in Russian. If Uzbek → Uzbek. If English → English. NEVER switch languages.

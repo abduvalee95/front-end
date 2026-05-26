@@ -392,7 +392,7 @@ export default function AttendancePage() {
           <div className="flex items-center justify-between">
             <div>
               <p className="jm text-[9px] tracking-[0.22em] uppercase" style={{ color: 'var(--p-sidebar-fg-dim)' }}>
-                BILIM NURU
+                {t('name')}
               </p>
               <h2 className="syne font-extrabold mt-0.5" style={{ fontSize: 18, color: 'var(--p-sidebar-fg)', letterSpacing: '-0.01em' }}>
                 {t('title')}
