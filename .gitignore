@@ -40,5 +40,7 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# claude worktrees
-.claude/worktrees/
+# claude, windsurf and agent files
+.claude/
+.windsurf/
+.agents/

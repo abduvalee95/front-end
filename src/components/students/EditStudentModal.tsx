@@ -28,6 +28,7 @@ interface EditStudentModalProps {
   student: Pick<Student, 'id' | 'name' | 'phone' | 'status'> & {
     address?: string;
     parent?: string;
+    parent_phone?: string;
   };
   trigger?: React.ReactElement;
 }
@@ -47,6 +48,7 @@ export function EditStudentModal({ student, trigger }: EditStudentModalProps) {
     phone: student.phone || '',
     address: student.address || '',
     parent: student.parent || '',
+    parent_phone: student.parent_phone || '',
     status: student.status as StudentStatus,
   });
 
@@ -59,7 +61,10 @@ export function EditStudentModal({ student, trigger }: EditStudentModalProps) {
 
     try {
       setIsLoading(true);
-      await studentService.updateStudent(student.id, formData);
+      await studentService.updateStudent(student.id, {
+        ...formData,
+        parent_phone: formData.parent_phone.trim() || undefined,
+      });
       toast.success(t('updated_success'));
       setOpen(false);
       queryClient.invalidateQueries({ queryKey: queryKeys.students.all(orgId) });
@@ -131,6 +136,16 @@ export function EditStudentModal({ student, trigger }: EditStudentModalProps) {
               placeholder="E.g. Father: +996 90 000 00 00"
               value={formData.parent}
               onChange={(e) => setFormData((prev) => ({ ...prev, parent: e.target.value }))}
+              disabled={isLoading}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor={`edit-parent-phone-${student.id}`}>{t('parent_phone')}</Label>
+            <Input
+              id={`edit-parent-phone-${student.id}`}
+              placeholder="+996 90 000 00 00"
+              value={formData.parent_phone}
+              onChange={(e) => setFormData((prev) => ({ ...prev, parent_phone: e.target.value }))}
               disabled={isLoading}
             />
           </div>

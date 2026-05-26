@@ -213,6 +213,16 @@ export default function StudentDetailPage() {
                 <p className="mt-1 text-sm">{student.parent}</p>
               </div>
             )}
+
+            {student.parent_phone && (
+              <div>
+                <p className="text-xs font-medium text-muted-foreground">
+                  <Phone className="mr-1 inline size-3.5" />
+                  {t('parent_phone')}
+                </p>
+                <p className="mt-1 text-sm font-medium">{student.parent_phone}</p>
+              </div>
+            )}
           </CardContent>
         </Card>
 

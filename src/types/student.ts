@@ -6,6 +6,7 @@ export interface Student {
   phone: string;
   address: string;
   parent?: string;
+  parent_phone?: string;
   status: StudentStatus;
   organization_id: string;
 }
@@ -49,6 +50,7 @@ export interface CreateStudentDto {
   phone: string;
   address?: string;
   parent?: string;
+  parent_phone?: string;
   status?: StudentStatus;
 }
 
@@ -57,6 +59,7 @@ export interface BulkCreateStudentDto {
   phone: string;
   address?: string;
   parent?: string;
+  parent_phone?: string;
 }
 
 export interface CreateStudentResponse {
