@@ -2,17 +2,22 @@
 
 import { useMemo, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
+import { useQueryClient } from '@tanstack/react-query';
 import { useStudentDetail } from '@/hooks/useStudents';
 import { usePayments, useDeletePayment } from '@/hooks/useFinance';
 import { AddPaymentModal } from '@/components/finance/AddPaymentModal';
 import { useTranslations, useLocale } from '@/i18n/index';
+import { useAuthStore } from '@/store/auth.store';
+import { queryKeys } from '@/lib/api/query-keys';
+import { enrollmentService } from '@/services/enrollments';
 import {
   ArrowLeft, BookOpen, Calendar, Check, CreditCard,
-  GraduationCap, Loader2, MapPin, Phone, Plus, Trash2, User, Users, X,
+  GraduationCap, Loader2, MapPin, Pencil, Phone, Plus, Trash2, User, Users, X,
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
@@ -36,8 +41,26 @@ export default function StudentDetailPage() {
   const router = useRouter();
   const studentId = params.id as string;
   const [paymentModalOpen, setPaymentModalOpen] = useState(false);
+  const [editingDiscountId, setEditingDiscountId] = useState<string | null>(null);
+  const [discountInput, setDiscountInput] = useState('');
+  const [savingDiscount, setSavingDiscount] = useState(false);
   const t = useTranslations('students');
   const locale = useLocale();
+  const queryClient = useQueryClient();
+  const { user } = useAuthStore();
+  const orgId = user?.organization_id;
+
+  const saveDiscount = async (enrollmentId: string) => {
+    setSavingDiscount(true);
+    try {
+      const amount = parseFloat(discountInput) || 0;
+      await enrollmentService.update(enrollmentId, { discount_amount: amount });
+      await queryClient.invalidateQueries({ queryKey: [...queryKeys.students.all(orgId), 'student-detail', studentId] });
+      setEditingDiscountId(null);
+    } finally {
+      setSavingDiscount(false);
+    }
+  };
 
   const { data: student, isLoading, isError } = useStudentDetail(studentId);
   const paymentsQuery = usePayments({ student_id: studentId, limit: 100 }, !!studentId);
@@ -217,6 +240,7 @@ export default function StudentDetailPage() {
                   const baseFee = monthlyFee > 0 ? monthlyFee : coursePrice;
                   const discount = Number(enrollment.discount_amount ?? 0);
                   const netFee = Math.max(0, baseFee - discount);
+                  const isEditing = editingDiscountId === enrollment.id;
                   return (
                     <Card key={enrollment.id} className="border-border/50">
                       <CardContent className="p-4">
@@ -239,6 +263,56 @@ export default function StudentDetailPage() {
                               <Calendar className="mr-1 inline size-3" />
                               {format(new Date(enrollment.enrolled_at), 'MMM dd, yyyy')}
                             </p>
+
+                            {/* Discount edit row */}
+                            {isEditing ? (
+                              <div className="mt-3 flex items-center gap-2">
+                                <Input
+                                  type="number"
+                                  min="0"
+                                  step="1"
+                                  className="h-8 w-32 rounded-lg text-sm"
+                                  placeholder="0 сом"
+                                  value={discountInput}
+                                  onChange={(e) => setDiscountInput(e.target.value)}
+                                  autoFocus
+                                  disabled={savingDiscount}
+                                  onKeyDown={(e) => {
+                                    if (e.key === 'Enter') saveDiscount(enrollment.id);
+                                    if (e.key === 'Escape') setEditingDiscountId(null);
+                                  }}
+                                />
+                                <Button
+                                  size="icon"
+                                  variant="ghost"
+                                  className="size-8 text-emerald-600 hover:bg-emerald-50 hover:text-emerald-700"
+                                  onClick={() => saveDiscount(enrollment.id)}
+                                  disabled={savingDiscount}
+                                >
+                                  {savingDiscount ? <Loader2 className="size-3.5 animate-spin" /> : <Check className="size-3.5" />}
+                                </Button>
+                                <Button
+                                  size="icon"
+                                  variant="ghost"
+                                  className="size-8"
+                                  onClick={() => setEditingDiscountId(null)}
+                                  disabled={savingDiscount}
+                                >
+                                  <X className="size-3.5" />
+                                </Button>
+                              </div>
+                            ) : (
+                              <button
+                                className="mt-2 flex items-center gap-1 text-[11px] text-muted-foreground/60 hover:text-amber-600 transition-colors"
+                                onClick={() => {
+                                  setDiscountInput(discount > 0 ? String(discount) : '');
+                                  setEditingDiscountId(enrollment.id);
+                                }}
+                              >
+                                <Pencil className="size-3" />
+                                {t('edit_discount')}
+                              </button>
+                            )}
                           </div>
                           {baseFee > 0 && (
                             <div className="shrink-0 text-right">
