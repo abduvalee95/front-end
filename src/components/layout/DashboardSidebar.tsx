@@ -64,7 +64,7 @@ const NAV_GROUPS: { groupKey: string; items: NavItem[] }[] = [
   {
     groupKey: 'group_system',
     items: [
-      { key: 'reports',  href: '/reports',  icon: BarChart3, roles: ['SUPER_ADMIN','ADMIN','MANAGER'], comingSoon: true },
+      { key: 'reports',  href: '/reports',  icon: BarChart3, roles: ['SUPER_ADMIN','ADMIN','MANAGER'] },
       { key: 'finance',  href: '/finance',  icon: CreditCard,roles: ['SUPER_ADMIN','ADMIN','MANAGER'] },
       { key: 'settings', href: '/settings', icon: Settings,  roles: ['SUPER_ADMIN','ADMIN'] },
     ]
