@@ -418,18 +418,15 @@ export default function JournalPage() {
               </p>
               <div className="space-y-4">
                 {[
-                  { label: t('present'), value: stats.present, dot: '#4ADE80' },
-                  { label: t('late'), value: stats.late, dot: '#FBBF24' },
-                  { label: t('absent'), value: stats.absent, dot: '#F87171' },
+                  { label: t('present'), dot: '#4ADE80' },
+                  { label: t('late'), dot: '#FBBF24' },
+                  { label: t('absent'), dot: '#F87171' },
                 ].map((s) => (
                   <div key={s.label} className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <span className="size-1.5 rounded-full shrink-0" style={{ background: s.dot }} />
                       <span className="syne font-medium" style={{ fontSize: 12, color: 'var(--p-sidebar-fg-mid)' }}>{s.label}</span>
                     </div>
-                    <span className="jm font-bold" style={{ fontSize: 22, color: 'var(--p-accent)', lineHeight: 1 }}>
-                      {String(s.value).padStart(2, '0')}
-                    </span>
                   </div>
                 ))}
               </div>
