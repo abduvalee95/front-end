@@ -5,6 +5,7 @@ import { cookies } from 'next/headers';
 import { LOCALES, DEFAULT_LOCALE, type Locale } from '@/i18n/routing';
 import { I18nProvider } from '@/i18n/index';
 import { Providers } from "@/components/providers";
+import { SpeedInsights } from '@vercel/speed-insights/next';
 import "./globals.css";
 
 const geistSans = Geist({
@@ -71,6 +72,7 @@ export default async function RootLayout({
           </Providers>
         </I18nProvider>
         <Toaster position="top-right" richColors closeButton />
+        <SpeedInsights />
       </body>
     </html>
   );
