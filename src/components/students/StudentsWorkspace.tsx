@@ -2,13 +2,14 @@
 
 import { useMemo, useState } from 'react';
 import { ChevronLeft, ChevronRight, X } from 'lucide-react';
-import { useQueryClient } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useTranslations } from '@/i18n/index';
 import { useAuthStore } from '@/store/auth.store';
 import { useDebounceSearch } from '@/hooks/useDebounceSearch';
 import { useTeachers } from '@/hooks/useTeachers';
 import { useGroupEnrollments, useStudentGroups, useStudents } from '@/hooks/useStudents';
 import { studentService } from '@/services/students';
+import { analyticsService } from '@/services/analytics';
 import { queryKeys } from '@/lib/api/query-keys';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -19,7 +20,8 @@ import { StudentsHero } from './StudentsHero';
 import { StudentsFilters } from './StudentsFilters';
 import { StudentTableRow } from './StudentTableRow';
 import { AccessDenied, EmptyState, ErrorState, TeacherPrompt } from './StudentsStateViews';
-import { PAGE_SIZE, type StudentRow, type ViewMode } from './types';
+import { PAGE_SIZE, type StudentRow, type ViewMode, type PaymentStatus } from './types';
+
 
 export function StudentsWorkspace() {
   const t = useTranslations('students');
@@ -42,6 +44,7 @@ export function StudentsWorkspace() {
     onDebouncedChange: () => setPage(1),
   });
   const [statusFilter, setStatusFilter] = useState<StudentStatus | ''>('');
+  const [paymentFilter, setPaymentFilter] = useState<PaymentStatus | ''>('');
   const [viewMode, setViewMode] = useState<ViewMode>('all');
   const [selectedTeacherId, setSelectedTeacherId] = useState('');
   const [isImportOpen, setIsImportOpen] = useState(false);
@@ -71,6 +74,38 @@ export function StudentsWorkspace() {
 
   const teachersQuery = useTeachers({ page: 1, limit: 100 }, canManageScope);
   const allGroupsQuery = useStudentGroups(shouldLoadAllGroups);
+
+  // Current-month invoice payment status map
+  const currentMonth = new Date().toISOString().slice(0, 7); // "2026-05"
+  const invoicesQuery = useQuery({
+    queryKey: ['students', 'invoices', currentMonth, user?.organization_id],
+    queryFn: () => analyticsService.listInvoices({ limit: 500 }),
+    staleTime: 1000 * 60 * 2,
+    enabled: canManageScope || teacherScoped,
+    retry: false,
+  });
+
+  const paymentStatusMap = useMemo<Map<string, PaymentStatus>>(() => {
+    const map = new Map<string, PaymentStatus>();
+    (invoicesQuery.data?.items ?? [])
+      .filter((inv) => inv.month?.startsWith(currentMonth))
+      .forEach((inv) => {
+        const paid = parseFloat(inv.amount_paid ?? '0');
+        const due = parseFloat(inv.amount_due ?? '0');
+        let ps: PaymentStatus;
+        if (inv.status === 'PAID') ps = 'paid';
+        else if (paid > 0 && paid < due) ps = 'partial';
+        else if (paid >= due && due > 0) ps = 'paid';
+        else ps = 'unpaid';
+        // Keep worst status if student has multiple invoices this month
+        const existing = map.get(inv.student_id);
+        const order: PaymentStatus[] = ['unpaid', 'partial', 'paid'];
+        if (!existing || order.indexOf(ps) < order.indexOf(existing)) {
+          map.set(inv.student_id, ps);
+        }
+      });
+    return map;
+  }, [invoicesQuery.data, currentMonth]);
   const groupsQuery = useStudentGroups(shouldLoadTeacherStudents);
 
   const teacherGroups = useMemo(() => {
@@ -112,6 +147,7 @@ export function StudentsWorkspace() {
           courses: courseTitle ? [courseTitle] : [],
           teachers: teacherName ? [teacherName] : [],
           totalDiscount: discount,
+          paymentStatus: paymentStatusMap.get(enrollment.student.id) ?? 'unknown',
         });
       });
     });
@@ -122,9 +158,10 @@ export function StudentsWorkspace() {
         student.name.toLowerCase().includes(normalizedSearch) ||
         student.phone.toLowerCase().includes(normalizedSearch);
       const matchesStatus = !statusFilter || student.status === statusFilter;
-      return matchesSearch && matchesStatus;
+      const matchesPayment = !paymentFilter || student.paymentStatus === paymentFilter;
+      return matchesSearch && matchesStatus && matchesPayment;
     });
-  }, [enrollmentQueries, debouncedSearch, statusFilter]);
+  }, [enrollmentQueries, debouncedSearch, statusFilter, paymentFilter, paymentStatusMap]);
 
   const allGroupIds = useMemo(() => (allGroupsQuery.data ?? []).map((g) => g.id), [allGroupsQuery.data]);
   const allEnrollmentQueries = useGroupEnrollments(allGroupIds, shouldLoadAllGroups && allGroupIds.length > 0);
@@ -154,11 +191,20 @@ export function StudentsWorkspace() {
         }
       });
     });
-    return (studentsQuery.data?.items ?? []).map((student) => {
-      const info = enrollmentMap.get(student.id);
-      return { ...student, groups: info?.groups ?? [], courses: info?.courses ?? [], teachers: info?.teachers ?? [], totalDiscount: info?.totalDiscount ?? 0 };
-    });
-  }, [studentsQuery.data?.items, allEnrollmentQueries]);
+    return (studentsQuery.data?.items ?? [])
+      .map((student) => {
+        const info = enrollmentMap.get(student.id);
+        return {
+          ...student,
+          groups: info?.groups ?? [],
+          courses: info?.courses ?? [],
+          teachers: info?.teachers ?? [],
+          totalDiscount: info?.totalDiscount ?? 0,
+          paymentStatus: paymentStatusMap.get(student.id) ?? 'unknown' as PaymentStatus,
+        };
+      })
+      .filter((student) => !paymentFilter || student.paymentStatus === paymentFilter);
+  }, [studentsQuery.data?.items, allEnrollmentQueries, paymentStatusMap, paymentFilter]);
 
   const rows = effectiveViewMode === 'all' ? allRows : teacherRows;
   const loading =
@@ -177,6 +223,7 @@ export function StudentsWorkspace() {
   const resetFilters = () => {
     clearSearch();
     setStatusFilter('');
+    setPaymentFilter('');
     setPage(1);
   };
 
@@ -215,6 +262,11 @@ export function StudentsWorkspace() {
           setStatusFilter(s);
           setPage(1);
         }}
+        paymentFilter={paymentFilter}
+        onPaymentFilterChange={(p) => {
+          setPaymentFilter(p);
+          setPage(1);
+        }}
         effectiveViewMode={effectiveViewMode}
         onViewModeChange={(v) => {
           setViewMode(v);
@@ -241,7 +293,7 @@ export function StudentsWorkspace() {
                 : `${rows.length} ${t('students_from_teacher')}`}
             </p>
           </div>
-          {(search || statusFilter) && (
+          {(search || statusFilter || paymentFilter) && (
             <button
               type="button"
               onClick={resetFilters}
@@ -282,7 +334,7 @@ export function StudentsWorkspace() {
                   {t('col_status')}
                 </TableHead>
                 <TableHead className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
-                  {t('col_parent')}
+                  {t('col_payment')}
                 </TableHead>
                 <TableHead className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
                   {teacherScoped ? t('col_group_course') : t('col_group_course')}

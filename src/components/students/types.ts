@@ -1,6 +1,7 @@
 import type { Student } from '@/types/student';
 
 export type ViewMode = 'all' | 'teacher';
+export type PaymentStatus = 'paid' | 'partial' | 'unpaid' | 'unknown';
 
 export type StudentRow = Pick<Student, 'id' | 'name' | 'phone' | 'status'> & {
   address?: string;
@@ -9,6 +10,7 @@ export type StudentRow = Pick<Student, 'id' | 'name' | 'phone' | 'status'> & {
   courses: string[];
   teachers: string[];
   totalDiscount: number;
+  paymentStatus: PaymentStatus;
 };
 
 export const PAGE_SIZE = 10;
