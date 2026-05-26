@@ -15,7 +15,7 @@ export default function DashboardLayout({
     <SessionProvider>
       <DateRangeProvider>
         <AuthGuard>
-          <div className="dashboard-shell flex h-screen overflow-hidden relative bg-background">
+          <div className="dashboard-shell flex h-dvh overflow-hidden relative bg-background">
             {/* Soft glow — adapts to theme */}
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 size-[600px] rounded-full blur-[120px] pointer-events-none bg-blue-300/20 dark:bg-cyan-500/10" />
 
@@ -24,7 +24,7 @@ export default function DashboardLayout({
               <DashboardSidebar />
             </div>
 
-            <main className="relative flex flex-1 flex-col overflow-y-auto scrollbar-hide scroll-momentum">
+            <main className="relative flex flex-1 flex-col overflow-y-auto overflow-x-hidden scrollbar-hide scroll-momentum">
               <DashboardHeader />
               <div className="mx-auto w-full max-w-[1600px] flex-1 px-4 sm:px-6 lg:px-8 pb-12 pt-4 pb-mobile-nav">
                 {children}
