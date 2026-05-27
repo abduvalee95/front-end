@@ -133,154 +133,7 @@ export default function JournalPage() {
   }, [localEntries]);
 
   return (
-    <>
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap');
-
-        :root {
-          --p-bg: #FAFAF8;
-          --p-sidebar: #1C1C1C;
-          --p-ink: #1A1A1A;
-          --p-ink-soft: #6B6B6B;
-          --p-ink-faint: #AAAAAA;
-          --p-accent: #D97706;
-          --p-card: #F4F4F2;
-          --p-line: rgba(26,26,26,0.07);
-          --p-line-strong: rgba(26,26,26,0.11);
-          --p-row-hover: rgba(26,26,26,0.025);
-          --p-sidebar-fg: #F0EDEA;
-          --p-sidebar-fg-dim: rgba(240,237,234,0.38);
-          --p-sidebar-fg-mid: rgba(240,237,234,0.65);
-          --p-sidebar-border: rgba(255,255,255,0.07);
-          --p-sidebar-hover: rgba(255,255,255,0.04);
-          --p-sidebar-active-bg: rgba(217,119,6,0.12);
-          --p-sidebar-active-border: #D97706;
-          --p-sidebar-skel: rgba(255,255,255,0.05);
-          --p-chip: rgba(26,26,26,0.06);
-          --p-chip-ink: #737373;
-          --p-shell-border: rgba(26,26,26,0.09);
-          --p-button: #1A1A1A;
-          --p-button-fg: #FAFAF8;
-          --p-skel: rgba(26,26,26,0.07);
-          --p-seg-bg: rgba(26,26,26,0.04);
-          --p-seg-border: rgba(26,26,26,0.09);
-          --p-seg-fg: #9A9A9A;
-          --p-score-active: #1D4ED8;
-          --p-score-bg: rgba(26,26,26,0.05);
-          --p-score-border: rgba(26,26,26,0.10);
-        }
-        .dark {
-          --p-bg: #111111;
-          --p-sidebar: #090909;
-          --p-ink: #EFEFEC;
-          --p-ink-soft: #909090;
-          --p-ink-faint: #555555;
-          --p-accent: #F59E0B;
-          --p-card: #1A1A1A;
-          --p-line: rgba(239,239,236,0.07);
-          --p-line-strong: rgba(239,239,236,0.11);
-          --p-row-hover: rgba(239,239,236,0.025);
-          --p-sidebar-fg: #F0EDEA;
-          --p-sidebar-fg-dim: rgba(240,237,234,0.33);
-          --p-sidebar-fg-mid: rgba(240,237,234,0.62);
-          --p-sidebar-border: rgba(255,255,255,0.05);
-          --p-sidebar-hover: rgba(255,255,255,0.04);
-          --p-sidebar-active-bg: rgba(245,158,11,0.10);
-          --p-sidebar-active-border: #F59E0B;
-          --p-sidebar-skel: rgba(255,255,255,0.04);
-          --p-chip: rgba(239,239,236,0.07);
-          --p-chip-ink: #909090;
-          --p-shell-border: rgba(239,239,236,0.08);
-          --p-button: #EFEFEC;
-          --p-button-fg: #111111;
-          --p-skel: rgba(239,239,236,0.07);
-          --p-seg-bg: rgba(239,239,236,0.04);
-          --p-seg-border: rgba(239,239,236,0.09);
-          --p-seg-fg: #666666;
-          --p-score-active: #2563EB;
-          --p-score-bg: rgba(239,239,236,0.05);
-          --p-score-border: rgba(239,239,236,0.10);
-        }
-
-        .syne { font-family: 'Syne', system-ui, sans-serif; }
-        .jm   { font-family: 'JetBrains Mono', 'Courier New', monospace; }
-
-        .p-group {
-          padding: 9px 16px;
-          cursor: pointer;
-          border-left: 2px solid transparent;
-          transition: all 0.12s ease;
-          font-size: 13px;
-          font-weight: 600;
-          color: var(--p-sidebar-fg-mid);
-          font-family: 'Syne', system-ui, sans-serif;
-        }
-        .p-group:hover {
-          color: var(--p-sidebar-fg);
-          background: var(--p-sidebar-hover);
-        }
-        .p-group.active {
-          color: var(--p-accent);
-          border-left-color: var(--p-accent);
-          background: var(--p-sidebar-active-bg);
-        }
-
-        .p-seg {
-          flex: 1;
-          min-width: 0;
-          padding: 7px 5px;
-          font-size: 10px;
-          font-weight: 700;
-          letter-spacing: 0.06em;
-          text-transform: uppercase;
-          border: none;
-          cursor: pointer;
-          transition: all 0.12s ease;
-          color: var(--p-seg-fg);
-          background: transparent;
-          white-space: nowrap;
-          font-family: 'Syne', system-ui, sans-serif;
-        }
-        @media (min-width: 640px) { .p-seg { font-size: 11px; padding: 7px 0; } }
-        .p-seg:first-child { border-radius: 8px 0 0 8px; }
-        .p-seg:last-child  { border-radius: 0 8px 8px 0; }
-
-        .p-seg.p-present {
-          background: #15803D;
-          color: #fff;
-          box-shadow: 0 2px 10px rgba(21,128,61,0.22);
-        }
-        .p-seg.p-late {
-          background: #D97706;
-          color: #fff;
-          box-shadow: 0 2px 10px rgba(217,119,6,0.22);
-        }
-        .p-seg.p-absent {
-          background: #DC2626;
-          color: #fff;
-          box-shadow: 0 2px 10px rgba(220,38,38,0.22);
-        }
-        .p-seg:hover:not(.p-present):not(.p-late):not(.p-absent) {
-          background: var(--p-seg-bg);
-          color: var(--p-ink-soft);
-        }
-
-        .p-row {
-          border-bottom: 1px solid var(--p-line);
-          transition: background 0.12s ease;
-        }
-        .p-row:hover { background: var(--p-row-hover); }
-        .p-row:last-child { border-bottom: none; }
-
-        @keyframes p-in {
-          from { opacity: 0; transform: translateY(10px); }
-          to   { opacity: 1; transform: translateY(0); }
-        }
-        .p-enter { animation: p-in 0.45s cubic-bezier(0.22,1,0.36,1) forwards; }
-        .p-row-in { opacity: 0; animation: p-in 0.35s cubic-bezier(0.22,1,0.36,1) forwards; }
-      `}</style>
-
-      <div
+    <div
         className="flex flex-col lg:flex-row gap-0 rounded-2xl overflow-hidden shadow-2xl p-enter"
         style={{
           minHeight: '78vh',
@@ -336,16 +189,13 @@ export default function JournalPage() {
           {enrollments.length > 0 && (
             <div className="flex items-center gap-5 pt-1">
               {[
-                { label: t('present'), value: stats.present, dot: '#4ADE80' },
-                { label: t('late'), value: stats.late, dot: '#FBBF24' },
-                { label: t('absent'), value: stats.absent, dot: '#F87171' },
+                { label: t('present'), dot: '#4ADE80' },
+                { label: t('late'), dot: '#FBBF24' },
+                { label: t('absent'), dot: '#F87171' },
               ].map((s) => (
                 <div key={s.label} className="flex items-center gap-1.5">
                   <span className="size-1.5 rounded-full shrink-0" style={{ background: s.dot }} />
                   <span className="syne text-[11px] font-medium" style={{ color: 'var(--p-sidebar-fg-mid)' }}>{s.label}</span>
-                  <span className="jm font-bold" style={{ fontSize: 15, color: 'var(--p-accent)' }}>
-                    {String(s.value).padStart(2, '0')}
-                  </span>
                 </div>
               ))}
             </div>
@@ -719,6 +569,5 @@ export default function JournalPage() {
           </div>
         </div>
       </div>
-    </>
   );
 }

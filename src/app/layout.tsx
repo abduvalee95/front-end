@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Syne, JetBrains_Mono } from "next/font/google";
 import { Toaster } from "sonner";
 import { cookies } from 'next/headers';
 import { LOCALES, DEFAULT_LOCALE, type Locale } from '@/i18n/routing';
@@ -15,6 +15,20 @@ const geistSans = Geist({
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+});
+
+const syne = Syne({
+  variable: "--font-syne",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800"],
+  display: "swap",
+});
+
+const jetbrainsMono = JetBrains_Mono({
+  variable: "--font-jm",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -62,7 +76,7 @@ export default async function RootLayout({
   return (
     <html lang={locale} suppressHydrationWarning={true}>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${syne.variable} ${jetbrainsMono.variable} antialiased`}
         suppressHydrationWarning
       >
         <I18nProvider locale={locale} messages={messages}>
