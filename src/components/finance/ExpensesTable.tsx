@@ -72,7 +72,7 @@ export function ExpensesTable({ expenses, isLoading, onAddExpense, onDelete, isD
                     {e.category}
                   </Badge>
                   <span className="text-[11px] text-muted-foreground/55 tabular-nums">
-                    {formatDate(e.expense_date)}
+                    {formatDate(e.paid_at)}
                   </span>
                 </div>
               </div>
@@ -146,7 +146,7 @@ export function ExpensesTable({ expenses, isLoading, onAddExpense, onDelete, isD
                   </TableCell>
                   <TableCell>
                     <span className="text-[11.5px] tabular-nums font-medium text-muted-foreground/60">
-                      {formatDate(e.expense_date)}
+                      {formatDate(e.paid_at)}
                     </span>
                   </TableCell>
                   <TableCell>
