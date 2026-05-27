@@ -572,6 +572,13 @@ input, textarea, [contenteditable="true"] {
   user-select: text;
 }
 
+/* Date/time input — fix invisible text in dark mode on Chrome/Safari */
+.dark input[type="date"],
+.dark input[type="time"],
+.dark input[type="datetime-local"] {
+  color-scheme: dark;
+}
+
 /* Bottom nav safe-area padding */
 .bottom-nav-safe {
   padding-bottom: calc(var(--safe-bottom) + 8px);
