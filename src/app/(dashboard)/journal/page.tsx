@@ -502,7 +502,7 @@ export default function JournalPage() {
                             onClick={() => updateStatus(studentId, 'PRESENT')}
                             title={t('present')}
                           >
-                            ✓ {t('present')}
+                            ✓
                           </button>
                           <button
                             className={cn('p-seg', entry?.status === 'LATE' && 'p-late')}
@@ -510,14 +510,14 @@ export default function JournalPage() {
                             title={t('late')}
                             style={{ borderLeft: '1px solid var(--p-seg-border)', borderRight: '1px solid var(--p-seg-border)' }}
                           >
-                            ⏱ {t('late')}
+                            ⏱
                           </button>
                           <button
                             className={cn('p-seg', entry?.status === 'ABSENT' && 'p-absent')}
                             onClick={() => updateStatus(studentId, 'ABSENT')}
                             title={t('absent')}
                           >
-                            ✗ {t('absent')}
+                            ✗
                           </button>
                         </div>
                       </div>
