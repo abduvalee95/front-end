@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslations } from '@/i18n/index';
 import { Loader2, Plus, CreditCard } from 'lucide-react';
@@ -23,7 +24,8 @@ import {
 } from '@/components/ui/select';
 import { useCreatePayment } from '@/hooks/useFinance';
 import { useStudents } from '@/hooks/useStudents';
-import type { CreatePaymentDto, PaymentMethod } from '@/types/finance';
+import type { CreatePaymentDto, Payment, PaymentMethod } from '@/types/finance';
+import { ReceiptDialog } from './ReceiptDialog';
 
 interface AddPaymentModalProps {
   open: boolean;
@@ -44,6 +46,9 @@ export function AddPaymentModal({ open, onClose, studentId, studentName }: AddPa
   const tCommon = useTranslations('common');
   const createPayment = useCreatePayment();
   const studentsQuery = useStudents({ page: 1, limit: 500 }, open && !studentId);
+
+  // After successful creation, store the returned payment to drive ReceiptDialog
+  const [createdPayment, setCreatedPayment] = useState<Payment | null>(null);
 
   const { register, handleSubmit, reset, setValue, watch, formState: { errors } } = useForm<FormValues>({
     defaultValues: {
@@ -69,13 +74,29 @@ export function AddPaymentModal({ open, onClose, studentId, studentName }: AddPa
       description: values.description || undefined,
     };
     createPayment.mutate(dto, {
-      onSuccess: () => { reset(); onClose(); },
+      onSuccess: (payment: Payment) => {
+        reset();
+        onClose(); // Close the create modal first
+        setCreatedPayment(payment); // Then open receipt dialog
+      },
     });
   };
 
   const handleClose = () => { reset(); onClose(); };
 
+  const handleReceiptClose = () => {
+    setCreatedPayment(null);
+  };
+
   return (
+    <>
+      {/* Receipt dialog is a sibling — opens after the create modal closes */}
+      <ReceiptDialog
+        payment={createdPayment}
+        open={createdPayment !== null}
+        onClose={handleReceiptClose}
+      />
+
     <Dialog open={open} onOpenChange={(v) => !v && handleClose()}>
       <DialogContent>
         <DialogHeader>
@@ -184,5 +205,6 @@ export function AddPaymentModal({ open, onClose, studentId, studentName }: AddPa
         </DialogFooter>
       </DialogContent>
     </Dialog>
+    </>
   );
 }

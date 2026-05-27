@@ -105,7 +105,8 @@
     "error_generic": "Произошла ошибка",
     "more": "Еще",
     "menu": "Меню",
-    "logout": "Выход"
+    "logout": "Выход",
+    "print_receipt": "Kvitansiya chop etish"
   },
   "nav": {
     "dashboard": "Панель управления",
@@ -1213,5 +1214,16 @@
     "amount": "Сумма",
     "export_excel": "Экспорт Excel",
     "no_data": "Нет данных"
+  },
+  "receipt": {
+    "title": "Квитанция об оплате",
+    "preview_label": "Предварительный просмотр",
+    "print_a4": "Печать A4",
+    "pdf_a4": "A4 PDF",
+    "print_thermal": "Печать 80мм",
+    "pdf_thermal": "80мм PDF",
+    "close": "Закрыть",
+    "print_failed": "Ошибка при печати",
+    "pdf_failed": "Ошибка при создании PDF"
   }
 }

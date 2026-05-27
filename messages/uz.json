@@ -105,7 +105,8 @@
     "error_generic": "Xatolik yuz berdi",
     "more": "Yana",
     "menu": "Menyu",
-    "logout": "Chiqish"
+    "logout": "Chiqish",
+    "print_receipt": "Kvitansiya chop etish"
   },
   "nav": {
     "dashboard": "Boshqaruv paneli",
@@ -1193,5 +1194,16 @@
     "network_error": "Tarmoq xatosi. Internet aloqasini tekshiring.",
     "logout_success": "Tizimdan muvaffaqiyatli chiqdingiz.",
     "logout_error": "Chiqishda xatolik, profil tozalandi."
+  },
+  "receipt": {
+    "title": "To'lov kvitansiyasi",
+    "preview_label": "Kvitansiya ko'rinishi",
+    "print_a4": "A4 chop etish",
+    "pdf_a4": "A4 PDF",
+    "print_thermal": "Termal 80mm chop etish",
+    "pdf_thermal": "80mm PDF",
+    "close": "Yopish",
+    "print_failed": "Chop etishda xatolik yuz berdi",
+    "pdf_failed": "PDF yaratishda xatolik yuz berdi"
   }
 }
