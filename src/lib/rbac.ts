@@ -4,12 +4,12 @@ export type Role = (typeof ROLES)[number];
 
 // Routes restricted to specific roles. Unlisted routes = any authenticated user can access.
 export const ROUTE_ROLES: Record<string, Role[]> = {
-  '/leads':     ['ADMIN', 'MANAGER'],
-  '/finance':   ['ADMIN', 'MANAGER'],
-  '/reports':   ['ADMIN', 'MANAGER'],
-  '/teachers':  ['ADMIN', 'MANAGER'],
-  '/analytics': ['ADMIN', 'MANAGER'],
-  '/subjects':  ['ADMIN', 'MANAGER'],
+  '/leads':     ['SUPER_ADMIN', 'ADMIN', 'MANAGER'],
+  '/finance':   ['SUPER_ADMIN', 'ADMIN', 'MANAGER'],
+  '/reports':   ['SUPER_ADMIN', 'ADMIN', 'MANAGER'],
+  '/teachers':  ['SUPER_ADMIN', 'ADMIN', 'MANAGER'],
+  '/analytics': ['SUPER_ADMIN', 'ADMIN', 'MANAGER'],
+  '/subjects':  ['SUPER_ADMIN', 'ADMIN', 'MANAGER'],
   '/admin':     ['SUPER_ADMIN'],
   '/users':     ['SUPER_ADMIN', 'ADMIN'],
 };
