@@ -5,8 +5,10 @@ export function formatAmount(amount: number): string {
   return new Intl.NumberFormat('ky-KG').format(amount) + ' KGS';
 }
 
-export function formatDate(dateStr: string): string {
+export function formatDate(dateStr: string | null | undefined): string {
+  if (!dateStr) return '—';
   const date = new Date(dateStr);
+  if (isNaN(date.getTime())) return '—';
   return date.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
 }
 
