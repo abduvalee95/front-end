@@ -6,7 +6,8 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "analyze": "ANALYZE=true next build"
   },
   "dependencies": {
     "@ai-sdk/groq": "^3.0.38",
@@ -53,6 +54,7 @@
     "zustand": "^5.0.12"
   },
   "devDependencies": {
+    "@next/bundle-analyzer": "^16.2.6",
     "@tailwindcss/postcss": "^4",
     "@types/http-proxy": "^1.17.17",
     "@types/node": "^20",
