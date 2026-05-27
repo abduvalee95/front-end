@@ -35,17 +35,17 @@ export interface Expense {
   organization_id: string;
   amount: number;
   category: ExpenseCategory;
-  description: string | null;
-  expense_date: string;
+  description: string;
+  paid_at: string;
+  created_by: string;
+  creator_name?: string;
   created_at: string;
-  updated_at: string;
 }
 
 export interface CreateExpenseDto {
   amount: number;
   category: ExpenseCategory;
-  description?: string;
-  expense_date?: string;
+  description: string;
 }
 
 export interface PaginatedPayments {

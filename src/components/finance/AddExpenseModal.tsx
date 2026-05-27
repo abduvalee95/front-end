@@ -43,7 +43,6 @@ type FormValues = {
   amount: string;
   category: ExpenseCategory;
   description: string;
-  expense_date: string;
 };
 
 export function AddExpenseModal({ open, onClose }: AddExpenseModalProps) {
@@ -56,7 +55,6 @@ export function AddExpenseModal({ open, onClose }: AddExpenseModalProps) {
       amount: '',
       category: 'OTHER',
       description: '',
-      expense_date: new Date().toISOString().slice(0, 10),
     },
   });
 
@@ -66,8 +64,7 @@ export function AddExpenseModal({ open, onClose }: AddExpenseModalProps) {
     const dto: CreateExpenseDto = {
       amount: parseFloat(values.amount),
       category: values.category,
-      description: values.description || undefined,
-      expense_date: values.expense_date || undefined,
+      description: values.description,
     };
     createExpense.mutate(dto, {
       onSuccess: () => { reset(); onClose(); },
@@ -124,16 +121,6 @@ export function AddExpenseModal({ open, onClose }: AddExpenseModalProps) {
                 </SelectContent>
               </Select>
             </div>
-          </div>
-
-          <div className="space-y-1.5">
-            <Label className="text-xs">{tCommon('date')}</Label>
-            <Input
-              type="date"
-              className="rounded-xl"
-              {...register('expense_date')}
-              disabled={createExpense.isPending}
-            />
           </div>
 
           <div className="space-y-1.5">
