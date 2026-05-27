@@ -104,7 +104,8 @@
     "clear_filters": "Фильтрлерди тазалоо",
     "more": "Дагы",
     "menu": "Меню",
-    "logout": "Чыгуу"
+    "logout": "Чыгуу",
+    "print_receipt": "Kvitansiya chop etish"
   },
   "nav": {
     "dashboard": "Башкаруу панели",
@@ -1166,5 +1167,16 @@
     "amount": "Сумма",
     "export_excel": "Excel экспорт",
     "no_data": "Маалымат жок"
+  },
+  "receipt": {
+    "title": "Төлөм квитанциясы",
+    "preview_label": "Квитанция алдын ала көрүнүшү",
+    "print_a4": "A4 басып чыгаруу",
+    "pdf_a4": "A4 PDF",
+    "print_thermal": "80мм басып чыгаруу",
+    "pdf_thermal": "80мм PDF",
+    "close": "Жабуу",
+    "print_failed": "Басып чыгаруу катасы",
+    "pdf_failed": "PDF түзүүдө ката"
   }
 }

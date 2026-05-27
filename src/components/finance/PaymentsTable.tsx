@@ -1,11 +1,12 @@
 'use client';
 
-import type { ReactNode } from 'react';
+import { useState, type ReactNode } from 'react';
 import {
   ArrowLeftRight,
   Banknote,
   CreditCard,
   Loader2,
+  Printer,
   ReceiptText,
   Trash2,
 } from 'lucide-react';
@@ -17,6 +18,7 @@ import { useTranslations } from '@/i18n/index';
 import { cn } from '@/lib/utils';
 import type { Payment, PaymentMethod } from '@/types/finance';
 import { formatAmount, formatDate, getInitials, METHOD_CLASSES } from './utils';
+import { ReceiptDialog } from './ReceiptDialog';
 
 const METHOD_ICONS: Record<PaymentMethod, ReactNode> = {
   CASH: <Banknote className="size-3" />,
@@ -24,11 +26,6 @@ const METHOD_ICONS: Record<PaymentMethod, ReactNode> = {
   TRANSFER: <ArrowLeftRight className="size-3" />,
 };
 
-const METHOD_LABELS: Record<PaymentMethod, string> = {
-  CASH: 'Cash',
-  CARD: 'Card',
-  TRANSFER: 'Transfer',
-};
 
 interface PaymentsTableProps {
   payments: Payment[];
@@ -42,7 +39,20 @@ export function PaymentsTable({ payments, isLoading, onAddPayment, onDelete, isD
   const t = useTranslations('finance');
   const tCommon = useTranslations('common');
 
+  function methodLabel(method: PaymentMethod): string {
+    const key = `method_${method.toLowerCase()}` as 'method_cash' | 'method_card' | 'method_transfer';
+    return t(key);
+  }
+
+  const [receiptPayment, setReceiptPayment] = useState<Payment | null>(null);
+
   return (
+    <>
+      <ReceiptDialog
+        payment={receiptPayment}
+        open={receiptPayment !== null}
+        onClose={() => setReceiptPayment(null)}
+      />
     <div className="rounded-2xl border border-border/50 bg-card overflow-hidden shadow-sm">
       <Table>
         <TableHeader>
@@ -125,7 +135,7 @@ export function PaymentsTable({ payments, isLoading, onAddPayment, onDelete, isD
                       )}
                     >
                       {METHOD_ICONS[p.method]}
-                      {METHOD_LABELS[p.method]}
+                      {methodLabel(p.method)}
                     </Badge>
                   )}
                 </TableCell>
@@ -133,15 +143,26 @@ export function PaymentsTable({ payments, isLoading, onAddPayment, onDelete, isD
                   {p.description || '—'}
                 </TableCell>
                 <TableCell>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="size-7 rounded-lg opacity-0 group-hover:opacity-100 text-destructive/40 hover:text-destructive hover:bg-destructive/8 transition-all"
-                    onClick={() => onDelete(p.id)}
-                    disabled={isDeleting}
-                  >
-                    {isDeleting ? <Loader2 className="size-3 animate-spin" /> : <Trash2 className="size-3.5" />}
-                  </Button>
+                  <div className="flex items-center gap-1">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="size-7 rounded-lg opacity-0 group-hover:opacity-100 text-muted-foreground/40 hover:text-foreground hover:bg-muted/60 transition-all"
+                      onClick={() => setReceiptPayment(p)}
+                      title={tCommon('print_receipt')}
+                    >
+                      <Printer className="size-3.5" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="size-7 rounded-lg opacity-0 group-hover:opacity-100 text-destructive/40 hover:text-destructive hover:bg-destructive/8 transition-all"
+                      onClick={() => onDelete(p.id)}
+                      disabled={isDeleting}
+                    >
+                      {isDeleting ? <Loader2 className="size-3 animate-spin" /> : <Trash2 className="size-3.5" />}
+                    </Button>
+                  </div>
                 </TableCell>
               </TableRow>
             ))
@@ -149,5 +170,6 @@ export function PaymentsTable({ payments, isLoading, onAddPayment, onDelete, isD
         </TableBody>
       </Table>
     </div>
+    </>
   );
 }

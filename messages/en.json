@@ -105,7 +105,8 @@
     "error_generic": "An error occurred",
     "more": "More",
     "menu": "Menu",
-    "logout": "Logout"
+    "logout": "Logout",
+    "print_receipt": "Kvitansiya chop etish"
   },
   "nav": {
     "dashboard": "Dashboard",
@@ -1212,5 +1213,16 @@
     "amount": "Amount",
     "export_excel": "Export Excel",
     "no_data": "No data"
+  },
+  "receipt": {
+    "title": "Payment Receipt",
+    "preview_label": "Receipt Preview",
+    "print_a4": "Print A4",
+    "pdf_a4": "A4 PDF",
+    "print_thermal": "Print 80mm",
+    "pdf_thermal": "80mm PDF",
+    "close": "Close",
+    "print_failed": "Print failed",
+    "pdf_failed": "PDF generation failed"
   }
 }
