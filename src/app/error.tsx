@@ -1,5 +1,6 @@
 'use client';
 
+import * as Sentry from '@sentry/nextjs';
 import { useEffect } from 'react';
 import Link from 'next/link';
 import { AlertTriangle, RefreshCw, Home } from 'lucide-react';
@@ -13,6 +14,7 @@ interface ErrorProps {
 export default function ErrorPage({ error, reset }: ErrorProps) {
   useEffect(() => {
     logger.error('Route segment error:', error);
+    Sentry.captureException(error);
   }, [error]);
 
   return (
