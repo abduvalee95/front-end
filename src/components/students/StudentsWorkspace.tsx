@@ -22,7 +22,7 @@ import { StudentsHero } from './StudentsHero';
 import { StudentsFilters } from './StudentsFilters';
 import { StudentTableRow } from './StudentTableRow';
 import { AccessDenied, EmptyState, ErrorState, TeacherPrompt } from './StudentsStateViews';
-import { PAGE_SIZE, type StudentRow, type ViewMode, type PaymentStatus } from './types';
+import { DEFAULT_PAGE_SIZE, type PageSizeOption, type StudentRow, type ViewMode, type PaymentStatus } from './types';
 
 
 export function StudentsWorkspace() {
@@ -32,6 +32,7 @@ export function StudentsWorkspace() {
 
   const queryClient = useQueryClient();
   const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState<PageSizeOption>(DEFAULT_PAGE_SIZE);
   const {
     value: search,
     debouncedValue: debouncedSearch,
@@ -68,7 +69,7 @@ export function StudentsWorkspace() {
   const shouldLoadAllGroups = canManageScope && effectiveViewMode === 'all';
 
   const studentsQuery = useStudents(
-    { page, limit: PAGE_SIZE, search: debouncedSearch || undefined, status: statusFilter || undefined },
+    { page, limit: pageSize, search: debouncedSearch || undefined, status: statusFilter || undefined },
     shouldLoadAllStudents,
   );
 
@@ -329,6 +330,11 @@ export function StudentsWorkspace() {
         teacherOptions={teacherOptions}
         canManageScope={canManageScope}
         viewMode={viewMode}
+        pageSize={pageSize}
+        onPageSizeChange={(size) => {
+          setPageSize(size);
+          setPage(1);
+        }}
       />
 
       {/* Table card */}
@@ -406,7 +412,7 @@ export function StudentsWorkspace() {
                 <StudentTableRow
                   key={student.id}
                   student={student}
-                  index={(page - 1) * PAGE_SIZE + idx + 1}
+                  index={(page - 1) * pageSize + idx + 1}
                   teacherScoped={effectiveViewMode === 'teacher'}
                   canManageScope={canManageScope}
                   orgId={user?.organization_id}

@@ -14,7 +14,10 @@ export type StudentRow = Pick<Student, 'id' | 'name' | 'phone' | 'status'> & {
   paymentPercent?: number; // 0-100, set when status === 'partial'
 };
 
-export const PAGE_SIZE = 10;
+export const PAGE_SIZE_OPTIONS = [10, 25, 50, 100] as const;
+export type PageSizeOption = (typeof PAGE_SIZE_OPTIONS)[number];
+export const DEFAULT_PAGE_SIZE: PageSizeOption = 25;
+export const PAGE_SIZE = DEFAULT_PAGE_SIZE;
 
 const AVATAR_COLORS = [
   'bg-violet-100 text-violet-700',

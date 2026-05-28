@@ -1,12 +1,13 @@
 'use client';
 
-import { Loader2, Search, UsersRound, X } from 'lucide-react';
+import { Loader2, Rows3, Search, UsersRound, X } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useTranslations } from '@/i18n/index';
 import { cn } from '@/lib/utils';
 import type { StudentStatus } from '@/types/student';
-import type { ViewMode, PaymentStatus } from './types';
+import type { ViewMode, PaymentStatus, PageSizeOption } from './types';
+import { PAGE_SIZE_OPTIONS } from './types';
 
 interface TeacherOption {
   id: string;
@@ -29,6 +30,8 @@ interface StudentsFiltersProps {
   teacherOptions: TeacherOption[];
   canManageScope: boolean;
   viewMode: ViewMode;
+  pageSize: PageSizeOption;
+  onPageSizeChange: (size: PageSizeOption) => void;
 }
 
 export function StudentsFilters({
@@ -47,6 +50,8 @@ export function StudentsFilters({
   teacherOptions,
   canManageScope,
   viewMode,
+  pageSize,
+  onPageSizeChange,
 }: StudentsFiltersProps) {
   const t = useTranslations('students');
   const tCommon = useTranslations('common');
@@ -137,6 +142,27 @@ export function StudentsFilters({
       </div>
 
       <div className="flex items-center gap-2">
+        {/* Per-page selector */}
+        <Select
+          value={String(pageSize)}
+          onValueChange={(v) => onPageSizeChange(Number(v) as PageSizeOption)}
+        >
+          <SelectTrigger
+            className="h-9 w-auto min-w-[110px] rounded-xl text-xs font-medium cursor-pointer gap-1.5"
+            aria-label={tCommon('rows_per_page') ?? 'Rows per page'}
+          >
+            <Rows3 className="size-3.5 shrink-0 text-muted-foreground" aria-hidden="true" />
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {PAGE_SIZE_OPTIONS.map((size) => (
+              <SelectItem key={size} value={String(size)} className="text-xs cursor-pointer">
+                {size} {tCommon('per_page')}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+
         {/* Teacher filter — only visible in teacher view mode */}
         {canManageScope && effectiveViewMode === 'teacher' && (
           <Select
