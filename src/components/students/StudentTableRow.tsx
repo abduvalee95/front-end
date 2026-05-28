@@ -78,20 +78,18 @@ export function StudentTableRow({ student, index, teacherScoped, canManageScope,
       </TableCell>
       <TableCell>
         {student.paymentStatus === 'paid' && (
-          <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-[11px] font-bold text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-300">
-            <Check className="size-3.5 stroke-[3]" />
-            {t('pay_paid')}
+          <span className="inline-flex size-7 items-center justify-center rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-300">
+            <Check className="size-4 stroke-[3]" />
           </span>
         )}
         {student.paymentStatus === 'partial' && (
-          <span className="inline-flex items-center gap-1 rounded-full bg-amber-50 px-2 py-0.5 text-[11px] font-bold text-amber-700 dark:bg-amber-500/10 dark:text-amber-300">
-            <span className="tabular-nums">{student.paymentPercent ?? 0}%</span>
+          <span className="inline-flex h-7 min-w-[28px] items-center justify-center rounded-full bg-amber-100 px-1.5 text-[11px] font-black tabular-nums text-amber-700 dark:bg-amber-500/20 dark:text-amber-300">
+            {student.paymentPercent ?? 0}%
           </span>
         )}
         {student.paymentStatus === 'unpaid' && (
-          <span className="inline-flex items-center gap-1 rounded-full bg-rose-50 px-2 py-0.5 text-[11px] font-bold text-rose-700 dark:bg-rose-500/10 dark:text-rose-300">
-            <X className="size-3.5 stroke-[3]" />
-            {t('pay_unpaid')}
+          <span className="inline-flex size-7 items-center justify-center rounded-full bg-rose-100 text-rose-600 dark:bg-rose-500/20 dark:text-rose-300">
+            <X className="size-4 stroke-[3]" />
           </span>
         )}
         {student.paymentStatus === 'unknown' && (
