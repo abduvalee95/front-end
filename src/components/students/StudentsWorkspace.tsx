@@ -11,6 +11,7 @@ import { useTeachers } from '@/hooks/useTeachers';
 import { useGroupEnrollments, useStudentGroups, useStudents } from '@/hooks/useStudents';
 import { studentService } from '@/services/students';
 import { analyticsService } from '@/services/analytics';
+import { paymentService } from '@/services/finance';
 import { queryKeys } from '@/lib/api/query-keys';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -74,7 +75,7 @@ export function StudentsWorkspace() {
   const teachersQuery = useTeachers({ page: 1, limit: 100 }, canManageScope);
   const allGroupsQuery = useStudentGroups(shouldLoadAllGroups);
 
-  // Current-month invoice status — paid / partial / unpaid per student.
+  // Current-month payment status — any payment this month = paid.
   // currentMonth held in state so month rollover triggers re-render + auto-refetch via queryKey.
   const [currentMonth, setCurrentMonth] = useState(() => new Date().toISOString().slice(0, 7));
 
@@ -86,9 +87,12 @@ export function StudentsWorkspace() {
     }, 60 * 1000);
     return () => clearInterval(id);
   }, [currentMonth]);
-  const invoicesQuery = useQuery({
-    queryKey: ['students', 'invoices', currentMonth, user?.organization_id],
-    queryFn: () => analyticsService.listInvoices({ limit: 500, month: currentMonth }),
+
+  const monthStartIso = `${currentMonth}-01T00:00:00.000Z`;
+
+  const paymentsQuery = useQuery({
+    queryKey: ['students', 'payments', currentMonth, user?.organization_id],
+    queryFn: () => paymentService.list({ from: monthStartIso, limit: 1000 }),
     staleTime: 1000 * 60 * 2,
     refetchOnWindowFocus: true,
     refetchOnMount: true,
@@ -98,24 +102,13 @@ export function StudentsWorkspace() {
 
   const paymentStatusMap = useMemo<Map<string, { status: PaymentStatus; percent: number }>>(() => {
     const map = new Map<string, { status: PaymentStatus; percent: number }>();
-    (invoicesQuery.data?.items ?? [])
-      .filter((inv) => inv.month?.startsWith(currentMonth))
-      .forEach((inv) => {
-        const paid = parseFloat(inv.amount_paid ?? '0');
-        const due = parseFloat(inv.amount_due ?? '0');
-        let ps: PaymentStatus;
-        if (inv.status === 'PAID' || (due > 0 && paid >= due)) ps = 'paid';
-        else if (paid > 0 && paid < due) ps = 'partial';
-        else ps = 'unpaid';
-        const percent = due > 0 ? Math.min(100, Math.round((paid / due) * 100)) : 0;
-        const existing = map.get(inv.student_id);
-        const order: PaymentStatus[] = ['unpaid', 'partial', 'paid'];
-        if (!existing || order.indexOf(ps) < order.indexOf(existing.status)) {
-          map.set(inv.student_id, { status: ps, percent });
-        }
-      });
+    (paymentsQuery.data?.items ?? []).forEach((p) => {
+      if (!p.student_id) return;
+      // Any payment in current month → paid. No partial concept from raw payments.
+      map.set(p.student_id, { status: 'paid', percent: 100 });
+    });
     return map;
-  }, [invoicesQuery.data, currentMonth]);
+  }, [paymentsQuery.data]);
 
   const groupsQuery = useStudentGroups(shouldLoadTeacherStudents);
 
@@ -159,7 +152,7 @@ export function StudentsWorkspace() {
           courses: courseTitle ? [courseTitle] : [],
           teachers: teacherName ? [teacherName] : [],
           totalDiscount: discount,
-          paymentStatus: entry?.status ?? (invoicesQuery.isLoading ? 'unknown' : 'unpaid'),
+          paymentStatus: entry?.status ?? (paymentsQuery.isLoading ? 'unknown' : 'unpaid'),
           paymentPercent: entry?.percent,
         });
       });
@@ -174,7 +167,7 @@ export function StudentsWorkspace() {
       const matchesPayment = !paymentFilter || student.paymentStatus === paymentFilter;
       return matchesSearch && matchesStatus && matchesPayment;
     });
-  }, [enrollmentQueries, debouncedSearch, statusFilter, paymentFilter, paymentStatusMap, invoicesQuery.isLoading]);
+  }, [enrollmentQueries, debouncedSearch, statusFilter, paymentFilter, paymentStatusMap, paymentsQuery.isLoading]);
 
   const allGroupIds = useMemo(() => (allGroupsQuery.data ?? []).map((g) => g.id), [allGroupsQuery.data]);
   const allEnrollmentQueries = useGroupEnrollments(allGroupIds, shouldLoadAllGroups && allGroupIds.length > 0);
@@ -214,12 +207,12 @@ export function StudentsWorkspace() {
           courses: info?.courses ?? [],
           teachers: info?.teachers ?? [],
           totalDiscount: info?.totalDiscount ?? 0,
-          paymentStatus: (entry?.status ?? (invoicesQuery.isLoading ? 'unknown' : 'unpaid')) as PaymentStatus,
+          paymentStatus: (entry?.status ?? (paymentsQuery.isLoading ? 'unknown' : 'unpaid')) as PaymentStatus,
           paymentPercent: entry?.percent,
         };
       })
       .filter((student) => !paymentFilter || student.paymentStatus === paymentFilter);
-  }, [studentsQuery.data?.items, allEnrollmentQueries, paymentStatusMap, paymentFilter, invoicesQuery.isLoading]);
+  }, [studentsQuery.data?.items, allEnrollmentQueries, paymentStatusMap, paymentFilter, paymentsQuery.isLoading]);
 
   const rows = effectiveViewMode === 'all' ? allRows : teacherRows;
   const loading =
