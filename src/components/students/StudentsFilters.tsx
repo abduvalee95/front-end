@@ -65,15 +65,17 @@ export function StudentsFilters({
             value={search}
             onChange={(e) => onSearchChange(e.target.value)}
             placeholder={`${tCommon('search')} ${t('full_name')} ${tCommon('or')} ${t('phone')}…`}
+            aria-label={`${tCommon('search')} ${t('full_name')} ${tCommon('or')} ${t('phone')}`}
             className={cn('h-9 pl-8 text-sm rounded-xl', search && 'pr-8')}
           />
           {search && (
             <button
               type="button"
               onClick={onClearSearch}
-              className="absolute right-2.5 top-1/2 -translate-y-1/2 rounded-full p-0.5 text-muted-foreground hover:text-foreground transition-colors"
+              aria-label={tCommon('clear') ?? 'Clear'}
+              className="absolute right-1 top-1/2 -translate-y-1/2 inline-flex size-7 items-center justify-center rounded-full text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
-              <X className="size-3.5" />
+              <X aria-hidden="true" className="size-3.5" />
             </button>
           )}
         </div>

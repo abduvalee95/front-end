@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { ChevronLeft, ChevronRight, X } from 'lucide-react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useTranslations } from '@/i18n/index';
@@ -74,12 +74,24 @@ export function StudentsWorkspace() {
   const teachersQuery = useTeachers({ page: 1, limit: 100 }, canManageScope);
   const allGroupsQuery = useStudentGroups(shouldLoadAllGroups);
 
-  // Current-month invoice status — paid / partial / unpaid per student
-  const currentMonth = new Date().toISOString().slice(0, 7); // "2026-05"
+  // Current-month invoice status — paid / partial / unpaid per student.
+  // currentMonth held in state so month rollover triggers re-render + auto-refetch via queryKey.
+  const [currentMonth, setCurrentMonth] = useState(() => new Date().toISOString().slice(0, 7));
+
+  // Tick every minute; if month changed, update state → queryKey changes → refetch.
+  useEffect(() => {
+    const id = setInterval(() => {
+      const next = new Date().toISOString().slice(0, 7);
+      if (next !== currentMonth) setCurrentMonth(next);
+    }, 60 * 1000);
+    return () => clearInterval(id);
+  }, [currentMonth]);
   const invoicesQuery = useQuery({
     queryKey: ['students', 'invoices', currentMonth, user?.organization_id],
-    queryFn: () => analyticsService.listInvoices({ limit: 100, month: currentMonth }),
+    queryFn: () => analyticsService.listInvoices({ limit: 500, month: currentMonth }),
     staleTime: 1000 * 60 * 2,
+    refetchOnWindowFocus: true,
+    refetchOnMount: true,
     enabled: canManageScope || teacherScoped,
     retry: false,
   });
@@ -147,7 +159,7 @@ export function StudentsWorkspace() {
           courses: courseTitle ? [courseTitle] : [],
           teachers: teacherName ? [teacherName] : [],
           totalDiscount: discount,
-          paymentStatus: entry?.status ?? 'unknown',
+          paymentStatus: entry?.status ?? (invoicesQuery.isLoading ? 'unknown' : 'unpaid'),
           paymentPercent: entry?.percent,
         });
       });
@@ -162,7 +174,7 @@ export function StudentsWorkspace() {
       const matchesPayment = !paymentFilter || student.paymentStatus === paymentFilter;
       return matchesSearch && matchesStatus && matchesPayment;
     });
-  }, [enrollmentQueries, debouncedSearch, statusFilter, paymentFilter, paymentStatusMap]);
+  }, [enrollmentQueries, debouncedSearch, statusFilter, paymentFilter, paymentStatusMap, invoicesQuery.isLoading]);
 
   const allGroupIds = useMemo(() => (allGroupsQuery.data ?? []).map((g) => g.id), [allGroupsQuery.data]);
   const allEnrollmentQueries = useGroupEnrollments(allGroupIds, shouldLoadAllGroups && allGroupIds.length > 0);
@@ -202,12 +214,12 @@ export function StudentsWorkspace() {
           courses: info?.courses ?? [],
           teachers: info?.teachers ?? [],
           totalDiscount: info?.totalDiscount ?? 0,
-          paymentStatus: (entry?.status ?? 'unknown') as PaymentStatus,
+          paymentStatus: (entry?.status ?? (invoicesQuery.isLoading ? 'unknown' : 'unpaid')) as PaymentStatus,
           paymentPercent: entry?.percent,
         };
       })
       .filter((student) => !paymentFilter || student.paymentStatus === paymentFilter);
-  }, [studentsQuery.data?.items, allEnrollmentQueries, paymentStatusMap, paymentFilter]);
+  }, [studentsQuery.data?.items, allEnrollmentQueries, paymentStatusMap, paymentFilter, invoicesQuery.isLoading]);
 
   const rows = effectiveViewMode === 'all' ? allRows : teacherRows;
   const loading =
@@ -337,7 +349,7 @@ export function StudentsWorkspace() {
                   {t('col_status')}
                 </TableHead>
                 <TableHead className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
-                  {t('col_payment')}
+                  {t('col_payment')} · {currentMonth}
                 </TableHead>
                 <TableHead className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
                   {teacherScoped ? t('col_group_course') : t('col_group_course')}
@@ -380,26 +392,28 @@ export function StudentsWorkspace() {
               <span className="font-bold text-foreground">{studentsQuery.data.meta.total}</span>{' '}
               {t('col_student').toLowerCase()}
             </p>
-            <div className="flex items-center gap-1">
+            <nav aria-label="Pagination" className="flex items-center gap-1">
               <Button
                 variant="outline"
                 size="icon"
-                className="size-8 rounded-lg"
+                aria-label="Previous page"
+                className="size-9 rounded-lg"
                 disabled={page === 1}
                 onClick={() => setPage((p) => Math.max(1, p - 1))}
               >
-                <ChevronLeft className="size-3.5" />
+                <ChevronLeft aria-hidden="true" className="size-3.5" />
               </Button>
               <Button
                 variant="outline"
                 size="icon"
-                className="size-8 rounded-lg"
+                aria-label="Next page"
+                className="size-9 rounded-lg"
                 disabled={page >= studentsQuery.data.meta.pages}
                 onClick={() => setPage((p) => p + 1)}
               >
-                <ChevronRight className="size-3.5" />
+                <ChevronRight aria-hidden="true" className="size-3.5" />
               </Button>
-            </div>
+            </nav>
           </div>
         )}
       </div>

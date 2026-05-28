@@ -78,22 +78,34 @@ export function StudentTableRow({ student, index, teacherScoped, canManageScope,
       </TableCell>
       <TableCell>
         {student.paymentStatus === 'paid' && (
-          <span className="inline-flex size-7 items-center justify-center rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-300">
-            <Check className="size-4 stroke-[3]" />
+          <span
+            role="img"
+            aria-label={t('pay_paid')}
+            className="inline-flex size-7 items-center justify-center rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-300"
+          >
+            <Check aria-hidden="true" className="size-4 stroke-[3]" />
           </span>
         )}
         {student.paymentStatus === 'partial' && (
-          <span className="inline-flex h-7 min-w-[28px] items-center justify-center rounded-full bg-amber-100 px-1.5 text-[11px] font-black tabular-nums text-amber-700 dark:bg-amber-500/20 dark:text-amber-300">
+          <span
+            role="img"
+            aria-label={`${t('pay_partial')} ${student.paymentPercent ?? 0}%`}
+            className="inline-flex h-7 min-w-[28px] items-center justify-center rounded-full bg-amber-100 px-1.5 text-[11px] font-black tabular-nums text-amber-700 dark:bg-amber-500/20 dark:text-amber-300"
+          >
             {student.paymentPercent ?? 0}%
           </span>
         )}
         {student.paymentStatus === 'unpaid' && (
-          <span className="inline-flex size-7 items-center justify-center rounded-full bg-rose-100 text-rose-600 dark:bg-rose-500/20 dark:text-rose-300">
-            <X className="size-4 stroke-[3]" />
+          <span
+            role="img"
+            aria-label={t('pay_unpaid')}
+            className="inline-flex size-7 items-center justify-center rounded-full bg-rose-100 text-rose-600 dark:bg-rose-500/20 dark:text-rose-300"
+          >
+            <X aria-hidden="true" className="size-4 stroke-[3]" />
           </span>
         )}
         {student.paymentStatus === 'unknown' && (
-          <span className="text-muted-foreground/40 text-xs">—</span>
+          <span aria-label="Unknown" className="text-muted-foreground/40 text-xs">—</span>
         )}
       </TableCell>
       <TableCell className="max-w-[200px] text-xs text-muted-foreground">
@@ -118,27 +130,33 @@ export function StudentTableRow({ student, index, teacherScoped, canManageScope,
       </TableCell>
       {canManageScope && (
         <TableCell className="pr-4 text-right">
-          <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+          <div className="flex items-center justify-end gap-1 opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100">
             <EditStudentModal
               student={student}
               trigger={
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="size-7 rounded-lg hover:bg-indigo-50 hover:text-indigo-600 dark:hover:bg-indigo-500/10"
+                  aria-label={t('edit_student')}
+                  className="size-9 rounded-lg hover:bg-indigo-50 hover:text-indigo-600 dark:hover:bg-indigo-500/10"
                 >
-                  <PenLine className="size-3.5" />
+                  <PenLine aria-hidden="true" className="size-3.5" />
                 </Button>
               }
             />
             <Button
               variant="ghost"
               size="icon"
-              className="size-7 rounded-lg hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-500/10 dark:hover:text-red-400"
+              aria-label={t('delete_student')}
+              className="size-9 rounded-lg hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-500/10 dark:hover:text-red-400"
               disabled={isDeleting}
               onClick={handleDelete}
             >
-              {isDeleting ? <Loader2 className="size-3.5 animate-spin" /> : <Trash2 className="size-3.5" />}
+              {isDeleting ? (
+                <Loader2 aria-hidden="true" className="size-3.5 animate-spin" />
+              ) : (
+                <Trash2 aria-hidden="true" className="size-3.5" />
+              )}
             </Button>
           </div>
         </TableCell>
