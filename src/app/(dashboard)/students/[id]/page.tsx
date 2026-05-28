@@ -6,13 +6,15 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useStudentDetail } from '@/hooks/useStudents';
 import { usePayments, useDeletePayment } from '@/hooks/useFinance';
 import { AddPaymentModal } from '@/components/finance/AddPaymentModal';
+import { ReceiptDialog } from '@/components/finance/ReceiptDialog';
+import type { Payment } from '@/types/finance';
 import { useTranslations, useLocale } from '@/i18n/index';
 import { useAuthStore } from '@/store/auth.store';
 import { queryKeys } from '@/lib/api/query-keys';
 import { enrollmentService } from '@/services/enrollments';
 import {
   ArrowLeft, BookOpen, Calendar, Check, CreditCard,
-  GraduationCap, Loader2, MapPin, Pencil, Phone, Plus, Trash2, User, Users, X,
+  GraduationCap, Loader2, MapPin, Pencil, Phone, Plus, Printer, Trash2, User, Users, X,
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -41,6 +43,7 @@ export default function StudentDetailPage() {
   const router = useRouter();
   const studentId = params.id as string;
   const [paymentModalOpen, setPaymentModalOpen] = useState(false);
+  const [receiptPayment, setReceiptPayment] = useState<Payment | null>(null);
   const [editingDiscountId, setEditingDiscountId] = useState<string | null>(null);
   const [discountInput, setDiscountInput] = useState('');
   const [savingDiscount, setSavingDiscount] = useState(false);
@@ -445,6 +448,20 @@ export default function StudentDetailPage() {
                     <Button
                       variant="ghost"
                       size="icon"
+                      className="size-7 rounded-lg text-emerald-600/70 hover:text-emerald-700 hover:bg-emerald-500/10"
+                      title="Квитанция"
+                      onClick={() =>
+                        setReceiptPayment({
+                          ...payment,
+                          student_name: payment.student_name ?? student.name,
+                        })
+                      }
+                    >
+                      <Printer className="size-3.5" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
                       className="size-7 rounded-lg text-destructive/60 hover:text-destructive hover:bg-destructive/10"
                       disabled={deletePayment.isPending}
                       onClick={() => {
@@ -471,6 +488,12 @@ export default function StudentDetailPage() {
         onClose={() => setPaymentModalOpen(false)}
         studentId={studentId}
         studentName={student.name}
+      />
+
+      <ReceiptDialog
+        payment={receiptPayment}
+        open={receiptPayment !== null}
+        onClose={() => setReceiptPayment(null)}
       />
     </div>
   );

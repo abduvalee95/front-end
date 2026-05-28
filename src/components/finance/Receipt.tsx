@@ -2,8 +2,29 @@
 
 import { forwardRef } from 'react';
 import type { Payment, PaymentMethod } from '@/types/finance';
-import { useTranslations } from '@/i18n/index';
 import { formatAmount } from './utils';
+
+// Receipt is intentionally pinned to Russian. Customers and accountants
+// expect a single canonical language on the printed document regardless of
+// the operator's UI locale.
+const RU_METHOD: Record<PaymentMethod, string> = {
+  CASH: 'Наличные',
+  CARD: 'Карта',
+  TRANSFER: 'Перевод',
+};
+
+const RU = {
+  receiptTitle: 'КВИТАНЦИЯ ОБ ОПЛАТЕ',
+  receiptNumber: 'Квитанция №',
+  dateTime: 'Дата / Время',
+  student: 'Ученик',
+  method: 'Способ оплаты',
+  note: 'Комментарий',
+  totalAmount: 'Итого к оплате',
+  cashierSignature: 'Подпись кассира',
+  payerSignature: 'Подпись плательщика',
+  footer: 'Данная квитанция подтверждает оплату. Сохраните её.',
+} as const;
 
 export type ReceiptFormat = 'A4' | 'THERMAL_80';
 
@@ -32,12 +53,7 @@ export const Receipt = forwardRef<HTMLDivElement, ReceiptProps>(function Receipt
   { payment, organizationName, format },
   ref,
 ) {
-  const tFinance = useTranslations('finance');
-
-  function methodLabel(method: PaymentMethod): string {
-    const key = `method_${method.toLowerCase()}` as 'method_cash' | 'method_card' | 'method_transfer';
-    return tFinance(key);
-  }
+  const methodLabel = (method: PaymentMethod): string => RU_METHOD[method];
 
   const isA4 = format === 'A4';
 
@@ -167,30 +183,30 @@ export const Receipt = forwardRef<HTMLDivElement, ReceiptProps>(function Receipt
       {/* Header */}
       <div style={headerStyle}>
         <p style={orgNameStyle}>{organizationName}</p>
-        <p style={receiptTitleStyle}>To&apos;lov kvitansiyasi / Квитанция об оплате</p>
+        <p style={receiptTitleStyle}>{RU.receiptTitle}</p>
       </div>
 
       {/* Receipt meta */}
       <div style={{ marginBottom: isA4 ? '12px' : '8px' }}>
         <div style={rowStyle}>
-          <span style={labelStyle}>Kvitansiya №</span>
+          <span style={labelStyle}>{RU.receiptNumber}</span>
           <span style={valueStyle}>{payment.receipt_number ?? payment.id.slice(0, 8).toUpperCase()}</span>
         </div>
         <div style={rowStyle}>
-          <span style={labelStyle}>Sana / Vaqt</span>
+          <span style={labelStyle}>{RU.dateTime}</span>
           <span style={valueStyle}>{formatReceiptDate(payment.paid_at)}</span>
         </div>
         <div style={rowStyle}>
-          <span style={labelStyle}>O&apos;quvchi</span>
+          <span style={labelStyle}>{RU.student}</span>
           <span style={valueStyle}>{payment.student_name ?? '—'}</span>
         </div>
         <div style={rowStyle}>
-          <span style={labelStyle}>To&apos;lov usuli</span>
+          <span style={labelStyle}>{RU.method}</span>
           <span style={valueStyle}>{methodLabel(payment.method)}</span>
         </div>
         {payment.description && (
           <div style={rowStyle}>
-            <span style={labelStyle}>Izoh</span>
+            <span style={labelStyle}>{RU.note}</span>
             <span style={{ ...valueStyle, maxWidth: '60%', wordBreak: 'break-word' as const }}>
               {payment.description}
             </span>
@@ -200,26 +216,24 @@ export const Receipt = forwardRef<HTMLDivElement, ReceiptProps>(function Receipt
 
       {/* Amount */}
       <div style={amountRowStyle}>
-        <span style={amountLabelStyle}>Jami to&apos;lov</span>
+        <span style={amountLabelStyle}>{RU.totalAmount}</span>
         <span style={amountValueStyle}>{formatAmount(payment.amount)}</span>
       </div>
 
       {/* Signature lines */}
       <div style={signatureAreaStyle}>
         <div style={signatureLineStyle}>
-          <p style={signatureLabelStyle}>Kassir imzosi</p>
+          <p style={signatureLabelStyle}>{RU.cashierSignature}</p>
           <div style={signatureDividerStyle} />
         </div>
         <div style={signatureLineStyle}>
-          <p style={signatureLabelStyle}>To&apos;lovchi imzosi</p>
+          <p style={signatureLabelStyle}>{RU.payerSignature}</p>
           <div style={signatureDividerStyle} />
         </div>
       </div>
 
       {/* Footer */}
-      <p style={footerStyle}>
-        Ushbu kvitansiya to&apos;lovni tasdiqlaydi. Saqlang.
-      </p>
+      <p style={footerStyle}>{RU.footer}</p>
     </div>
   );
 });
