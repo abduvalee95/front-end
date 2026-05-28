@@ -40,6 +40,11 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
+# playwright
+playwright-report/
+test-results/
+tests/e2e/.auth/
+
 # claude, windsurf and agent files
 .claude/
 .windsurf/

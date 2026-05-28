@@ -7,7 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "analyze": "ANALYZE=true next build"
+    "analyze": "ANALYZE=true next build",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui"
   },
   "dependencies": {
     "@ai-sdk/groq": "^3.0.38",
@@ -55,6 +57,7 @@
   },
   "devDependencies": {
     "@next/bundle-analyzer": "^16.2.6",
+    "@playwright/test": "^1.60.0",
     "@tailwindcss/postcss": "^4",
     "@types/http-proxy": "^1.17.17",
     "@types/node": "^20",
