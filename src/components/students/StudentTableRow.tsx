@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { Loader2, PenLine, Trash2 } from 'lucide-react';
+import { Check, Loader2, PenLine, Trash2, X } from 'lucide-react';
 import { useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
@@ -78,20 +78,19 @@ export function StudentTableRow({ student, index, teacherScoped, canManageScope,
       </TableCell>
       <TableCell>
         {student.paymentStatus === 'paid' && (
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-0.5 text-[11px] font-bold text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-300">
-            <span className="size-1.5 rounded-full bg-emerald-500" />
+          <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-[11px] font-bold text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-300">
+            <Check className="size-3.5 stroke-[3]" />
             {t('pay_paid')}
           </span>
         )}
         {student.paymentStatus === 'partial' && (
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-50 px-2.5 py-0.5 text-[11px] font-bold text-amber-700 dark:bg-amber-500/10 dark:text-amber-300">
-            <span className="size-1.5 rounded-full bg-amber-500" />
-            {t('pay_partial')}
+          <span className="inline-flex items-center gap-1 rounded-full bg-amber-50 px-2 py-0.5 text-[11px] font-bold text-amber-700 dark:bg-amber-500/10 dark:text-amber-300">
+            <span className="tabular-nums">{student.paymentPercent ?? 0}%</span>
           </span>
         )}
         {student.paymentStatus === 'unpaid' && (
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-rose-50 px-2.5 py-0.5 text-[11px] font-bold text-rose-700 dark:bg-rose-500/10 dark:text-rose-300">
-            <span className="size-1.5 rounded-full bg-rose-500" />
+          <span className="inline-flex items-center gap-1 rounded-full bg-rose-50 px-2 py-0.5 text-[11px] font-bold text-rose-700 dark:bg-rose-500/10 dark:text-rose-300">
+            <X className="size-3.5 stroke-[3]" />
             {t('pay_unpaid')}
           </span>
         )}

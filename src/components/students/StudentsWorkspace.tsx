@@ -74,37 +74,37 @@ export function StudentsWorkspace() {
   const teachersQuery = useTeachers({ page: 1, limit: 100 }, canManageScope);
   const allGroupsQuery = useStudentGroups(shouldLoadAllGroups);
 
-  // Current-month invoice payment status map
+  // Current-month invoice status — paid / partial / unpaid per student
   const currentMonth = new Date().toISOString().slice(0, 7); // "2026-05"
   const invoicesQuery = useQuery({
     queryKey: ['students', 'invoices', currentMonth, user?.organization_id],
-    queryFn: () => analyticsService.listInvoices({ limit: 100 }),
+    queryFn: () => analyticsService.listInvoices({ limit: 500 }),
     staleTime: 1000 * 60 * 2,
     enabled: canManageScope || teacherScoped,
     retry: false,
   });
 
-  const paymentStatusMap = useMemo<Map<string, PaymentStatus>>(() => {
-    const map = new Map<string, PaymentStatus>();
+  const paymentStatusMap = useMemo<Map<string, { status: PaymentStatus; percent: number }>>(() => {
+    const map = new Map<string, { status: PaymentStatus; percent: number }>();
     (invoicesQuery.data?.items ?? [])
       .filter((inv) => inv.month?.startsWith(currentMonth))
       .forEach((inv) => {
         const paid = parseFloat(inv.amount_paid ?? '0');
         const due = parseFloat(inv.amount_due ?? '0');
         let ps: PaymentStatus;
-        if (inv.status === 'PAID') ps = 'paid';
+        if (inv.status === 'PAID' || (due > 0 && paid >= due)) ps = 'paid';
         else if (paid > 0 && paid < due) ps = 'partial';
-        else if (paid >= due && due > 0) ps = 'paid';
         else ps = 'unpaid';
-        // Keep worst status if student has multiple invoices this month
+        const percent = due > 0 ? Math.min(100, Math.round((paid / due) * 100)) : 0;
         const existing = map.get(inv.student_id);
         const order: PaymentStatus[] = ['unpaid', 'partial', 'paid'];
-        if (!existing || order.indexOf(ps) < order.indexOf(existing)) {
-          map.set(inv.student_id, ps);
+        if (!existing || order.indexOf(ps) < order.indexOf(existing.status)) {
+          map.set(inv.student_id, { status: ps, percent });
         }
       });
     return map;
   }, [invoicesQuery.data, currentMonth]);
+
   const groupsQuery = useStudentGroups(shouldLoadTeacherStudents);
 
   const teacherGroups = useMemo(() => {
@@ -137,6 +137,7 @@ export function StudentsWorkspace() {
           existing.totalDiscount += discount;
           return;
         }
+        const entry = paymentStatusMap.get(enrollment.student.id);
         rows.set(enrollment.student.id, {
           id: enrollment.student.id,
           name: enrollment.student.name,
@@ -146,7 +147,8 @@ export function StudentsWorkspace() {
           courses: courseTitle ? [courseTitle] : [],
           teachers: teacherName ? [teacherName] : [],
           totalDiscount: discount,
-          paymentStatus: paymentStatusMap.get(enrollment.student.id) ?? 'unknown',
+          paymentStatus: entry?.status ?? 'unknown',
+          paymentPercent: entry?.percent,
         });
       });
     });
@@ -193,13 +195,15 @@ export function StudentsWorkspace() {
     return (studentsQuery.data?.items ?? [])
       .map((student) => {
         const info = enrollmentMap.get(student.id);
+        const entry = paymentStatusMap.get(student.id);
         return {
           ...student,
           groups: info?.groups ?? [],
           courses: info?.courses ?? [],
           teachers: info?.teachers ?? [],
           totalDiscount: info?.totalDiscount ?? 0,
-          paymentStatus: paymentStatusMap.get(student.id) ?? 'unknown' as PaymentStatus,
+          paymentStatus: (entry?.status ?? 'unknown') as PaymentStatus,
+          paymentPercent: entry?.percent,
         };
       })
       .filter((student) => !paymentFilter || student.paymentStatus === paymentFilter);
