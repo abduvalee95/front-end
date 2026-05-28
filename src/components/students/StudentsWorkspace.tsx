@@ -154,8 +154,11 @@ export function StudentsWorkspace() {
         const courseTitle = enrollment.group?.course?.title;
         const teacherName = enrollment.group?.teacher?.full_name;
         const fee = parseFloat(enrollment.monthly_fee ?? '0') || 0;
+        const coursePrice = parseFloat(enrollment.group?.course?.price ?? '0') || 0;
+        // Fallback to course.price when enrollment.monthly_fee is unset (0).
+        const effectiveFee = fee > 0 ? fee : coursePrice;
         const discount = parseFloat(enrollment.discount_amount ?? '0') || 0;
-        const net = Math.max(0, fee - discount);
+        const net = Math.max(0, effectiveFee - discount);
         const existing = rows.get(enrollment.student.id);
         if (existing) {
           if (groupName && !existing.groups.includes(groupName)) existing.groups.push(groupName);
@@ -218,8 +221,11 @@ export function StudentsWorkspace() {
         const courseTitle = enrollment.group?.course?.title;
         const teacherName = enrollment.group?.teacher?.full_name;
         const fee = parseFloat(enrollment.monthly_fee ?? '0') || 0;
+        const coursePrice = parseFloat(enrollment.group?.course?.price ?? '0') || 0;
+        // Fallback to course.price when enrollment.monthly_fee is unset (0).
+        const effectiveFee = fee > 0 ? fee : coursePrice;
         const discount = parseFloat(enrollment.discount_amount ?? '0') || 0;
-        const net = Math.max(0, fee - discount);
+        const net = Math.max(0, effectiveFee - discount);
         if (existing) {
           if (groupName && !existing.groups.includes(groupName)) existing.groups.push(groupName);
           if (courseTitle && !existing.courses.includes(courseTitle)) existing.courses.push(courseTitle);
