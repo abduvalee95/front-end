@@ -648,7 +648,10 @@
     "score": "Score (0–100)",
     "no_students": "No students enrolled",
     "enroll_first": "Enroll students in this group first",
-    "n_students": "students"
+    "n_students": "students",
+    "today_btn": "Today",
+    "mark_all_present": "Mark all present",
+    "unsaved": "Unsaved"
   },
   "schedule_page": {
     "title": "Schedule",

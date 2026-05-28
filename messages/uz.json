@@ -705,7 +705,10 @@
     "score": "Ball (0–100)",
     "no_students": "O'quvchilar ro'yxatga olinmagan",
     "enroll_first": "Avval bu guruhga o'quvchilarni ro'yxatga oling",
-    "n_students": "o'quvchi"
+    "n_students": "o'quvchi",
+    "today_btn": "Bugun",
+    "mark_all_present": "Hammasini keldi",
+    "unsaved": "Saqlanmagan"
   },
   "schedule_page": {
     "title": "Dars jadvali",

@@ -624,7 +624,10 @@
     "score": "Балл (0–100)",
     "no_students": "Окуучулар тизимдөлбөгөн",
     "enroll_first": "Алгы бул группага окуучуларды тизимдөңүз",
-    "n_students": "окуучу"
+    "n_students": "окуучу",
+    "today_btn": "Бүгүн",
+    "mark_all_present": "Баары келди",
+    "unsaved": "Сакталбаган"
   },
   "schedule_page": {
     "title": "Сабак жадвалы",

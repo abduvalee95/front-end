@@ -19,6 +19,10 @@ import {
   X,
   CalendarDays,
   Users,
+  CalendarCheck,
+  CheckCheck,
+  Minus,
+  Plus,
 } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -98,6 +102,30 @@ export default function JournalPage() {
   }
 
   const upsert = useUpsertJournal();
+
+  const isToday = dateStr === format(new Date(), 'yyyy-MM-dd');
+
+  const hasChanges = useMemo(() => {
+    if (!enrollments.length) return false;
+    return enrollments.some((e) => {
+      const local = localEntries[e.student_id];
+      if (!local) return false;
+      const saved = journalData?.items.find((j) => j.student_id === e.student_id);
+      const savedStatus = saved?.status ?? 'PRESENT';
+      const savedScore = saved?.score != null ? String(saved.score) : '';
+      return local.status !== savedStatus || local.score !== savedScore;
+    });
+  }, [localEntries, journalData, enrollments]);
+
+  const markAllPresent = () => {
+    setLocalEntries((prev) => {
+      const next = { ...prev };
+      enrollments.forEach((e) => {
+        next[e.student_id] = { ...(next[e.student_id] ?? { score: '', notes: '' }), status: 'PRESENT' };
+      });
+      return next;
+    });
+  };
 
   const updateStatus = (studentId: string, status: JournalStatus) => {
     setLocalEntries((prev) => ({
@@ -205,6 +233,19 @@ export default function JournalPage() {
               >
                 <ChevronRight aria-hidden="true" className="size-5" />
               </Button>
+
+              {!isToday && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setCurrentDate(new Date())}
+                  className="h-9 rounded-xl gap-1.5 text-xs font-bold"
+                  aria-label={t('today_btn')}
+                >
+                  <CalendarCheck className="size-3.5" aria-hidden="true" />
+                  {t('today_btn')}
+                </Button>
+              )}
             </div>
 
             <div className="flex items-center gap-3">
@@ -221,10 +262,16 @@ export default function JournalPage() {
               <Button
                 onClick={handleSave}
                 disabled={upsert.isPending || !selectedGroupId || !enrollments.length}
-                className="h-11 rounded-xl px-5 gap-2 font-bold tracking-wide uppercase text-xs"
+                className="relative h-11 rounded-xl px-5 gap-2 font-bold tracking-wide uppercase text-xs"
               >
                 <Save className="size-4" aria-hidden="true" />
                 {upsert.isPending ? tCommon('loading') : t('save_attendance')}
+                {hasChanges && !upsert.isPending && (
+                  <span
+                    aria-label={t('unsaved')}
+                    className="absolute -top-1 -right-1 size-3 rounded-full bg-amber-400 ring-2 ring-background"
+                  />
+                )}
               </Button>
             </div>
           </div>
@@ -302,7 +349,7 @@ export default function JournalPage() {
                       />
                       <span className="truncate text-sm font-semibold">{group.name}</span>
                     </div>
-                    {group.teacher && !active && (
+                    {group.teacher && !active && !isTeacher && (
                       <p className="text-[10px] text-muted-foreground mt-0.5 ml-[22px] truncate">
                         {group.teacher.full_name}
                       </p>
@@ -338,12 +385,27 @@ export default function JournalPage() {
             <>
               {/* Column header */}
               <div
-                className="hidden sm:grid px-5 sm:px-6 py-3 text-[10px] tracking-[0.18em] uppercase font-bold text-muted-foreground bg-muted/30 border-b border-border/60"
-                style={{ gridTemplateColumns: '1fr 220px 120px' }}
+                className="px-5 sm:px-6 py-3 bg-muted/30 border-b border-border/60 flex items-center justify-between gap-3"
               >
-                <span>{tCommon('student')}</span>
-                <span className="text-center">{t('attendance')}</span>
-                <span className="text-center">{t('score')}</span>
+                <div
+                  className="hidden sm:grid flex-1 text-[10px] tracking-[0.18em] uppercase font-bold text-muted-foreground"
+                  style={{ gridTemplateColumns: '1fr 220px 120px' }}
+                >
+                  <span>{tCommon('student')}</span>
+                  <span className="text-center">{t('attendance')}</span>
+                  <span className="text-center">{t('score')}</span>
+                </div>
+                <span className="sm:hidden text-[10px] tracking-[0.18em] uppercase font-bold text-muted-foreground">{tCommon('student')}</span>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={markAllPresent}
+                  className="shrink-0 h-8 rounded-xl gap-1.5 text-[11px] font-bold text-emerald-600 border-emerald-200 hover:bg-emerald-50 dark:text-emerald-400 dark:border-emerald-800 dark:hover:bg-emerald-950 cursor-pointer"
+                  aria-label={t('mark_all_present')}
+                >
+                  <CheckCheck className="size-3.5" aria-hidden="true" />
+                  {t('mark_all_present')}
+                </Button>
               </div>
 
               <div className="divide-y divide-border/40">
@@ -405,23 +467,11 @@ export default function JournalPage() {
                         <span className="text-[10px] sm:hidden text-muted-foreground font-semibold uppercase">
                           {t('score')}
                         </span>
-                        <select
+                        <ScoreStepper
                           value={entry?.score ?? ''}
-                          onChange={(e) => updateScore(studentId, e.target.value)}
-                          aria-label={`${t('score')} ${name}`}
-                          className={cn(
-                            'h-10 w-20 rounded-lg border text-center text-sm font-bold cursor-pointer transition-colors',
-                            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
-                            entry?.score
-                              ? 'border-primary bg-primary text-primary-foreground'
-                              : 'border-border bg-background text-muted-foreground',
-                          )}
-                        >
-                          <option value="">—</option>
-                          {[10, 20, 30, 40, 50, 60, 70, 80, 90, 100].map((val) => (
-                            <option key={val} value={String(val)}>{val}</option>
-                          ))}
-                        </select>
+                          onChange={(v) => updateScore(studentId, v)}
+                          name={`${t('score')} ${name}`}
+                        />
                       </div>
                     </div>
                   );
@@ -450,6 +500,72 @@ export default function JournalPage() {
 }
 
 /* ────────────── helpers ────────────── */
+
+interface ScoreStepperProps {
+  value: string;
+  onChange: (v: string) => void;
+  name: string;
+}
+function ScoreStepper({ value, onChange, name }: ScoreStepperProps) {
+  const num = value !== '' ? parseInt(value, 10) : null;
+  const hasValue = num !== null && !isNaN(num);
+
+  const decrement = () => {
+    if (!hasValue) return;
+    if (num <= 0) { onChange(''); return; }
+    onChange(String(Math.max(0, num - 10)));
+  };
+  const increment = () => {
+    onChange(String(Math.min(100, hasValue ? num + 10 : 10)));
+  };
+
+  return (
+    <div
+      className={cn(
+        'flex items-center rounded-lg border overflow-hidden transition-colors',
+        hasValue ? 'border-primary' : 'border-border',
+      )}
+    >
+      <button
+        type="button"
+        onClick={decrement}
+        aria-label="Kamaytirish"
+        disabled={!hasValue}
+        className="h-10 w-8 flex items-center justify-center text-muted-foreground hover:bg-muted disabled:opacity-30 transition-colors cursor-pointer"
+      >
+        <Minus className="size-3" aria-hidden="true" />
+      </button>
+      <input
+        type="number"
+        value={value}
+        onChange={(e) => {
+          const v = e.target.value;
+          if (v === '') { onChange(''); return; }
+          const n = parseInt(v, 10);
+          if (!isNaN(n)) onChange(String(Math.min(100, Math.max(0, n))));
+        }}
+        min={0}
+        max={100}
+        aria-label={name}
+        placeholder="—"
+        className={cn(
+          'h-10 w-12 text-center text-sm font-bold bg-transparent border-0 outline-none',
+          '[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none',
+          hasValue ? 'text-primary' : 'text-muted-foreground',
+        )}
+      />
+      <button
+        type="button"
+        onClick={increment}
+        aria-label="Ko'paytirish"
+        disabled={hasValue && num >= 100}
+        className="h-10 w-8 flex items-center justify-center text-muted-foreground hover:bg-muted disabled:opacity-30 transition-colors cursor-pointer"
+      >
+        <Plus className="size-3" aria-hidden="true" />
+      </button>
+    </div>
+  );
+}
 
 interface StatTileProps {
   icon: React.ReactNode;
