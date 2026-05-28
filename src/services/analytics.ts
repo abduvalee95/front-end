@@ -82,10 +82,10 @@ export const analyticsService = {
     return api.get('proxy/courses').then((r) => r.data);
   },
 
-  listInvoices(params: { status?: string; page?: number; limit?: number }): Promise<PaginatedInvoices> {
+  listInvoices(params: { status?: string; page?: number; limit?: number; month?: string }): Promise<PaginatedInvoices> {
     return api
       .get<PaginatedInvoices>('proxy/billing/invoices', {
-        params: { page: params.page ?? 1, limit: params.limit ?? 100, status: params.status },
+        params: { page: params.page ?? 1, limit: params.limit ?? 100, status: params.status, month: params.month },
       })
       .then((r) => r.data);
   },
