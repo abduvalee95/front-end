@@ -11,6 +11,7 @@ export type StudentRow = Pick<Student, 'id' | 'name' | 'phone' | 'status'> & {
   teachers: string[];
   totalDiscount: number;
   paymentStatus: PaymentStatus;
+  paymentPercent?: number; // 0-100, set when status === 'partial'
 };
 
 export const PAGE_SIZE = 10;
