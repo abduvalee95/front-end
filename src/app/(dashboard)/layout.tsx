@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import { DashboardSidebar } from "@/components/layout/DashboardSidebar";
 import { DashboardHeader } from "@/components/layout/DashboardHeader";
 import { BottomNav } from "@/components/layout/BottomNav";
@@ -5,6 +6,14 @@ import { SessionProvider } from "@/components/auth/SessionProvider";
 import { AuthGuard } from "@/components/auth/AuthGuard";
 import { DateRangeProvider } from "@/hooks/useAnalytics";
 import { AICopilot } from "@/components/ai/AICopilotLazy";
+
+export const metadata: Metadata = {
+  title: {
+    template: '%s — Bilim Nuru',
+    default: 'Dashboard — Bilim Nuru',
+  },
+  robots: { index: false, follow: false },
+};
 
 export default function DashboardLayout({
   children,

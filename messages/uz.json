@@ -1205,5 +1205,11 @@
     "close": "Yopish",
     "print_failed": "Chop etishda xatolik yuz berdi",
     "pdf_failed": "PDF yaratishda xatolik yuz berdi"
+  },
+  "errors": {
+    "page_not_found": "Sahifa topilmadi",
+    "something_went_wrong": "Xatolik yuz berdi",
+    "try_again": "Qayta urinib ko'ring",
+    "back_home": "Bosh sahifaga qaytish"
   }
 }

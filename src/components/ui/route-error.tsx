@@ -1,34 +1,24 @@
 'use client';
 
-import * as Sentry from '@sentry/nextjs';
-import { useEffect } from 'react';
 import Link from 'next/link';
 import { AlertTriangle, RefreshCw, Home } from 'lucide-react';
 import { useTranslations } from '@/i18n';
-import { logger } from '@/lib/logger';
 
-interface ErrorProps {
+interface RouteErrorProps {
   error: Error & { digest?: string };
   reset: () => void;
 }
 
-export default function ErrorPage({ error, reset }: ErrorProps) {
+export function RouteError({ error, reset }: RouteErrorProps) {
   const t = useTranslations('errors');
-
-  useEffect(() => {
-    logger.error('Route segment error:', error);
-    Sentry.captureException(error);
-  }, [error]);
 
   return (
     <div className="min-h-[60vh] flex items-center justify-center px-4">
       <div className="w-full max-w-md text-center space-y-6">
-        {/* Icon */}
         <div className="mx-auto flex size-16 items-center justify-center rounded-2xl bg-red-500/10">
           <AlertTriangle className="size-8 text-red-500" />
         </div>
 
-        {/* Message */}
         <div className="space-y-2">
           <h2 className="text-2xl font-bold tracking-tight text-foreground">
             {t('something_went_wrong')}
@@ -43,7 +33,6 @@ export default function ErrorPage({ error, reset }: ErrorProps) {
           )}
         </div>
 
-        {/* Actions */}
         <div className="flex items-center justify-center gap-3">
           <button
             onClick={reset}
@@ -53,7 +42,7 @@ export default function ErrorPage({ error, reset }: ErrorProps) {
             {t('try_again')}
           </button>
           <Link
-            href="/"
+            href="/dashboard"
             className="inline-flex items-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-sm transition-colors hover:bg-primary/90"
           >
             <Home className="size-4" />

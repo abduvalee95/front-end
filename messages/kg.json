@@ -1178,5 +1178,11 @@
     "close": "Жабуу",
     "print_failed": "Басып чыгаруу катасы",
     "pdf_failed": "PDF түзүүдө ката"
+  },
+  "errors": {
+    "page_not_found": "Барак табылган жок",
+    "something_went_wrong": "Ката кетти",
+    "try_again": "Кайра аракет кылуу",
+    "back_home": "Башкы бетке кайтуу"
   }
 }

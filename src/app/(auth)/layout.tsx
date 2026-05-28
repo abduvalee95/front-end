@@ -6,8 +6,9 @@
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Sign In - Bilim Nuru',
-  description: 'Sign in to your Bilim Nuru account',
+  title: 'Kirish — Bilim Nuru',
+  description: "Bilim Nuru hisobingizga kirish.",
+  robots: { index: false, follow: false },
 };
 
 export default function AuthLayout({

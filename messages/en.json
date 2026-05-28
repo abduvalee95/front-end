@@ -1224,5 +1224,11 @@
     "close": "Close",
     "print_failed": "Print failed",
     "pdf_failed": "PDF generation failed"
+  },
+  "errors": {
+    "page_not_found": "Page not found",
+    "something_went_wrong": "Something went wrong",
+    "try_again": "Try again",
+    "back_home": "Back to home"
   }
 }

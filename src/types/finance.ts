@@ -63,6 +63,8 @@ export interface PaymentFilters {
   limit?: number;
   from?: string;
   to?: string;
+  paid_at_from?: string;
+  paid_at_to?: string;
   method?: PaymentMethod;
   student_id?: string;
 }

@@ -1225,5 +1225,11 @@
     "close": "Закрыть",
     "print_failed": "Ошибка при печати",
     "pdf_failed": "Ошибка при создании PDF"
+  },
+  "errors": {
+    "page_not_found": "Страница не найдена",
+    "something_went_wrong": "Произошла ошибка",
+    "try_again": "Попробовать снова",
+    "back_home": "На главную"
   }
 }

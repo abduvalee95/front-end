@@ -32,8 +32,12 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Bilim Nuru — CRM + LMS",
-  description: "Modern Education Management Platform",
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL ?? 'https://bilimnuru.uz'),
+  title: {
+    template: '%s — Bilim Nuru',
+    default: 'Bilim Nuru — CRM + LMS',
+  },
+  description: "O'quv markazlar uchun zamonaviy CRM va LMS platformasi. O'quvchilar, guruhlar, to'lovlar va darslar boshqaruvi.",
   applicationName: "Bilim Nuru",
   manifest: "/manifest.webmanifest",
   icons: {
@@ -48,6 +52,21 @@ export const metadata: Metadata = {
   formatDetection: {
     telephone: false,
   },
+  openGraph: {
+    type: 'website',
+    siteName: 'Bilim Nuru',
+    title: 'Bilim Nuru — CRM + LMS',
+    description: "O'quv markazlar uchun zamonaviy boshqaruv platformasi.",
+    images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'Bilim Nuru' }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Bilim Nuru — CRM + LMS',
+    description: "O'quv markazlar uchun zamonaviy boshqaruv platformasi.",
+    images: ['/og-image.png'],
+  },
+  // Private SaaS — do not index app routes
+  robots: { index: false, follow: false },
 };
 
 export const viewport: Viewport = {
