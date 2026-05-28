@@ -34,11 +34,18 @@ export default function middleware(request: NextRequest) {
   const isAuth = hasAccessToken || hasRefreshToken;
   
   // Define route types by explicit public lists instead of hardcoded protected ones
-  const publicRoutes = ['/'];
+  const publicRoutes = [
+    '/',
+    '/robots.txt',
+    '/sitemap.xml',
+    '/opengraph-image',
+    '/twitter-image',
+    '/manifest.webmanifest',
+  ];
   const authRoutes = ['/login']; // Routes that logged-in users shouldn't access (like login page)
 
-  const isPublicRoute = publicRoutes.includes(pathname) || 
-    pathname.startsWith('/_next/') || 
+  const isPublicRoute = publicRoutes.includes(pathname) ||
+    pathname.startsWith('/_next/') ||
     pathname.startsWith('/api/auth/') || // Auth endpoints are public
     pathname.includes('.') || // Static files
     pathname === '/favicon.ico';
