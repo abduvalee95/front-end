@@ -275,6 +275,9 @@ export function StudentsWorkspace() {
   const inactiveCount = rows.filter((s) => s.status === 'INACTIVE').length;
   const activeRatio = rows.length > 0 ? Math.round((activeCount / rows.length) * 100) : 0;
   const groupCount = new Set(rows.flatMap((s) => s.groups)).size;
+  const paidCount = rows.filter((s) => s.paymentStatus === 'paid').length;
+  const unpaidCount = rows.filter((s) => s.paymentStatus === 'unpaid').length;
+  const partialCount = rows.filter((s) => s.paymentStatus === 'partial').length;
 
   const resetFilters = () => {
     clearSearch();
@@ -303,6 +306,9 @@ export function StudentsWorkspace() {
         groupCount={groupCount}
         rowsLength={rows.length}
         activeRatio={activeRatio}
+        paidCount={paidCount}
+        unpaidCount={unpaidCount}
+        partialCount={partialCount}
         teacherScoped={teacherScoped}
         canManageScope={canManageScope}
         onImportClick={() => setIsImportOpen(true)}

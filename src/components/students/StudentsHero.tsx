@@ -1,6 +1,6 @@
 'use client';
 
-import { FileSpreadsheet, GraduationCap, Layers3, TrendingUp, UserRoundCheck, UsersRound } from 'lucide-react';
+import { BadgeCheck, CircleDollarSign, FileSpreadsheet, GraduationCap, Layers3, TrendingUp, UserRoundCheck, UsersRound, XCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useTranslations } from '@/i18n/index';
 import { cn } from '@/lib/utils';
@@ -13,6 +13,9 @@ interface StudentsHeroProps {
   groupCount: number;
   rowsLength: number;
   activeRatio: number;
+  paidCount: number;
+  unpaidCount: number;
+  partialCount: number;
   teacherScoped: boolean;
   canManageScope: boolean;
   onImportClick: () => void;
@@ -25,6 +28,9 @@ export function StudentsHero({
   groupCount,
   rowsLength,
   activeRatio,
+  paidCount,
+  unpaidCount,
+  partialCount,
   teacherScoped,
   canManageScope,
   onImportClick,
@@ -70,19 +76,22 @@ export function StudentsHero({
         </div>
 
         {/* Stats strip */}
-        <div className="flex shrink-0 gap-3 lg:gap-4">
+        <div className="flex shrink-0 flex-wrap gap-2.5 lg:gap-3">
           {[
-            { label: tCommon('total'), value: totalCount, icon: UsersRound, color: 'text-indigo-300' },
-            { label: tCommon('active'), value: activeCount, icon: UserRoundCheck, color: 'text-emerald-300' },
-            { label: tCommon('groups'), value: groupCount, icon: Layers3, color: 'text-amber-300' },
-          ].map(({ label, value, icon: Icon, color }) => (
+            { label: tCommon('total'), value: totalCount, icon: UsersRound, color: 'text-indigo-300', border: 'border-white/10', bg: 'bg-white/6' },
+            { label: tCommon('active'), value: activeCount, icon: UserRoundCheck, color: 'text-emerald-300', border: 'border-white/10', bg: 'bg-white/6' },
+            { label: tCommon('groups'), value: groupCount, icon: Layers3, color: 'text-amber-300', border: 'border-white/10', bg: 'bg-white/6' },
+            { label: t('pay_paid'), value: paidCount, icon: BadgeCheck, color: 'text-emerald-400', border: 'border-emerald-500/30', bg: 'bg-emerald-500/10' },
+            { label: t('pay_partial'), value: partialCount, icon: CircleDollarSign, color: 'text-amber-400', border: 'border-amber-500/30', bg: 'bg-amber-500/10' },
+            { label: t('pay_unpaid'), value: unpaidCount, icon: XCircle, color: 'text-rose-400', border: 'border-rose-500/30', bg: 'bg-rose-500/10' },
+          ].map(({ label, value, icon: Icon, color, border, bg }) => (
             <div
               key={label}
-              className="flex flex-col items-center justify-center rounded-2xl border border-white/10 bg-white/6 px-5 py-4 min-w-[80px] backdrop-blur-sm"
+              className={cn('flex flex-col items-center justify-center rounded-2xl border px-4 py-3.5 min-w-[72px] backdrop-blur-sm', border, bg)}
             >
               <Icon className={cn('size-4 mb-1.5', color)} />
-              <span className="text-2xl font-black tabular-nums">{value}</span>
-              <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-400 mt-0.5">{label}</span>
+              <span className="text-xl font-black tabular-nums">{value}</span>
+              <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-400 mt-0.5 text-center leading-tight">{label}</span>
             </div>
           ))}
         </div>
