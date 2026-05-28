@@ -78,7 +78,7 @@ export function StudentsWorkspace() {
   const currentMonth = new Date().toISOString().slice(0, 7); // "2026-05"
   const invoicesQuery = useQuery({
     queryKey: ['students', 'invoices', currentMonth, user?.organization_id],
-    queryFn: () => analyticsService.listInvoices({ limit: 500 }),
+    queryFn: () => analyticsService.listInvoices({ limit: 100 }),
     staleTime: 1000 * 60 * 2,
     enabled: canManageScope || teacherScoped,
     retry: false,
