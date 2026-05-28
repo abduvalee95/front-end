@@ -100,15 +100,34 @@ export function StudentsWorkspace() {
     retry: false,
   });
 
-  const paymentStatusMap = useMemo<Map<string, { status: PaymentStatus; percent: number }>>(() => {
-    const map = new Map<string, { status: PaymentStatus; percent: number }>();
+  // Sum of payments per student in the current month.
+  const paidByStudent = useMemo<Map<string, number>>(() => {
+    const map = new Map<string, number>();
     (paymentsQuery.data?.items ?? []).forEach((p) => {
       if (!p.student_id) return;
-      // Any payment in current month → paid. No partial concept from raw payments.
-      map.set(p.student_id, { status: 'paid', percent: 100 });
+      const amount = typeof p.amount === 'number' ? p.amount : parseFloat(String(p.amount) || '0') || 0;
+      map.set(p.student_id, (map.get(p.student_id) ?? 0) + amount);
     });
     return map;
   }, [paymentsQuery.data]);
+
+  // Derive { status, percent } from paid amount + expected monthly total per student.
+  // expected = Σ (enrollment.monthly_fee - enrollment.discount_amount) across all enrollments.
+  function deriveStatus(
+    paid: number,
+    expected: number,
+    isLoading: boolean,
+  ): { status: PaymentStatus; percent: number } {
+    if (isLoading && paid === 0 && expected === 0) return { status: 'unknown', percent: 0 };
+    if (expected <= 0) {
+      // No fee configured — fall back to binary: any payment marks paid.
+      return paid > 0 ? { status: 'paid', percent: 100 } : { status: 'unpaid', percent: 0 };
+    }
+    const pct = Math.min(100, Math.round((paid / expected) * 100));
+    if (paid >= expected) return { status: 'paid', percent: 100 };
+    if (paid > 0) return { status: 'partial', percent: pct };
+    return { status: 'unpaid', percent: 0 };
+  }
 
   const groupsQuery = useStudentGroups(shouldLoadTeacherStudents);
 
@@ -126,23 +145,25 @@ export function StudentsWorkspace() {
   );
 
   const teacherRows = useMemo<StudentRow[]>(() => {
-    const rows = new Map<string, StudentRow>();
+    const rows = new Map<string, StudentRow & { expected: number }>();
     enrollmentQueries.forEach((query) => {
       (query.data ?? []).forEach((enrollment) => {
         if (!enrollment.student) return;
-        const existing = rows.get(enrollment.student.id);
         const groupName = enrollment.group?.name;
         const courseTitle = enrollment.group?.course?.title;
         const teacherName = enrollment.group?.teacher?.full_name;
+        const fee = parseFloat(enrollment.monthly_fee ?? '0') || 0;
         const discount = parseFloat(enrollment.discount_amount ?? '0') || 0;
+        const net = Math.max(0, fee - discount);
+        const existing = rows.get(enrollment.student.id);
         if (existing) {
           if (groupName && !existing.groups.includes(groupName)) existing.groups.push(groupName);
           if (courseTitle && !existing.courses.includes(courseTitle)) existing.courses.push(courseTitle);
           if (teacherName && !existing.teachers.includes(teacherName)) existing.teachers.push(teacherName);
           existing.totalDiscount += discount;
+          existing.expected += net;
           return;
         }
-        const entry = paymentStatusMap.get(enrollment.student.id);
         rows.set(enrollment.student.id, {
           id: enrollment.student.id,
           name: enrollment.student.name,
@@ -152,28 +173,42 @@ export function StudentsWorkspace() {
           courses: courseTitle ? [courseTitle] : [],
           teachers: teacherName ? [teacherName] : [],
           totalDiscount: discount,
-          paymentStatus: entry?.status ?? (paymentsQuery.isLoading ? 'unknown' : 'unpaid'),
-          paymentPercent: entry?.percent,
+          expected: net,
+          paymentStatus: 'unknown',
+          paymentPercent: 0,
         });
       });
     });
-    const normalizedSearch = debouncedSearch.trim().toLowerCase();
-    return Array.from(rows.values()).filter((student) => {
-      const matchesSearch =
-        !normalizedSearch ||
-        student.name.toLowerCase().includes(normalizedSearch) ||
-        student.phone.toLowerCase().includes(normalizedSearch);
-      const matchesStatus = !statusFilter || student.status === statusFilter;
-      const matchesPayment = !paymentFilter || student.paymentStatus === paymentFilter;
-      return matchesSearch && matchesStatus && matchesPayment;
+    // Resolve payment status using per-student expected + paid sums.
+    rows.forEach((row, id) => {
+      const paid = paidByStudent.get(id) ?? 0;
+      const derived = deriveStatus(paid, row.expected, paymentsQuery.isLoading);
+      row.paymentStatus = derived.status;
+      row.paymentPercent = derived.percent;
     });
-  }, [enrollmentQueries, debouncedSearch, statusFilter, paymentFilter, paymentStatusMap, paymentsQuery.isLoading]);
+    const normalizedSearch = debouncedSearch.trim().toLowerCase();
+    return Array.from(rows.values())
+      // Strip the helper expected field before returning a StudentRow.
+      .map(({ expected: _expected, ...row }) => row)
+      .filter((student) => {
+        const matchesSearch =
+          !normalizedSearch ||
+          student.name.toLowerCase().includes(normalizedSearch) ||
+          student.phone.toLowerCase().includes(normalizedSearch);
+        const matchesStatus = !statusFilter || student.status === statusFilter;
+        const matchesPayment = !paymentFilter || student.paymentStatus === paymentFilter;
+        return matchesSearch && matchesStatus && matchesPayment;
+      });
+  }, [enrollmentQueries, debouncedSearch, statusFilter, paymentFilter, paidByStudent, paymentsQuery.isLoading]);
 
   const allGroupIds = useMemo(() => (allGroupsQuery.data ?? []).map((g) => g.id), [allGroupsQuery.data]);
   const allEnrollmentQueries = useGroupEnrollments(allGroupIds, shouldLoadAllGroups && allGroupIds.length > 0);
 
   const allRows = useMemo<StudentRow[]>(() => {
-    const enrollmentMap = new Map<string, { groups: string[]; courses: string[]; teachers: string[]; totalDiscount: number }>();
+    const enrollmentMap = new Map<
+      string,
+      { groups: string[]; courses: string[]; teachers: string[]; totalDiscount: number; expected: number }
+    >();
     allEnrollmentQueries.forEach((query) => {
       (query.data ?? []).forEach((enrollment) => {
         if (!enrollment.student) return;
@@ -181,18 +216,22 @@ export function StudentsWorkspace() {
         const groupName = enrollment.group?.name;
         const courseTitle = enrollment.group?.course?.title;
         const teacherName = enrollment.group?.teacher?.full_name;
+        const fee = parseFloat(enrollment.monthly_fee ?? '0') || 0;
         const discount = parseFloat(enrollment.discount_amount ?? '0') || 0;
+        const net = Math.max(0, fee - discount);
         if (existing) {
           if (groupName && !existing.groups.includes(groupName)) existing.groups.push(groupName);
           if (courseTitle && !existing.courses.includes(courseTitle)) existing.courses.push(courseTitle);
           if (teacherName && !existing.teachers.includes(teacherName)) existing.teachers.push(teacherName);
           existing.totalDiscount += discount;
+          existing.expected += net;
         } else {
           enrollmentMap.set(enrollment.student.id, {
             groups: groupName ? [groupName] : [],
             courses: courseTitle ? [courseTitle] : [],
             teachers: teacherName ? [teacherName] : [],
             totalDiscount: discount,
+            expected: net,
           });
         }
       });
@@ -200,19 +239,21 @@ export function StudentsWorkspace() {
     return (studentsQuery.data?.items ?? [])
       .map((student) => {
         const info = enrollmentMap.get(student.id);
-        const entry = paymentStatusMap.get(student.id);
+        const paid = paidByStudent.get(student.id) ?? 0;
+        const expected = info?.expected ?? 0;
+        const derived = deriveStatus(paid, expected, paymentsQuery.isLoading);
         return {
           ...student,
           groups: info?.groups ?? [],
           courses: info?.courses ?? [],
           teachers: info?.teachers ?? [],
           totalDiscount: info?.totalDiscount ?? 0,
-          paymentStatus: (entry?.status ?? (paymentsQuery.isLoading ? 'unknown' : 'unpaid')) as PaymentStatus,
-          paymentPercent: entry?.percent,
+          paymentStatus: derived.status,
+          paymentPercent: derived.percent,
         };
       })
       .filter((student) => !paymentFilter || student.paymentStatus === paymentFilter);
-  }, [studentsQuery.data?.items, allEnrollmentQueries, paymentStatusMap, paymentFilter, paymentsQuery.isLoading]);
+  }, [studentsQuery.data?.items, allEnrollmentQueries, paidByStudent, paymentFilter, paymentsQuery.isLoading]);
 
   const rows = effectiveViewMode === 'all' ? allRows : teacherRows;
   const loading =
