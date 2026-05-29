@@ -2,11 +2,19 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { organizationService, OrganizationSettings } from '@/services/organization';
 import { toast } from 'sonner';
 import { AxiosError } from 'axios';
+import { useAuthStore } from '@/store/auth.store';
 
 export function useOrganizationSettings() {
+  // Only ADMIN/MANAGER/SUPER_ADMIN can read org settings on the backend.
+  // Teachers would get a 403, which the API client surfaces as an error toast
+  // on every page (the sidebar mounts this hook). Guard so it never fires for them.
+  const role = useAuthStore((s) => s.user?.role);
+  const canRead = role === 'ADMIN' || role === 'MANAGER' || role === 'SUPER_ADMIN';
+
   return useQuery({
     queryKey: ['organization-settings'],
     queryFn: () => organizationService.getSettings(),
+    enabled: canRead,
   });
 }
 

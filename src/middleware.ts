@@ -67,12 +67,20 @@ export default function middleware(request: NextRequest) {
     return NextResponse.redirect(loginUrl);
   }
 
-  // Generic RBAC: enforce role restrictions for all ROUTE_ROLES entries
+  // Generic RBAC: enforce role restrictions only when we can actually read the
+  // role from a present access token. If the access token has expired but the
+  // refresh token is still valid, let the request through so the client can
+  // silently refresh. Otherwise role is null, canAccess() returns false, and we
+  // would redirect /dashboard -> /dashboard forever (ERR_TOO_MANY_REDIRECTS).
   if (isAuth && isProtectedRoute) {
     const accessToken = request.cookies.get('access_token')?.value;
-    const role = accessToken ? getRoleFromToken(accessToken) : null;
-    if (!canAccess(pathname, role)) {
-      return NextResponse.redirect(new URL('/dashboard', request.url));
+    if (accessToken) {
+      const role = getRoleFromToken(accessToken);
+      // Never redirect a path onto itself — guards against any future null-role
+      // self-redirect loop on the fallback target.
+      if (!canAccess(pathname, role) && !pathname.startsWith('/dashboard')) {
+        return NextResponse.redirect(new URL('/dashboard', request.url));
+      }
     }
   }
 
