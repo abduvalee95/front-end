@@ -205,37 +205,50 @@ export default function ReportsPage() {
   ];
 
   return (
-    <div className="space-y-6">
-      {/* ── Header ── */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="text-2xl font-black text-foreground">{t('title')}</h1>
-          <p className="mt-0.5 text-sm text-muted-foreground">
-            {format(range.from, 'dd MMM yyyy')} — {format(range.to, 'dd MMM yyyy')}
-          </p>
+    <Tabs defaultValue="finance" className="space-y-0">
+      {/* ── Sticky top bar: header + tabs ── */}
+      <div className="sticky top-[72px] z-30 -mx-4 sm:-mx-6 lg:-mx-10 px-4 sm:px-6 lg:px-10 bg-background/95 backdrop-blur-md border-b border-border/50 pb-3 pt-4 space-y-3">
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+          <div>
+            <h1 className="text-2xl font-black text-foreground leading-tight">{t('title')}</h1>
+            <p className="mt-0.5 text-xs text-muted-foreground">
+              {format(range.from, 'dd MMM yyyy')} — {format(range.to, 'dd MMM yyyy')}
+            </p>
+          </div>
+          {/* Date range presets */}
+          <div className="flex items-center gap-1 rounded-xl border border-border/60 bg-muted/40 p-1 self-start">
+            {PRESETS.map((p) => (
+              <button
+                key={p.key}
+                onClick={() => setPreset(p.key)}
+                className={cn(
+                  'rounded-lg px-3 py-1.5 text-xs font-semibold transition-all cursor-pointer',
+                  preset === p.key
+                    ? 'bg-background text-foreground shadow-sm'
+                    : 'text-muted-foreground hover:text-foreground',
+                )}
+              >
+                {p.label}
+              </button>
+            ))}
+          </div>
         </div>
 
-        {/* Date range presets */}
-        <div className="flex items-center gap-1 rounded-xl border border-border/60 bg-muted/40 p-1">
-          {PRESETS.map((p) => (
-            <button
-              key={p.key}
-              onClick={() => setPreset(p.key)}
-              className={cn(
-                'rounded-lg px-3 py-1.5 text-xs font-semibold transition-all',
-                preset === p.key
-                  ? 'bg-background text-foreground shadow-sm'
-                  : 'text-muted-foreground hover:text-foreground',
-              )}
-            >
-              {p.label}
-            </button>
-          ))}
-        </div>
+        <TabsList className="h-10 w-full sm:w-auto rounded-xl p-1 bg-muted/60 gap-0.5">
+          <TabsTrigger value="finance" className="rounded-lg text-xs font-semibold gap-1.5 flex-1 sm:flex-none">
+            <Wallet className="size-3.5" />{t('tab_finance')}
+          </TabsTrigger>
+          <TabsTrigger value="students" className="rounded-lg text-xs font-semibold gap-1.5 flex-1 sm:flex-none">
+            <GraduationCap className="size-3.5" />{t('tab_students')}
+          </TabsTrigger>
+          <TabsTrigger value="leads" className="rounded-lg text-xs font-semibold gap-1.5 flex-1 sm:flex-none">
+            <Target className="size-3.5" />{t('tab_leads')}
+          </TabsTrigger>
+        </TabsList>
       </div>
 
       {/* ── KPI row ── */}
-      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+      <div className="mt-6 grid grid-cols-2 gap-3 lg:grid-cols-4">
         <StatCard
           icon={Wallet}
           label={t('total_income')}
@@ -269,21 +282,7 @@ export default function ReportsPage() {
         />
       </div>
 
-      {/* ── Tabs ── */}
-      <Tabs defaultValue="finance">
-        <TabsList className="h-10 rounded-xl p-1 bg-muted/60">
-          <TabsTrigger value="finance" className="rounded-lg text-xs font-semibold">
-            <Wallet className="mr-1.5 size-3.5" />{t('tab_finance')}
-          </TabsTrigger>
-          <TabsTrigger value="students" className="rounded-lg text-xs font-semibold">
-            <GraduationCap className="mr-1.5 size-3.5" />{t('tab_students')}
-          </TabsTrigger>
-          <TabsTrigger value="leads" className="rounded-lg text-xs font-semibold">
-            <Target className="mr-1.5 size-3.5" />{t('tab_leads')}
-          </TabsTrigger>
-        </TabsList>
-
-        {/* ══ FINANCE TAB ══════════════════════════════════════════════════════ */}
+      {/* ══ FINANCE TAB ══════════════════════════════════════════════════════ */}
         <TabsContent value="finance" className="mt-4 space-y-4">
           <div className="flex justify-end">
             <Button variant="outline" size="sm" onClick={exportFinance} disabled={!fin} className="rounded-xl gap-1.5 text-xs">
@@ -583,7 +582,6 @@ export default function ReportsPage() {
             </Card>
           )}
         </TabsContent>
-      </Tabs>
-    </div>
+    </Tabs>
   );
 }
