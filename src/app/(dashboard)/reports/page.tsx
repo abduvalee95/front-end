@@ -207,22 +207,23 @@ export default function ReportsPage() {
   return (
     <Tabs defaultValue="finance" className="space-y-0">
       {/* ── Sticky top bar: header + tabs ── */}
-      <div className="sticky top-[72px] z-30 -mx-4 sm:-mx-6 lg:-mx-10 px-4 sm:px-6 lg:px-10 bg-background/95 backdrop-blur-md border-b border-border/50 pb-3 pt-4 space-y-3">
-        <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+      <div className="sticky top-[72px] z-30 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8 bg-background/95 backdrop-blur-sm border-b border-border/50 pt-5">
+        {/* Title row */}
+        <div className="flex items-center justify-between gap-3 mb-4">
           <div>
-            <h1 className="text-2xl font-black text-foreground leading-tight">{t('title')}</h1>
-            <p className="mt-0.5 text-xs text-muted-foreground">
+            <h1 className="text-xl font-black tracking-tight text-foreground leading-none">{t('title')}</h1>
+            <p className="mt-1 text-xs text-muted-foreground">
               {format(range.from, 'dd MMM yyyy')} — {format(range.to, 'dd MMM yyyy')}
             </p>
           </div>
           {/* Date range presets */}
-          <div className="flex items-center gap-1 rounded-xl border border-border/60 bg-muted/40 p-1 self-start">
+          <div className="flex items-center gap-0.5 rounded-xl border border-border/60 bg-muted/40 p-1">
             {PRESETS.map((p) => (
               <button
                 key={p.key}
                 onClick={() => setPreset(p.key)}
                 className={cn(
-                  'rounded-lg px-3 py-1.5 text-xs font-semibold transition-all cursor-pointer',
+                  'rounded-lg px-3 py-1.5 text-xs font-semibold transition-all duration-150 cursor-pointer',
                   preset === p.key
                     ? 'bg-background text-foreground shadow-sm'
                     : 'text-muted-foreground hover:text-foreground',
@@ -234,16 +235,30 @@ export default function ReportsPage() {
           </div>
         </div>
 
-        <TabsList className="h-10 w-full sm:w-auto rounded-xl p-1 bg-muted/60 gap-0.5">
-          <TabsTrigger value="finance" className="rounded-lg text-xs font-semibold gap-1.5 flex-1 sm:flex-none">
-            <Wallet className="size-3.5" />{t('tab_finance')}
-          </TabsTrigger>
-          <TabsTrigger value="students" className="rounded-lg text-xs font-semibold gap-1.5 flex-1 sm:flex-none">
-            <GraduationCap className="size-3.5" />{t('tab_students')}
-          </TabsTrigger>
-          <TabsTrigger value="leads" className="rounded-lg text-xs font-semibold gap-1.5 flex-1 sm:flex-none">
-            <Target className="size-3.5" />{t('tab_leads')}
-          </TabsTrigger>
+        {/* Underline tabs */}
+        <TabsList className="h-auto w-full bg-transparent rounded-none border-0 p-0 gap-0">
+          {([
+            { value: 'finance',  icon: Wallet,       label: t('tab_finance') },
+            { value: 'students', icon: GraduationCap, label: t('tab_students') },
+            { value: 'leads',    icon: Target,        label: t('tab_leads') },
+          ] as const).map(({ value, icon: Icon, label }) => (
+            <TabsTrigger
+              key={value}
+              value={value}
+              className={cn(
+                'relative h-11 rounded-none border-0 bg-transparent px-4 gap-2 text-sm font-semibold',
+                'text-muted-foreground shadow-none',
+                'data-[state=active]:text-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none',
+                'hover:text-foreground transition-colors cursor-pointer',
+                'after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[2px] after:rounded-t-full',
+                'after:bg-primary after:scale-x-0 after:transition-transform after:duration-200',
+                'data-[state=active]:after:scale-x-100',
+              )}
+            >
+              <Icon className="size-4 shrink-0" aria-hidden="true" />
+              {label}
+            </TabsTrigger>
+          ))}
         </TabsList>
       </div>
 
@@ -283,7 +298,7 @@ export default function ReportsPage() {
       </div>
 
       {/* ══ FINANCE TAB ══════════════════════════════════════════════════════ */}
-        <TabsContent value="finance" className="mt-4 space-y-4">
+        <TabsContent value="finance" className="mt-6 space-y-5">
           <div className="flex justify-end">
             <Button variant="outline" size="sm" onClick={exportFinance} disabled={!fin} className="rounded-xl gap-1.5 text-xs">
               <FileDown className="size-3.5" />{t('export_excel')}
@@ -413,7 +428,7 @@ export default function ReportsPage() {
         </TabsContent>
 
         {/* ══ STUDENTS TAB ════════════════════════════════════════════════════ */}
-        <TabsContent value="students" className="mt-4 space-y-4">
+        <TabsContent value="students" className="mt-6 space-y-5">
           <div className="flex justify-end">
             <Button variant="outline" size="sm" onClick={exportStudents} disabled={!s} className="rounded-xl gap-1.5 text-xs">
               <FileDown className="size-3.5" />{t('export_excel')}
@@ -500,7 +515,7 @@ export default function ReportsPage() {
         </TabsContent>
 
         {/* ══ LEADS TAB ═══════════════════════════════════════════════════════ */}
-        <TabsContent value="leads" className="mt-4 space-y-4">
+        <TabsContent value="leads" className="mt-6 space-y-5">
           <div className="flex justify-end">
             <Button variant="outline" size="sm" onClick={exportLeads} disabled={!leadsQ.data} className="rounded-xl gap-1.5 text-xs">
               <FileDown className="size-3.5" />{t('export_excel')}
