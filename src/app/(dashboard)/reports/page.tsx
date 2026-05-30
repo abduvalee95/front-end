@@ -9,22 +9,20 @@ import {
 } from 'lucide-react';
 import {
   AreaChart, Area, BarChart, Bar, PieChart as RePieChart, Pie, Cell,
-  XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend,
+  XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
 } from 'recharts';
-import { format, subDays, startOfMonth, endOfDay } from 'date-fns';
+import { subDays, startOfMonth, endOfDay } from 'date-fns';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { analyticsService } from '@/services/analytics';
 import { exportToExcel } from '@/lib/excel';
 import { useTranslations } from '@/i18n/index';
 import { cn } from '@/lib/utils';
+import { ReportsTabBar, type ReportsTab, type Preset } from '@/components/reports/ReportsTabBar';
 
 // ─── Date range ───────────────────────────────────────────────────────────────
-type Preset = '7d' | '30d' | '90d' | 'mtd';
-
 function presetRange(p: Preset) {
   const now = new Date();
   const to = endOfDay(now);
@@ -85,13 +83,14 @@ function StatCard({
   );
 }
 
+const PIE_COLORS = ['#3B82F6', '#10B981', '#F59E0B', '#8B5CF6', '#EF4444', '#06B6D4'];
+
 // ─── Page ─────────────────────────────────────────────────────────────────────
 export default function ReportsPage() {
   const t = useTranslations('reports');
-  const tCommon = useTranslations('common');
+  const [activeTab, setActiveTab] = useState<ReportsTab>('finance');
   const [preset, setPreset] = useState<Preset>('30d');
   const range = presetRange(preset);
-
   const rangeParams = { from: range.from, to: range.to };
 
   const summaryQ = useQuery({
@@ -154,8 +153,6 @@ export default function ReportsPage() {
     count: l.count,
   }));
 
-  const PIE_COLORS = ['#3B82F6', '#10B981', '#F59E0B', '#8B5CF6', '#EF4444', '#06B6D4'];
-
   // ─── Export helpers ──────────────────────────────────────────────────────────
   const exportFinance = async () => {
     if (!fin) return;
@@ -197,108 +194,56 @@ export default function ReportsPage() {
     );
   };
 
-  const PRESETS: { key: Preset; label: string }[] = [
-    { key: '7d',  label: t('preset_7d') },
-    { key: '30d', label: t('preset_30d') },
-    { key: '90d', label: t('preset_90d') },
-    { key: 'mtd', label: t('preset_mtd') },
-  ];
-
   return (
-    <Tabs defaultValue="finance" className="space-y-0">
-      {/* ── Sticky top bar: header + tabs ── */}
-      <div className="sticky top-[72px] z-30 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8 bg-background/95 backdrop-blur-sm border-b border-border/50 pt-5">
-        {/* Title row */}
-        <div className="flex items-center justify-between gap-3 mb-4">
-          <div>
-            <h1 className="text-xl font-black tracking-tight text-foreground leading-none">{t('title')}</h1>
-            <p className="mt-1 text-xs text-muted-foreground">
-              {format(range.from, 'dd MMM yyyy')} — {format(range.to, 'dd MMM yyyy')}
-            </p>
-          </div>
-          {/* Date range presets */}
-          <div className="flex items-center gap-0.5 rounded-xl border border-border/60 bg-muted/40 p-1">
-            {PRESETS.map((p) => (
-              <button
-                key={p.key}
-                onClick={() => setPreset(p.key)}
-                className={cn(
-                  'rounded-lg px-3 py-1.5 text-xs font-semibold transition-all duration-150 cursor-pointer',
-                  preset === p.key
-                    ? 'bg-background text-foreground shadow-sm'
-                    : 'text-muted-foreground hover:text-foreground',
-                )}
-              >
-                {p.label}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Underline tabs */}
-        <TabsList className="h-auto w-full bg-transparent rounded-none border-0 p-0 gap-0">
-          {([
-            { value: 'finance',  icon: Wallet,       label: t('tab_finance') },
-            { value: 'students', icon: GraduationCap, label: t('tab_students') },
-            { value: 'leads',    icon: Target,        label: t('tab_leads') },
-          ] as const).map(({ value, icon: Icon, label }) => (
-            <TabsTrigger
-              key={value}
-              value={value}
-              className={cn(
-                'relative h-11 rounded-none border-0 bg-transparent px-4 gap-2 text-sm font-semibold',
-                'text-muted-foreground shadow-none',
-                'data-[state=active]:text-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none',
-                'hover:text-foreground transition-colors cursor-pointer',
-                'after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[2px] after:rounded-t-full',
-                'after:bg-primary after:scale-x-0 after:transition-transform after:duration-200',
-                'data-[state=active]:after:scale-x-100',
-              )}
-            >
-              <Icon className="size-4 shrink-0" aria-hidden="true" />
-              {label}
-            </TabsTrigger>
-          ))}
-        </TabsList>
-      </div>
-
-      {/* ── KPI row ── */}
-      <div className="mt-6 grid grid-cols-2 gap-3 lg:grid-cols-4">
-        <StatCard
-          icon={Wallet}
-          label={t('total_income')}
-          value={fin ? fmtMoney(fin.summary.totalIncome) : '—'}
-          sub={`${fin?.summary.paymentCount ?? '—'} ${t('payments')}`}
-          color="emerald"
-          loading={financeQ.isLoading}
-        />
-        <StatCard
-          icon={TrendingDown}
-          label={t('total_expenses')}
-          value={fin ? fmtMoney(fin.summary.totalExpenses) : '—'}
-          sub={`${fin?.summary.expenseCount ?? '—'} ${t('expenses')}`}
-          color="rose"
-          loading={financeQ.isLoading}
-        />
-        <StatCard
-          icon={TrendingUp}
-          label={t('profit')}
-          value={fin ? fmtMoney(fin.summary.profit) : '—'}
-          color={fin && fin.summary.profit >= 0 ? 'blue' : 'rose'}
-          loading={financeQ.isLoading}
-        />
-        <StatCard
-          icon={Users}
-          label={t('students_active')}
-          value={s?.studentsActive ?? '—'}
-          sub={`${t('of')} ${s?.studentsTotal ?? '—'} ${t('students_total_short')}`}
-          color="violet"
-          loading={summaryQ.isLoading}
-        />
-      </div>
+    <div className="space-y-0">
+      {/* ── Sticky tab bar (isolated component) ── */}
+      <ReportsTabBar
+        activeTab={activeTab}
+        onTabChange={setActiveTab}
+        preset={preset}
+        onPresetChange={setPreset}
+        dateFrom={range.from}
+        dateTo={range.to}
+      />
 
       {/* ══ FINANCE TAB ══════════════════════════════════════════════════════ */}
-        <TabsContent value="finance" className="mt-6 space-y-5">
+      {activeTab === 'finance' && (
+        <div className="mt-6 space-y-5">
+          {/* KPI row */}
+          <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+            <StatCard
+              icon={Wallet}
+              label={t('total_income')}
+              value={fin ? fmtMoney(fin.summary.totalIncome) : '—'}
+              sub={`${fin?.summary.paymentCount ?? '—'} ${t('payments')}`}
+              color="emerald"
+              loading={financeQ.isLoading}
+            />
+            <StatCard
+              icon={TrendingDown}
+              label={t('total_expenses')}
+              value={fin ? fmtMoney(fin.summary.totalExpenses) : '—'}
+              sub={`${fin?.summary.expenseCount ?? '—'} ${t('expenses')}`}
+              color="rose"
+              loading={financeQ.isLoading}
+            />
+            <StatCard
+              icon={TrendingUp}
+              label={t('profit')}
+              value={fin ? fmtMoney(fin.summary.profit) : '—'}
+              color={fin && fin.summary.profit >= 0 ? 'blue' : 'rose'}
+              loading={financeQ.isLoading}
+            />
+            <StatCard
+              icon={Users}
+              label={t('students_active')}
+              value={s?.studentsActive ?? '—'}
+              sub={`${t('of')} ${s?.studentsTotal ?? '—'} ${t('students_total_short')}`}
+              color="violet"
+              loading={summaryQ.isLoading}
+            />
+          </div>
+
           <div className="flex justify-end">
             <Button variant="outline" size="sm" onClick={exportFinance} disabled={!fin} className="rounded-xl gap-1.5 text-xs">
               <FileDown className="size-3.5" />{t('export_excel')}
@@ -425,10 +370,12 @@ export default function ReportsPage() {
               </Card>
             </div>
           )}
-        </TabsContent>
+        </div>
+      )}
 
-        {/* ══ STUDENTS TAB ════════════════════════════════════════════════════ */}
-        <TabsContent value="students" className="mt-6 space-y-5">
+      {/* ══ STUDENTS TAB ════════════════════════════════════════════════════ */}
+      {activeTab === 'students' && (
+        <div className="mt-6 space-y-5">
           <div className="flex justify-end">
             <Button variant="outline" size="sm" onClick={exportStudents} disabled={!s} className="rounded-xl gap-1.5 text-xs">
               <FileDown className="size-3.5" />{t('export_excel')}
@@ -512,10 +459,12 @@ export default function ReportsPage() {
               </CardContent>
             </Card>
           </div>
-        </TabsContent>
+        </div>
+      )}
 
-        {/* ══ LEADS TAB ═══════════════════════════════════════════════════════ */}
-        <TabsContent value="leads" className="mt-6 space-y-5">
+      {/* ══ LEADS TAB ═══════════════════════════════════════════════════════ */}
+      {activeTab === 'leads' && (
+        <div className="mt-6 space-y-5">
           <div className="flex justify-end">
             <Button variant="outline" size="sm" onClick={exportLeads} disabled={!leadsQ.data} className="rounded-xl gap-1.5 text-xs">
               <FileDown className="size-3.5" />{t('export_excel')}
@@ -596,7 +545,8 @@ export default function ReportsPage() {
               </CardContent>
             </Card>
           )}
-        </TabsContent>
-    </Tabs>
+        </div>
+      )}
+    </div>
   );
 }

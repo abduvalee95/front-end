@@ -7,7 +7,6 @@ import {
   Building2,
   Globe,
   ShieldCheck,
-  Palette,
   Settings,
   ChevronRight,
   Loader2,
@@ -24,7 +23,6 @@ import { ProfileTab } from '@/components/settings/ProfileTab';
 import { OrganizationTab } from '@/components/settings/OrganizationTab';
 import { IntegrationsTab } from '@/components/settings/IntegrationsTab';
 import { SecurityTab } from '@/components/settings/SecurityTab';
-import { AppearanceTab } from '@/components/settings/AppearanceTab';
 import { UsersTable } from '@/components/users/UsersTable';
 import { InviteUserModal } from '@/components/users/InviteUserModal';
 
@@ -43,7 +41,6 @@ export default function SettingsPage() {
     { id: 'organization', label: t('organization'), icon: Building2, desc: t('organization_desc') },
     { id: 'integrations', label: t('integrations'), icon: Globe, desc: t('integrations_desc') },
     { id: 'security', label: t('security'), icon: ShieldCheck, desc: t('security_desc') },
-    { id: 'appearance', label: t('appearance'), icon: Palette, desc: t('appearance_desc') },
     ...(canManageUsers ? [{ id: 'users', label: t('users'), icon: Users, desc: t('users_desc') }] : []),
   ];
 
@@ -188,7 +185,6 @@ export default function SettingsPage() {
               />
             )}
             {activeTab === 'security' && <SecurityTab />}
-            {activeTab === 'appearance' && <AppearanceTab />}
             {activeTab === 'users' && (
               <div className="space-y-6">
                 <div className="flex items-center justify-between">

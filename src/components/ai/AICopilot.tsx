@@ -331,7 +331,7 @@ export function AICopilot() {
         type="button"
         onClick={() => setIsOpen(true)}
         className={cn(
-          'fixed bottom-6 right-6 z-50 flex size-14 items-center justify-center rounded-full shadow-2xl transition-all duration-500 hover:scale-110 hover:shadow-indigo-500/50 edu-gradient-primary cursor-pointer',
+          'fixed bottom-24 right-6 z-50 flex size-14 items-center justify-center rounded-full shadow-2xl transition-all duration-500 hover:scale-110 hover:shadow-indigo-500/50 edu-gradient-primary cursor-pointer lg:bottom-6',
           isOpen ? 'scale-0 opacity-0 pointer-events-none' : 'scale-100 opacity-100',
         )}
       >
@@ -341,7 +341,7 @@ export function AICopilot() {
       {/* Chat Panel */}
       <div
         className={cn(
-          'fixed bottom-6 right-6 z-50 flex h-[600px] w-[380px] flex-col overflow-hidden rounded-2xl border border-white/20 bg-background/95 shadow-2xl backdrop-blur-xl transition-all duration-300 sm:w-[400px]',
+          'fixed bottom-24 right-6 z-50 flex h-[600px] w-[380px] flex-col overflow-hidden rounded-2xl border border-white/20 bg-background/95 shadow-2xl backdrop-blur-xl transition-all duration-300 sm:w-[400px] lg:bottom-6',
           isOpen ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0 pointer-events-none',
         )}
       >
