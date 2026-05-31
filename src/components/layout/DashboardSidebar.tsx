@@ -112,52 +112,63 @@ export function DashboardSidebar() {
         "flex flex-col items-center pt-8 pb-6 relative transition-all duration-500",
         isCollapsed ? "px-2" : "px-5"
       )}>
-        {orgSettings?.logo_url ? (
-          isCollapsed ? (
-            <div className="size-12 rounded-xl overflow-hidden ring-2 ring-white/10 shadow-lg">
-              <Image
-                src={orgSettings.logo_url}
-                alt={orgSettings.name}
-                width={48}
-                height={48}
-                className="size-full object-cover"
-              />
-            </div>
-          ) : (
-            <div className="flex flex-col items-center gap-3 w-full">
-              <div className="size-16 rounded-2xl overflow-hidden ring-2 ring-white/10 shadow-lg shadow-blue-900/30">
+        {(() => {
+          const logoUrl = orgSettings?.logo_url ?? user?.organization_logo_url;
+          const orgName = orgSettings?.name ?? user?.organization_name;
+          return logoUrl ? (
+            isCollapsed ? (
+              <div className="size-12 rounded-xl overflow-hidden ring-2 ring-white/10 shadow-lg">
                 <Image
-                  src={orgSettings.logo_url}
-                  alt={orgSettings.name}
-                  width={64}
-                  height={64}
+                  src={logoUrl}
+                  alt={orgName ?? ''}
+                  width={48}
+                  height={48}
                   className="size-full object-cover"
                 />
               </div>
-              <div className="text-center w-full px-1">
-                <p className="text-[13px] font-bold text-white truncate leading-tight">{orgSettings.name}</p>
+            ) : (
+              <div className="flex flex-col items-center gap-3 w-full">
+                <div className="size-16 rounded-2xl overflow-hidden ring-2 ring-white/10 shadow-lg shadow-blue-900/30">
+                  <Image
+                    src={logoUrl}
+                    alt={orgName ?? ''}
+                    width={64}
+                    height={64}
+                    className="size-full object-cover"
+                  />
+                </div>
+                <div className="text-center w-full px-1">
+                  <p className="text-[13px] font-bold text-white truncate leading-tight">{orgName}</p>
+                  <p className="text-[10px] text-blue-200/40 uppercase tracking-wider mt-0.5">Education Center</p>
+                </div>
+              </div>
+            )
+          ) : orgName ? (
+            isCollapsed ? null : (
+              <div className="text-center w-full px-1 py-2">
+                <p className="text-[13px] font-bold text-white truncate leading-tight">{orgName}</p>
                 <p className="text-[10px] text-blue-200/40 uppercase tracking-wider mt-0.5">Education Center</p>
               </div>
+            )
+          ) : (
+            <div className={cn(
+              "flex items-center justify-center rounded-3xl transition-all duration-500 group relative overflow-hidden",
+              isCollapsed ? "size-14" : "size-34"
+            )}>
+              <div className="absolute inset-0 bg-gradient-to-tr from-blue-400/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+              <div className="relative z-10 transition-transform duration-500 group-hover:scale-110">
+                <Image
+                  src="/logo.svg"
+                  alt="Logo"
+                  width={isCollapsed ? 40 : 136}
+                  height={isCollapsed ? 40 : 136}
+                  className="object-contain brightness-0 invert opacity-90"
+                  priority
+                />
+              </div>
             </div>
-          )
-        ) : (
-          <div className={cn(
-            "flex items-center justify-center rounded-3xl transition-all duration-500 group relative overflow-hidden",
-            isCollapsed ? "size-14" : "size-34"
-          )}>
-            <div className="absolute inset-0 bg-gradient-to-tr from-blue-400/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
-            <div className="relative z-10 transition-transform duration-500 group-hover:scale-110">
-              <Image
-                src="/logo.svg"
-                alt="Logo"
-                width={isCollapsed ? 40 : 136}
-                height={isCollapsed ? 40 : 136}
-                className="object-contain brightness-0 invert opacity-90"
-                priority
-              />
-            </div>
-          </div>
-        )}
+          );
+        })()}
       </div>
 
       {/* Navigation */}

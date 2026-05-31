@@ -34,13 +34,16 @@ export default function SettingsPage() {
   const uploadLogo = useUploadOrganizationLogo();
   const user = useAuthStore((state) => state.user);
 
+  const isTeacher = user?.role === 'TEACHER';
   const canManageUsers = user?.role === 'SUPER_ADMIN' || user?.role === 'ADMIN' || user?.role === 'MANAGER';
 
   const settingsNav = [
     { id: 'profile', label: t('profile'), icon: User, desc: t('profile_desc') },
-    { id: 'organization', label: t('organization'), icon: Building2, desc: t('organization_desc') },
-    { id: 'integrations', label: t('integrations'), icon: Globe, desc: t('integrations_desc') },
-    { id: 'security', label: t('security'), icon: ShieldCheck, desc: t('security_desc') },
+    ...(!isTeacher ? [
+      { id: 'organization', label: t('organization'), icon: Building2, desc: t('organization_desc') },
+      { id: 'integrations', label: t('integrations'), icon: Globe, desc: t('integrations_desc') },
+      { id: 'security', label: t('security'), icon: ShieldCheck, desc: t('security_desc') },
+    ] : []),
     ...(canManageUsers ? [{ id: 'users', label: t('users'), icon: Users, desc: t('users_desc') }] : []),
   ];
 

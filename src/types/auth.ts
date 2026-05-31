@@ -12,6 +12,7 @@ export interface User {
   role: UserRole;
   organization_id?: string;
   organization_name?: string;
+  organization_logo_url?: string;
   avatar_url?: string;
   phone?: string;
   is_active: boolean;
