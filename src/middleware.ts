@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { logger } from '@/lib/logger';
-import { getRoleFromToken } from '@/lib/auth/jwt';
+import { verifyAccessToken } from '@/lib/auth/verify-token';
 import { BACKEND_URL } from '@/lib/server-env';
 import { canAccess } from '@/lib/rbac';
 
-export default function middleware(request: NextRequest) {
+export default async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // 1. API Proxy for external backend
@@ -67,17 +67,18 @@ export default function middleware(request: NextRequest) {
     return NextResponse.redirect(loginUrl);
   }
 
-  // Generic RBAC: enforce role restrictions only when we can actually read the
-  // role from a present access token. If the access token has expired but the
-  // refresh token is still valid, let the request through so the client can
-  // silently refresh. Otherwise role is null, canAccess() returns false, and we
-  // would redirect /dashboard -> /dashboard forever (ERR_TOO_MANY_REDIRECTS).
+  // Generic RBAC: enforce role restrictions using a SIGNATURE-VERIFIED token,
+  // so a forged/edited cookie cannot reach a role-gated route. A 'valid' or
+  // 'expired' token both carry an authentic role (an expired token was still
+  // validly signed) — we honour it and let the request through so the client
+  // can silently refresh. Only 'invalid' (forged/malformed) yields a null role.
+  // canAccess() then returns false; the `!startsWith('/dashboard')` guard
+  // prevents redirecting /dashboard -> /dashboard forever.
   if (isAuth && isProtectedRoute) {
     const accessToken = request.cookies.get('access_token')?.value;
     if (accessToken) {
-      const role = getRoleFromToken(accessToken);
-      // Never redirect a path onto itself — guards against any future null-role
-      // self-redirect loop on the fallback target.
+      const result = await verifyAccessToken(accessToken);
+      const role = result.status === 'invalid' ? null : result.claims.role;
       if (!canAccess(pathname, role) && !pathname.startsWith('/dashboard')) {
         return NextResponse.redirect(new URL('/dashboard', request.url));
       }
