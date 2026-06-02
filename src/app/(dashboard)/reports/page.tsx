@@ -11,7 +11,7 @@ import {
   AreaChart, Area, BarChart, Bar, PieChart as RePieChart, Pie, Cell,
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
 } from 'recharts';
-import { subDays, startOfMonth, endOfDay } from 'date-fns';
+import { format as formatDateFns } from 'date-fns';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -20,19 +20,7 @@ import { analyticsService } from '@/services/analytics';
 import { exportToExcel } from '@/lib/excel';
 import { useTranslations } from '@/i18n/index';
 import { cn } from '@/lib/utils';
-import { ReportsTabBar, type ReportsTab, type Preset } from '@/components/reports/ReportsTabBar';
-
-// ─── Date range ───────────────────────────────────────────────────────────────
-function presetRange(p: Preset) {
-  const now = new Date();
-  const to = endOfDay(now);
-  switch (p) {
-    case '7d': return { from: subDays(now, 6), to };
-    case '30d': return { from: subDays(now, 29), to };
-    case '90d': return { from: subDays(now, 89), to };
-    case 'mtd': return { from: startOfMonth(now), to };
-  }
-}
+import { ReportsTabBar, computeRange, type ReportsTab, type Preset, type FilterMode } from '@/components/reports/ReportsTabBar';
 
 function fmtDate(d: Date) { return d.toISOString().slice(0, 10); }
 function fmtMoney(n: number) { return new Intl.NumberFormat('ru-RU').format(Math.round(n)) + ' сом'; }
@@ -88,38 +76,43 @@ const PIE_COLORS = ['#3B82F6', '#10B981', '#F59E0B', '#8B5CF6', '#EF4444', '#06B
 // ─── Page ─────────────────────────────────────────────────────────────────────
 export default function ReportsPage() {
   const t = useTranslations('reports');
-  const [activeTab, setActiveTab] = useState<ReportsTab>('finance');
-  const [preset, setPreset] = useState<Preset>('30d');
-  const range = presetRange(preset);
+  const [activeTab, setActiveTab]       = useState<ReportsTab>('finance');
+  const [filterMode, setFilterMode]     = useState<FilterMode>('preset');
+  const [preset, setPreset]             = useState<Preset>('30d');
+  const [selectedMonth, setSelectedMonth] = useState('');
+  const [selectedWeek, setSelectedWeek]   = useState('');
+
+  const range = computeRange(filterMode, preset, selectedMonth, selectedWeek);
+  const rangeKey = `${filterMode}:${preset}:${selectedMonth}:${selectedWeek}`;
   const rangeParams = { from: range.from, to: range.to };
 
   const summaryQ = useQuery({
-    queryKey: ['reports', 'summary', preset],
+    queryKey: ['reports', 'summary', rangeKey],
     queryFn: () => analyticsService.getDashboardSummary(rangeParams),
     staleTime: 1000 * 60 * 3,
   });
 
   const financeQ = useQuery({
-    queryKey: ['reports', 'finance', preset],
+    queryKey: ['reports', 'finance', rangeKey],
     queryFn: () => analyticsService.getFinanceReport(rangeParams),
     staleTime: 1000 * 60 * 3,
     retry: false,
   });
 
   const payByDayQ = useQuery({
-    queryKey: ['reports', 'pay-by-day', preset],
+    queryKey: ['reports', 'pay-by-day', rangeKey],
     queryFn: () => analyticsService.getPaymentsByDay(rangeParams),
     staleTime: 1000 * 60 * 3,
   });
 
   const payByMethodQ = useQuery({
-    queryKey: ['reports', 'pay-by-method', preset],
+    queryKey: ['reports', 'pay-by-method', rangeKey],
     queryFn: () => analyticsService.getPaymentsByMethod(rangeParams),
     staleTime: 1000 * 60 * 3,
   });
 
   const leadsQ = useQuery({
-    queryKey: ['reports', 'leads', preset],
+    queryKey: ['reports', 'leads', rangeKey],
     queryFn: () => analyticsService.getLeadsByStatus(rangeParams),
     staleTime: 1000 * 60 * 3,
   });
@@ -200,8 +193,14 @@ export default function ReportsPage() {
       <ReportsTabBar
         activeTab={activeTab}
         onTabChange={setActiveTab}
+        filterMode={filterMode}
+        onFilterModeChange={setFilterMode}
         preset={preset}
         onPresetChange={setPreset}
+        selectedMonth={selectedMonth}
+        onMonthChange={setSelectedMonth}
+        selectedWeek={selectedWeek}
+        onWeekChange={setSelectedWeek}
         dateFrom={range.from}
         dateTo={range.to}
       />

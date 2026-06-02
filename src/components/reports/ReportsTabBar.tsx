@@ -1,23 +1,95 @@
 'use client';
 
-import { Wallet, GraduationCap, Target } from 'lucide-react';
-import { format } from 'date-fns';
+import { Wallet, GraduationCap, Target, CalendarDays, CalendarRange } from 'lucide-react';
+import { format, startOfWeek, endOfWeek, subWeeks, subMonths, startOfMonth, endOfMonth } from 'date-fns';
+import { ru } from 'date-fns/locale';
 import { cn } from '@/lib/utils';
 import { useTranslations } from '@/i18n/index';
 
 export type ReportsTab = 'finance' | 'students' | 'leads';
 export type Preset = '7d' | '30d' | '90d' | 'mtd';
+export type FilterMode = 'preset' | 'month' | 'week';
+
+export interface DateRange { from: Date; to: Date }
+
+/** Compute date range from filter state */
+export function computeRange(
+  mode: FilterMode,
+  preset: Preset,
+  selectedMonth: string,   // 'YYYY-MM'
+  selectedWeek: string,    // 'YYYY-MM-DD' (Monday of that week)
+): DateRange {
+  const now = new Date();
+  const to = endOfMonth(now); // generous upper bound
+
+  if (mode === 'month' && selectedMonth) {
+    const d = new Date(selectedMonth + '-01');
+    return { from: startOfMonth(d), to: endOfMonth(d) };
+  }
+  if (mode === 'week' && selectedWeek) {
+    const d = new Date(selectedWeek);
+    return {
+      from: startOfWeek(d, { weekStartsOn: 1 }),
+      to: endOfWeek(d, { weekStartsOn: 1 }),
+    };
+  }
+  // preset fallback
+  const today = new Date();
+  const end = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 23, 59, 59);
+  switch (preset) {
+    case '7d':  return { from: subWeeks(today, 1), to: end };
+    case '30d': return { from: subMonths(today, 1), to: end };
+    case '90d': return { from: subMonths(today, 3), to: end };
+    case 'mtd': return { from: startOfMonth(today), to: end };
+  }
+}
+
+/** Last N months as options */
+function buildMonthOptions(n = 12) {
+  return Array.from({ length: n }, (_, i) => {
+    const d = subMonths(new Date(), i);
+    return {
+      value: format(d, 'yyyy-MM'),
+      label: format(d, 'LLLL yyyy', { locale: ru }),
+    };
+  });
+}
+
+/** Last N weeks as options */
+function buildWeekOptions(n = 12) {
+  return Array.from({ length: n }, (_, i) => {
+    const weekStart = startOfWeek(subWeeks(new Date(), i), { weekStartsOn: 1 });
+    const weekEnd = endOfWeek(weekStart, { weekStartsOn: 1 });
+    return {
+      value: format(weekStart, 'yyyy-MM-dd'),
+      label: `${format(weekStart, 'dd MMM', { locale: ru })} — ${format(weekEnd, 'dd MMM', { locale: ru })}`,
+    };
+  });
+}
 
 interface Props {
   activeTab: ReportsTab;
   onTabChange: (tab: ReportsTab) => void;
+  filterMode: FilterMode;
+  onFilterModeChange: (mode: FilterMode) => void;
   preset: Preset;
   onPresetChange: (preset: Preset) => void;
+  selectedMonth: string;
+  onMonthChange: (month: string) => void;
+  selectedWeek: string;
+  onWeekChange: (week: string) => void;
   dateFrom: Date;
   dateTo: Date;
 }
 
-export function ReportsTabBar({ activeTab, onTabChange, preset, onPresetChange, dateFrom, dateTo }: Props) {
+export function ReportsTabBar({
+  activeTab, onTabChange,
+  filterMode, onFilterModeChange,
+  preset, onPresetChange,
+  selectedMonth, onMonthChange,
+  selectedWeek, onWeekChange,
+  dateFrom, dateTo,
+}: Props) {
   const t = useTranslations('reports');
 
   const PRESETS: { key: Preset; label: string }[] = [
@@ -33,31 +105,94 @@ export function ReportsTabBar({ activeTab, onTabChange, preset, onPresetChange, 
     { value: 'leads',    icon: Target,        label: t('tab_leads') },
   ];
 
+  const monthOptions = buildMonthOptions();
+  const weekOptions  = buildWeekOptions();
+
   return (
     <div className="sticky top-[72px] z-30 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8 bg-background/95 backdrop-blur-sm border-b border-border/50 pt-5">
-      {/* Title + preset picker */}
-      <div className="flex items-center justify-between gap-3 mb-4">
+      {/* Title + filter row */}
+      <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
         <div>
           <h1 className="text-xl font-black tracking-tight text-foreground leading-none">{t('title')}</h1>
           <p className="mt-1 text-xs text-muted-foreground">
-            {format(dateFrom, 'dd MMM yyyy')} — {format(dateTo, 'dd MMM yyyy')}
+            {format(dateFrom, 'dd MMM yyyy', { locale: ru })} — {format(dateTo, 'dd MMM yyyy', { locale: ru })}
           </p>
         </div>
-        <div className="flex items-center gap-0.5 rounded-xl border border-border/60 bg-muted/40 p-1">
-          {PRESETS.map((p) => (
-            <button
-              key={p.key}
-              onClick={() => onPresetChange(p.key)}
-              className={cn(
-                'rounded-lg px-3 py-1.5 text-xs font-semibold transition-all duration-150 cursor-pointer',
-                preset === p.key
-                  ? 'bg-background text-foreground shadow-sm'
-                  : 'text-muted-foreground hover:text-foreground',
-              )}
+
+        {/* Filter controls */}
+        <div className="flex flex-wrap items-center gap-2">
+          {/* Quick presets */}
+          <div className="flex items-center gap-0.5 rounded-xl border border-border/60 bg-muted/40 p-1">
+            {PRESETS.map((p) => (
+              <button
+                key={p.key}
+                onClick={() => { onPresetChange(p.key); onFilterModeChange('preset'); }}
+                className={cn(
+                  'rounded-lg px-3 py-1.5 text-xs font-semibold transition-all duration-150 cursor-pointer',
+                  filterMode === 'preset' && preset === p.key
+                    ? 'bg-background text-foreground shadow-sm'
+                    : 'text-muted-foreground hover:text-foreground',
+                )}
+              >
+                {p.label}
+              </button>
+            ))}
+          </div>
+
+          {/* Divider */}
+          <div className="h-5 w-px bg-border/60 hidden sm:block" />
+
+          {/* Month picker */}
+          <div className={cn(
+            'flex items-center gap-1.5 rounded-xl border px-2.5 py-1.5 transition-all duration-150 cursor-pointer',
+            filterMode === 'month'
+              ? 'border-primary/50 bg-primary/8 text-primary'
+              : 'border-border/60 bg-muted/40 text-muted-foreground hover:text-foreground',
+          )}>
+            <CalendarDays className="size-3.5 shrink-0 pointer-events-none" aria-hidden="true" />
+            <select
+              value={filterMode === 'month' ? selectedMonth : ''}
+              onChange={(e) => {
+                if (e.target.value) {
+                  onMonthChange(e.target.value);
+                  onFilterModeChange('month');
+                }
+              }}
+              className="text-xs font-semibold bg-transparent border-0 outline-none cursor-pointer max-w-[130px]"
+              aria-label={t('filter_by_month')}
             >
-              {p.label}
-            </button>
-          ))}
+              <option value="">{t('filter_by_month')}</option>
+              {monthOptions.map((m) => (
+                <option key={m.value} value={m.value}>{m.label}</option>
+              ))}
+            </select>
+          </div>
+
+          {/* Week picker */}
+          <div className={cn(
+            'flex items-center gap-1.5 rounded-xl border px-2.5 py-1.5 transition-all duration-150 cursor-pointer',
+            filterMode === 'week'
+              ? 'border-primary/50 bg-primary/8 text-primary'
+              : 'border-border/60 bg-muted/40 text-muted-foreground hover:text-foreground',
+          )}>
+            <CalendarRange className="size-3.5 shrink-0 pointer-events-none" aria-hidden="true" />
+            <select
+              value={filterMode === 'week' ? selectedWeek : ''}
+              onChange={(e) => {
+                if (e.target.value) {
+                  onWeekChange(e.target.value);
+                  onFilterModeChange('week');
+                }
+              }}
+              className="text-xs font-semibold bg-transparent border-0 outline-none cursor-pointer max-w-[160px]"
+              aria-label={t('filter_by_week')}
+            >
+              <option value="">{t('filter_by_week')}</option>
+              {weekOptions.map((w) => (
+                <option key={w.value} value={w.value}>{w.label}</option>
+              ))}
+            </select>
+          </div>
         </div>
       </div>
 
