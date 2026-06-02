@@ -1,0 +1,35 @@
+# Keep the Docker build context small and reproducible.
+# Without this file, `COPY . .` drags node_modules/.next/.git into the build —
+# slow, non-reproducible, and a likely OOM on a small VPS.
+
+node_modules
+.next
+.swc
+
+# VCS
+.git
+.gitignore
+
+# Docker
+Dockerfile
+.dockerignore
+
+# Secrets — never bake into the image (env is injected at runtime via compose)
+.env
+.env.*
+!.env.example
+
+# Tests / tooling
+coverage
+playwright-report
+test-results
+e2e
+
+# Editor / OS
+.vscode
+.idea
+.cursor
+.DS_Store
+
+# Docs
+*.md

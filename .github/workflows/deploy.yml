@@ -1,0 +1,33 @@
+name: Deploy to VPS
+
+# Auto-deploy: a push to a deploy branch SSHes into the Timeweb VPS and runs
+# deploy.sh, which pulls BOTH repos (back-end + this front-end) and rebuilds.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: {}
+
+concurrency:
+  group: vps-deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy over SSH (pull + build + up)
+        uses: appleboy/ssh-action@v1.0.3
+        # Pass the pushed branch via env (safe pattern — no untrusted ${{ }} in script).
+        env:
+          FRONT_BRANCH: ${{ github.ref_name }}
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          envs: FRONT_BRANCH
+          script_stop: true
+          command_timeout: 30m
+          script: |
+            cd /opt/bilimnuru/back-end
+            bash deploy.sh
