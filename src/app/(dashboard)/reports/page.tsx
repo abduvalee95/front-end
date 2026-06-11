@@ -4,25 +4,21 @@ import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import {
   BarChart3, TrendingUp, TrendingDown, Users, UserCheck,
-  DollarSign, FileDown, Calendar, Target, Activity,
+  Calendar, Target, Activity,
   GraduationCap, Wallet, PieChart, RefreshCw,
 } from 'lucide-react';
 import {
   AreaChart, Area, BarChart, Bar, PieChart as RePieChart, Pie, Cell,
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
 } from 'recharts';
-import { format as formatDateFns } from 'date-fns';
-import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { analyticsService } from '@/services/analytics';
-import { exportToExcel } from '@/lib/excel';
 import { useTranslations } from '@/i18n/index';
 import { cn } from '@/lib/utils';
 import { ReportsTabBar, computeRange, type ReportsTab, type Preset, type FilterMode } from '@/components/reports/ReportsTabBar';
 
-function fmtDate(d: Date) { return d.toISOString().slice(0, 10); }
 function fmtMoney(n: number) { return new Intl.NumberFormat('ru-RU').format(Math.round(n)) + ' сом'; }
 function fmtShortDate(s: string) {
   const d = new Date(s);
@@ -146,47 +142,6 @@ export default function ReportsPage() {
     count: l.count,
   }));
 
-  // ─── Export helpers ──────────────────────────────────────────────────────────
-  const exportFinance = async () => {
-    if (!fin) return;
-    await exportToExcel(
-      [
-        { Metric: t('total_income'), Value: fin.summary.totalIncome, Currency: 'KGS' },
-        { Metric: t('total_expenses'), Value: fin.summary.totalExpenses, Currency: 'KGS' },
-        { Metric: t('profit'), Value: fin.summary.profit, Currency: 'KGS' },
-        { Metric: t('payment_count'), Value: fin.summary.paymentCount, Currency: '' },
-        { Metric: t('expense_count'), Value: fin.summary.expenseCount, Currency: '' },
-        ...fin.incomeByMethod.map((m) => ({ Metric: `Income - ${m.method}`, Value: m.total, Currency: 'KGS' })),
-        ...fin.expenseByCategory.map((e) => ({ Metric: `Expense - ${e.category}`, Value: e.total, Currency: 'KGS' })),
-      ],
-      `finance-report-${fmtDate(range.from)}-${fmtDate(range.to)}`,
-    );
-  };
-
-  const exportStudents = async () => {
-    if (!s) return;
-    await exportToExcel(
-      [
-        { Metric: t('students_total'), Value: s.studentsTotal },
-        { Metric: t('students_active'), Value: s.studentsActive },
-        { Metric: t('students_inactive'), Value: s.studentsInactive },
-        { Metric: t('enrollments'), Value: s.enrollmentsTotal },
-        { Metric: t('attendance_present'), Value: s.attendancePresent },
-        { Metric: t('attendance_absent'), Value: s.attendanceAbsent },
-        { Metric: t('attendance_rate'), Value: `${s.attendanceRate}%` },
-      ],
-      `student-report-${fmtDate(range.from)}-${fmtDate(range.to)}`,
-    );
-  };
-
-  const exportLeads = async () => {
-    if (!leadsQ.data) return;
-    await exportToExcel(
-      leadsQ.data.map((l) => ({ Status: l.status, Count: l.count })),
-      `leads-report-${fmtDate(range.from)}-${fmtDate(range.to)}`,
-    );
-  };
-
   return (
     <div className="space-y-0">
       {/* ── Sticky tab bar (isolated component) ── */}
@@ -241,12 +196,6 @@ export default function ReportsPage() {
               color="violet"
               loading={summaryQ.isLoading}
             />
-          </div>
-
-          <div className="flex justify-end">
-            <Button variant="outline" size="sm" onClick={exportFinance} disabled={!fin} className="rounded-xl gap-1.5 text-xs">
-              <FileDown className="size-3.5" />{t('export_excel')}
-            </Button>
           </div>
 
           {/* Revenue chart */}
@@ -375,12 +324,6 @@ export default function ReportsPage() {
       {/* ══ STUDENTS TAB ════════════════════════════════════════════════════ */}
       {activeTab === 'students' && (
         <div className="mt-6 space-y-5">
-          <div className="flex justify-end">
-            <Button variant="outline" size="sm" onClick={exportStudents} disabled={!s} className="rounded-xl gap-1.5 text-xs">
-              <FileDown className="size-3.5" />{t('export_excel')}
-            </Button>
-          </div>
-
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
             <StatCard icon={Users} label={t('students_total')} value={s?.studentsTotal ?? '—'} color="blue" loading={summaryQ.isLoading} />
             <StatCard icon={UserCheck} label={t('students_active')} value={s?.studentsActive ?? '—'} color="emerald" loading={summaryQ.isLoading} />
@@ -464,12 +407,6 @@ export default function ReportsPage() {
       {/* ══ LEADS TAB ═══════════════════════════════════════════════════════ */}
       {activeTab === 'leads' && (
         <div className="mt-6 space-y-5">
-          <div className="flex justify-end">
-            <Button variant="outline" size="sm" onClick={exportLeads} disabled={!leadsQ.data} className="rounded-xl gap-1.5 text-xs">
-              <FileDown className="size-3.5" />{t('export_excel')}
-            </Button>
-          </div>
-
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
             {(['NEW', 'CONTACTED', 'CONVERTED', 'LOST'] as const).map((status) => {
               const colors = { NEW: 'blue', CONTACTED: 'amber', CONVERTED: 'emerald', LOST: 'rose' } as const;

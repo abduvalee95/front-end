@@ -1,26 +1,20 @@
 'use client';
 
 import { useState, useCallback } from 'react';
-import { useQueryClient } from '@tanstack/react-query';
 import TeachersTable from '@/components/dashboard/teachers/TeachersTable';
 import { EditTeacherModal } from '@/components/dashboard/teachers/EditTeacherModal';
 import { CreateTeacherModal } from '@/components/dashboard/teachers/CreateTeacherModal';
 import { DeleteTeacherConfirmDialog } from '@/components/dashboard/teachers/DeleteTeacherConfirmDialog';
 import { TeacherDetailSheet } from '@/components/dashboard/teachers/TeacherDetailSheet';
-import { BulkImportDialog } from '@/components/shared/BulkImportDialog';
 import { Button } from '@/components/ui/button';
-import { Plus, FileSpreadsheet } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import { useTranslations } from '@/i18n/index';
-import { api } from '@/lib/api/client';
 import { useDeleteTeacher } from '@/hooks/useTeachers';
-import type { TeacherProfile, CreateTeacherDto } from '@/types/teacher';
-import { toast } from 'sonner';
+import type { TeacherProfile } from '@/types/teacher';
 
 export default function TeachersPage() {
   const t = useTranslations('teachers');
-  const queryClient = useQueryClient();
   const [isCreateOpen, setIsCreateOpen] = useState(false);
-  const [isImportOpen, setIsImportOpen] = useState(false);
   const [editTarget, setEditTarget] = useState<TeacherProfile | null>(null);
   const [viewTarget, setViewTarget] = useState<TeacherProfile | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<TeacherProfile | null>(null);
@@ -33,35 +27,6 @@ export default function TeachersPage() {
     });
   }, [deleteTarget, deleteTeacher]);
 
-  const handleBulkImport = async (data: Record<string, unknown>[]) => {
-    const teachers: CreateTeacherDto[] = data.map(item => ({
-      full_name: String(item.full_name || '').trim(),
-      phone: String(item.phone || '').trim(),
-      email: item.email ? String(item.email).trim() : `teacher${Date.now()}@temp.com`,
-      password: String(item.password || '123456'),
-      subjects: item.subjects
-        ? String(item.subjects).split(',').map(s => s.trim()).filter(Boolean)
-        : [],
-      hourly_rate: item.hourly_rate ? Number(item.hourly_rate) : undefined,
-      qualifications: item.qualifications ? String(item.qualifications).trim() : undefined,
-      bio: item.bio ? String(item.bio).trim() : undefined,
-    }));
-
-    try {
-      const result = await api.post<{ count: number }>('proxy/teachers/bulk', { teachers });
-      const count = result.data.count;
-      if (count > 0) {
-        toast.success(`${count} ${t('imported_success')}`);
-      } else {
-        toast.warning(t('imported_duplicates'));
-      }
-    } catch {
-      toast.error(t('import_failed'));
-    }
-
-    queryClient.invalidateQueries({ queryKey: ['teachers'] });
-  };
-
   return (
     <div className="space-y-8 animate-in fade-in duration-700">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -70,15 +35,8 @@ export default function TeachersPage() {
           <p className="text-slate-500 mt-1">{t('subtitle')}</p>
         </div>
         <div className="flex items-center gap-3">
-          <Button 
-            variant="outline"
-            onClick={() => setIsImportOpen(true)} 
-            className="border-green-600 text-green-600 hover:bg-green-50 shadow-sm"
-          >
-            <FileSpreadsheet className="mr-2 h-4 w-4" /> {t('import_excel')}
-          </Button>
-          <Button 
-            onClick={() => setIsCreateOpen(true)} 
+          <Button
+            onClick={() => setIsCreateOpen(true)}
             className="bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg shadow-indigo-600/20"
           >
             <Plus className="mr-2 h-4 w-4" /> {t('add_teacher')}
@@ -115,25 +73,6 @@ export default function TeachersPage() {
         isLoading={deleteTeacher.isPending}
         onConfirm={handleDeleteConfirm}
         onCancel={() => setDeleteTarget(null)}
-      />
-
-      <BulkImportDialog
-        isOpen={isImportOpen}
-        onClose={() => setIsImportOpen(false)}
-        onImport={handleBulkImport}
-        title={t('import_teachers')}
-        description={t('import_desc')}
-        requiredFields={['full_name', 'phone']}
-        columnMapping={{
-          'Full Name': 'full_name',
-          'Phone': 'phone',
-          'Email': 'email',
-          'Password': 'password',
-          'Hourly Rate': 'hourly_rate',
-          'Qualifications': 'qualifications',
-          'Bio': 'bio',
-          'Subjects': 'subjects'
-        }}
       />
     </div>
   );

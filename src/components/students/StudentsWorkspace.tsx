@@ -2,21 +2,17 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import { ChevronLeft, ChevronRight, X } from 'lucide-react';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { useTranslations } from '@/i18n/index';
 import { useAuthStore } from '@/store/auth.store';
 import { usePermissions } from '@/hooks/usePermissions';
 import { useDebounceSearch } from '@/hooks/useDebounceSearch';
 import { useTeachers } from '@/hooks/useTeachers';
 import { useGroupEnrollments, useStudentGroups, useStudents } from '@/hooks/useStudents';
-import { studentService } from '@/services/students';
-import { analyticsService } from '@/services/analytics';
 import { paymentService } from '@/services/finance';
-import { queryKeys } from '@/lib/api/query-keys';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Table, TableBody, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { BulkImportDialog } from '@/components/shared/BulkImportDialog';
 import type { StudentStatus } from '@/types/student';
 import { StudentsHero } from './StudentsHero';
 import { StudentsFilters } from './StudentsFilters';
@@ -30,7 +26,6 @@ export function StudentsWorkspace() {
   const user = useAuthStore((state) => state.user);
   const { role, canManageStudents: canManageScope, teacherScoped, canReadStudents } = usePermissions();
 
-  const queryClient = useQueryClient();
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState<PageSizeOption>(DEFAULT_PAGE_SIZE);
   const {
@@ -47,20 +42,6 @@ export function StudentsWorkspace() {
   const [paymentFilter, setPaymentFilter] = useState<PaymentStatus | ''>('');
   const [viewMode, setViewMode] = useState<ViewMode>('all');
   const [selectedTeacherId, setSelectedTeacherId] = useState('');
-  const [isImportOpen, setIsImportOpen] = useState(false);
-
-  const handleBulkImport = async (data: Record<string, unknown>[]) => {
-    const students = data.map((item) => ({
-      name: String(item.name || '').trim(),
-      phone: String(item.phone || '').trim(),
-      address: String(item.address || '').trim(),
-      parent: item.parent ? String(item.parent).trim() : undefined,
-      parent_phone: item.parent_phone ? String(item.parent_phone).trim() : undefined,
-      status: 'ACTIVE' as const,
-    }));
-    await studentService.bulkCreate(students);
-    queryClient.invalidateQueries({ queryKey: queryKeys.students.all(user?.organization_id) });
-  };
 
   const effectiveViewMode: ViewMode = teacherScoped ? 'teacher' : viewMode;
   const effectiveTeacherId = teacherScoped ? user?.id ?? '' : selectedTeacherId;
@@ -311,7 +292,6 @@ export function StudentsWorkspace() {
         partialCount={partialCount}
         teacherScoped={teacherScoped}
         canManageScope={canManageScope}
-        onImportClick={() => setIsImportOpen(true)}
       />
 
       <StudentsFilters
@@ -469,16 +449,6 @@ export function StudentsWorkspace() {
           </div>
         )}
       </div>
-
-      <BulkImportDialog
-        isOpen={isImportOpen}
-        onClose={() => setIsImportOpen(false)}
-        onImport={handleBulkImport}
-        title={t('import_title')}
-        description={t('import_desc')}
-        requiredFields={['name', 'phone']}
-        columnMapping={{ 'Full Name': 'name', Phone: 'phone', Address: 'address', 'Parent Name': 'parent' }}
-      />
     </div>
   );
 }

@@ -1,7 +1,6 @@
 'use client';
 
-import { BadgeCheck, CircleDollarSign, FileSpreadsheet, GraduationCap, Layers3, TrendingUp, UserRoundCheck, UsersRound, XCircle } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { BadgeCheck, CircleDollarSign, GraduationCap, Layers3, TrendingUp, UserRoundCheck, UsersRound, XCircle } from 'lucide-react';
 import { useTranslations } from '@/i18n/index';
 import { cn } from '@/lib/utils';
 import { CreateStudentModal } from './CreateStudentModal';
@@ -18,7 +17,6 @@ interface StudentsHeroProps {
   partialCount: number;
   teacherScoped: boolean;
   canManageScope: boolean;
-  onImportClick: () => void;
 }
 
 export function StudentsHero({
@@ -33,7 +31,6 @@ export function StudentsHero({
   partialCount,
   teacherScoped,
   canManageScope,
-  onImportClick,
 }: StudentsHeroProps) {
   const t = useTranslations('students');
   const tCommon = useTranslations('common');
@@ -63,14 +60,6 @@ export function StudentsHero({
           {canManageScope && (
             <div className="mt-5 flex flex-wrap items-center gap-2.5">
               <CreateStudentModal />
-              <Button
-                variant="outline"
-                onClick={onImportClick}
-                className="h-10 rounded-xl border-white/20 bg-white/8 text-white hover:bg-white/15 hover:text-white backdrop-blur-sm"
-              >
-                <FileSpreadsheet className="mr-2 size-4 text-emerald-400" />
-                {tCommon('import_excel')}
-              </Button>
             </div>
           )}
         </div>
