@@ -2,8 +2,12 @@
 
 import { Users, ShieldCheck, Sparkles } from 'lucide-react';
 import { UsersTable } from '@/components/users/UsersTable';
+import { useUsers } from '@/hooks/useUsers';
 
 export default function AdminUsersPage() {
+  const totalQuery = useUsers({ page: 1, limit: 1 });
+  const totalUsers = totalQuery.data?.meta.total;
+
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
       {/* Header Section */}
@@ -29,7 +33,7 @@ export default function AdminUsersPage() {
               </div>
               <div>
                 <p className="text-[10px] font-bold text-cyan-200/50 uppercase tracking-wider">Total Platform Users</p>
-                <p className="text-2xl font-black text-white">Monitoring...</p>
+                <p className="text-2xl font-black text-white">{totalUsers ?? '—'}</p>
               </div>
             </div>
           </div>

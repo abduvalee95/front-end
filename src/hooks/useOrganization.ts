@@ -5,11 +5,15 @@ import { AxiosError } from 'axios';
 import { useAuthStore } from '@/store/auth.store';
 
 export function useOrganizationSettings() {
-  // Only ADMIN/MANAGER/SUPER_ADMIN can read org settings on the backend.
-  // Teachers would get a 403, which the API client surfaces as an error toast
-  // on every page (the sidebar mounts this hook). Guard so it never fires for them.
-  const role = useAuthStore((s) => s.user?.role);
-  const canRead = role === 'ADMIN' || role === 'MANAGER' || role === 'SUPER_ADMIN';
+  // The backend's /organizations/settings routes are guarded with
+  // @Roles(ADMIN, MANAGER) only — TEACHER and SUPER_ADMIN (the platform
+  // account) always get a 403, which the API client surfaces as an error
+  // toast on every page (the sidebar mounts this hook). Only query for the
+  // roles the backend actually allows.
+  const user = useAuthStore((s) => s.user);
+  const role = user?.role;
+  const canRead =
+    !!user?.organization_id && (role === 'ADMIN' || role === 'MANAGER');
 
   return useQuery({
     queryKey: ['organization-settings'],
