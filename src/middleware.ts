@@ -9,6 +9,16 @@ export default async function middleware(request: NextRequest) {
 
   // 1. API Proxy for external backend
   if (pathname.startsWith('/api/proxy/')) {
+    // CSRF defense-in-depth: state-changing requests must come from our own
+    // origin. Browsers always send Origin on cross-site POST/PUT/PATCH/DELETE;
+    // same-origin server-side fetches (e.g. AI tools) send none and pass.
+    if (request.method !== 'GET' && request.method !== 'HEAD') {
+      const origin = request.headers.get('origin');
+      if (origin && origin !== request.nextUrl.origin) {
+        return NextResponse.json({ message: 'Cross-origin request rejected' }, { status: 403 });
+      }
+    }
+
     const accessToken = request.cookies.get('access_token')?.value;
     const requestHeaders = new Headers(request.headers);
 

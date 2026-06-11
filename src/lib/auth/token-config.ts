@@ -20,11 +20,18 @@ export const TOKEN_CONFIG: TokenConfig = {
   },
 };
 
+// All auth cookies are consumed same-origin only: the browser talks to the
+// front-end's own /api/* routes, and the backend is reached via the
+// server-side proxy. SameSite=Lax therefore works everywhere and blocks CSRF —
+// a foreign site cannot make the browser attach these cookies to a
+// state-changing request.
+const COOKIE_SAME_SITE = 'lax' as const;
+
 // Cookie options for access token (shorter lived)
 export const ACCESS_COOKIE_OPTIONS: CookieOptions = {
   httpOnly: true,
   secure: process.env.NODE_ENV === 'production',
-  sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+  sameSite: COOKIE_SAME_SITE,
   path: '/',
   maxAge: TOKEN_CONFIG.access.ttlSeconds,
 };
@@ -33,7 +40,7 @@ export const ACCESS_COOKIE_OPTIONS: CookieOptions = {
 export const REFRESH_COOKIE_OPTIONS: CookieOptions = {
   httpOnly: true,
   secure: process.env.NODE_ENV === 'production',
-  sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+  sameSite: COOKIE_SAME_SITE,
   path: '/',
   maxAge: TOKEN_CONFIG.refresh.ttlSeconds,
 };
@@ -42,7 +49,7 @@ export const REFRESH_COOKIE_OPTIONS: CookieOptions = {
 export const CLEAR_COOKIE_OPTIONS: CookieOptions = {
   httpOnly: true,
   secure: process.env.NODE_ENV === 'production',
-  sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+  sameSite: COOKIE_SAME_SITE,
   path: '/',
   maxAge: 0,
 };
