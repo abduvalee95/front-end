@@ -126,7 +126,9 @@
     "group_main": "Негизги",
     "group_management": "Башкаруу",
     "group_academic": "Академиялык",
-    "group_system": "Тутум"
+    "group_system": "Тутум",
+    "organizations": "Уюмдар",
+    "subjects": "Предметтер"
   },
   "auth": {
     "sign_in": "Кирүү",

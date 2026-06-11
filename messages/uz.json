@@ -128,7 +128,8 @@
     "group_management": "Boshqaruv",
     "group_academic": "Akademik",
     "group_system": "Tizim",
-    "subjects": "Fanlar"
+    "subjects": "Fanlar",
+    "organizations": "Tashkilotlar"
   },
   "auth": {
     "sign_in": "Kirish",

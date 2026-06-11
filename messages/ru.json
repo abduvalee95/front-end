@@ -128,7 +128,8 @@
     "group_management": "Управление",
     "group_academic": "Академическое",
     "group_system": "Система",
-    "subjects": "Предметы"
+    "subjects": "Предметы",
+    "organizations": "Организации"
   },
   "auth": {
     "sign_in": "Войти",

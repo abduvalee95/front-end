@@ -128,7 +128,8 @@
     "group_management": "Management",
     "group_academic": "Academic",
     "group_system": "System",
-    "subjects": "Subjects"
+    "subjects": "Subjects",
+    "organizations": "Organizations"
   },
   "auth": {
     "sign_in": "Sign In",
