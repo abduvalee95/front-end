@@ -10,6 +10,11 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Progress } from '@/components/ui/progress';
 import { toast } from 'sonner';
+import { Loader2 } from 'lucide-react';
+import { userService } from '@/services/users';
+import { getErrorMessage } from '@/lib/api/client';
+import { useAuthStore } from '@/store/auth.store';
+import { useAuth } from '@/hooks/useAuth';
 
 interface ProfileTabProps {
   user: { role?: string } | null | undefined;
@@ -27,10 +32,48 @@ export function ProfileTab({ user, profileData, handleProfileChange }: ProfileTa
     confirm: '',
   });
   const [showPassword, setShowPassword] = useState({ current: false, new: false, confirm: false });
+  const [savingProfile, setSavingProfile] = useState(false);
+  const [savingPassword, setSavingPassword] = useState(false);
+
+  const storeUser = useAuthStore((s) => s.user);
+  const setAuth = useAuthStore((s) => s.setAuth);
+  const { logout } = useAuth();
 
   const handleSaveProfile = async () => {
-    // TODO: Connect to backend
-    toast.success('Profile updated successfully');
+    setSavingProfile(true);
+    try {
+      const updated = await userService.updateSelf({
+        phone: profileData.phone,
+        full_name: profileData.full_name,
+        email: profileData.email,
+      });
+      if (storeUser) setAuth({ ...storeUser, ...updated });
+      toast.success(t('profile_updated'));
+    } catch (error) {
+      toast.error(getErrorMessage(error));
+    } finally {
+      setSavingProfile(false);
+    }
+  };
+
+  const handleUpdatePassword = async () => {
+    setSavingPassword(true);
+    try {
+      await userService.updateSelf({
+        phone: storeUser?.phone ?? profileData.phone,
+        password: passwordData.current,
+        new_password: passwordData.new,
+        confirm_new_password: passwordData.confirm,
+      });
+      setPasswordData({ current: '', new: '', confirm: '' });
+      toast.success(t('password_updated'));
+      // Backend clears the refresh token on password change — re-login required.
+      setTimeout(() => logout(), 1500);
+    } catch (error) {
+      toast.error(getErrorMessage(error));
+    } finally {
+      setSavingPassword(false);
+    }
   };
 
   const getPasswordStrength = (password: string) => {
@@ -136,8 +179,8 @@ export function ProfileTab({ user, profileData, handleProfileChange }: ProfileTa
           </div>
         </CardContent>
         <CardFooter className="border-t border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50 px-6 py-4 flex justify-end">
-          <Button onClick={handleSaveProfile} className="bg-primary hover:bg-primary/90">
-            <Save className="size-4 mr-2" />
+          <Button onClick={handleSaveProfile} disabled={savingProfile} className="bg-primary hover:bg-primary/90">
+            {savingProfile ? <Loader2 className="size-4 mr-2 animate-spin" /> : <Save className="size-4 mr-2" />}
             {t('save_changes')}
           </Button>
         </CardFooter>
@@ -225,12 +268,13 @@ export function ProfileTab({ user, profileData, handleProfileChange }: ProfileTa
           </div>
         </CardContent>
         <CardFooter className="border-t border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50 px-6 py-4 flex justify-end">
-          <Button 
-            disabled={!passwordData.current || !passwordData.new || passwordData.new !== passwordData.confirm}
+          <Button
+            onClick={handleUpdatePassword}
+            disabled={savingPassword || !passwordData.current || passwordData.new.length < 6 || passwordData.new !== passwordData.confirm}
             className="bg-primary hover:bg-primary/90"
           >
-            <Key className="size-4 mr-2" />
-            Update Password
+            {savingPassword ? <Loader2 className="size-4 mr-2 animate-spin" /> : <Key className="size-4 mr-2" />}
+            {t('update_password')}
           </Button>
         </CardFooter>
       </Card>

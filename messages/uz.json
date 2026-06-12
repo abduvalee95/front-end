@@ -872,7 +872,10 @@
     "coming_soon": "Tez orada",
     "security_features_coming": "Qo'shimcha xavfsizlik xususiyatlari keyingi versiyada mavjud bo'ladi.",
     "users": "Foydalanuvchilar",
-    "users_desc": "Xodimlarni boshqarish"
+    "users_desc": "Xodimlarni boshqarish",
+    "update_password": "Parolni yangilash",
+    "password_updated": "Parol yangilandi. Qayta kiring.",
+    "profile_updated": "Profil yangilandi"
   },
   "header": {
     "search_placeholder": "O'quvchi, o'qituvchi, sinflarni qidiring...",

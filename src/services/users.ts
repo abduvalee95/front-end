@@ -22,6 +22,17 @@ export interface UserQueryParams {
 
 const BASE_URL = 'proxy/organizations/users';
 
+export interface UpdateSelfPayload {
+  /** Backend DTO requires phone on every update */
+  phone: string;
+  full_name?: string;
+  email?: string;
+  /** Current password — required when setting new_password */
+  password?: string;
+  new_password?: string;
+  confirm_new_password?: string;
+}
+
 export const userService = {
   /**
    * Get paginated users for the organization
@@ -39,6 +50,16 @@ export const userService = {
       items: result.items || result.data || [],
       meta: result.meta || { total: 0, page: 1, limit: 10, pages: 1 }
     };
+  },
+
+  /**
+   * Update the logged-in user's own profile / password.
+   * Backend verifies the current password and clears the refresh token
+   * after a password change (forces re-login).
+   */
+  async updateSelf(payload: UpdateSelfPayload): Promise<User> {
+    const response = await api.post<User>('proxy/user/update', payload);
+    return response.data;
   },
 
   /**

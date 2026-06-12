@@ -815,7 +815,10 @@
     "coming_soon": "Coming Soon",
     "security_features_coming": "Additional security features will be available in the next release.",
     "users": "Users",
-    "users_desc": "Staff management"
+    "users_desc": "Staff management",
+    "update_password": "Update Password",
+    "password_updated": "Password updated. Please log in again.",
+    "profile_updated": "Profile updated"
   },
   "header": {
     "search_placeholder": "Search students, teachers, classes...",
