@@ -3,8 +3,10 @@
 import { Users, ShieldCheck, Sparkles } from 'lucide-react';
 import { UsersTable } from '@/components/users/UsersTable';
 import { useUsers } from '@/hooks/useUsers';
+import { useTranslations } from '@/i18n/index';
 
 export default function AdminUsersPage() {
+  const t = useTranslations('admin');
   const totalQuery = useUsers({ page: 1, limit: 1 });
   const totalUsers = totalQuery.data?.meta.total;
 
@@ -17,13 +19,13 @@ export default function AdminUsersPage() {
         <div className="relative z-10 flex flex-col justify-between gap-6 md:flex-row md:items-center">
           <div className="space-y-2">
             <p className="flex items-center gap-2 font-mono text-[10px] font-bold uppercase tracking-[0.28em] text-cyan-300/80">
-              <ShieldCheck className="size-3.5" /> Platform Console
+              <ShieldCheck className="size-3.5" /> {t('console_tag')}
             </p>
             <h1 className="text-3xl font-black tracking-tight md:text-4xl">
-              Global User Management
+              {t('users.title')}
             </h1>
             <p className="max-w-xl font-medium text-slate-400">
-              View and manage all users across the entire platform. Monitor roles, activity, and permissions.
+              {t('users.subtitle')}
             </p>
           </div>
           <div className="flex items-center gap-3">
@@ -32,7 +34,7 @@ export default function AdminUsersPage() {
                 <Users className="size-6 text-cyan-400" />
               </div>
               <div>
-                <p className="font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-cyan-200/60">Total Platform Users</p>
+                <p className="font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-cyan-200/60">{t('users.total_platform')}</p>
                 <p className="text-2xl font-black tabular-nums text-white">{totalUsers ?? '—'}</p>
               </div>
             </div>
@@ -45,8 +47,8 @@ export default function AdminUsersPage() {
         <div className="rounded-[24px] border border-border/70 bg-card/80 p-6 shadow-sm backdrop-blur-md transition-shadow hover:shadow-xl sm:p-8">
           <div className="mb-8 flex items-center justify-between">
             <div>
-              <h3 className="text-xl font-black text-foreground">User Directory</h3>
-              <p className="text-sm font-medium text-muted-foreground">Search and filter through all registered accounts</p>
+              <h3 className="text-xl font-black text-foreground">{t('users.directory')}</h3>
+              <p className="text-sm font-medium text-muted-foreground">{t('users.directory_sub')}</p>
             </div>
             <div className="rounded-2xl bg-muted p-3">
               <Sparkles className="size-5 text-muted-foreground" />

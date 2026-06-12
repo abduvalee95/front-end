@@ -32,6 +32,7 @@ export function SidebarNav({ onNavClick, isMobile }: SidebarNavProps) {
   const tNav = useTranslations('nav');
   const tAuth = useTranslations('auth');
   const tCommon = useTranslations('common');
+  const tAdmin = useTranslations('admin');
   
   const navItems = [
     {
@@ -83,7 +84,7 @@ export function SidebarNav({ onNavClick, isMobile }: SidebarNavProps) {
           <div className="min-w-0 animate-in fade-in slide-in-from-left-2 duration-500">
             <p className="truncate text-[15px] font-black leading-none tracking-tight text-white">Bilim Nuru</p>
             <p className="mt-1.5 truncate font-mono text-[9px] font-bold uppercase tracking-[0.28em] text-cyan-300/70">
-              Platform Console
+              {tAdmin('console_tag')}
             </p>
           </div>
         )}
@@ -135,7 +136,7 @@ export function SidebarNav({ onNavClick, isMobile }: SidebarNavProps) {
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400/70" />
                 <span className="relative inline-flex size-1.5 rounded-full bg-emerald-400" />
               </span>
-              System Online
+              {tAdmin('system_online')}
             </span>
             <span className="font-mono text-[10px] font-bold text-emerald-300/60">99.9%</span>
           </div>

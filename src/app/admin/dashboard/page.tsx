@@ -7,8 +7,12 @@ import { Building2, Users, BadgeCheck, PauseCircle, ArrowUpRight, Activity } fro
 import Link from "next/link";
 import { useOrganizations } from "@/hooks/useOrganizations";
 import { useUsers } from "@/hooks/useUsers";
+import { useTranslations, useLocale } from "@/i18n/index";
 
 export default function AdminDashboardPage() {
+  const t = useTranslations('admin');
+  const tNav = useTranslations('nav');
+  const locale = useLocale();
   const orgsQuery = useOrganizations({ page: 1, limit: 100 });
   const usersQuery = useUsers({ page: 1, limit: 5 });
 
@@ -24,10 +28,10 @@ export default function AdminDashboardPage() {
   const latestUsers = usersQuery.data?.items ?? [];
 
   const stats = [
-    { name: 'Jami Tashkilotlar', value: totalOrgs, icon: Building2, accent: 'text-sky-400', bar: 'from-sky-400/70', chip: 'bg-sky-400/10 border-sky-400/20', loading: orgsQuery.isLoading },
-    { name: 'Faol Tashkilotlar', value: activeOrgs, icon: BadgeCheck, accent: 'text-emerald-400', bar: 'from-emerald-400/70', chip: 'bg-emerald-400/10 border-emerald-400/20', loading: orgsQuery.isLoading },
-    { name: 'Nofaol Tashkilotlar', value: inactiveOrgs, icon: PauseCircle, accent: 'text-amber-400', bar: 'from-amber-400/70', chip: 'bg-amber-400/10 border-amber-400/20', loading: orgsQuery.isLoading },
-    { name: 'Jami Foydalanuvchilar', value: totalUsers, icon: Users, accent: 'text-violet-400', bar: 'from-violet-400/70', chip: 'bg-violet-400/10 border-violet-400/20', loading: usersQuery.isLoading },
+    { name: t('dashboard.total_orgs'), value: totalOrgs, icon: Building2, accent: 'text-sky-400', bar: 'from-sky-400/70', chip: 'bg-sky-400/10 border-sky-400/20', loading: orgsQuery.isLoading },
+    { name: t('dashboard.active_orgs'), value: activeOrgs, icon: BadgeCheck, accent: 'text-emerald-400', bar: 'from-emerald-400/70', chip: 'bg-emerald-400/10 border-emerald-400/20', loading: orgsQuery.isLoading },
+    { name: t('dashboard.inactive_orgs'), value: inactiveOrgs, icon: PauseCircle, accent: 'text-amber-400', bar: 'from-amber-400/70', chip: 'bg-amber-400/10 border-amber-400/20', loading: orgsQuery.isLoading },
+    { name: t('dashboard.total_users'), value: totalUsers, icon: Users, accent: 'text-violet-400', bar: 'from-violet-400/70', chip: 'bg-violet-400/10 border-violet-400/20', loading: usersQuery.isLoading },
   ];
 
   return (
@@ -40,13 +44,13 @@ export default function AdminDashboardPage() {
         <div className="relative flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
           <div>
             <p className="mb-3 flex items-center gap-2 font-mono text-[10px] font-bold uppercase tracking-[0.28em] text-cyan-300/80">
-              <Activity className="size-3.5" /> Platform Console
+              <Activity className="size-3.5" /> {t('console_tag')}
             </p>
             <h1 className="text-3xl font-black leading-tight tracking-tight sm:text-4xl">
-              SuperAdmin Dashboard
+              {t('dashboard.title')}
             </h1>
             <p className="mt-2 max-w-md text-sm text-slate-400">
-              Platforma bo&apos;yicha umumiy statistika — tashkilotlar, foydalanuvchilar va tizim holati.
+              {t('dashboard.subtitle')}
             </p>
           </div>
 
@@ -56,13 +60,13 @@ export default function AdminDashboardPage() {
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400/70" />
                 <span className="relative inline-flex size-1.5 rounded-full bg-emerald-400" />
               </span>
-              Live
+              {t('live')}
             </span>
             <Link
               href="/admin/organizations"
               className="group flex items-center gap-1.5 rounded-full border border-white/15 bg-white/5 px-4 py-2 text-xs font-bold text-white backdrop-blur-sm transition-colors hover:bg-white/10"
             >
-              Tashkilotlar
+              {tNav('organizations')}
               <ArrowUpRight className="size-3.5 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
             </Link>
           </div>
@@ -102,20 +106,20 @@ export default function AdminDashboardPage() {
         <Card className="rounded-[24px] border-border/70 bg-card/80 backdrop-blur-md">
           <CardHeader className="flex flex-row items-center justify-between pb-4">
             <CardTitle className="text-base font-extrabold tracking-tight text-foreground">
-              Oxirgi tashkilotlar
+              {t('dashboard.latest_orgs')}
             </CardTitle>
             <Link
               href="/admin/organizations"
               className="flex items-center gap-1 text-xs font-bold text-primary transition-opacity hover:opacity-70"
             >
-              Barchasi <ArrowUpRight className="size-3" />
+              {t('view_all')} <ArrowUpRight className="size-3" />
             </Link>
           </CardHeader>
           <CardContent className="space-y-2.5">
             {orgsQuery.isLoading ? (
               [...Array(3)].map((_, i) => <Skeleton key={i} className="h-14 w-full rounded-xl" />)
             ) : latestOrgs.length === 0 ? (
-              <p className="py-8 text-center text-sm italic text-muted-foreground/50">Ma&apos;lumotlar yo&apos;q</p>
+              <p className="py-8 text-center text-sm italic text-muted-foreground/50">{t('no_data')}</p>
             ) : (
               latestOrgs.map((org, i) => (
                 <div
@@ -130,7 +134,7 @@ export default function AdminDashboardPage() {
                     <div className="min-w-0">
                       <p className="truncate text-sm font-bold text-foreground">{org.name}</p>
                       <p className="font-mono text-[11px] text-muted-foreground">
-                        {new Date(org.created_at).toLocaleDateString('uz-UZ')} · {org.usersCount} foydalanuvchi
+                        {new Date(org.created_at).toLocaleDateString(locale)} · {t('users_count', { count: org.usersCount })}
                       </p>
                     </div>
                   </div>
@@ -141,7 +145,7 @@ export default function AdminDashboardPage() {
                         : 'shrink-0 rounded-md border-amber-500/25 bg-amber-500/15 text-amber-600 dark:text-amber-400'
                     }
                   >
-                    {org.status === 'ACTIVE' ? 'Faol' : 'Nofaol'}
+                    {org.status === 'ACTIVE' ? t('active') : t('inactive')}
                   </Badge>
                 </div>
               ))
@@ -152,20 +156,20 @@ export default function AdminDashboardPage() {
         <Card className="rounded-[24px] border-border/70 bg-card/80 backdrop-blur-md">
           <CardHeader className="flex flex-row items-center justify-between pb-4">
             <CardTitle className="text-base font-extrabold tracking-tight text-foreground">
-              Oxirgi foydalanuvchilar
+              {t('dashboard.latest_users')}
             </CardTitle>
             <Link
               href="/admin/users"
               className="flex items-center gap-1 text-xs font-bold text-primary transition-opacity hover:opacity-70"
             >
-              Barchasi <ArrowUpRight className="size-3" />
+              {t('view_all')} <ArrowUpRight className="size-3" />
             </Link>
           </CardHeader>
           <CardContent className="space-y-2.5">
             {usersQuery.isLoading ? (
               [...Array(3)].map((_, i) => <Skeleton key={i} className="h-14 w-full rounded-xl" />)
             ) : latestUsers.length === 0 ? (
-              <p className="py-8 text-center text-sm italic text-muted-foreground/50">Ma&apos;lumotlar yo&apos;q</p>
+              <p className="py-8 text-center text-sm italic text-muted-foreground/50">{t('no_data')}</p>
             ) : (
               latestUsers.map((u, i) => (
                 <div

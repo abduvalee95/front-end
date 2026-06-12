@@ -1,6 +1,7 @@
 'use client';
 
 import { Server, AlertTriangle, Zap } from 'lucide-react';
+import { useTranslations } from '@/i18n/index';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
@@ -36,43 +37,44 @@ export function PlatformSection({
   savingSection, handleSave,
   systemMetrics
 }: PlatformSectionProps) {
+  const t = useTranslations('admin');
   return (
     <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
-      <SectionHeader icon={<Server className="size-4" />} title="Global Platform" desc="Master platform settings and branding" />
+      <SectionHeader icon={<Server className="size-4" />} title={t('settings.nav_platform')} desc={t('settings.platform_header_desc')} />
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         <Card className="lg:col-span-2 rounded-2xl border-border shadow-sm overflow-hidden">
           <CardHeader className="pb-4 border-b border-border/60 bg-muted/40">
-            <CardTitle className="text-base font-black">Core Configuration</CardTitle>
-            <CardDescription>Branding, limits, and access control.</CardDescription>
+            <CardTitle className="text-base font-black">{t('settings.core_config')}</CardTitle>
+            <CardDescription>{t('settings.core_config_desc')}</CardDescription>
           </CardHeader>
           <CardContent className="pt-6 space-y-6">
             <div className="grid grid-cols-2 gap-4">
-              <FormField label="Platform Name">
+              <FormField label={t('settings.platform_name')}>
                 <Input value={platformName} onChange={(e) => setPlatformName(e.target.value)} className="rounded-xl bg-muted/50 border-border h-9" />
               </FormField>
-              <FormField label="Support Email">
+              <FormField label={t('settings.support_email')}>
                 <Input value={supportEmail} onChange={(e) => setSupportEmail(e.target.value)} className="rounded-xl bg-muted/50 border-border h-9" />
               </FormField>
-              <FormField label="Trial Period (days)">
+              <FormField label={t('settings.trial_period')}>
                 <Input value={trialPeriod} onChange={(e) => setTrialPeriod(e.target.value)} type="number" min="1" className="rounded-xl bg-muted/50 border-border h-9" />
               </FormField>
-              <FormField label="Max Organizations">
+              <FormField label={t('settings.max_orgs')}>
                 <Input value={maxOrgs} onChange={(e) => setMaxOrgs(e.target.value)} type="number" min="1" className="rounded-xl bg-muted/50 border-border h-9" />
               </FormField>
             </div>
             <Separator />
             <div className="space-y-2">
               <ToggleRow
-                title="Maintenance Mode"
-                desc="Only Super Admins can access when enabled."
+                title={t('settings.maintenance_mode')}
+                desc={t('settings.maintenance_mode_desc')}
                 checked={maintenanceMode}
                 onCheckedChange={setMaintenanceMode}
                 danger
               />
               <ToggleRow
-                title="Self-Registration"
-                desc="Allow orgs to register without an invitation."
+                title={t('settings.self_registration')}
+                desc={t('settings.self_registration_desc')}
                 checked={selfRegistration}
                 onCheckedChange={setSelfRegistration}
               />
@@ -82,12 +84,12 @@ export function PlatformSection({
             {maintenanceMode ? (
               <Alert className="rounded-xl border-amber-200 bg-amber-50 py-2 px-3 flex-1">
                 <AlertTriangle className="size-3.5 text-amber-600" />
-                <AlertDescription className="text-amber-700 text-xs">Maintenance mode is active — users cannot log in.</AlertDescription>
+                <AlertDescription className="text-amber-700 text-xs">{t('settings.maintenance_warning')}</AlertDescription>
               </Alert>
             ) : (
               <div />
             )}
-            <SaveButton isSaving={savingSection === 'platform'} onClick={() => handleSave('platform')} label="Save Changes" />
+            <SaveButton isSaving={savingSection === 'platform'} onClick={() => handleSave('platform')} label={t('settings.save_changes')} />
           </CardFooter>
         </Card>
 
@@ -99,7 +101,7 @@ export function PlatformSection({
                 <div className="size-8 rounded-lg bg-white/10 flex items-center justify-center">
                   <Activity className="size-4 text-cyan-400" />
                 </div>
-                <CardTitle className="text-sm text-white">System Health</CardTitle>
+                <CardTitle className="text-sm text-white">{t('settings.system_health')}</CardTitle>
               </div>
             </CardHeader>
             <CardContent className="space-y-2.5 relative">
@@ -115,14 +117,14 @@ export function PlatformSection({
           {maintenanceMode ? (
             <Alert className="rounded-2xl border-amber-200 bg-amber-50">
               <AlertTriangle className="size-4 text-amber-600" />
-              <AlertTitle className="text-amber-800 font-bold text-sm">Maintenance Active</AlertTitle>
-              <AlertDescription className="text-amber-700 text-xs">Users cannot log in.</AlertDescription>
+              <AlertTitle className="text-amber-800 font-bold text-sm">{t('settings.maintenance_active')}</AlertTitle>
+              <AlertDescription className="text-amber-700 text-xs">{t('settings.maintenance_active_desc')}</AlertDescription>
             </Alert>
           ) : (
             <Alert className="rounded-2xl border-emerald-200 bg-emerald-50">
               <Zap className="size-4 text-emerald-600" />
-              <AlertTitle className="text-emerald-800 font-bold text-sm">Platform Live</AlertTitle>
-              <AlertDescription className="text-emerald-700 text-xs">All services running normally.</AlertDescription>
+              <AlertTitle className="text-emerald-800 font-bold text-sm">{t('settings.platform_live')}</AlertTitle>
+              <AlertDescription className="text-emerald-700 text-xs">{t('settings.platform_live_desc')}</AlertDescription>
             </Alert>
           )}
         </div>

@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useDebounceSearch } from '@/hooks/useDebounceSearch';
+import { useTranslations } from '@/i18n/index';
 import { useUsers } from '@/hooks/useUsers';
 import { UserRole } from '@/types/auth';
 import { format } from 'date-fns';
@@ -46,6 +47,7 @@ export function UsersTable() {
     delay: 300,
     onDebouncedChange: () => setPage(1),
   });
+  const t = useTranslations('admin');
   const [roleFilter, setRoleFilter] = useState<UserRole | ''>('');
   const pageSize = 10;
 
@@ -88,10 +90,10 @@ export function UsersTable() {
           <AlertCircle className="size-5 text-destructive" />
         </div>
         <div className="text-center">
-          <p className="font-medium text-sm">Failed to load users</p>
+          <p className="font-medium text-sm">{t('users.load_failed')}</p>
           <Button variant="outline" size="sm" onClick={() => refetch()} className="mt-4">
             <RefreshCw className="mr-2 size-3.5" />
-            Try Again
+            {t('retry')}
           </Button>
         </div>
       </div>
@@ -109,7 +111,7 @@ export function UsersTable() {
             <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground pointer-events-none" />
           )}
           <Input
-            placeholder="Search users..."
+            placeholder={t('users.search')}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className={cn('pl-8', search && 'pr-8')}
@@ -133,7 +135,7 @@ export function UsersTable() {
           }}
           className="h-9 rounded-lg border border-input bg-background px-3 text-sm text-foreground focus:ring-2 focus:ring-ring transition-colors outline-none"
         >
-          <option value="">All Roles</option>
+          <option value="">{t('users.all_roles')}</option>
           <option value="ADMIN">Admin</option>
           <option value="MANAGER">Manager</option>
           <option value="TEACHER">Teacher</option>
@@ -144,7 +146,7 @@ export function UsersTable() {
           variant="ghost"
           size="icon"
           onClick={() => refetch()}
-          title="Refresh"
+          title={t('refresh')}
           className="size-9 shrink-0"
         >
           <RefreshCw className={cn('size-4', isLoading && 'animate-spin')} />
@@ -156,11 +158,11 @@ export function UsersTable() {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="pl-4">User</TableHead>
-              <TableHead>Role</TableHead>
-              <TableHead>Contact</TableHead>
-              <TableHead>Joined</TableHead>
-              <TableHead className="text-right pr-4">Actions</TableHead>
+              <TableHead className="pl-4">{t('users.col_user')}</TableHead>
+              <TableHead>{t('users.col_role')}</TableHead>
+              <TableHead>{t('users.col_contact')}</TableHead>
+              <TableHead>{t('users.col_joined')}</TableHead>
+              <TableHead className="text-right pr-4">{t('users.col_actions')}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -187,13 +189,13 @@ export function UsersTable() {
                 <TableCell colSpan={5} className="py-24 text-center">
                   <div className="flex flex-col items-center gap-2">
                     <Shield className="size-8 text-muted-foreground/50" />
-                    <p className="text-sm font-medium">No users found</p>
+                    <p className="text-sm font-medium">{t('users.none_found')}</p>
                     <p className="text-xs text-muted-foreground">
-                      {search || roleFilter ? 'Try clearing filters' : 'Invite your first user'}
+                      {search || roleFilter ? t('adjust_filters') : t('invite_first')}
                     </p>
                     {(search || roleFilter) && (
                       <Button variant="link" size="sm" onClick={clearFilters}>
-                        Clear all filters
+                        {t('clear_filters')}
                       </Button>
                     )}
                   </div>
@@ -241,8 +243,8 @@ export function UsersTable() {
                         <MoreHorizontal className="size-4" />
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
-                        <DropdownMenuItem>View Details</DropdownMenuItem>
-                        <DropdownMenuItem>Edit Permissions</DropdownMenuItem>
+                        <DropdownMenuItem>{t('users.view_details')}</DropdownMenuItem>
+                        <DropdownMenuItem>{t('users.edit_permissions')}</DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </TableCell>
@@ -281,7 +283,7 @@ export function UsersTable() {
       {meta && meta.pages > 1 && (
         <div className="flex items-center justify-between pt-4 border-t border-border/50">
           <p className="text-xs text-muted-foreground">
-            Page {page} of {meta.pages}
+            {t('page_of', { page, pages: meta.pages })}
           </p>
           <div className="flex items-center gap-2">
             <Button

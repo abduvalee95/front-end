@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { useTranslations } from '@/i18n/index';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
@@ -76,6 +77,7 @@ export interface SaveButtonProps {
 }
 
 export function SaveButton({ isSaving, onClick, label }: SaveButtonProps) {
+  const t = useTranslations('admin');
   return (
     <Button
       type="button"
@@ -84,7 +86,7 @@ export function SaveButton({ isSaving, onClick, label }: SaveButtonProps) {
       className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl px-6 shadow-md gap-2 text-sm shrink-0"
     >
       {isSaving ? <Loader2 className="size-3.5 animate-spin" /> : <Save className="size-3.5" />}
-      {isSaving ? 'Saving...' : label}
+      {isSaving ? t('settings.saving') : label}
     </Button>
   );
 }
@@ -95,9 +97,10 @@ export interface SecurityScoreCardProps {
 }
 
 export function SecurityScoreCard({ mandatory2FA, ipWhitelisting }: SecurityScoreCardProps) {
+  const t = useTranslations('admin');
   const checks = [
-    { label: 'Mandatory 2FA', ok: mandatory2FA },
-    { label: 'IP Whitelisting', ok: ipWhitelisting },
+    { label: t('settings.mandatory_2fa'), ok: mandatory2FA },
+    { label: t('settings.ip_whitelisting'), ok: ipWhitelisting },
     { label: 'JWT Auth', ok: true },
     { label: 'HTTPS Only', ok: true },
   ];
@@ -109,7 +112,7 @@ export function SecurityScoreCard({ mandatory2FA, ipWhitelisting }: SecurityScor
   return (
     <Card className="rounded-2xl border-border shadow-sm h-fit">
       <CardHeader className="pb-3">
-        <CardTitle className="text-sm font-black">Security Score</CardTitle>
+        <CardTitle className="text-sm font-black">{t('settings.security_score')}</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className={`text-5xl font-black text-center tabular-nums ${color}`}>{pct}%</div>

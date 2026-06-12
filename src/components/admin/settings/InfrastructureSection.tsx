@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useTranslations } from '@/i18n/index';
 import { Database, Upload, CheckCircle2, Download, Cpu, AlertTriangle, RefreshCw, Trash2 } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -28,31 +29,32 @@ interface InfrastructureSectionProps {
 }
 
 export function InfrastructureSection({ recentBackups, resourceMetrics }: InfrastructureSectionProps) {
+  const t = useTranslations('admin');
   const [resetCacheOpen, setResetCacheOpen] = useState(false);
   const [purgeOpen, setPurgeOpen] = useState(false);
   return (
     <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
-      <SectionHeader icon={<Database className="size-4" />} title="Infrastructure" desc="Backups, resources, and maintenance operations" />
+      <SectionHeader icon={<Database className="size-4" />} title={t('settings.nav_infra')} desc={t('settings.infra_header_desc')} />
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <Card className="rounded-2xl border-border shadow-sm overflow-hidden">
           <CardHeader className="pb-4 border-b border-border/60 bg-muted/40">
             <CardTitle className="text-base font-black flex items-center gap-2">
-              <Database className="size-4 text-blue-500" /> Database Backups
+              <Database className="size-4 text-blue-500" /> {t('settings.db_backups')}
             </CardTitle>
-            <CardDescription>Automated daily backups — 30-day retention.</CardDescription>
+            <CardDescription>{t('settings.db_backups_desc')}</CardDescription>
           </CardHeader>
           <CardContent className="pt-5 space-y-4">
             <div className="flex items-center justify-between p-3.5 rounded-xl bg-blue-500/100/10 border border-blue-500/20">
               <div>
-                <p className="text-sm font-black text-foreground">Next Backup</p>
-                <p className="text-xs text-blue-600 font-medium">Tonight at 3:00 AM</p>
+                <p className="text-sm font-black text-foreground">{t('settings.next_backup')}</p>
+                <p className="text-xs text-blue-600 font-medium">{t('settings.tonight_at')}</p>
               </div>
               <Button
-                onClick={() => toast.success('Manual backup triggered')}
+                onClick={() => toast.success(t('settings.backup_triggered'))}
                 className="bg-card hover:bg-muted/60 text-foreground border border-border rounded-xl shadow-sm gap-1.5 text-xs h-8"
               >
-                <Upload className="size-3.5" /> Backup Now
+                <Upload className="size-3.5" /> {t('settings.backup_now')}
               </Button>
             </div>
             <div className="space-y-1.5">
@@ -70,7 +72,7 @@ export function InfrastructureSection({ recentBackups, resourceMetrics }: Infras
                     <Button
                       variant="ghost"
                       size="icon"
-                      onClick={() => toast.success(`Downloading ${b.name}`)}
+                      onClick={() => toast.success(t('settings.downloading', { name: b.name }))}
                       className="size-7 rounded-lg"
                     >
                       <Download className="size-3 text-muted-foreground" />
@@ -86,7 +88,7 @@ export function InfrastructureSection({ recentBackups, resourceMetrics }: Infras
           <Card className="rounded-2xl border-border shadow-sm overflow-hidden">
             <CardHeader className="pb-4 border-b border-border/60 bg-muted/40">
               <CardTitle className="text-base font-black flex items-center gap-2">
-                <Cpu className="size-4 text-violet-500" /> Resource Monitor
+                <Cpu className="size-4 text-violet-500" /> {t('settings.resource_monitor')}
               </CardTitle>
             </CardHeader>
             <CardContent className="pt-5 space-y-4">
@@ -107,7 +109,7 @@ export function InfrastructureSection({ recentBackups, resourceMetrics }: Infras
           <Card className="rounded-2xl border-red-500/20 shadow-sm overflow-hidden">
             <CardHeader className="pb-3 border-b border-red-500/20 bg-red-500/100/10">
               <CardTitle className="text-sm font-black text-red-700 flex items-center gap-2">
-                <AlertTriangle className="size-4" /> Danger Zone
+                <AlertTriangle className="size-4" /> {t('settings.danger_zone')}
               </CardTitle>
             </CardHeader>
             <CardContent className="pt-4 space-y-2.5">
@@ -117,22 +119,22 @@ export function InfrastructureSection({ recentBackups, resourceMetrics }: Infras
                   onClick={() => setResetCacheOpen(true)}
                   className="w-full rounded-xl border-red-500/30 text-red-600 hover:bg-red-500/100/10 gap-2 justify-start text-sm h-9"
                 >
-                  <RefreshCw className="size-4" /> Reset All Organization Caches
+                  <RefreshCw className="size-4" /> {t('settings.reset_caches')}
                 </Button>
                 <AlertDialogContent className="rounded-2xl">
                   <AlertDialogHeader>
-                    <AlertDialogTitle>Reset All Caches?</AlertDialogTitle>
+                    <AlertDialogTitle>{t('settings.reset_caches_q')}</AlertDialogTitle>
                     <AlertDialogDescription>
-                      This will flush cached data across all organizations. Users may experience a temporary slowdown.
+                      {t('settings.reset_caches_desc')}
                     </AlertDialogDescription>
                   </AlertDialogHeader>
                   <AlertDialogFooter>
-                    <AlertDialogCancel className="rounded-xl">Cancel</AlertDialogCancel>
+                    <AlertDialogCancel className="rounded-xl">{t('settings.cancel')}</AlertDialogCancel>
                     <AlertDialogAction
-                      onClick={() => toast.success('All organization caches reset')}
+                      onClick={() => toast.success(t('settings.caches_reset_done'))}
                       className="bg-red-600 hover:bg-red-700 rounded-xl"
                     >
-                      Reset Caches
+                      {t('settings.reset_caches_confirm')}
                     </AlertDialogAction>
                   </AlertDialogFooter>
                 </AlertDialogContent>
@@ -144,22 +146,22 @@ export function InfrastructureSection({ recentBackups, resourceMetrics }: Infras
                   onClick={() => setPurgeOpen(true)}
                   className="w-full rounded-xl border-red-500/30 text-red-600 hover:bg-red-500/100/10 gap-2 justify-start text-sm h-9"
                 >
-                  <Trash2 className="size-4" /> Purge Orphaned Records
+                  <Trash2 className="size-4" /> {t('settings.purge_records')}
                 </Button>
                 <AlertDialogContent className="rounded-2xl">
                   <AlertDialogHeader>
-                    <AlertDialogTitle>Purge Orphaned Records?</AlertDialogTitle>
+                    <AlertDialogTitle>{t('settings.purge_q')}</AlertDialogTitle>
                     <AlertDialogDescription>
-                      This permanently deletes records no longer linked to any organization. This action cannot be undone.
+                      {t('settings.purge_desc')}
                     </AlertDialogDescription>
                   </AlertDialogHeader>
                   <AlertDialogFooter>
-                    <AlertDialogCancel className="rounded-xl">Cancel</AlertDialogCancel>
+                    <AlertDialogCancel className="rounded-xl">{t('settings.cancel')}</AlertDialogCancel>
                     <AlertDialogAction
-                      onClick={() => toast.success('Orphaned records purged')}
+                      onClick={() => toast.success(t('settings.records_purged'))}
                       className="bg-red-600 hover:bg-red-700 rounded-xl"
                     >
-                      Purge Records
+                      {t('settings.purge_confirm')}
                     </AlertDialogAction>
                   </AlertDialogFooter>
                 </AlertDialogContent>

@@ -1,6 +1,7 @@
 'use client';
 
 import { Lock, ShieldCheck, Globe, Clock, Key, History } from 'lucide-react';
+import { useTranslations } from '@/i18n/index';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -33,35 +34,36 @@ export function SecurityPolicySection({
   ipAllowlist, setIpAllowlist,
   savingSection, handleSave
 }: SecurityPolicySectionProps) {
+  const t = useTranslations('admin');
   return (
     <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
-      <SectionHeader icon={<Lock className="size-4" />} title="Security Policy" desc="Enforce security standards across all organizations" />
+      <SectionHeader icon={<Lock className="size-4" />} title={t('settings.nav_security')} desc={t('settings.security_header_desc')} />
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         <Card className="lg:col-span-2 rounded-2xl border-border shadow-sm overflow-hidden">
           <CardHeader className="pb-4 border-b border-border/60 bg-muted/40">
-            <CardTitle className="text-base font-black">Global Security Policy</CardTitle>
-            <CardDescription>Settings apply to all organizations on the platform.</CardDescription>
+            <CardTitle className="text-base font-black">{t('settings.global_policy')}</CardTitle>
+            <CardDescription>{t('settings.global_policy_desc')}</CardDescription>
           </CardHeader>
           <CardContent className="pt-6 space-y-3">
             <ToggleRow
-              title="Mandatory 2FA"
-              desc="Require Admin and Manager roles to enable Two-Factor Authentication."
+              title={t('settings.mandatory_2fa')}
+              desc={t('settings.mandatory_2fa_desc')}
               checked={mandatory2FA}
               onCheckedChange={setMandatory2FA}
               icon={<ShieldCheck className="size-4" />}
             />
             <Separator />
             <ToggleRow
-              title="IP Whitelisting"
-              desc="Restrict Super Admin dashboard to specific IP ranges only."
+              title={t('settings.ip_whitelisting')}
+              desc={t('settings.ip_whitelisting_desc')}
               checked={ipWhitelisting}
               onCheckedChange={setIpWhitelisting}
               icon={<Globe className="size-4" />}
             />
             {ipWhitelisting && (
               <div className="space-y-1.5 pt-1 pl-1">
-                <Label className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Allowed IP Ranges (one per line)</Label>
+                <Label className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">{t('settings.allowed_ip')}</Label>
                 <Textarea
                   value={ipAllowlist}
                   onChange={(e) => setIpAllowlist(e.target.value)}
@@ -72,19 +74,19 @@ export function SecurityPolicySection({
             )}
             <Separator />
             <div className="grid grid-cols-2 gap-4 pt-1">
-              <FormField label={<span className="flex items-center gap-1"><Clock className="size-3" /> Session Timeout (min)</span>}>
+              <FormField label={<span className="flex items-center gap-1"><Clock className="size-3" /> {t('settings.session_timeout')}</span>}>
                 <Input value={sessionTimeout} onChange={(e) => setSessionTimeout(e.target.value)} type="number" min="1" className="rounded-xl bg-muted/50 border-border h-9" />
               </FormField>
-              <FormField label={<span className="flex items-center gap-1"><Key className="size-3" /> Max Login Attempts</span>}>
+              <FormField label={<span className="flex items-center gap-1"><Key className="size-3" /> {t('settings.max_login_attempts')}</span>}>
                 <Input value={maxLoginAttempts} onChange={(e) => setMaxLoginAttempts(e.target.value)} type="number" min="1" className="rounded-xl bg-muted/50 border-border h-9" />
               </FormField>
             </div>
           </CardContent>
           <CardFooter className="border-t border-border/60 bg-muted/40 p-4 flex justify-between">
-            <Button variant="outline" onClick={() => toast.info('Security logs coming soon')} className="rounded-xl border-border gap-2 text-sm">
-              <History className="size-4" /> View Security Logs
+            <Button variant="outline" onClick={() => toast.info(t('settings.security_logs_soon'))} className="rounded-xl border-border gap-2 text-sm">
+              <History className="size-4" /> {t('settings.view_security_logs')}
             </Button>
-            <SaveButton isSaving={savingSection === 'security'} onClick={() => handleSave('security')} label="Update Policy" />
+            <SaveButton isSaving={savingSection === 'security'} onClick={() => handleSave('security')} label={t('settings.update_policy')} />
           </CardFooter>
         </Card>
 

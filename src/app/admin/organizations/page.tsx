@@ -10,9 +10,12 @@ import { OrgDetailDrawer } from '@/components/admin/organizations/OrgDetailDrawe
 import { StatusConfirmDialog } from '@/components/admin/organizations/StatusConfirmDialog';
 import { useOrganizations, useToggleOrganizationStatus } from '@/hooks/useOrganizations';
 import { QUERY_LIMITS } from '@/lib/constants';
+import { useTranslations } from '@/i18n/index';
 import type { PlatformOrganization, OrganizationStatus } from '@/types/platform';
 
 export default function OrganizationsPage() {
+  const t = useTranslations('admin');
+  const tNav = useTranslations('nav');
   const [createOpen, setCreateOpen] = useState(false);
   const [editTarget, setEditTarget] = useState<PlatformOrganization | null>(null);
   const [detailTarget, setDetailTarget] = useState<PlatformOrganization | null>(null);
@@ -54,11 +57,11 @@ export default function OrganizationsPage() {
         <div className="relative flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <p className="mb-2 flex items-center gap-2 font-mono text-[10px] font-bold uppercase tracking-[0.28em] text-cyan-300/80">
-              <Building2 className="size-3.5" /> Platform Console
+              <Building2 className="size-3.5" /> {t('console_tag')}
             </p>
-            <h1 className="text-2xl font-black tracking-tight sm:text-3xl">Organizations</h1>
+            <h1 className="text-2xl font-black tracking-tight sm:text-3xl">{tNav('organizations')}</h1>
             <p className="mt-1 text-sm text-slate-400">
-              Manage all education companies on the platform
+              {t('orgs.subtitle')}
             </p>
           </div>
           <button
@@ -66,7 +69,7 @@ export default function OrganizationsPage() {
             className="group flex h-10 shrink-0 items-center gap-2 rounded-xl border border-cyan-400/25 bg-cyan-400/10 px-4 text-sm font-bold text-cyan-100 backdrop-blur-sm transition-all hover:border-cyan-400/40 hover:bg-cyan-400/20"
           >
             <Building2 className="size-4 transition-transform group-hover:scale-110" />
-            Create Organization
+            {t('orgs.create')}
           </button>
         </div>
       </div>

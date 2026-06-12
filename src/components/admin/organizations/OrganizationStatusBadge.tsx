@@ -1,4 +1,7 @@
+'use client';
+
 import { Badge } from '@/components/ui/badge';
+import { useTranslations } from '@/i18n/index';
 import { cn } from '@/lib/utils';
 import type { OrganizationStatus } from '@/types/platform';
 
@@ -7,6 +10,7 @@ interface OrganizationStatusBadgeProps {
 }
 
 export function OrganizationStatusBadge({ status }: OrganizationStatusBadgeProps) {
+  const t = useTranslations('admin');
   const isActive = status === 'ACTIVE';
   return (
     <Badge
@@ -24,7 +28,7 @@ export function OrganizationStatusBadge({ status }: OrganizationStatusBadgeProps
           isActive ? 'bg-teal-500' : 'bg-amber-500',
         )}
       />
-      {isActive ? 'Active' : 'Inactive'}
+      {isActive ? t('active') : t('inactive')}
     </Badge>
   );
 }

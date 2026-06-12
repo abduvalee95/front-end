@@ -1,6 +1,7 @@
 'use client';
 
 import { History, Download } from 'lucide-react';
+import { useTranslations } from '@/i18n/index';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -19,22 +20,23 @@ interface AuditLogSectionProps {
 }
 
 export function AuditLogSection({ auditLogs }: AuditLogSectionProps) {
+  const t = useTranslations('admin');
   return (
     <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
-      <SectionHeader icon={<History className="size-4" />} title="Audit Log" desc="Recent Super Admin actions on the platform" />
+      <SectionHeader icon={<History className="size-4" />} title={t('settings.nav_audit')} desc={t('settings.audit_header_desc')} />
 
       <Card className="rounded-2xl border-border shadow-sm overflow-hidden">
         <CardHeader className="pb-4 border-b border-border/60 bg-muted/40 flex flex-row items-center justify-between">
           <div>
-            <CardTitle className="text-base font-black">Activity Log</CardTitle>
-            <CardDescription>All administrative actions recorded below.</CardDescription>
+            <CardTitle className="text-base font-black">{t('settings.activity_log')}</CardTitle>
+            <CardDescription>{t('settings.activity_log_desc')}</CardDescription>
           </div>
           <Button
             variant="outline"
-            onClick={() => toast.success('CSV export started')}
+            onClick={() => toast.success(t('settings.csv_started'))}
             className="rounded-xl border-border gap-2 text-sm"
           >
-            <Download className="size-4" /> Export CSV
+            <Download className="size-4" /> {t('settings.export_csv')}
           </Button>
         </CardHeader>
         <CardContent className="pt-2 divide-y divide-border/60">
@@ -54,8 +56,8 @@ export function AuditLogSection({ auditLogs }: AuditLogSectionProps) {
           ))}
         </CardContent>
         <CardFooter className="border-t border-border/60 bg-muted/40 p-4 flex justify-center">
-          <Button variant="outline" onClick={() => toast.info('Loading more logs...')} className="rounded-xl border-border text-sm">
-            Load More
+          <Button variant="outline" onClick={() => toast.info(t('settings.loading_logs'))} className="rounded-xl border-border text-sm">
+            {t('settings.load_more')}
           </Button>
         </CardFooter>
       </Card>

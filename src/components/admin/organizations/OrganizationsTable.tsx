@@ -2,9 +2,9 @@
 
 import { useState, useCallback } from 'react';
 import { useDebounceSearch } from '@/hooks/useDebounceSearch';
+import { useTranslations, useLocale } from '@/i18n/index';
 import { useOrganizations, useToggleOrganizationStatus } from '@/hooks/useOrganizations';
 import type { PlatformOrganization, OrganizationStatus } from '@/types/platform';
-import { format } from 'date-fns';
 import {
   MoreHorizontal,
   Eye,
@@ -62,6 +62,8 @@ export default function OrganizationsTable({
     delay: 300,
     onDebouncedChange: () => setPage(1),
   });
+  const t = useTranslations('admin');
+  const locale = useLocale();
   const [statusFilter, setStatusFilter] = useState<OrganizationStatus | ''>('');
   const pageSize = PAGE_SIZE_DEFAULT;
 
@@ -97,12 +99,12 @@ export default function OrganizationsTable({
           <AlertCircle className="size-5 text-destructive" />
         </div>
         <div className="text-center">
-          <p className="font-medium text-sm">Failed to load organizations</p>
-          <p className="text-muted-foreground text-xs mt-1">Check your connection and try again</p>
+          <p className="font-medium text-sm">{t('orgs.load_failed')}</p>
+          <p className="text-muted-foreground text-xs mt-1">{t('check_connection')}</p>
         </div>
         <Button variant="outline" size="sm" onClick={() => refetch()}>
           <RefreshCw className="mr-2 size-3.5" />
-          Try Again
+          {t('retry')}
         </Button>
       </div>
     );
@@ -120,7 +122,7 @@ export default function OrganizationsTable({
               <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground pointer-events-none" />
             )}
             <Input
-              placeholder="Search organizations..."
+              placeholder={t('orgs.search')}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className={`pl-8${search ? ' pr-8' : ''}`}
@@ -141,19 +143,19 @@ export default function OrganizationsTable({
             onChange={(e) => { setStatusFilter(e.target.value as OrganizationStatus | ''); setPage(1); }}
             className="h-8 rounded-lg border border-input bg-background px-3 text-sm text-foreground outline-none focus:ring-2 focus:ring-ring transition-colors"
           >
-            <option value="">All statuses</option>
-            <option value="ACTIVE">Active</option>
-            <option value="INACTIVE">Inactive</option>
+            <option value="">{t('orgs.all_statuses')}</option>
+            <option value="ACTIVE">{t('active')}</option>
+            <option value="INACTIVE">{t('inactive')}</option>
           </select>
 
-          <Button variant="ghost" size="icon" onClick={() => refetch()} title="Refresh" className="size-8 shrink-0">
+          <Button variant="ghost" size="icon" onClick={() => refetch()} title={t('refresh')} className="size-8 shrink-0">
             <RefreshCw className="size-4" />
           </Button>
 
           <div className="sm:ml-auto">
             <Button size="sm" onClick={onCreateClick} className="edu-gradient-btn rounded-lg h-8 w-full sm:w-auto">
               <Plus className="mr-1.5 size-4" />
-              Create Organization
+              {t('orgs.create')}
             </Button>
           </div>
         </div>
@@ -163,12 +165,12 @@ export default function OrganizationsTable({
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead className="pl-4">Organization</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Phone</TableHead>
-                <TableHead>Users</TableHead>
-                <TableHead>Created</TableHead>
-                <TableHead className="text-right pr-4">Actions</TableHead>
+                <TableHead className="pl-4">{t('orgs.col_org')}</TableHead>
+                <TableHead>{t('orgs.col_status')}</TableHead>
+                <TableHead>{t('orgs.col_phone')}</TableHead>
+                <TableHead>{t('orgs.col_users')}</TableHead>
+                <TableHead>{t('orgs.col_created')}</TableHead>
+                <TableHead className="text-right pr-4">{t('orgs.col_actions')}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -230,7 +232,7 @@ export default function OrganizationsTable({
                       {org.usersCount}
                     </TableCell>
                     <TableCell className="text-muted-foreground">
-                      {format(new Date(org.created_at), 'MMM d, yyyy')}
+                      {new Date(org.created_at).toLocaleDateString(locale, { year: 'numeric', month: 'short', day: 'numeric' })}
                     </TableCell>
                     <TableCell className="text-right pr-4" onClick={(e) => e.stopPropagation()}>
                       <OrgActionsMenu
@@ -298,7 +300,7 @@ export default function OrganizationsTable({
                     </div>
                   </div>
                   <p className="mt-3 text-xs text-muted-foreground">
-                    Created {format(new Date(org.created_at), 'MMM d, yyyy')} · {org.usersCount} users
+                    {t('orgs_created_line', { date: new Date(org.created_at).toLocaleDateString(locale, { year: 'numeric', month: 'short', day: 'numeric' }), count: org.usersCount })}
                   </p>
                 </CardContent>
               </Card>
@@ -310,9 +312,7 @@ export default function OrganizationsTable({
         {meta && meta.pages > 1 && (
           <div className="flex items-center justify-between text-sm">
             <p className="text-muted-foreground">
-              Showing page <span className="font-medium text-foreground">{page}</span> of{' '}
-              <span className="font-medium text-foreground">{meta.pages}</span> ·{' '}
-              <span className="font-medium text-foreground">{meta.total}</span> total
+              {t('showing_page', { page, pages: meta.pages, total: meta.total })}
             </p>
             <div className="flex items-center gap-1">
               <Button
@@ -359,6 +359,7 @@ function OrgActionsMenu({
   onEdit: () => void;
   onToggleStatus: () => void;
 }) {
+  const t = useTranslations('admin');
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
@@ -371,11 +372,11 @@ function OrgActionsMenu({
       <DropdownMenuContent align="end">
         <DropdownMenuItem onClick={onView}>
           <Eye className="mr-2 size-4" />
-          View
+          {t('view')}
         </DropdownMenuItem>
         <DropdownMenuItem onClick={onEdit}>
           <Pencil className="mr-2 size-4" />
-          Edit
+          {t('edit')}
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem
@@ -383,7 +384,7 @@ function OrgActionsMenu({
           className={org.status === 'ACTIVE' ? 'text-destructive focus:text-destructive' : ''}
         >
           <Power className="mr-2 size-4" />
-          {org.status === 'ACTIVE' ? 'Deactivate' : 'Activate'}
+          {org.status === 'ACTIVE' ? t('deactivate') : t('activate')}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
@@ -399,6 +400,7 @@ function EmptyState({
   onClear: () => void;
   onCreateClick: () => void;
 }) {
+  const t = useTranslations('admin');
   return (
     <div className="flex flex-col items-center justify-center py-16 gap-3">
       <div className="h-16 w-16 rounded-2xl edu-gradient-primary flex items-center justify-center mb-4">
@@ -406,20 +408,18 @@ function EmptyState({
       </div>
       <div className="text-center">
         <h3 className="text-lg font-semibold">
-          {hasFilters ? 'No organizations found' : 'No organizations yet'}
+          {hasFilters ? t('orgs.none_found') : t('orgs_none_yet')}
         </h3>
         <p className="text-muted-foreground text-sm mt-1 text-center max-w-sm">
-          {hasFilters
-            ? 'Try adjusting your search or filters'
-            : 'Create your first education organization to start managing students and courses.'}
+          {hasFilters ? t('adjust_filters') : t('orgs_create_first')}
         </p>
       </div>
       {hasFilters ? (
-        <Button variant="outline" size="sm" onClick={onClear}>Clear filters</Button>
+        <Button variant="outline" size="sm" onClick={onClear}>{t('clear_filters')}</Button>
       ) : (
         <Button className="edu-gradient-btn mt-4" onClick={onCreateClick}>
           <Plus className="mr-2 h-4 w-4" />
-          Create Organization
+          {t('orgs.create')}
         </Button>
       )}
     </div>

@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { Settings, Server, Lock, Database, Bell, History } from 'lucide-react';
 import { toast } from 'sonner';
+import { useTranslations } from '@/i18n/index';
 
 import { PlatformSection } from '@/components/admin/settings/PlatformSection';
 import { SecurityPolicySection } from '@/components/admin/settings/SecurityPolicySection';
@@ -10,11 +11,11 @@ import { InfrastructureSection } from '@/components/admin/settings/Infrastructur
 import { NotificationsSection } from '@/components/admin/settings/NotificationsSection';
 import { AuditLogSection } from '@/components/admin/settings/AuditLogSection';
 
-const systemMetrics = [
-  { label: 'API Status', value: 'Operational' },
-  { label: 'Database', value: 'Healthy' },
-  { label: 'Avg Latency', value: '24ms' },
-  { label: 'Uptime', value: '99.98%' },
+const SYSTEM_METRICS = [
+  { labelKey: 'settings.api_status', value: 'OK' },
+  { labelKey: 'settings.database', value: 'OK' },
+  { labelKey: 'settings.avg_latency', value: '24ms' },
+  { labelKey: 'settings.uptime', value: '99.98%' },
 ];
 
 const recentBackups = [
@@ -31,24 +32,25 @@ const auditLogs = [
   { id: 'al5', action: 'User john@school.uz promoted to ADMIN', user: 'super.admin@bilimnuru.uz', time: '3 hr ago' },
 ];
 
-const resourceMetrics = [
-  { label: 'CPU Usage', value: 28, color: 'bg-cyan-500' },
-  { label: 'Memory (RAM)', value: 61, color: 'bg-violet-500' },
-  { label: 'Disk Storage', value: 44, color: 'bg-emerald-500' },
-  { label: 'Network I/O', value: 15, color: 'bg-amber-500' },
+const RESOURCE_METRICS = [
+  { labelKey: 'settings.cpu_usage', value: 28, color: 'bg-cyan-500' },
+  { labelKey: 'settings.memory', value: 61, color: 'bg-violet-500' },
+  { labelKey: 'settings.disk', value: 44, color: 'bg-emerald-500' },
+  { labelKey: 'settings.network', value: 15, color: 'bg-amber-500' },
 ];
 
 const NAV_ITEMS = [
-  { id: 'platform' as const, label: 'Global Platform', icon: Server, desc: 'Core config & branding' },
-  { id: 'security' as const, label: 'Security Policy', icon: Lock, desc: '2FA, sessions, IP rules' },
-  { id: 'infrastructure' as const, label: 'Infrastructure', icon: Database, desc: 'Backups & resources' },
-  { id: 'notifications' as const, label: 'Notifications', icon: Bell, desc: 'Alerts & webhooks' },
-  { id: 'audit' as const, label: 'Audit Log', icon: History, desc: 'Admin activity history' },
+  { id: 'platform' as const, labelKey: 'settings.nav_platform', icon: Server, descKey: 'settings.nav_platform_desc' },
+  { id: 'security' as const, labelKey: 'settings.nav_security', icon: Lock, descKey: 'settings.nav_security_desc' },
+  { id: 'infrastructure' as const, labelKey: 'settings.nav_infra', icon: Database, descKey: 'settings.nav_infra_desc' },
+  { id: 'notifications' as const, labelKey: 'settings.nav_notifications', icon: Bell, descKey: 'settings.nav_notifications_desc' },
+  { id: 'audit' as const, labelKey: 'settings.nav_audit', icon: History, descKey: 'settings.nav_audit_desc' },
 ];
 
 type Section = (typeof NAV_ITEMS)[number]['id'];
 
 export default function AdminSettingsPage() {
+  const t = useTranslations('admin');
   const [activeSection, setActiveSection] = useState<Section>('platform');
   const [savingSection, setSavingSection] = useState<string | null>(null);
 
@@ -78,7 +80,7 @@ export default function AdminSettingsPage() {
     setSavingSection(section);
     await new Promise((r) => setTimeout(r, 900));
     setSavingSection(null);
-    toast.success('Settings saved');
+    toast.success(t('settings.settings_saved'));
   };
 
   return (
@@ -87,17 +89,17 @@ export default function AdminSettingsPage() {
       <div className="flex items-start justify-between gap-4">
         <div>
           <p className="mb-1 flex items-center gap-1.5 font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-primary/70">
-            <Settings className="size-3" /> System Administration
+            <Settings className="size-3" /> {t('system_administration')}
           </p>
-          <h1 className="text-2xl font-black tracking-tight text-foreground">Platform Settings</h1>
-          <p className="mt-0.5 text-sm text-muted-foreground">Global configuration for Bilim Nuru</p>
+          <h1 className="text-2xl font-black tracking-tight text-foreground">{t('settings.title')}</h1>
+          <p className="mt-0.5 text-sm text-muted-foreground">{t('settings.subtitle')}</p>
         </div>
         <div className="mt-1 flex shrink-0 items-center gap-2 rounded-full border border-emerald-500/25 bg-emerald-500/10 px-3.5 py-2">
           <span className="relative flex size-2">
             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
             <span className="relative inline-flex size-2 rounded-full bg-emerald-500" />
           </span>
-          <span className="text-xs font-semibold text-emerald-600 dark:text-emerald-400">All Systems Operational</span>
+          <span className="text-xs font-semibold text-emerald-600 dark:text-emerald-400">{t('all_operational')}</span>
         </div>
       </div>
 
@@ -136,10 +138,10 @@ export default function AdminSettingsPage() {
                         active ? 'text-foreground' : 'text-foreground/80'
                       }`}
                     >
-                      {item.label}
+                      {t(item.labelKey)}
                     </p>
                     <p className="mt-0.5 truncate text-[10px] leading-tight text-muted-foreground">
-                      {item.desc}
+                      {t(item.descKey)}
                     </p>
                   </div>
                 </button>
@@ -151,12 +153,12 @@ export default function AdminSettingsPage() {
           <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-[linear-gradient(165deg,#07111f_0%,#0c2733_70%)] p-4">
             <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_80%_0%,rgba(3,203,231,0.16),transparent_8rem)]" />
             <p className="relative mb-3 font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-cyan-200/60">
-              Live Status
+              {t('live_status')}
             </p>
             <div className="relative space-y-2.5">
-              {systemMetrics.map((m) => (
-                <div key={m.label} className="flex items-center justify-between">
-                  <span className="text-[11px] text-slate-400">{m.label}</span>
+              {SYSTEM_METRICS.map((m) => (
+                <div key={m.labelKey} className="flex items-center justify-between">
+                  <span className="text-[11px] text-slate-400">{t(m.labelKey)}</span>
                   <span className="font-mono text-[11px] font-bold text-cyan-400">{m.value}</span>
                 </div>
               ))}
@@ -175,7 +177,7 @@ export default function AdminSettingsPage() {
               trialPeriod={trialPeriod} setTrialPeriod={setTrialPeriod}
               maxOrgs={maxOrgs} setMaxOrgs={setMaxOrgs}
               savingSection={savingSection} handleSave={handleSave}
-              systemMetrics={systemMetrics}
+              systemMetrics={SYSTEM_METRICS.map((m) => ({ label: t(m.labelKey), value: m.value }))}
             />
           )}
           {activeSection === 'security' && (
@@ -191,7 +193,7 @@ export default function AdminSettingsPage() {
           {activeSection === 'infrastructure' && (
             <InfrastructureSection
               recentBackups={recentBackups}
-              resourceMetrics={resourceMetrics}
+              resourceMetrics={RESOURCE_METRICS.map((m) => ({ label: t(m.labelKey), value: m.value, color: m.color }))}
             />
           )}
           {activeSection === 'notifications' && (
