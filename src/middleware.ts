@@ -12,10 +12,21 @@ export default async function middleware(request: NextRequest) {
     // CSRF defense-in-depth: state-changing requests must come from our own
     // origin. Browsers always send Origin on cross-site POST/PUT/PATCH/DELETE;
     // same-origin server-side fetches (e.g. AI tools) send none and pass.
+    // Behind the nginx TLS proxy the container sees http://, so the expected
+    // origin must be rebuilt from X-Forwarded-Proto/Host (nginx overwrites
+    // both; a browser can't set X-Forwarded-* cross-site without a preflight).
     if (request.method !== 'GET' && request.method !== 'HEAD') {
       const origin = request.headers.get('origin');
-      if (origin && origin !== request.nextUrl.origin) {
-        return NextResponse.json({ message: 'Cross-origin request rejected' }, { status: 403 });
+      if (origin) {
+        const proto =
+          request.headers.get('x-forwarded-proto') ?? request.nextUrl.protocol.replace(':', '');
+        const host =
+          request.headers.get('x-forwarded-host') ??
+          request.headers.get('host') ??
+          request.nextUrl.host;
+        if (origin !== `${proto}://${host}`) {
+          return NextResponse.json({ message: 'Cross-origin request rejected' }, { status: 403 });
+        }
       }
     }
 
