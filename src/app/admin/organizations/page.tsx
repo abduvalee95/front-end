@@ -47,22 +47,25 @@ export default function OrganizationsPage() {
   return (
     <div className="space-y-6 animate-in fade-in duration-500">
 
-      {/* ── Page header with gradient ── */}
-      <div className="edu-gradient-header rounded-xl p-6 mb-6 border border-border/50">
-        <div className="flex items-center justify-between">
+      {/* ── Page header ── */}
+      <div className="relative mb-6 overflow-hidden rounded-[24px] border border-white/10 bg-[linear-gradient(160deg,#07111f_0%,#0c2733_60%,#081726_100%)] p-6 text-white shadow-xl sm:p-7">
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_85%_20%,rgba(3,203,231,0.2),transparent_18rem)]" />
+        <div className="pointer-events-none absolute inset-0 opacity-[0.05] [background-image:linear-gradient(rgba(255,255,255,0.6)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.6)_1px,transparent_1px)] [background-size:36px_36px]" />
+        <div className="relative flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h1 className="text-2xl font-bold tracking-tight text-foreground">
-              Organizations
-            </h1>
-            <p className="text-muted-foreground mt-1">
+            <p className="mb-2 flex items-center gap-2 font-mono text-[10px] font-bold uppercase tracking-[0.28em] text-cyan-300/80">
+              <Building2 className="size-3.5" /> Platform Console
+            </p>
+            <h1 className="text-2xl font-black tracking-tight sm:text-3xl">Organizations</h1>
+            <p className="mt-1 text-sm text-slate-400">
               Manage all education companies on the platform
             </p>
           </div>
-          <button 
+          <button
             onClick={() => setCreateOpen(true)}
-            className="edu-gradient-btn rounded-lg px-4 h-9 text-sm font-medium"
+            className="group flex h-10 shrink-0 items-center gap-2 rounded-xl border border-cyan-400/25 bg-cyan-400/10 px-4 text-sm font-bold text-cyan-100 backdrop-blur-sm transition-all hover:border-cyan-400/40 hover:bg-cyan-400/20"
           >
-            <Building2 className="mr-2 h-4 w-4" />
+            <Building2 className="size-4 transition-transform group-hover:scale-110" />
             Create Organization
           </button>
         </div>

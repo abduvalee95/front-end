@@ -3,7 +3,8 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
-import { Building2, Users, BadgeCheck, PauseCircle } from "lucide-react";
+import { Building2, Users, BadgeCheck, PauseCircle, ArrowUpRight, Activity } from "lucide-react";
+import Link from "next/link";
 import { useOrganizations } from "@/hooks/useOrganizations";
 import { useUsers } from "@/hooks/useUsers";
 
@@ -23,60 +24,123 @@ export default function AdminDashboardPage() {
   const latestUsers = usersQuery.data?.items ?? [];
 
   const stats = [
-    { name: 'Jami Tashkilotlar', value: totalOrgs, icon: Building2, color: 'text-blue-500', loading: orgsQuery.isLoading },
-    { name: 'Faol Tashkilotlar', value: activeOrgs, icon: BadgeCheck, color: 'text-green-500', loading: orgsQuery.isLoading },
-    { name: 'Nofaol Tashkilotlar', value: inactiveOrgs, icon: PauseCircle, color: 'text-orange-500', loading: orgsQuery.isLoading },
-    { name: 'Jami Foydalanuvchilar', value: totalUsers, icon: Users, color: 'text-purple-500', loading: usersQuery.isLoading },
+    { name: 'Jami Tashkilotlar', value: totalOrgs, icon: Building2, accent: 'text-sky-400', bar: 'from-sky-400/70', chip: 'bg-sky-400/10 border-sky-400/20', loading: orgsQuery.isLoading },
+    { name: 'Faol Tashkilotlar', value: activeOrgs, icon: BadgeCheck, accent: 'text-emerald-400', bar: 'from-emerald-400/70', chip: 'bg-emerald-400/10 border-emerald-400/20', loading: orgsQuery.isLoading },
+    { name: 'Nofaol Tashkilotlar', value: inactiveOrgs, icon: PauseCircle, accent: 'text-amber-400', bar: 'from-amber-400/70', chip: 'bg-amber-400/10 border-amber-400/20', loading: orgsQuery.isLoading },
+    { name: 'Jami Foydalanuvchilar', value: totalUsers, icon: Users, accent: 'text-violet-400', bar: 'from-violet-400/70', chip: 'bg-violet-400/10 border-violet-400/20', loading: usersQuery.isLoading },
   ];
 
   return (
-    <div className="space-y-8 animate-in fade-in duration-700">
-      <div className="flex flex-col gap-1">
-        <h1 className="text-3xl font-extrabold text-foreground tracking-tight">SuperAdmin Dashboard</h1>
-        <p className="text-muted-foreground text-sm font-medium">Platforma bo&apos;yicha umumiy statistika</p>
-      </div>
+    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-3 duration-700">
+      {/* ── Hero ── */}
+      <div className="relative overflow-hidden rounded-[28px] border border-white/10 bg-[linear-gradient(160deg,#07111f_0%,#0c2733_55%,#081726_100%)] p-7 text-white shadow-2xl sm:p-9">
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_85%_15%,rgba(3,203,231,0.22),transparent_22rem),radial-gradient(circle_at_10%_90%,rgba(0,236,129,0.12),transparent_18rem)]" />
+        <div className="pointer-events-none absolute inset-0 opacity-[0.05] [background-image:linear-gradient(rgba(255,255,255,0.6)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.6)_1px,transparent_1px)] [background-size:36px_36px]" />
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {stats.map((stat) => (
-          <Card key={stat.name} className="bg-card border-border backdrop-blur-md overflow-hidden relative group">
-            <div className="absolute top-0 left-0 w-1 h-full bg-primary opacity-0 group-hover:opacity-100 transition-opacity" />
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-xs font-bold text-muted-foreground uppercase tracking-widest">
-                {stat.name}
-              </CardTitle>
-              <stat.icon className={`h-5 w-5 ${stat.color}`} />
-            </CardHeader>
-            <CardContent>
+        <div className="relative flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+          <div>
+            <p className="mb-3 flex items-center gap-2 font-mono text-[10px] font-bold uppercase tracking-[0.28em] text-cyan-300/80">
+              <Activity className="size-3.5" /> Platform Console
+            </p>
+            <h1 className="text-3xl font-black leading-tight tracking-tight sm:text-4xl">
+              SuperAdmin Dashboard
+            </h1>
+            <p className="mt-2 max-w-md text-sm text-slate-400">
+              Platforma bo&apos;yicha umumiy statistika — tashkilotlar, foydalanuvchilar va tizim holati.
+            </p>
+          </div>
+
+          <div className="flex shrink-0 items-center gap-2.5">
+            <span className="flex items-center gap-2 rounded-full border border-emerald-400/20 bg-emerald-400/10 px-3.5 py-2 font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-emerald-300/90">
+              <span className="relative flex size-1.5">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400/70" />
+                <span className="relative inline-flex size-1.5 rounded-full bg-emerald-400" />
+              </span>
+              Live
+            </span>
+            <Link
+              href="/admin/organizations"
+              className="group flex items-center gap-1.5 rounded-full border border-white/15 bg-white/5 px-4 py-2 text-xs font-bold text-white backdrop-blur-sm transition-colors hover:bg-white/10"
+            >
+              Tashkilotlar
+              <ArrowUpRight className="size-3.5 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+            </Link>
+          </div>
+        </div>
+
+        {/* Stats strip inside hero */}
+        <div className="relative mt-8 grid grid-cols-2 gap-3 lg:grid-cols-4">
+          {stats.map((stat, i) => (
+            <div
+              key={stat.name}
+              className="group relative overflow-hidden rounded-2xl border border-white/10 bg-white/[0.04] p-4 backdrop-blur-sm transition-all duration-300 hover:border-white/20 hover:bg-white/[0.07] animate-in fade-in slide-in-from-bottom-2 fill-mode-both"
+              style={{ animationDelay: `${i * 90}ms`, animationDuration: '600ms' }}
+            >
+              <div className={`pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r ${stat.bar} to-transparent`} />
+              <div className="flex items-start justify-between">
+                <p className="font-mono text-[9px] font-bold uppercase tracking-[0.18em] text-slate-400">
+                  {stat.name}
+                </p>
+                <div className={`flex size-7 items-center justify-center rounded-lg border ${stat.chip}`}>
+                  <stat.icon className={`size-3.5 ${stat.accent}`} />
+                </div>
+              </div>
               {stat.loading ? (
-                <Skeleton className="h-8 w-16" />
+                <Skeleton className="mt-2 h-9 w-16 bg-white/10" />
               ) : (
-                <div className="text-2xl font-bold text-foreground">{stat.value.toLocaleString()}</div>
+                <p className="mt-1 text-3xl font-black tabular-nums tracking-tight text-white">
+                  {stat.value.toLocaleString()}
+                </p>
               )}
-            </CardContent>
-          </Card>
-        ))}
+            </div>
+          ))}
+        </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card className="bg-card border-border backdrop-blur-md">
-          <CardHeader>
-            <CardTitle className="text-foreground text-lg">Oxirgi tashkilotlar</CardTitle>
+      {/* ── Lists ── */}
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+        <Card className="rounded-[24px] border-border/70 bg-card/80 backdrop-blur-md">
+          <CardHeader className="flex flex-row items-center justify-between pb-4">
+            <CardTitle className="text-base font-extrabold tracking-tight text-foreground">
+              Oxirgi tashkilotlar
+            </CardTitle>
+            <Link
+              href="/admin/organizations"
+              className="flex items-center gap-1 text-xs font-bold text-primary transition-opacity hover:opacity-70"
+            >
+              Barchasi <ArrowUpRight className="size-3" />
+            </Link>
           </CardHeader>
-          <CardContent className="space-y-3">
+          <CardContent className="space-y-2.5">
             {orgsQuery.isLoading ? (
-              [...Array(3)].map((_, i) => <Skeleton key={i} className="h-12 w-full" />)
+              [...Array(3)].map((_, i) => <Skeleton key={i} className="h-14 w-full rounded-xl" />)
             ) : latestOrgs.length === 0 ? (
-              <p className="text-muted-foreground/50 text-sm italic text-center py-8">Ma&apos;lumotlar yo&apos;q</p>
+              <p className="py-8 text-center text-sm italic text-muted-foreground/50">Ma&apos;lumotlar yo&apos;q</p>
             ) : (
-              latestOrgs.map((org) => (
-                <div key={org.id} className="flex items-center justify-between rounded-xl border border-border/50 px-4 py-3">
-                  <div className="min-w-0">
-                    <p className="text-sm font-semibold text-foreground truncate">{org.name}</p>
-                    <p className="text-xs text-muted-foreground">
-                      {new Date(org.created_at).toLocaleDateString('uz-UZ')} · {org.usersCount} foydalanuvchi
-                    </p>
+              latestOrgs.map((org, i) => (
+                <div
+                  key={org.id}
+                  className="group flex items-center justify-between gap-3 rounded-xl border border-border/50 px-4 py-3 transition-all duration-200 hover:border-primary/30 hover:bg-primary/[0.04] animate-in fade-in slide-in-from-bottom-1 fill-mode-both"
+                  style={{ animationDelay: `${i * 70}ms`, animationDuration: '500ms' }}
+                >
+                  <div className="flex min-w-0 items-center gap-3">
+                    <div className="flex size-9 shrink-0 items-center justify-center rounded-lg border border-primary/15 bg-primary/10 text-sm font-black text-primary">
+                      {org.name.charAt(0).toUpperCase()}
+                    </div>
+                    <div className="min-w-0">
+                      <p className="truncate text-sm font-bold text-foreground">{org.name}</p>
+                      <p className="font-mono text-[11px] text-muted-foreground">
+                        {new Date(org.created_at).toLocaleDateString('uz-UZ')} · {org.usersCount} foydalanuvchi
+                      </p>
+                    </div>
                   </div>
-                  <Badge variant={org.status === 'ACTIVE' ? 'default' : 'secondary'}>
+                  <Badge
+                    className={
+                      org.status === 'ACTIVE'
+                        ? 'shrink-0 rounded-md border-emerald-500/25 bg-emerald-500/15 text-emerald-600 dark:text-emerald-400'
+                        : 'shrink-0 rounded-md border-amber-500/25 bg-amber-500/15 text-amber-600 dark:text-amber-400'
+                    }
+                  >
                     {org.status === 'ACTIVE' ? 'Faol' : 'Nofaol'}
                   </Badge>
                 </div>
@@ -85,23 +149,42 @@ export default function AdminDashboardPage() {
           </CardContent>
         </Card>
 
-        <Card className="bg-card border-border backdrop-blur-md">
-          <CardHeader>
-            <CardTitle className="text-foreground text-lg">Oxirgi foydalanuvchilar</CardTitle>
+        <Card className="rounded-[24px] border-border/70 bg-card/80 backdrop-blur-md">
+          <CardHeader className="flex flex-row items-center justify-between pb-4">
+            <CardTitle className="text-base font-extrabold tracking-tight text-foreground">
+              Oxirgi foydalanuvchilar
+            </CardTitle>
+            <Link
+              href="/admin/users"
+              className="flex items-center gap-1 text-xs font-bold text-primary transition-opacity hover:opacity-70"
+            >
+              Barchasi <ArrowUpRight className="size-3" />
+            </Link>
           </CardHeader>
-          <CardContent className="space-y-3">
+          <CardContent className="space-y-2.5">
             {usersQuery.isLoading ? (
-              [...Array(3)].map((_, i) => <Skeleton key={i} className="h-12 w-full" />)
+              [...Array(3)].map((_, i) => <Skeleton key={i} className="h-14 w-full rounded-xl" />)
             ) : latestUsers.length === 0 ? (
-              <p className="text-muted-foreground/50 text-sm italic text-center py-8">Ma&apos;lumotlar yo&apos;q</p>
+              <p className="py-8 text-center text-sm italic text-muted-foreground/50">Ma&apos;lumotlar yo&apos;q</p>
             ) : (
-              latestUsers.map((u) => (
-                <div key={u.id} className="flex items-center justify-between rounded-xl border border-border/50 px-4 py-3">
-                  <div className="min-w-0">
-                    <p className="text-sm font-semibold text-foreground truncate">{u.full_name}</p>
-                    <p className="text-xs text-muted-foreground truncate">{u.email}</p>
+              latestUsers.map((u, i) => (
+                <div
+                  key={u.id}
+                  className="group flex items-center justify-between gap-3 rounded-xl border border-border/50 px-4 py-3 transition-all duration-200 hover:border-primary/30 hover:bg-primary/[0.04] animate-in fade-in slide-in-from-bottom-1 fill-mode-both"
+                  style={{ animationDelay: `${i * 70}ms`, animationDuration: '500ms' }}
+                >
+                  <div className="flex min-w-0 items-center gap-3">
+                    <div className="flex size-9 shrink-0 items-center justify-center rounded-lg border border-violet-500/15 bg-violet-500/10 text-sm font-black text-violet-500 dark:text-violet-400">
+                      {u.full_name.charAt(0).toUpperCase()}
+                    </div>
+                    <div className="min-w-0">
+                      <p className="truncate text-sm font-bold text-foreground">{u.full_name}</p>
+                      <p className="truncate font-mono text-[11px] text-muted-foreground">{u.email}</p>
+                    </div>
                   </div>
-                  <Badge variant="secondary">{u.role}</Badge>
+                  <Badge variant="secondary" className="shrink-0 rounded-md font-mono text-[10px] uppercase tracking-wider">
+                    {u.role}
+                  </Badge>
                 </div>
               ))
             )}

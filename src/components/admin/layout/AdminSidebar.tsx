@@ -10,7 +10,6 @@ import {
   Users,
   Settings,
   LogOut,
-  ShieldCheck,
   ChevronLeft,
   ChevronRight,
 } from 'lucide-react';
@@ -60,24 +59,34 @@ export function SidebarNav({ onNavClick, isMobile }: SidebarNavProps) {
       collapsed ? "w-[80px]" : "w-[280px]"
     )}>
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_10%,rgba(3,203,231,0.28),transparent_18rem),radial-gradient(circle_at_90%_68%,rgba(0,236,129,0.16),transparent_16rem)]" />
+      {/* faint console grid texture */}
+      <div className="pointer-events-none absolute inset-0 opacity-[0.04] [background-image:linear-gradient(rgba(255,255,255,0.6)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.6)_1px,transparent_1px)] [background-size:32px_32px]" />
 
-      <div className="relative flex h-28 items-center justify-center px-6">
+      <div className={cn('relative flex h-28 items-center px-5', collapsed ? 'justify-center' : 'gap-3')}>
         <div className={cn(
-          "flex items-center justify-center rounded-2xl transition-all duration-500 group relative overflow-hidden",
-          "bg-gradient-to-br from-cyan-500/10 to-emerald-500/5",
-          "border border-white/10 shadow-2xl backdrop-blur-md",
-          collapsed ? "size-12" : "size-20"
+          'group relative flex items-center justify-center overflow-hidden rounded-2xl transition-all duration-500',
+          'bg-gradient-to-br from-cyan-500/15 to-emerald-500/5',
+          'border border-white/10 shadow-2xl backdrop-blur-md',
+          'size-12 shrink-0'
         )}>
-          <div className="absolute inset-0 bg-gradient-to-tr from-cyan-400/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
-          <Image 
-            src="/logo.svg" 
-            alt="Logo" 
-            width={collapsed ? 32 : 156} 
-            height={collapsed ? 32 : 56} 
-            className="relative z-10 object-contain brightness-0 invert opacity-90 transition-transform duration-500 group-hover:scale-110" 
-            priority 
+          <div className="absolute inset-0 bg-gradient-to-tr from-cyan-400/20 to-transparent opacity-0 transition-opacity duration-700 group-hover:opacity-100" />
+          <Image
+            src="/logo.svg"
+            alt="Logo"
+            width={28}
+            height={28}
+            className="relative z-10 object-contain opacity-90 brightness-0 invert transition-transform duration-500 group-hover:scale-110"
+            priority
           />
         </div>
+        {!collapsed && (
+          <div className="min-w-0 animate-in fade-in slide-in-from-left-2 duration-500">
+            <p className="truncate text-[15px] font-black leading-none tracking-tight text-white">Bilim Nuru</p>
+            <p className="mt-1.5 truncate font-mono text-[9px] font-bold uppercase tracking-[0.28em] text-cyan-300/70">
+              Platform Console
+            </p>
+          </div>
+        )}
       </div>
 
       <div className="scrollbar-hide relative flex-1 space-y-8 overflow-y-auto px-4 py-4">
@@ -119,7 +128,19 @@ export function SidebarNav({ onNavClick, isMobile }: SidebarNavProps) {
       </div>
 
       <div className="relative border-t border-white/10 bg-black/22 p-4 backdrop-blur-md">
-        <div className="mb-2 flex items-center gap-3 px-3 py-4">
+        {!collapsed && (
+          <div className="mb-3 flex items-center justify-between rounded-xl border border-emerald-400/15 bg-emerald-400/5 px-3 py-2">
+            <span className="flex items-center gap-2 font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-emerald-300/80">
+              <span className="relative flex size-1.5">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400/70" />
+                <span className="relative inline-flex size-1.5 rounded-full bg-emerald-400" />
+              </span>
+              System Online
+            </span>
+            <span className="font-mono text-[10px] font-bold text-emerald-300/60">99.9%</span>
+          </div>
+        )}
+        <div className="mb-2 flex items-center gap-3 px-3 py-3">
           <Avatar className="size-10 shrink-0 rounded-xl border border-white/20 bg-gradient-to-tr from-cyan-500 to-emerald-400 font-bold text-white shadow-inner" size="lg">
             {user?.avatar_url && <AvatarImage src={user.avatar_url} alt="Profile" />}
             <AvatarFallback className="rounded-xl bg-transparent font-bold text-white">

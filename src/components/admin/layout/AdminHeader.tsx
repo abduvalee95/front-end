@@ -2,16 +2,8 @@
 
 import { usePathname } from 'next/navigation';
 import { useTranslations } from '@/i18n/index';
-import { Menu, Bell, Settings, LogOut, User } from 'lucide-react';
+import { Menu, Bell, Settings, LogOut, User, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from '@/components/ui/breadcrumb';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -20,12 +12,8 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { Separator } from '@/components/ui/separator';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { useAuth } from '@/hooks/useAuth';
-import { cn } from '@/lib/utils';
-
-// Route labels are translated dynamically in component
 
 interface AdminHeaderProps {
   onMobileMenuToggle: () => void;
@@ -37,115 +25,121 @@ export function AdminHeader({ onMobileMenuToggle }: AdminHeaderProps) {
   const tNav = useTranslations('nav');
   const tAuth = useTranslations('auth');
   const tCommon = useTranslations('common');
-  
+
   const routeLabels: Record<string, string> = {
     dashboard: tNav('dashboard'),
-    organizations: 'Organizations',
+    organizations: tNav('organizations'),
     users: tNav('users'),
     settings: tNav('settings'),
   };
 
-  const segments = pathname
-    .replace('/admin/', '')
-    .split('/')
-    .filter(Boolean);
+  const segments = pathname.replace('/admin/', '').split('/').filter(Boolean);
+  const current = segments[segments.length - 1];
+  const currentLabel = current
+    ? routeLabels[current] ?? current.charAt(0).toUpperCase() + current.slice(1)
+    : tNav('dashboard');
 
-  const initials = user?.full_name
-    ?.split(' ')
-    .map((n) => n[0])
-    .join('')
-    .toUpperCase()
-    .slice(0, 2) ?? 'SA';
+  const initials =
+    user?.full_name
+      ?.split(' ')
+      .map((n) => n[0])
+      .join('')
+      .toUpperCase()
+      .slice(0, 2) ?? 'SA';
 
   return (
     <header className="sticky top-0 z-10 flex h-20 shrink-0 items-center justify-between border-b border-border/70 bg-background/72 px-4 backdrop-blur-xl sm:px-6 lg:px-8">
-      <div className="flex flex-1 items-center gap-4 lg:gap-8">
+      {/* hairline cyan accent under the bar */}
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-primary/40 to-transparent" />
+
+      <div className="flex flex-1 items-center gap-3 lg:gap-5">
         {/* Mobile hamburger */}
         <Button
           variant="ghost"
           size="icon"
-          className={cn('size-8 md:hidden')}
+          className="size-9 md:hidden"
           onClick={onMobileMenuToggle}
           aria-label={tCommon('open_menu')}
         >
           <Menu className="size-4" />
         </Button>
 
-        {/* Mobile brand name */}
-        <span className="text-sm font-semibold md:hidden">{tNav('admin')}</span>
-
-        {/* Desktop breadcrumb */}
-        <Breadcrumb className="hidden md:flex">
-          <BreadcrumbList>
-            <BreadcrumbItem>
-              <BreadcrumbLink href="/admin/dashboard" className="text-muted-foreground font-medium">
-                {tNav('admin')}
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-            {segments.map((seg, i) => {
-              const isLast = i === segments.length - 1;
-              const label = routeLabels[seg] ?? seg.charAt(0).toUpperCase() + seg.slice(1);
-              return (
-                <span key={seg} className="flex items-center gap-1.5">
-                  <BreadcrumbSeparator />
-                  <BreadcrumbItem>
-                    {isLast ? (
-                      <BreadcrumbPage className="font-bold text-foreground">{label}</BreadcrumbPage>
-                    ) : (
-                      <BreadcrumbLink href={`/admin/${seg}`} className="text-muted-foreground font-medium">
-                        {label}
-                      </BreadcrumbLink>
-                    )}
-                  </BreadcrumbItem>
-                </span>
-              );
-            })}
-          </BreadcrumbList>
-        </Breadcrumb>
+        {/* Console breadcrumb */}
+        <div className="flex min-w-0 items-center gap-2.5">
+          <span className="hidden items-center gap-1.5 font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-muted-foreground/70 md:flex">
+            {tNav('admin')}
+            <ChevronRight className="size-3 text-muted-foreground/40" />
+          </span>
+          <div className="flex min-w-0 items-center gap-2.5">
+            <span className="relative flex size-2 shrink-0">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary/60" />
+              <span className="relative inline-flex size-2 rounded-full bg-primary" />
+            </span>
+            <h2 className="truncate text-base font-extrabold tracking-tight text-foreground sm:text-lg">
+              {currentLabel}
+            </h2>
+          </div>
+        </div>
       </div>
 
       {/* Actions */}
-      <div className="flex items-center gap-3">
-        <Button variant="ghost" size="icon" className="relative rounded-xl text-muted-foreground hover:text-primary">
+      <div className="flex items-center gap-2 sm:gap-3">
+        <Button
+          variant="ghost"
+          size="icon"
+          className="relative rounded-xl text-muted-foreground hover:text-primary"
+          aria-label="Notifications"
+        >
           <Bell className="size-5" />
-          <span className="absolute right-2 top-2 size-2 rounded-full border-2 border-background bg-red-500" />
+          <span className="absolute right-2 top-2 size-2 rounded-full border-2 border-background bg-rose-500" />
         </Button>
         <ThemeToggle className="rounded-xl text-muted-foreground hover:text-primary" />
         <div className="mx-1 hidden h-8 w-px bg-border sm:block" />
-        <div className="flex items-center gap-3 pl-2">
-          <div className="text-right hidden sm:block">
+        <div className="flex items-center gap-3 pl-1">
+          <div className="hidden text-right sm:block">
             <p className="text-xs font-bold leading-none text-foreground">{user?.full_name ?? 'Super Admin'}</p>
-            <p className="mt-1 text-[10px] uppercase tracking-[0.16em] text-muted-foreground">{user?.role ?? 'Platform Admin'}</p>
+            <p className="mt-1 font-mono text-[10px] uppercase tracking-[0.16em] text-primary/80">
+              {user?.role ?? 'PLATFORM'}
+            </p>
           </div>
           <DropdownMenu>
             <DropdownMenuTrigger
               render={
-                <button className="flex items-center rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20" aria-label={tCommon('user_menu')} />
+                <button
+                  className="flex items-center rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/30"
+                  aria-label={tCommon('user_menu')}
+                />
               }
             >
-              <Avatar className="size-10 rounded-xl border border-primary/15 bg-primary/10 text-primary shadow-inner" size="lg">
+              <Avatar
+                className="size-10 rounded-xl border border-primary/20 bg-primary/10 text-primary shadow-inner ring-1 ring-primary/10"
+                size="lg"
+              >
                 <AvatarFallback className="rounded-xl bg-primary/10 font-bold text-primary">
                   {initials}
                 </AvatarFallback>
               </Avatar>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-48 rounded-xl border-border/50 bg-card/95 backdrop-blur-xl shadow-xl">
-              <div className="px-3 py-2">
-                <p className="text-sm font-bold truncate">{user?.full_name ?? 'Super Admin'}</p>
-                <p className="text-xs font-medium text-muted-foreground truncate mt-0.5">{user?.email ?? ''}</p>
+            <DropdownMenuContent
+              align="end"
+              className="w-52 rounded-xl border-border/60 bg-card/95 shadow-xl backdrop-blur-xl"
+            >
+              <div className="px-3 py-2.5">
+                <p className="truncate text-sm font-bold">{user?.full_name ?? 'Super Admin'}</p>
+                <p className="mt-0.5 truncate text-xs font-medium text-muted-foreground">{user?.email ?? ''}</p>
               </div>
-              <DropdownMenuSeparator className="bg-border/50" />
-              <DropdownMenuItem className="cursor-pointer focus:bg-primary/10 focus:text-primary rounded-lg mx-1">
+              <DropdownMenuSeparator className="bg-border/60" />
+              <DropdownMenuItem className="mx-1 cursor-pointer rounded-lg focus:bg-primary/10 focus:text-primary">
                 <User className="mr-2 size-4" />
                 {tCommon('profile')}
               </DropdownMenuItem>
-              <DropdownMenuItem className="cursor-pointer focus:bg-primary/10 focus:text-primary rounded-lg mx-1">
+              <DropdownMenuItem className="mx-1 cursor-pointer rounded-lg focus:bg-primary/10 focus:text-primary">
                 <Settings className="mr-2 size-4" />
                 {tNav('settings')}
               </DropdownMenuItem>
-              <DropdownMenuSeparator className="bg-border/50" />
+              <DropdownMenuSeparator className="bg-border/60" />
               <DropdownMenuItem
-                className="cursor-pointer text-rose-500 focus:bg-rose-500/10 focus:text-rose-500 rounded-lg mx-1"
+                className="mx-1 cursor-pointer rounded-lg text-rose-500 focus:bg-rose-500/10 focus:text-rose-500"
                 onClick={() => logout()}
               >
                 <LogOut className="mr-2 size-4" />

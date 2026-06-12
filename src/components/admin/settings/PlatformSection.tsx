@@ -41,24 +41,24 @@ export function PlatformSection({
       <SectionHeader icon={<Server className="size-4" />} title="Global Platform" desc="Master platform settings and branding" />
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        <Card className="lg:col-span-2 rounded-2xl border-slate-200 shadow-sm overflow-hidden">
-          <CardHeader className="pb-4 border-b border-slate-100 bg-slate-50/40">
+        <Card className="lg:col-span-2 rounded-2xl border-border shadow-sm overflow-hidden">
+          <CardHeader className="pb-4 border-b border-border/60 bg-muted/40">
             <CardTitle className="text-base font-black">Core Configuration</CardTitle>
             <CardDescription>Branding, limits, and access control.</CardDescription>
           </CardHeader>
           <CardContent className="pt-6 space-y-6">
             <div className="grid grid-cols-2 gap-4">
               <FormField label="Platform Name">
-                <Input value={platformName} onChange={(e) => setPlatformName(e.target.value)} className="rounded-xl bg-slate-50 border-slate-200 h-9" />
+                <Input value={platformName} onChange={(e) => setPlatformName(e.target.value)} className="rounded-xl bg-muted/50 border-border h-9" />
               </FormField>
               <FormField label="Support Email">
-                <Input value={supportEmail} onChange={(e) => setSupportEmail(e.target.value)} className="rounded-xl bg-slate-50 border-slate-200 h-9" />
+                <Input value={supportEmail} onChange={(e) => setSupportEmail(e.target.value)} className="rounded-xl bg-muted/50 border-border h-9" />
               </FormField>
               <FormField label="Trial Period (days)">
-                <Input value={trialPeriod} onChange={(e) => setTrialPeriod(e.target.value)} type="number" min="1" className="rounded-xl bg-slate-50 border-slate-200 h-9" />
+                <Input value={trialPeriod} onChange={(e) => setTrialPeriod(e.target.value)} type="number" min="1" className="rounded-xl bg-muted/50 border-border h-9" />
               </FormField>
               <FormField label="Max Organizations">
-                <Input value={maxOrgs} onChange={(e) => setMaxOrgs(e.target.value)} type="number" min="1" className="rounded-xl bg-slate-50 border-slate-200 h-9" />
+                <Input value={maxOrgs} onChange={(e) => setMaxOrgs(e.target.value)} type="number" min="1" className="rounded-xl bg-muted/50 border-border h-9" />
               </FormField>
             </div>
             <Separator />
@@ -78,7 +78,7 @@ export function PlatformSection({
               />
             </div>
           </CardContent>
-          <CardFooter className="border-t border-slate-100 bg-slate-50/40 p-4 flex items-center justify-between gap-4">
+          <CardFooter className="border-t border-border/60 bg-muted/40 p-4 flex items-center justify-between gap-4">
             {maintenanceMode ? (
               <Alert className="rounded-xl border-amber-200 bg-amber-50 py-2 px-3 flex-1">
                 <AlertTriangle className="size-3.5 text-amber-600" />
@@ -105,7 +105,7 @@ export function PlatformSection({
             <CardContent className="space-y-2.5 relative">
               {systemMetrics.map((m) => (
                 <div key={m.label} className="flex items-center justify-between text-xs">
-                  <span className="text-slate-400">{m.label}</span>
+                  <span className="text-muted-foreground">{m.label}</span>
                   <span className="font-bold text-cyan-400 font-mono">{m.value}</span>
                 </div>
               ))}

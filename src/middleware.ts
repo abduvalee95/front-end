@@ -89,6 +89,14 @@ export default async function middleware(request: NextRequest) {
     if (accessToken) {
       const result = await verifyAccessToken(accessToken);
       const role = result.status === 'invalid' ? null : result.claims.role;
+
+      // The platform SUPER_ADMIN lives in /admin — org CRM pages query
+      // org-scoped endpoints that the backend denies for this role (403
+      // toast spam). Keep page navigations in the console; API calls pass.
+      if (role === 'SUPER_ADMIN' && !pathname.startsWith('/admin') && !pathname.startsWith('/api')) {
+        return NextResponse.redirect(new URL('/admin/dashboard', request.url));
+      }
+
       if (!canAccess(pathname, role) && !pathname.startsWith('/dashboard')) {
         return NextResponse.redirect(new URL('/dashboard', request.url));
       }

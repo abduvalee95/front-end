@@ -35,8 +35,8 @@ export function NotificationsSection({
       <SectionHeader icon={<Bell className="size-4" />} title="Notifications" desc="Configure system-level alerts for Super Admin" />
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        <Card className="lg:col-span-2 rounded-2xl border-slate-200 shadow-sm overflow-hidden">
-          <CardHeader className="pb-4 border-b border-slate-100 bg-slate-50/40">
+        <Card className="lg:col-span-2 rounded-2xl border-border shadow-sm overflow-hidden">
+          <CardHeader className="pb-4 border-b border-border/60 bg-muted/40">
             <CardTitle className="text-base font-black">Notification Preferences</CardTitle>
             <CardDescription>Alerts sent directly to the Super Admin account.</CardDescription>
           </CardHeader>
@@ -73,17 +73,17 @@ export function NotificationsSection({
                 value={webhookUrl}
                 onChange={(e) => setWebhookUrl(e.target.value)}
                 placeholder="https://hooks.slack.com/services/..."
-                className="rounded-xl bg-slate-50 border-slate-200 font-mono text-sm h-9"
+                className="rounded-xl bg-muted/50 border-border font-mono text-sm h-9"
               />
-              <p className="text-[11px] text-slate-400 mt-1">POST payload sent on every system event.</p>
+              <p className="text-[11px] text-muted-foreground mt-1">POST payload sent on every system event.</p>
             </FormField>
           </CardContent>
-          <CardFooter className="border-t border-slate-100 bg-slate-50/40 p-4 flex justify-end">
+          <CardFooter className="border-t border-border/60 bg-muted/40 p-4 flex justify-end">
             <SaveButton isSaving={savingSection === 'notifications'} onClick={() => handleSave('notifications')} label="Save Notifications" />
           </CardFooter>
         </Card>
 
-        <Card className="rounded-2xl border-slate-200 shadow-sm h-fit">
+        <Card className="rounded-2xl border-border shadow-sm h-fit">
           <CardHeader className="pb-3">
             <CardTitle className="text-sm font-black">Channel Summary</CardTitle>
           </CardHeader>
@@ -96,13 +96,13 @@ export function NotificationsSection({
               { ch: 'Webhook', active: !!webhookUrl },
             ].map((c) => (
               <div key={c.ch} className="flex items-center justify-between py-0.5">
-                <span className="text-xs font-medium text-slate-600">{c.ch}</span>
+                <span className="text-xs font-medium text-muted-foreground">{c.ch}</span>
                 {c.active ? (
-                  <Badge className="bg-emerald-100 text-emerald-700 border-emerald-200 rounded-lg text-[10px] gap-1 h-5">
+                  <Badge className="bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border-emerald-500/25 rounded-lg text-[10px] gap-1 h-5">
                     <CheckCircle2 className="size-2.5" /> Active
                   </Badge>
                 ) : (
-                  <Badge variant="outline" className="rounded-lg text-[10px] gap-1 text-slate-400 h-5">
+                  <Badge variant="outline" className="rounded-lg text-[10px] gap-1 text-muted-foreground h-5">
                     <XCircle className="size-2.5" /> Off
                   </Badge>
                 )}

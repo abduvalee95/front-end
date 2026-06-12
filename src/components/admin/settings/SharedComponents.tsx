@@ -17,12 +17,12 @@ export interface SectionHeaderProps {
 export function SectionHeader({ icon, title, desc }: SectionHeaderProps) {
   return (
     <div className="flex items-center gap-3 pb-1">
-      <div className="size-8 rounded-lg bg-slate-100 flex items-center justify-center text-slate-600">
+      <div className="size-8 rounded-lg bg-muted flex items-center justify-center text-muted-foreground">
         {icon}
       </div>
       <div>
-        <h2 className="text-base font-black text-slate-900 leading-tight">{title}</h2>
-        <p className="text-xs text-slate-400">{desc}</p>
+        <h2 className="text-base font-black text-foreground leading-tight">{title}</h2>
+        <p className="text-xs text-muted-foreground">{desc}</p>
       </div>
     </div>
   );
@@ -36,7 +36,7 @@ export interface FormFieldProps {
 export function FormField({ label, children }: FormFieldProps) {
   return (
     <div className="space-y-1.5">
-      <Label className="text-[11px] font-bold uppercase tracking-wider text-slate-400">{label}</Label>
+      <Label className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">{label}</Label>
       {children}
     </div>
   );
@@ -53,16 +53,16 @@ export interface ToggleRowProps {
 
 export function ToggleRow({ title, desc, checked, onCheckedChange, icon, danger }: ToggleRowProps) {
   return (
-    <div className="flex items-center justify-between px-4 py-3.5 rounded-xl border border-slate-100 bg-slate-50/30 hover:bg-slate-50 transition-colors">
+    <div className="flex items-center justify-between px-4 py-3.5 rounded-xl border border-border/60 bg-muted/30 hover:bg-muted/60 transition-colors">
       <div className="space-y-0.5 min-w-0 pr-4">
         <div className="flex items-center gap-2">
-          {icon && <span className={danger ? 'text-red-500' : 'text-slate-500'}>{icon}</span>}
-          <Label className={`text-sm font-bold cursor-pointer ${danger ? 'text-red-700' : 'text-slate-800'}`}>{title}</Label>
+          {icon && <span className={danger ? 'text-red-500' : 'text-muted-foreground'}>{icon}</span>}
+          <Label className={`text-sm font-bold cursor-pointer ${danger ? 'text-red-700' : 'text-foreground'}`}>{title}</Label>
           {danger && checked && (
-            <Badge className="bg-red-100 text-red-600 border-red-200 rounded-md text-[10px] px-1.5 h-4">ACTIVE</Badge>
+            <Badge className="bg-red-100 text-red-600 border-red-500/30 rounded-md text-[10px] px-1.5 h-4">ACTIVE</Badge>
           )}
         </div>
-        <p className="text-xs text-slate-400">{desc}</p>
+        <p className="text-xs text-muted-foreground">{desc}</p>
       </div>
       <Switch checked={checked} onCheckedChange={onCheckedChange} />
     </div>
@@ -81,7 +81,7 @@ export function SaveButton({ isSaving, onClick, label }: SaveButtonProps) {
       type="button"
       onClick={onClick}
       disabled={isSaving}
-      className="bg-[#0B1437] hover:bg-[#0d1f44] text-white rounded-xl px-6 shadow-md gap-2 text-sm shrink-0"
+      className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl px-6 shadow-md gap-2 text-sm shrink-0"
     >
       {isSaving ? <Loader2 className="size-3.5 animate-spin" /> : <Save className="size-3.5" />}
       {isSaving ? 'Saving...' : label}
@@ -104,16 +104,16 @@ export function SecurityScoreCard({ mandatory2FA, ipWhitelisting }: SecurityScor
   const score = checks.filter((c) => c.ok).length;
   const pct = Math.round((score / checks.length) * 100);
   const color = pct >= 75 ? 'text-emerald-500' : pct >= 50 ? 'text-amber-500' : 'text-red-500';
-  const barColor = pct >= 75 ? 'bg-emerald-500' : pct >= 50 ? 'bg-amber-500' : 'bg-red-500';
+  const barColor = pct >= 75 ? 'bg-emerald-500' : pct >= 50 ? 'bg-amber-500' : 'bg-red-500/100';
 
   return (
-    <Card className="rounded-2xl border-slate-200 shadow-sm h-fit">
+    <Card className="rounded-2xl border-border shadow-sm h-fit">
       <CardHeader className="pb-3">
         <CardTitle className="text-sm font-black">Security Score</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className={`text-5xl font-black text-center tabular-nums ${color}`}>{pct}%</div>
-        <div className="h-2 rounded-full bg-slate-100 overflow-hidden">
+        <div className="h-2 rounded-full bg-muted overflow-hidden">
           <div className={`h-full rounded-full transition-all duration-700 ${barColor}`} style={{ width: `${pct}%` }} />
         </div>
         <div className="space-y-2 pt-1">
@@ -121,9 +121,9 @@ export function SecurityScoreCard({ mandatory2FA, ipWhitelisting }: SecurityScor
             <div key={c.label} className="flex items-center gap-2 text-xs">
               {c.ok
                 ? <CheckCircle2 className="size-3.5 text-emerald-500 shrink-0" />
-                : <XCircle className="size-3.5 text-slate-300 shrink-0" />
+                : <XCircle className="size-3.5 text-muted-foreground/50 shrink-0" />
               }
-              <span className={c.ok ? 'text-slate-700 font-medium' : 'text-slate-400'}>{c.label}</span>
+              <span className={c.ok ? 'text-foreground/90 font-medium' : 'text-muted-foreground'}>{c.label}</span>
             </div>
           ))}
         </div>
