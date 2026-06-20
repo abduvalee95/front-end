@@ -3,7 +3,7 @@
 import { useMemo } from 'react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
-import { endOfDay, startOfDay, subDays } from 'date-fns';
+import { endOfDay, startOfMonth } from 'date-fns';
 import { BookOpen, CalendarDays, GraduationCap, Layers3, UserCheck, UsersRound } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useDashboardSummary, useLeadsByStatus, usePaymentsByMethod, usePaymentsByDay } from '@/hooks/useDashboard';
@@ -105,9 +105,8 @@ export default function DashboardPage() {
   const isTeacher = role === 'TEACHER';
 
   const revenueRange = useMemo(() => {
-    const to = endOfDay(new Date());
-    const from = startOfDay(subDays(to, 29));
-    return { from, to };
+    const now = new Date();
+    return { from: startOfMonth(now), to: endOfDay(now) };
   }, []);
 
   const revenueQuery = useMemo(

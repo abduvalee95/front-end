@@ -199,7 +199,7 @@
     "no_lead_data": "No lead data available",
     "no_payment_data": "No payment data available",
     "revenue_trend": "Revenue Trend",
-    "revenue_trend_sub": "Last 30 days",
+    "revenue_trend_sub": "This month",
     "amount": "Amount",
     "transactions": "Transactions",
     "no_revenue_data": "No revenue data"

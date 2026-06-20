@@ -199,7 +199,7 @@
     "no_lead_data": "Нет данных о лидах",
     "no_payment_data": "Нет данных о платежах",
     "revenue_trend": "Динамика доходов",
-    "revenue_trend_sub": "Последние 30 дней",
+    "revenue_trend_sub": "Этот месяц",
     "amount": "Сумма",
     "transactions": "Транзакции",
     "no_revenue_data": "Нет данных о доходах"
