@@ -1,7 +1,9 @@
 'use client';
 
+import { useMemo } from 'react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
+import { endOfDay, startOfDay, subDays } from 'date-fns';
 import { BookOpen, CalendarDays, GraduationCap, Layers3, UserCheck, UsersRound } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useDashboardSummary, useLeadsByStatus, usePaymentsByMethod, usePaymentsByDay } from '@/hooks/useDashboard';
@@ -102,10 +104,24 @@ export default function DashboardPage() {
   const role = useAuthStore((s) => s.user?.role);
   const isTeacher = role === 'TEACHER';
 
+  const revenueRange = useMemo(() => {
+    const to = endOfDay(new Date());
+    const from = startOfDay(subDays(to, 29));
+    return { from, to };
+  }, []);
+
+  const revenueQuery = useMemo(
+    () => ({
+      from: revenueRange.from.toISOString(),
+      to: revenueRange.to.toISOString(),
+    }),
+    [revenueRange],
+  );
+
   const { data: summary, isLoading: summaryLoading } = useDashboardSummary();
   const { data: leadsByStatus, isLoading: leadsLoading } = useLeadsByStatus();
   const { data: paymentsByMethod, isLoading: paymentsLoading } = usePaymentsByMethod();
-  const { data: paymentsByDay, isLoading: paymentsByDayLoading } = usePaymentsByDay();
+  const { data: paymentsByDay, isLoading: paymentsByDayLoading } = usePaymentsByDay(revenueQuery);
 
   if (isTeacher) return <TeacherDashboard />;
 
@@ -113,7 +129,12 @@ export default function DashboardPage() {
     <div className="w-full h-full space-y-5 animate-in fade-in slide-in-from-bottom-4 duration-700">
       <StatsGrid summary={summary} isLoading={summaryLoading} />
 
-      <RevenueChart paymentsByDay={paymentsByDay} isLoading={paymentsByDayLoading} />
+      <RevenueChart
+        paymentsByDay={paymentsByDay}
+        isLoading={paymentsByDayLoading}
+        rangeFrom={revenueRange.from}
+        rangeTo={revenueRange.to}
+      />
 
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-5">
         <div className="xl:col-span-2 space-y-5">

@@ -1,6 +1,7 @@
 'use client';
 
 import { useMemo } from 'react';
+import { eachDayOfInterval, format } from 'date-fns';
 import {
   AreaChart,
   Area,
@@ -17,20 +18,32 @@ import type { PaymentByDay } from '@/services/dashboard';
 interface RevenueChartProps {
   paymentsByDay: PaymentByDay[] | undefined;
   isLoading: boolean;
+  rangeFrom: Date;
+  rangeTo: Date;
 }
 
-export function RevenueChart({ paymentsByDay, isLoading }: RevenueChartProps) {
+export function RevenueChart({ paymentsByDay, isLoading, rangeFrom, rangeTo }: RevenueChartProps) {
   const t = useTranslations('dashboard');
 
   const revenueData = useMemo(() => {
-    if (!paymentsByDay) return [];
-    return paymentsByDay.map((item) => ({
-      day: item.day,
-      label: new Date(item.day).toLocaleDateString(undefined, { day: '2-digit', month: 'short' }),
-      amount: Number(item.totalAmount) || 0,
-      count: item.count,
-    }));
-  }, [paymentsByDay]);
+    const byDay = new Map(
+      (paymentsByDay ?? []).map((item) => {
+        const key = item.day.slice(0, 10);
+        return [key, { amount: Number(item.totalAmount) || 0, count: item.count }];
+      }),
+    );
+
+    return eachDayOfInterval({ start: rangeFrom, end: rangeTo }).map((date) => {
+      const key = format(date, 'yyyy-MM-dd');
+      const row = byDay.get(key);
+      return {
+        day: key,
+        label: format(date, 'dd MMM'),
+        amount: row?.amount ?? 0,
+        count: row?.count ?? 0,
+      };
+    });
+  }, [paymentsByDay, rangeFrom, rangeTo]);
 
   const revenueTotal = useMemo(
     () => revenueData.reduce((sum, d) => sum + d.amount, 0),
@@ -57,7 +70,7 @@ export function RevenueChart({ paymentsByDay, isLoading }: RevenueChartProps) {
         <div className="h-[240px] w-full flex items-center justify-center">
           <Skeleton className="h-full w-full rounded-xl" />
         </div>
-      ) : revenueData.length > 0 ? (
+      ) : (
         <div className="h-[240px] w-full">
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={revenueData} margin={{ top: 8, right: 8, left: -12, bottom: 0 }}>
@@ -105,10 +118,6 @@ export function RevenueChart({ paymentsByDay, isLoading }: RevenueChartProps) {
               />
             </AreaChart>
           </ResponsiveContainer>
-        </div>
-      ) : (
-        <div className="h-[240px] flex items-center justify-center text-muted-foreground text-sm">
-          {t('no_revenue_data')}
         </div>
       )}
     </div>
