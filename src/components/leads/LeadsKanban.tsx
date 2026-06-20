@@ -7,11 +7,21 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import {
   Phone,
   Clock,
   Sparkles,
   MoreVertical,
   UserCheck,
+  UserMinus,
 } from 'lucide-react';
 import { format, parseISO } from 'date-fns';
 import { cn } from '@/lib/utils';
@@ -26,6 +36,7 @@ interface LeadsKanbanProps {
 
 export function LeadsKanban({ leads, isLoading, onAIAction }: LeadsKanbanProps) {
   const t = useTranslations('leads');
+  const tCommon = useTranslations('common');
   const [draggedId, setDraggedId] = useState<string | null>(null);
   const updateLead = useUpdateLead();
   const convertLead = useConvertLead();
@@ -68,6 +79,10 @@ export function LeadsKanban({ leads, isLoading, onAIAction }: LeadsKanbanProps) 
         toast.success(`${lead.full_name} ${t('converted')}`);
       },
     });
+  };
+
+  const handleMarkLost = (lead: Lead) => {
+    updateLead.mutate({ id: lead.id, data: { status: 'LOST' } });
   };
 
   if (isLoading) {
@@ -125,9 +140,47 @@ export function LeadsKanban({ leads, isLoading, onAIAction }: LeadsKanbanProps) 
                     <h4 className="font-bold text-sm leading-tight group-hover:text-indigo-500 transition-colors">
                       {lead.full_name}
                     </h4>
-                    <button className="text-muted-foreground hover:text-foreground">
-                      <MoreVertical className="size-4" />
-                    </button>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger
+                        render={
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="size-7 text-muted-foreground hover:text-foreground"
+                            aria-label={tCommon('actions')}
+                            onPointerDown={(e) => e.stopPropagation()}
+                          >
+                            <MoreVertical className="size-4" />
+                          </Button>
+                        }
+                      />
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuGroup>
+                          <DropdownMenuLabel>{t('title')}</DropdownMenuLabel>
+                          <DropdownMenuItem onClick={() => onAIAction?.(lead)}>
+                            <Sparkles className="mr-2 size-4 text-indigo-500" />
+                            {t('generate_ai_response')}
+                          </DropdownMenuItem>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem
+                            className="text-emerald-500"
+                            onClick={() => handleConvert(lead)}
+                            disabled={lead.status === 'CONVERTED' || lead.status === 'LOST' || convertLead.isPending}
+                          >
+                            <UserCheck className="mr-2 size-4" />
+                            {convertLead.isPending ? tCommon('loading') : t('convert')}
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            className="text-rose-500"
+                            onClick={() => handleMarkLost(lead)}
+                            disabled={lead.status === 'LOST' || updateLead.isPending}
+                          >
+                            <UserMinus className="mr-2 size-4" />
+                            {t('status_lost')}
+                          </DropdownMenuItem>
+                        </DropdownMenuGroup>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                   </div>
 
                   <div className="space-y-2">
