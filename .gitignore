@@ -16,6 +16,8 @@
 # next.js
 /.next/
 /out/
+# SWC plugin cache — regenerated per platform on every build (multi-MB binaries)
+.swc/
 
 # production
 /build
