@@ -55,18 +55,26 @@ function LoginForm() {
       return;
     }
 
-    let formattedPhone = phone.trim().replace(/\s+/g, '');
-    if (!formattedPhone.startsWith('+')) {
-      if (formattedPhone.startsWith('996') && formattedPhone.length === 12) {
-        // User typed 996901234567 -> +996901234567
-        formattedPhone = '+' + formattedPhone;
-      } else if (formattedPhone.length === 9) {
-        // User typed 901234567 -> +996901234567
-        formattedPhone = '+996' + formattedPhone;
-      } else {
-        // Fallback: assume Kyrgyzstan
-        formattedPhone = '+996' + formattedPhone;
+    const identifier = phone.trim().replace(/\s+/g, '');
+
+    // Only a bare national number gets a country code. Anything else is passed
+    // through untouched: the login identifier is not always a phone number —
+    // prisma/seed.ts creates the platform SUPER_ADMIN with `phone: email`, so
+    // that account signs in with an email address. The previous `else` branch
+    // prefixed *everything* lacking a leading '+', turning
+    // "admin@example.com" into "+996admin@example.com" and making the super
+    // admin permanently unable to log in.
+    let formattedPhone = identifier;
+    if (!identifier.startsWith('+') && /^\d+$/.test(identifier)) {
+      if (identifier.startsWith('996') && identifier.length === 12) {
+        // 996901234567 -> +996901234567
+        formattedPhone = `+${identifier}`;
+      } else if (identifier.length === 9) {
+        // 901234567 -> +996901234567
+        formattedPhone = `+996${identifier}`;
       }
+      // Any other all-digit length is ambiguous — send it as typed and let the
+      // backend decide, rather than guessing a country and guaranteeing a 401.
     }
 
     login({ phone: formattedPhone, password, remember_me: rememberMe });
