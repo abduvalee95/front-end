@@ -41,6 +41,12 @@ type FormValues = {
   description: string;
 };
 
+const METHOD_LABEL_KEYS = {
+  CASH: 'method_cash',
+  CARD: 'method_card',
+  TRANSFER: 'method_transfer',
+} as const;
+
 export function AddPaymentModal({ open, onClose, studentId, studentName }: AddPaymentModalProps) {
   const t = useTranslations('finance');
   const tCommon = useTranslations('common');
@@ -61,6 +67,13 @@ export function AddPaymentModal({ open, onClose, studentId, studentName }: AddPa
 
   const methodValue = watch('method');
   const studentValue = watch('student_id');
+
+  // Base UI's <SelectValue /> renders the raw value ("CASH") unless it is told
+  // how to turn a value into a label, so the trigger needs the mapping too —
+  // the <SelectItem> children only cover the open dropdown.
+  const methodLabel = (method: string) =>
+    t(METHOD_LABEL_KEYS[method as PaymentMethod] ?? METHOD_LABEL_KEYS.CASH);
+
   const students = studentsQuery.data?.items ?? [];
   const selectedStudent = studentId
     ? { name: studentName ?? studentId, phone: '' }
@@ -120,9 +133,13 @@ export function AddPaymentModal({ open, onClose, studentId, studentName }: AddPa
               </div>
             ) : (
               <>
+                {/* The Select is not a native input, so the value is mirrored into a
+                    registered hidden field — otherwise nothing validates it and an
+                    empty student_id reaches the API. */}
+                <input type="hidden" {...register('student_id', { required: true })} />
                 <Select
                   value={studentValue}
-                  onValueChange={(v) => setValue('student_id', v ?? '')}
+                  onValueChange={(v) => setValue('student_id', v ?? '', { shouldValidate: true })}
                   disabled={createPayment.isPending}
                 >
                   <SelectTrigger className="rounded-xl h-9">
@@ -166,7 +183,7 @@ export function AddPaymentModal({ open, onClose, studentId, studentName }: AddPa
                 disabled={createPayment.isPending}
               >
                 <SelectTrigger className="rounded-xl h-9">
-                  <SelectValue />
+                  <SelectValue>{(v: string) => methodLabel(v)}</SelectValue>
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="CASH">{t('method_cash')}</SelectItem>

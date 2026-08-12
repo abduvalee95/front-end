@@ -112,7 +112,11 @@ export function AddExpenseModal({ open, onClose }: AddExpenseModalProps) {
                 disabled={createExpense.isPending}
               >
                 <SelectTrigger className="rounded-xl h-9">
-                  <SelectValue />
+                  <SelectValue>
+                    {(v: string) =>
+                      EXPENSE_CATEGORIES.find((c) => c.value === v)?.label ?? v
+                    }
+                  </SelectValue>
                 </SelectTrigger>
                 <SelectContent>
                   {EXPENSE_CATEGORIES.map((c) => (

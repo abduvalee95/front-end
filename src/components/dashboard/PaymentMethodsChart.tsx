@@ -27,17 +27,27 @@ interface PaymentMethodsChartProps {
   isLoading: boolean;
 }
 
+const METHOD_LABEL_KEYS: Record<string, string> = {
+  CASH: 'method_cash',
+  CARD: 'method_card',
+  TRANSFER: 'method_transfer',
+};
+
 export function PaymentMethodsChart({ paymentsByMethod, isLoading }: PaymentMethodsChartProps) {
   const t = useTranslations('dashboard');
+  const tFinance = useTranslations('finance');
 
   const barData = useMemo(() => {
     if (!paymentsByMethod) return [];
-    return paymentsByMethod.map((item) => ({
-      name: item.method || 'Unknown',
-      value: item.count,
-      color: PAYMENT_METHOD_COLORS[item.method || ''] || '#64748b',
-    }));
-  }, [paymentsByMethod]);
+    return paymentsByMethod.map((item) => {
+      const key = METHOD_LABEL_KEYS[item.method ?? ''];
+      return {
+        name: key ? tFinance(key) : item.method || 'Unknown',
+        value: item.count,
+        color: PAYMENT_METHOD_COLORS[item.method || ''] || '#64748b',
+      };
+    });
+  }, [paymentsByMethod, tFinance]);
 
   return (
     <div className="bg-card rounded-2xl p-6 min-w-0 shadow-sm">

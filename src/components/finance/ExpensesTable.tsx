@@ -111,7 +111,7 @@ export function ExpensesTable({ expenses, isLoading, onAddExpense, onDelete, isD
                 {tCommon('date')}
               </TableHead>
               <TableHead className="text-[10.5px] font-bold uppercase tracking-[0.14em] text-muted-foreground/50">
-                {tCommon('category')}
+                {t('category')}
               </TableHead>
               <TableHead className="w-10" />
             </TableRow>
