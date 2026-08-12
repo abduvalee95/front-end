@@ -25,7 +25,7 @@ export function CashflowBar({ income, expenses }: CashflowBarProps) {
           <span
             className={cn(
               'inline-flex items-center gap-0.5 text-[11px] font-black px-2 py-0.5 rounded-full',
-              isPositive ? 'bg-emerald-500/10 text-emerald-600' : 'bg-rose-500/10 text-rose-600',
+              isPositive ? 'bg-success/10 text-success-emphasis' : 'bg-danger/10 text-danger-emphasis',
             )}
           >
             {isPositive ? <ArrowUpRight className="size-3" /> : <ArrowDownRight className="size-3" />}
@@ -37,16 +37,16 @@ export function CashflowBar({ income, expenses }: CashflowBarProps) {
         </span>
       </div>
       <div className="flex h-2 w-full overflow-hidden rounded-full gap-px bg-muted">
-        <div className="h-full rounded-l-full bg-emerald-500 transition-all duration-700" style={{ width: `${incomeRatio}%` }} />
-        <div className="h-full rounded-r-full bg-rose-500 transition-all duration-700" style={{ width: `${expenseRatio}%` }} />
+        <div className="h-full rounded-l-full bg-success transition-all duration-700" style={{ width: `${incomeRatio}%` }} />
+        <div className="h-full rounded-r-full bg-danger transition-all duration-700" style={{ width: `${expenseRatio}%` }} />
       </div>
       <div className="mt-2 flex items-center gap-5">
         <span className="flex items-center gap-1.5 text-[11px] font-semibold text-muted-foreground/60">
-          <span className="size-2 rounded-full bg-emerald-500" />
+          <span className="size-2 rounded-full bg-success" />
           Income · {incomeRatio}%
         </span>
         <span className="flex items-center gap-1.5 text-[11px] font-semibold text-muted-foreground/60">
-          <span className="size-2 rounded-full bg-rose-500" />
+          <span className="size-2 rounded-full bg-danger" />
           Expenses · {expenseRatio}%
         </span>
       </div>

@@ -156,20 +156,20 @@ export function TeacherDetailSheet({
                     {teacher.hourly_rate ? formatKGS(teacher.hourly_rate) : '—'}
                   </p>
                   {teacher.salary_type === 'DAILY' && teacher.hourly_rate && (
-                    <div className="mt-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-500/10 px-2.5 py-1.5">
+                    <div className="mt-1.5 rounded-lg bg-success-muted dark:bg-success/10 px-2.5 py-1.5">
                       <p className="text-[11px] text-muted-foreground">
                         {format(now, 'MMMM yyyy')} — {t('worked_days')}:{' '}
                         <span className="font-bold text-foreground">{workedDays}</span>
                       </p>
-                      <p className="text-xs font-bold text-emerald-700 dark:text-emerald-400 mt-0.5">
+                      <p className="text-xs font-bold text-success-emphasis mt-0.5">
                         {t('calculated')}: {formatKGS(calculatedSalary ?? 0)}
                       </p>
                     </div>
                   )}
                   {teacher.salary_type === 'MONTHLY' && teacher.hourly_rate && (
-                    <div className="mt-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-500/10 px-2.5 py-1.5">
+                    <div className="mt-1.5 rounded-lg bg-success-muted dark:bg-success/10 px-2.5 py-1.5">
                       <p className="text-[11px] text-muted-foreground">{format(now, 'MMMM yyyy')} — {t('monthly_label')}</p>
-                      <p className="text-xs font-bold text-emerald-700 dark:text-emerald-400 mt-0.5">
+                      <p className="text-xs font-bold text-success-emphasis mt-0.5">
                         {formatKGS(teacher.hourly_rate)}
                       </p>
                     </div>
@@ -212,7 +212,7 @@ export function TeacherDetailSheet({
           <Button
             variant="outline"
             size="sm"
-            className={`flex-1 ${isActive ? 'text-amber-600 border-amber-200 hover:bg-amber-50' : 'text-teal-600 border-teal-200 hover:bg-teal-50'}`}
+            className={`flex-1 ${isActive ? 'text-warning-emphasis border-warning/30 hover:bg-warning-muted' : 'text-success-emphasis border-success/30 hover:bg-success-muted'}`}
             onClick={() => { onClose(); onToggleStatus(teacher); }}
           >
             <Power className="mr-2 size-3.5" />

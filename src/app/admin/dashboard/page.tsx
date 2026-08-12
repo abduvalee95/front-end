@@ -28,10 +28,10 @@ export default function AdminDashboardPage() {
   const latestUsers = usersQuery.data?.items ?? [];
 
   const stats = [
-    { name: t('dashboard.total_orgs'), value: totalOrgs, icon: Building2, accent: 'text-sky-400', bar: 'from-sky-400/70', chip: 'bg-sky-400/10 border-sky-400/20', loading: orgsQuery.isLoading },
-    { name: t('dashboard.active_orgs'), value: activeOrgs, icon: BadgeCheck, accent: 'text-emerald-400', bar: 'from-emerald-400/70', chip: 'bg-emerald-400/10 border-emerald-400/20', loading: orgsQuery.isLoading },
-    { name: t('dashboard.inactive_orgs'), value: inactiveOrgs, icon: PauseCircle, accent: 'text-amber-400', bar: 'from-amber-400/70', chip: 'bg-amber-400/10 border-amber-400/20', loading: orgsQuery.isLoading },
-    { name: t('dashboard.total_users'), value: totalUsers, icon: Users, accent: 'text-violet-400', bar: 'from-violet-400/70', chip: 'bg-violet-400/10 border-violet-400/20', loading: usersQuery.isLoading },
+    { name: t('dashboard.total_orgs'), value: totalOrgs, icon: Building2, accent: 'text-primary-emphasis', bar: 'from-primary/70', chip: 'bg-primary/10 border-primary/20', loading: orgsQuery.isLoading },
+    { name: t('dashboard.active_orgs'), value: activeOrgs, icon: BadgeCheck, accent: 'text-success-emphasis', bar: 'from-success/70', chip: 'bg-success/10 border-success/20', loading: orgsQuery.isLoading },
+    { name: t('dashboard.inactive_orgs'), value: inactiveOrgs, icon: PauseCircle, accent: 'text-warning-emphasis', bar: 'from-warning/70', chip: 'bg-warning/10 border-warning/20', loading: orgsQuery.isLoading },
+    { name: t('dashboard.total_users'), value: totalUsers, icon: Users, accent: 'text-primary-emphasis', bar: 'from-primary/70', chip: 'bg-primary/10 border-primary/20', loading: usersQuery.isLoading },
   ];
 
   return (
@@ -43,22 +43,22 @@ export default function AdminDashboardPage() {
 
         <div className="relative flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
           <div>
-            <p className="mb-3 flex items-center gap-2 font-mono text-[10px] font-bold uppercase tracking-[0.28em] text-cyan-300/80">
+            <p className="mb-3 flex items-center gap-2 font-mono text-[10px] font-bold uppercase tracking-[0.28em] text-primary-emphasis/80">
               <Activity className="size-3.5" /> {t('console_tag')}
             </p>
             <h1 className="text-3xl font-black leading-tight tracking-tight sm:text-4xl">
               {t('dashboard.title')}
             </h1>
-            <p className="mt-2 max-w-md text-sm text-slate-400">
+            <p className="mt-2 max-w-md text-sm text-muted-foreground">
               {t('dashboard.subtitle')}
             </p>
           </div>
 
           <div className="flex shrink-0 items-center gap-2.5">
-            <span className="flex items-center gap-2 rounded-full border border-emerald-400/20 bg-emerald-400/10 px-3.5 py-2 font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-emerald-300/90">
+            <span className="flex items-center gap-2 rounded-full border border-success/20 bg-success/10 px-3.5 py-2 font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-success-emphasis/90">
               <span className="relative flex size-1.5">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400/70" />
-                <span className="relative inline-flex size-1.5 rounded-full bg-emerald-400" />
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-success/70" />
+                <span className="relative inline-flex size-1.5 rounded-full bg-success" />
               </span>
               {t('live')}
             </span>
@@ -82,7 +82,7 @@ export default function AdminDashboardPage() {
             >
               <div className={`pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r ${stat.bar} to-transparent`} />
               <div className="flex items-start justify-between">
-                <p className="font-mono text-[9px] font-bold uppercase tracking-[0.18em] text-slate-400">
+                <p className="font-mono text-[9px] font-bold uppercase tracking-[0.18em] text-muted-foreground">
                   {stat.name}
                 </p>
                 <div className={`flex size-7 items-center justify-center rounded-lg border ${stat.chip}`}>
@@ -141,8 +141,8 @@ export default function AdminDashboardPage() {
                   <Badge
                     className={
                       org.status === 'ACTIVE'
-                        ? 'shrink-0 rounded-md border-emerald-500/25 bg-emerald-500/15 text-emerald-600 dark:text-emerald-400'
-                        : 'shrink-0 rounded-md border-amber-500/25 bg-amber-500/15 text-amber-600 dark:text-amber-400'
+                        ? 'shrink-0 rounded-md border-success/25 bg-success/15 text-success-emphasis'
+                        : 'shrink-0 rounded-md border-warning/25 bg-warning/15 text-warning-emphasis'
                     }
                   >
                     {org.status === 'ACTIVE' ? t('active') : t('inactive')}
@@ -178,7 +178,7 @@ export default function AdminDashboardPage() {
                   style={{ animationDelay: `${i * 70}ms`, animationDuration: '500ms' }}
                 >
                   <div className="flex min-w-0 items-center gap-3">
-                    <div className="flex size-9 shrink-0 items-center justify-center rounded-lg border border-violet-500/15 bg-violet-500/10 text-sm font-black text-violet-500 dark:text-violet-400">
+                    <div className="flex size-9 shrink-0 items-center justify-center rounded-lg border border-primary/15 bg-primary/10 text-sm font-black text-primary-emphasis">
                       {u.full_name.charAt(0).toUpperCase()}
                     </div>
                     <div className="min-w-0">

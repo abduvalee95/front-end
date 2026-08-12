@@ -31,8 +31,8 @@ const STAT_CONFIGS: StatConfig[] = [
     getValue: ({ total }) => total,
     getSub: (_ctx, t) => t('orgs.registered'),
     icon: Building2,
-    iconClass: 'text-indigo-600 dark:text-indigo-400',
-    iconBgClass: 'bg-indigo-100 dark:bg-indigo-950',
+    iconClass: 'text-primary-emphasis',
+    iconBgClass: 'bg-primary-muted',
     gradientClass: 'edu-gradient-card-1',
   },
   {
@@ -40,8 +40,8 @@ const STAT_CONFIGS: StatConfig[] = [
     getValue: ({ active }) => active,
     getSub: ({ rate }, t) => t('orgs.activation_rate', { rate }),
     icon: CheckCircle2,
-    iconClass: 'text-teal-600 dark:text-teal-400',
-    iconBgClass: 'bg-teal-100 dark:bg-teal-950',
+    iconClass: 'text-success-emphasis',
+    iconBgClass: 'bg-success-muted',
     gradientClass: 'edu-gradient-card-2',
   },
   {
@@ -49,8 +49,8 @@ const STAT_CONFIGS: StatConfig[] = [
     getValue: ({ inactive }) => inactive,
     getSub: ({ total, rate }, t) => t('orgs.suspended', { rate: total > 0 ? 100 - rate : 0 }),
     icon: XCircle,
-    iconClass: 'text-amber-600 dark:text-amber-400',
-    iconBgClass: 'bg-amber-100 dark:bg-amber-950',
+    iconClass: 'text-warning-emphasis',
+    iconBgClass: 'bg-warning-muted',
     gradientClass: 'edu-gradient-card-4',
   },
   {
@@ -58,8 +58,8 @@ const STAT_CONFIGS: StatConfig[] = [
     getValue: ({ users }) => users,
     getSub: (_ctx, t) => t('orgs.across_page'),
     icon: Users,
-    iconClass: 'text-purple-600 dark:text-purple-400',
-    iconBgClass: 'bg-purple-100 dark:bg-purple-950',
+    iconClass: 'text-primary-emphasis',
+    iconBgClass: 'bg-primary-muted',
     gradientClass: 'edu-gradient-card-3',
   },
 ];
@@ -79,7 +79,7 @@ export function OrgStatsCards({ data, isLoading }: OrgStatsCardsProps) {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {[0, 1, 2, 3].map((i) => (
           <Card key={i} className="overflow-hidden border-0 shadow-sm">
-            <Skeleton className="h-1 bg-indigo-100/50 dark:bg-indigo-950/30" />
+            <Skeleton className="h-1 bg-primary-muted/50 dark:bg-primary-muted/30" />
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <Skeleton className="h-4 w-28" />
               <Skeleton className="size-4 rounded" />

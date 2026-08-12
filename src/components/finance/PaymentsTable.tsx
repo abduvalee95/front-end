@@ -17,7 +17,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { useTranslations } from '@/i18n/index';
 import { cn } from '@/lib/utils';
 import type { Payment, PaymentMethod } from '@/types/finance';
-import { formatAmount, formatDate, getInitials, METHOD_CLASSES } from './utils';
+import { formatAmount, formatDate, getInitials, METHOD_TONES } from './utils';
 import { ReceiptDialog } from './ReceiptDialog';
 
 const METHOD_ICONS: Record<PaymentMethod, ReactNode> = {
@@ -91,13 +91,13 @@ export function PaymentsTable({ payments, isLoading, onAddPayment, onDelete, isD
             <TableRow>
               <TableCell colSpan={6} className="py-14 text-center">
                 <div className="flex flex-col items-center gap-3">
-                  <div className="size-12 rounded-2xl bg-emerald-500/10 flex items-center justify-center">
-                    <ReceiptText className="size-5 text-emerald-500" />
+                  <div className="size-12 rounded-2xl bg-success/10 flex items-center justify-center">
+                    <ReceiptText className="size-5 text-success-emphasis" />
                   </div>
                   <p className="text-[13px] font-semibold text-muted-foreground/70">No payments yet</p>
                   <button
                     onClick={onAddPayment}
-                    className="text-[12px] font-bold text-emerald-600 hover:text-emerald-700 underline-offset-2 hover:underline"
+                    className="text-[12px] font-bold text-success-emphasis hover:text-success-emphasis underline-offset-2 hover:underline"
                   >
                     Record first payment
                   </button>
@@ -106,7 +106,7 @@ export function PaymentsTable({ payments, isLoading, onAddPayment, onDelete, isD
             </TableRow>
           ) : (
             payments.map((p) => (
-              <TableRow key={p.id} className="group border-b border-border/30 hover:bg-emerald-500/[0.03] transition-colors">
+              <TableRow key={p.id} className="group border-b border-border/30 hover:bg-success/[0.03] transition-colors">
                 <TableCell className="py-3 pl-4">
                   <span className="text-[11.5px] tabular-nums font-medium text-muted-foreground/60">
                     {formatDate(p.paid_at)}
@@ -114,30 +114,22 @@ export function PaymentsTable({ payments, isLoading, onAddPayment, onDelete, isD
                 </TableCell>
                 <TableCell>
                   <div className="flex items-center gap-2.5">
-                    <div className="size-7 shrink-0 rounded-lg bg-emerald-500/12 text-[9.5px] font-black text-emerald-700 dark:text-emerald-400 flex items-center justify-center">
+                    <div className="size-7 shrink-0 rounded-lg bg-success/12 text-[9.5px] font-black text-success-emphasis flex items-center justify-center">
                       {p.student_name ? getInitials(p.student_name) : '?'}
                     </div>
                     <span className="text-[13px] font-semibold">{p.student_name ?? '—'}</span>
                   </div>
                 </TableCell>
                 <TableCell className="text-right pr-4">
-                  <span className="text-[13px] font-black text-emerald-600 dark:text-emerald-400 tabular-nums">
+                  <span className="text-h4 tabular-nums text-success-emphasis">
                     +{formatAmount(p.amount)}
                   </span>
                 </TableCell>
                 <TableCell className="hidden sm:table-cell">
-                  {METHOD_CLASSES[p.method] && (
-                    <Badge
-                      variant="outline"
-                      className={cn(
-                        'rounded-full gap-1 text-[10.5px] px-2 py-0.5 font-semibold border',
-                        METHOD_CLASSES[p.method],
-                      )}
-                    >
-                      {METHOD_ICONS[p.method]}
-                      {methodLabel(p.method)}
-                    </Badge>
-                  )}
+                  <Badge variant={METHOD_TONES[p.method]}>
+                    {METHOD_ICONS[p.method]}
+                    {methodLabel(p.method)}
+                  </Badge>
                 </TableCell>
                 <TableCell className="text-[11.5px] text-muted-foreground/55 max-w-[160px] truncate hidden md:table-cell">
                   {p.description || '—'}

@@ -78,7 +78,7 @@ export function AddExpenseModal({ open, onClose }: AddExpenseModalProps) {
       <DialogContent>
         <DialogHeader>
           <div className="flex items-center gap-3">
-            <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-rose-500/10 text-rose-600">
+            <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-danger/10 text-danger-emphasis">
               <TrendingDown className="size-5" />
             </div>
             <div>
@@ -146,7 +146,7 @@ export function AddExpenseModal({ open, onClose }: AddExpenseModalProps) {
             type="submit"
             form="add-expense-form"
             disabled={createExpense.isPending}
-            className="rounded-xl bg-rose-600 hover:bg-rose-700 text-white"
+            className="rounded-xl bg-danger hover:bg-danger text-white"
           >
             {createExpense.isPending && <Loader2 className="mr-2 size-4 animate-spin" />}
             <Plus className="mr-1.5 size-4" />

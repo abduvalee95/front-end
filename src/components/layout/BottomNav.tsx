@@ -73,7 +73,7 @@ export function BottomNav() {
   return (
     <>
       <nav
-        className="lg:hidden fixed bottom-0 inset-x-0 z-40 bottom-nav-safe border-t border-slate-200/70 bg-white/95 backdrop-blur-lg shadow-[0_-2px_12px_rgba(15,23,42,0.06)]"
+        className="lg:hidden fixed bottom-0 inset-x-0 z-40 bottom-nav-safe border-t border-border/70 bg-white/95 backdrop-blur-lg shadow-[0_-2px_12px_rgba(15,23,42,0.06)]"
         style={{ height: 'calc(var(--bottom-nav-h) + env(safe-area-inset-bottom, 0px))' }}
         aria-label="Mobile bottom navigation"
       >
@@ -88,7 +88,7 @@ export function BottomNav() {
                   href={item.href}
                   className={cn(
                     'flex h-full flex-col items-center justify-center gap-1 text-[10px] font-medium transition-colors',
-                    active ? 'text-blue-600' : 'text-slate-500 active:text-slate-800',
+                    active ? 'text-primary-emphasis' : 'text-muted-foreground active:text-foreground',
                   )}
                   aria-current={active ? 'page' : undefined}
                 >
@@ -104,7 +104,7 @@ export function BottomNav() {
               onClick={() => setOpen(true)}
               className={cn(
                 'flex h-full w-full flex-col items-center justify-center gap-1 text-[10px] font-medium transition-colors',
-                open ? 'text-blue-600' : 'text-slate-500 active:text-slate-800',
+                open ? 'text-primary-emphasis' : 'text-muted-foreground active:text-foreground',
               )}
               aria-label="More menu"
             >
@@ -123,23 +123,23 @@ export function BottomNav() {
           role="dialog"
           aria-modal="true"
         >
-          <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm animate-in fade-in duration-150" />
+          <div className="absolute inset-0 bg-card/40 backdrop-blur-sm animate-in fade-in duration-150" />
           <div
             className="absolute bottom-0 inset-x-0 bg-white rounded-t-3xl shadow-2xl animate-in slide-in-from-bottom duration-200"
             style={{ paddingBottom: 'calc(env(safe-area-inset-bottom, 0px) + 16px)' }}
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between px-5 pt-4 pb-2">
-              <div className="mx-auto h-1.5 w-10 rounded-full bg-slate-300" />
+              <div className="mx-auto h-1.5 w-10 rounded-full bg-muted" />
             </div>
             <div className="flex items-center justify-between px-5 pb-3">
-              <h2 className="text-base font-semibold text-slate-900">
+              <h2 className="text-base font-semibold text-foreground">
                 {tCommon('menu') || 'Menu'}
               </h2>
               <button
                 type="button"
                 onClick={() => setOpen(false)}
-                className="rounded-full p-1.5 text-slate-500 active:bg-slate-100"
+                className="rounded-full p-1.5 text-muted-foreground active:bg-muted"
                 aria-label="Close"
               >
                 <X className="size-5" />
@@ -158,8 +158,8 @@ export function BottomNav() {
                       className={cn(
                         'flex flex-col items-center justify-center gap-1.5 rounded-2xl px-2 py-3 text-[11px] font-medium transition-colors',
                         active
-                          ? 'bg-blue-50 text-blue-600'
-                          : 'text-slate-600 active:bg-slate-100',
+                          ? 'bg-primary-muted text-primary-emphasis'
+                          : 'text-foreground active:bg-muted',
                       )}
                     >
                       <Icon className="size-5" />
@@ -169,14 +169,14 @@ export function BottomNav() {
                 );
               })}
             </ul>
-            <div className="border-t border-slate-100 px-4 py-3">
+            <div className="border-t border-border px-4 py-3">
               <button
                 type="button"
                 onClick={() => {
                   setOpen(false);
                   logout();
                 }}
-                className="flex w-full items-center justify-center gap-2 rounded-2xl bg-red-50 px-4 py-3 text-sm font-medium text-red-600 active:bg-red-100"
+                className="flex w-full items-center justify-center gap-2 rounded-2xl bg-danger-muted px-4 py-3 text-sm font-medium text-danger-emphasis active:bg-danger-muted"
               >
                 <LogOut className="size-4" />
                 {tCommon('logout') || 'Logout'}

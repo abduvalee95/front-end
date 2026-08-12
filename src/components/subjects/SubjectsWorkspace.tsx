@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useTranslations } from '@/i18n/index';
 import { toast } from 'sonner';
-import { Search, Pencil, Trash2 } from 'lucide-react';
+import { Layers, Search, Pencil, Trash2 } from 'lucide-react';
 import { usePermissions } from '@/hooks/usePermissions';
 import { useSubjects, useDeleteSubject } from '@/hooks/useSubjects';
 import { CreateSubjectModal } from '@/components/subjects/CreateSubjectModal';
@@ -11,6 +11,7 @@ import { EditSubjectModal } from '@/components/subjects/EditSubjectModal';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
+import { PageHeader } from '@/components/ui/page-header';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -56,15 +57,13 @@ export function SubjectsWorkspace() {
   };
 
   return (
-    <div className="p-6 space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-foreground">{t('title')}</h1>
-          <p className="text-sm text-muted-foreground mt-1">{t('subtitle')}</p>
-        </div>
-        {canManage && <CreateSubjectModal />}
-      </div>
+    <div className="space-y-5">
+      <PageHeader
+        icon={Layers}
+        title={t('title')}
+        subtitle={t('subtitle')}
+        actions={canManage ? <CreateSubjectModal /> : undefined}
+      />
 
       {/* Search */}
       <div className="relative max-w-sm">
@@ -73,7 +72,7 @@ export function SubjectsWorkspace() {
           placeholder={t('search_subjects')}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="pl-9 rounded-xl"
+          className="pl-9"
         />
       </div>
 

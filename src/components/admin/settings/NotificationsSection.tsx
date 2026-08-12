@@ -100,7 +100,7 @@ export function NotificationsSection({
               <div key={c.ch} className="flex items-center justify-between py-0.5">
                 <span className="text-xs font-medium text-muted-foreground">{c.ch}</span>
                 {c.active ? (
-                  <Badge className="bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border-emerald-500/25 rounded-lg text-[10px] gap-1 h-5">
+                  <Badge className="bg-success/15 text-success-emphasis border-success/25 rounded-lg text-[10px] gap-1 h-5">
                     <CheckCircle2 className="size-2.5" /> {t('active')}
                   </Badge>
                 ) : (

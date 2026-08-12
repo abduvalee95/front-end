@@ -91,7 +91,7 @@ export function AdminHeader({ onMobileMenuToggle }: AdminHeaderProps) {
           aria-label="Notifications"
         >
           <Bell className="size-5" />
-          <span className="absolute right-2 top-2 size-2 rounded-full border-2 border-background bg-rose-500" />
+          <span className="absolute right-2 top-2 size-2 rounded-full border-2 border-background bg-danger" />
         </Button>
         <ThemeToggle className="rounded-xl text-muted-foreground hover:text-primary" />
         <div className="mx-1 hidden h-8 w-px bg-border sm:block" />
@@ -139,7 +139,7 @@ export function AdminHeader({ onMobileMenuToggle }: AdminHeaderProps) {
               </DropdownMenuItem>
               <DropdownMenuSeparator className="bg-border/60" />
               <DropdownMenuItem
-                className="mx-1 cursor-pointer rounded-lg text-rose-500 focus:bg-rose-500/10 focus:text-rose-500"
+                className="mx-1 cursor-pointer rounded-lg text-danger-emphasis focus:bg-danger/10 focus:text-danger-emphasis"
                 onClick={() => logout()}
               >
                 <LogOut className="mr-2 size-4" />

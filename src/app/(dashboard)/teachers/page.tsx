@@ -31,13 +31,13 @@ export default function TeachersPage() {
     <div className="space-y-8 animate-in fade-in duration-700">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-slate-900">{t('title')}</h1>
-          <p className="text-slate-500 mt-1">{t('subtitle')}</p>
+          <h1 className="text-3xl font-bold tracking-tight text-foreground">{t('title')}</h1>
+          <p className="text-muted-foreground mt-1">{t('subtitle')}</p>
         </div>
         <div className="flex items-center gap-3">
           <Button
             onClick={() => setIsCreateOpen(true)}
-            className="bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg shadow-indigo-600/20"
+            className="bg-primary hover:bg-primary text-white shadow-lg shadow-primary/20"
           >
             <Plus className="mr-2 h-4 w-4" /> {t('add_teacher')}
           </Button>

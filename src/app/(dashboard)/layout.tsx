@@ -26,7 +26,7 @@ export default function DashboardLayout({
         <AuthGuard>
           <div className="dashboard-shell flex h-dvh overflow-hidden relative bg-background">
             {/* Soft glow — adapts to theme */}
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 size-[600px] rounded-full blur-[120px] pointer-events-none bg-blue-300/20 dark:bg-cyan-500/10" />
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 size-[600px] rounded-full blur-[120px] pointer-events-none bg-primary/20 dark:bg-primary/10" />
 
             {/* Sidebar — desktop only */}
             <div className="hidden lg:flex">

@@ -202,7 +202,8 @@
     "revenue_trend_sub": "Этот месяц",
     "amount": "Сумма",
     "transactions": "Транзакции",
-    "no_revenue_data": "Нет данных о доходах"
+    "no_revenue_data": "Нет данных о доходах",
+    "teacher_quick_links": "Быстрый переход к работе"
   },
   "leads": {
     "title": "Лиды",
@@ -242,7 +243,9 @@
     "lead_moved_to": "Лид перемещён в {status}",
     "converted": "конвертирован",
     "ai_assistant": "AI ассистент",
-    "name_placeholder": "Например: Али Валиев"
+    "name_placeholder": "Например: Али Валиев",
+    "view_kanban": "Канбан",
+    "view_table": "Таблица"
   },
   "students": {
     "title": "Студенты",
@@ -818,7 +821,8 @@
     "users_desc": "Управление персоналом",
     "update_password": "Обновить пароль",
     "password_updated": "Пароль обновлён. Войдите заново.",
-    "profile_updated": "Профиль обновлён"
+    "profile_updated": "Профиль обновлён",
+    "invite_user": "Пригласить пользователя"
   },
   "header": {
     "search_placeholder": "Поиск студентов, учителей, классов...",

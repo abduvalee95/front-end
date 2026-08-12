@@ -202,7 +202,8 @@
     "revenue_trend_sub": "This month",
     "amount": "Amount",
     "transactions": "Transactions",
-    "no_revenue_data": "No revenue data"
+    "no_revenue_data": "No revenue data",
+    "teacher_quick_links": "Jump straight into your day"
   },
   "leads": {
     "title": "Leads",
@@ -242,7 +243,9 @@
     "lead_moved_to": "Lead moved to {status}",
     "converted": "converted",
     "ai_assistant": "AI Assistant",
-    "name_placeholder": "E.g. Ali Valiyev"
+    "name_placeholder": "E.g. Ali Valiyev",
+    "view_kanban": "Kanban view",
+    "view_table": "Table view"
   },
   "students": {
     "title": "Students",
@@ -818,7 +821,8 @@
     "users_desc": "Staff management",
     "update_password": "Update Password",
     "password_updated": "Password updated. Please log in again.",
-    "profile_updated": "Profile updated"
+    "profile_updated": "Profile updated",
+    "invite_user": "Invite user"
   },
   "header": {
     "search_placeholder": "Search students, teachers, classes...",

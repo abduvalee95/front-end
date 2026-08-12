@@ -128,7 +128,7 @@ export function CreateStudentModal({ open: externalOpen, onClose }: CreateStuden
       {!isControlled && (
         <DialogTrigger
           render={
-            <Button className="gap-2 bg-slate-950 text-white shadow-md hover:bg-slate-800 dark:bg-primary dark:text-primary-foreground dark:hover:bg-primary/90 rounded-xl h-10 px-5">
+            <Button>
               <Plus className="size-4" />
               {t('add_student')}
             </Button>
@@ -274,7 +274,7 @@ export function CreateStudentModal({ open: externalOpen, onClose }: CreateStuden
             >
               {tCommon('cancel')}
             </Button>
-            <Button type="submit" disabled={isLoading} className="w-full sm:w-auto rounded-xl">
+            <Button type="submit" disabled={isLoading} className="w-full sm:w-auto">
               {isLoading ? (
                 <>
                   <Loader2 className="mr-2 size-4 animate-spin" />

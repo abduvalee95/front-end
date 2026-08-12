@@ -202,7 +202,8 @@
     "revenue_trend_sub": "Bu oy",
     "amount": "Summa",
     "transactions": "Tranzaksiyalar",
-    "no_revenue_data": "Daromad ma'lumotlari yo'q"
+    "no_revenue_data": "Daromad ma'lumotlari yo'q",
+    "teacher_quick_links": "Ish kuningizga tez oʻting"
   },
   "leads": {
     "title": "Lidlar",
@@ -242,7 +243,9 @@
     "lead_moved_to": "Lid {status} ga ko'chirildi",
     "converted": "aylantirildi",
     "ai_assistant": "AI yordamchi",
-    "name_placeholder": "Masalan: Ali Valiyev"
+    "name_placeholder": "Masalan: Ali Valiyev",
+    "view_kanban": "Kanban koʻrinishi",
+    "view_table": "Jadval koʻrinishi"
   },
   "students": {
     "title": "O'quvchilar",
@@ -875,7 +878,8 @@
     "users_desc": "Xodimlarni boshqarish",
     "update_password": "Parolni yangilash",
     "password_updated": "Parol yangilandi. Qayta kiring.",
-    "profile_updated": "Profil yangilandi"
+    "profile_updated": "Profil yangilandi",
+    "invite_user": "Foydalanuvchi taklif qilish"
   },
   "header": {
     "search_placeholder": "O'quvchi, o'qituvchi, sinflarni qidiring...",

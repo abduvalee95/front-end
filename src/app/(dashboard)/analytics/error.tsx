@@ -12,7 +12,7 @@ export default function AnalyticsError({
 }) {
   return (
     <div className="max-w-xl mx-auto mt-20 text-center space-y-4">
-      <div className="inline-flex h-16 w-16 rounded-2xl bg-red-500/10 text-red-500 items-center justify-center">
+      <div className="inline-flex h-16 w-16 rounded-2xl bg-danger/10 text-danger-emphasis items-center justify-center">
         <AlertTriangle className="h-8 w-8" />
       </div>
       <h1 className="text-2xl font-bold">Analytics failed to load</h1>

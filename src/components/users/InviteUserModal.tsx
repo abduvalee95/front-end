@@ -83,9 +83,9 @@ export function InviteUserModal({ open, onOpenChange }: InviteUserModalProps) {
 
         {tempPassword ? (
           <div className="py-6 space-y-4">
-            <div className="p-4 bg-emerald-500/10 border border-emerald-500/20 rounded-xl text-center space-y-2">
-              <KeyRound className="size-8 text-emerald-500 mx-auto mb-2" />
-              <p className="text-sm font-medium text-emerald-600 dark:text-emerald-400">{t('invited_success')}</p>
+            <div className="p-4 bg-success/10 border border-success/20 rounded-xl text-center space-y-2">
+              <KeyRound className="size-8 text-success-emphasis mx-auto mb-2" />
+              <p className="text-sm font-medium text-success-emphasis">{t('invited_success')}</p>
               <p className="text-xs text-muted-foreground">{t('temp_password_desc')}</p>
               <div className="bg-background p-3 rounded-lg font-mono text-lg font-bold tracking-wider select-all mt-4 border border-input">
                 {tempPassword}

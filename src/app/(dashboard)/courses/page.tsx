@@ -30,16 +30,16 @@ export default function CoursesPage() {
       label: t('tab_courses'),
       icon: BookMarked,
       count: coursesCount,
-      accent: 'data-active:text-indigo-600 dark:data-active:text-indigo-400',
-      countCls: 'bg-indigo-500/12 text-indigo-700 dark:text-indigo-300',
+      accent: 'data-active:text-primary-emphasis dark:data-active:text-primary-emphasis',
+      countCls: 'bg-primary/12 text-primary-emphasis',
     },
     {
       id: 'subjects',
       label: t('tab_subjects'),
       icon: Layers,
       count: subjectsCount,
-      accent: 'data-active:text-emerald-600 dark:data-active:text-emerald-400',
-      countCls: 'bg-emerald-500/12 text-emerald-700 dark:text-emerald-300',
+      accent: 'data-active:text-success-emphasis dark:data-active:text-success-emphasis',
+      countCls: 'bg-success/12 text-success-emphasis',
     },
   ];
 
@@ -67,8 +67,8 @@ export default function CoursesPage() {
                   'size-4 shrink-0 transition-colors',
                   isActive
                     ? id === 'courses'
-                      ? 'text-indigo-500 dark:text-indigo-400'
-                      : 'text-emerald-500 dark:text-emerald-400'
+                      ? 'text-primary-emphasis'
+                      : 'text-success-emphasis'
                     : 'text-muted-foreground/60',
                 )}
               />

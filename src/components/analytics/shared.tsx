@@ -56,14 +56,14 @@ export interface MetricCardProps {
 }
 
 const ACCENTS: Record<NonNullable<MetricCardProps['accent']>, string> = {
-  blue: 'bg-blue-500/10 text-blue-600 dark:text-blue-400',
-  violet: 'bg-violet-500/10 text-violet-600 dark:text-violet-400',
-  emerald: 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400',
-  cyan: 'bg-cyan-500/10 text-cyan-600 dark:text-cyan-400',
-  amber: 'bg-amber-500/10 text-amber-600 dark:text-amber-400',
-  pink: 'bg-pink-500/10 text-pink-600 dark:text-pink-400',
-  red: 'bg-red-500/10 text-red-600 dark:text-red-400',
-  teal: 'bg-teal-500/10 text-teal-600 dark:text-teal-400',
+  blue: 'bg-primary/10 text-primary-emphasis',
+  violet: 'bg-primary/10 text-primary-emphasis',
+  emerald: 'bg-success/10 text-success-emphasis',
+  cyan: 'bg-primary/10 text-primary-emphasis',
+  amber: 'bg-warning/10 text-warning-emphasis',
+  pink: 'bg-danger/10 text-danger-emphasis',
+  red: 'bg-danger/10 text-danger-emphasis',
+  teal: 'bg-success/10 text-success-emphasis',
 };
 
 export function MetricCard({
@@ -117,9 +117,9 @@ export function TrendBadge({ delta }: { delta: number }) {
   const down = delta < -0.5;
   const Icon = up ? TrendingUp : down ? TrendingDown : Minus;
   const color = up
-    ? 'text-emerald-600 bg-emerald-500/10'
+    ? 'text-success-emphasis bg-success/10'
     : down
-    ? 'text-red-600 bg-red-500/10'
+    ? 'text-danger-emphasis bg-danger/10'
     : 'text-muted-foreground bg-muted';
   return (
     <div className={cn('flex items-center gap-1 px-2 py-1 rounded-full text-xs font-semibold', color)}>
@@ -131,11 +131,11 @@ export function TrendBadge({ delta }: { delta: number }) {
 
 // ── Insight card ─────────────────────────────────────────────────
 const TONE_STYLE: Record<InsightTone, { bar: string; icon: string; label: string }> = {
-  positive: { bar: 'bg-emerald-500', icon: 'text-emerald-500', label: 'Positive' },
-  warning: { bar: 'bg-amber-500', icon: 'text-amber-500', label: 'Warning' },
-  urgent: { bar: 'bg-red-500', icon: 'text-red-500', label: 'Urgent' },
-  info: { bar: 'bg-blue-500', icon: 'text-blue-500', label: 'Info' },
-  opportunity: { bar: 'bg-violet-500', icon: 'text-violet-500', label: 'Opportunity' },
+  positive: { bar: 'bg-success', icon: 'text-success-emphasis', label: 'Positive' },
+  warning: { bar: 'bg-warning', icon: 'text-warning-emphasis', label: 'Warning' },
+  urgent: { bar: 'bg-danger', icon: 'text-danger-emphasis', label: 'Urgent' },
+  info: { bar: 'bg-primary', icon: 'text-primary-emphasis', label: 'Info' },
+  opportunity: { bar: 'bg-primary', icon: 'text-primary-emphasis', label: 'Opportunity' },
 };
 
 export function InsightCard({ insight }: { insight: Insight }) {
@@ -168,10 +168,10 @@ export function AIBanner({
   isLoading?: boolean;
 }) {
   return (
-    <div className="relative overflow-hidden rounded-2xl p-6 bg-gradient-to-br from-blue-600 via-violet-600 to-purple-700 text-white shadow-xl">
+    <div className="relative overflow-hidden rounded-2xl p-6 bg-gradient-to-br from-primary via-primary to-primary text-white shadow-xl">
       <div className="absolute inset-0 opacity-20 pointer-events-none">
         <div className="absolute -top-10 -right-10 h-40 w-40 rounded-full bg-white blur-3xl" />
-        <div className="absolute -bottom-10 -left-10 h-40 w-40 rounded-full bg-cyan-300 blur-3xl" />
+        <div className="absolute -bottom-10 -left-10 h-40 w-40 rounded-full bg-primary blur-3xl" />
       </div>
       <div className="relative flex items-start gap-4">
         <div className="h-12 w-12 rounded-2xl bg-white/15 backdrop-blur flex items-center justify-center shrink-0 border border-white/20">

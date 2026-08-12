@@ -56,7 +56,7 @@ export function StudentTableRow({ student, index, teacherScoped, canManageScope,
             </AvatarFallback>
           </Avatar>
           <div className="min-w-0">
-            <p className="truncate text-sm font-semibold text-foreground group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+            <p className="truncate text-sm font-semibold text-foreground group-hover:text-primary-emphasis dark:group-hover:text-primary-emphasis transition-colors">
               {student.name}
             </p>
             <p className="truncate text-[11px] font-mono text-muted-foreground">{student.phone}</p>
@@ -68,11 +68,11 @@ export function StudentTableRow({ student, index, teacherScoped, canManageScope,
           className={cn(
             'inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[11px] font-bold',
             student.status === 'ACTIVE'
-              ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-300'
-              : 'bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400',
+              ? 'bg-success-muted text-success-emphasis dark:bg-success/10 dark:text-success-emphasis'
+              : 'bg-muted text-muted-foreground dark:bg-card dark:text-muted-foreground',
           )}
         >
-          <span className={cn('size-1.5 rounded-full', student.status === 'ACTIVE' ? 'bg-emerald-500' : 'bg-slate-400')} />
+          <span className={cn('size-1.5 rounded-full', student.status === 'ACTIVE' ? 'bg-success' : 'bg-muted')} />
           {student.status === 'ACTIVE' ? t('status_active') : t('status_inactive')}
         </span>
       </TableCell>
@@ -81,7 +81,7 @@ export function StudentTableRow({ student, index, teacherScoped, canManageScope,
           <span
             role="img"
             aria-label={t('pay_paid')}
-            className="inline-flex size-7 items-center justify-center rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-300"
+            className="inline-flex size-7 items-center justify-center rounded-full bg-success-muted text-success-emphasis dark:bg-success/20 dark:text-success-emphasis"
           >
             <Check aria-hidden="true" className="size-4 stroke-[3]" />
           </span>
@@ -90,7 +90,7 @@ export function StudentTableRow({ student, index, teacherScoped, canManageScope,
           <span
             role="img"
             aria-label={`${t('pay_partial')} ${student.paymentPercent ?? 0}%`}
-            className="inline-flex h-7 min-w-[28px] items-center justify-center rounded-full bg-amber-100 px-1.5 text-[11px] font-black tabular-nums text-amber-700 dark:bg-amber-500/20 dark:text-amber-300"
+            className="inline-flex h-7 min-w-[28px] items-center justify-center rounded-full bg-warning-muted px-1.5 text-[11px] font-black tabular-nums text-warning-emphasis dark:bg-warning/20 dark:text-warning-emphasis"
           >
             {student.paymentPercent ?? 0}%
           </span>
@@ -99,7 +99,7 @@ export function StudentTableRow({ student, index, teacherScoped, canManageScope,
           <span
             role="img"
             aria-label={t('pay_unpaid')}
-            className="inline-flex size-7 items-center justify-center rounded-full bg-rose-100 text-rose-600 dark:bg-rose-500/20 dark:text-rose-300"
+            className="inline-flex size-7 items-center justify-center rounded-full bg-danger-muted text-danger-emphasis dark:bg-danger/20 dark:text-danger-emphasis"
           >
             <X aria-hidden="true" className="size-4 stroke-[3]" />
           </span>
@@ -121,7 +121,7 @@ export function StudentTableRow({ student, index, teacherScoped, canManageScope,
       </TableCell>
       <TableCell>
         {student.totalDiscount > 0 ? (
-          <span className="inline-flex items-center gap-1 rounded-full bg-amber-50 px-2.5 py-0.5 text-[11px] font-bold text-amber-700 dark:bg-amber-500/10 dark:text-amber-300">
+          <span className="inline-flex items-center gap-1 rounded-full bg-warning-muted px-2.5 py-0.5 text-[11px] font-bold text-warning-emphasis dark:bg-warning/10 dark:text-warning-emphasis">
             −{new Intl.NumberFormat('ru-RU').format(student.totalDiscount)} с
           </span>
         ) : (
@@ -138,7 +138,7 @@ export function StudentTableRow({ student, index, teacherScoped, canManageScope,
                   variant="ghost"
                   size="icon"
                   aria-label={t('edit_student')}
-                  className="size-9 rounded-lg hover:bg-indigo-50 hover:text-indigo-600 dark:hover:bg-indigo-500/10"
+                  className="size-9 rounded-lg hover:bg-primary-muted hover:text-primary-emphasis dark:hover:bg-primary/10"
                 >
                   <PenLine aria-hidden="true" className="size-3.5" />
                 </Button>
@@ -148,7 +148,7 @@ export function StudentTableRow({ student, index, teacherScoped, canManageScope,
               variant="ghost"
               size="icon"
               aria-label={t('delete_student')}
-              className="size-9 rounded-lg hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-500/10 dark:hover:text-red-400"
+              className="size-9 rounded-lg hover:bg-danger-muted hover:text-danger-emphasis dark:hover:bg-danger/10 dark:hover:text-danger-emphasis"
               disabled={isDeleting}
               onClick={handleDelete}
             >

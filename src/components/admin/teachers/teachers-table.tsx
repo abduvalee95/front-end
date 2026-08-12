@@ -47,16 +47,16 @@ export function TeachersTable({
               <TableRow key={i}>
                 <TableCell className="pl-4">
                   <div className="flex items-center gap-3">
-                    <Skeleton className="h-10 w-10 rounded-lg bg-cyan-100/50 dark:bg-cyan-950/30 shrink-0" />
+                    <Skeleton className="h-10 w-10 rounded-lg bg-primary-muted/50 dark:bg-primary-muted/30 shrink-0" />
                     <div className="space-y-1.5">
-                      <Skeleton className="h-3.5 w-32 bg-cyan-100/50 dark:bg-cyan-950/30" />
-                      <Skeleton className="h-3 w-24 bg-cyan-100/50 dark:bg-cyan-950/30" />
+                      <Skeleton className="h-3.5 w-32 bg-primary-muted/50 dark:bg-primary-muted/30" />
+                      <Skeleton className="h-3 w-24 bg-primary-muted/50 dark:bg-primary-muted/30" />
                     </div>
                   </div>
                 </TableCell>
                 {[0, 1, 2].map((j) => (
                   <TableCell key={j}>
-                    <Skeleton className="h-4 w-20 bg-cyan-100/50 dark:bg-cyan-950/30" />
+                    <Skeleton className="h-4 w-20 bg-primary-muted/50 dark:bg-primary-muted/30" />
                   </TableCell>
                 ))}
                 <TableCell />
@@ -101,7 +101,7 @@ export function TeachersTable({
             teachers.map((teacher) => (
               <TableRow
                 key={teacher.id}
-                className="hover:bg-cyan-50/50 dark:hover:bg-cyan-950/20 cursor-pointer transition-colors"
+                className="hover:bg-primary-muted/50 dark:hover:bg-primary-muted/20 cursor-pointer transition-colors"
                 onClick={() => onTeacherClick(teacher)}
               >
                 <TableCell className="pl-4">
@@ -153,15 +153,15 @@ export function TeachersTable({
 function TeacherStatusBadge({ status }: { status: string }) {
   const variants: Record<string, { className: string; label: string }> = {
     ACTIVE: {
-      className: 'bg-teal-100 text-teal-700 border-teal-200 dark:bg-teal-950 dark:text-teal-300 dark:border-teal-800',
+      className: 'bg-success-muted text-success-emphasis border-success/30 dark:bg-success-muted dark:text-success-emphasis dark:border-success/30',
       label: 'Active',
     },
     INACTIVE: {
-      className: 'bg-red-100 text-red-700 border-red-200 dark:bg-red-950 dark:text-red-300 dark:border-red-800',
+      className: 'bg-danger-muted text-danger-emphasis border-danger/30 dark:bg-danger-muted dark:text-danger-emphasis dark:border-danger/30',
       label: 'Inactive',
     },
     ON_LEAVE: {
-      className: 'bg-amber-100 text-amber-700 border-amber-200 dark:bg-amber-950 dark:text-amber-300 dark:border-amber-800',
+      className: 'bg-warning-muted text-warning-emphasis border-warning/30 dark:bg-warning-muted dark:text-warning-emphasis dark:border-warning/30',
       label: 'On Leave',
     },
   }

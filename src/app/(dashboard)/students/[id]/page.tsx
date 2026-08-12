@@ -161,8 +161,8 @@ export default function StudentDetailPage() {
                 className={cn(
                   'mt-1 rounded-full',
                   student.status === 'ACTIVE'
-                    ? 'border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-300'
-                    : 'border-slate-200 bg-slate-50 text-slate-600 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300',
+                    ? 'border-success/30 bg-success-muted text-success-emphasis dark:border-success/30 dark:bg-success/10 dark:text-success-emphasis'
+                    : 'border-border bg-muted text-foreground dark:border-border dark:bg-card dark:text-muted-foreground',
                 )}
               >
                 {student.status === 'ACTIVE' ? t('status_active') : t('status_inactive')}
@@ -298,7 +298,7 @@ export default function StudentDetailPage() {
                                 <Button
                                   size="icon"
                                   variant="ghost"
-                                  className="size-8 text-emerald-600 hover:bg-emerald-50 hover:text-emerald-700"
+                                  className="size-8 text-success-emphasis hover:bg-success-muted hover:text-success-emphasis"
                                   onClick={() => saveDiscount(enrollment.id)}
                                   disabled={savingDiscount}
                                 >
@@ -316,7 +316,7 @@ export default function StudentDetailPage() {
                               </div>
                             ) : (
                               <button
-                                className="mt-2 flex items-center gap-1 text-[11px] text-muted-foreground/60 hover:text-amber-600 transition-colors"
+                                className="mt-2 flex items-center gap-1 text-[11px] text-muted-foreground/60 hover:text-warning-emphasis transition-colors"
                                 onClick={() => {
                                   setDiscountInput(discount > 0 ? String(discount) : '');
                                   setEditingDiscountId(enrollment.id);
@@ -334,10 +334,10 @@ export default function StudentDetailPage() {
                                   <p className="text-[11px] text-muted-foreground line-through tabular-nums">
                                     {formatAmount(baseFee)}
                                   </p>
-                                  <p className="text-sm font-black tabular-nums text-emerald-600 dark:text-emerald-400">
+                                  <p className="text-sm font-black tabular-nums text-success-emphasis">
                                     {formatAmount(netFee)}
                                   </p>
-                                  <Badge variant="outline" className="mt-1 rounded-full border-amber-300/70 bg-amber-50 text-[10px] font-bold text-amber-700 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-300">
+                                  <Badge variant="outline" className="mt-1 rounded-full border-warning/70 bg-warning-muted text-[10px] font-bold text-warning-emphasis dark:border-warning/30 dark:bg-warning/10 dark:text-warning-emphasis">
                                     −{formatAmount(discount)}
                                   </Badge>
                                 </>
@@ -402,7 +402,7 @@ export default function StudentDetailPage() {
           </div>
           <Button
             size="sm"
-            className="rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white h-9"
+            className="rounded-xl bg-success hover:bg-success text-white h-9"
             onClick={() => setPaymentModalOpen(true)}
           >
             <Plus className="mr-1.5 size-4" />
@@ -430,11 +430,11 @@ export default function StudentDetailPage() {
                   className="flex items-center justify-between rounded-xl border border-border/50 bg-muted/20 px-4 py-3"
                 >
                   <div className="flex items-center gap-3">
-                    <div className="flex size-9 items-center justify-center rounded-lg bg-emerald-500/10">
-                      <CreditCard className="size-4 text-emerald-600" />
+                    <div className="flex size-9 items-center justify-center rounded-lg bg-success/10">
+                      <CreditCard className="size-4 text-success-emphasis" />
                     </div>
                     <div>
-                      <p className="text-sm font-bold text-emerald-600">+{formatAmount(payment.amount)}</p>
+                      <p className="text-sm font-bold text-success-emphasis">+{formatAmount(payment.amount)}</p>
                       <p className="text-xs text-muted-foreground">
                         {format(new Date(payment.paid_at), 'dd MMM yyyy')}
                         {payment.description && <span> · {payment.description}</span>}
@@ -448,7 +448,7 @@ export default function StudentDetailPage() {
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="size-7 rounded-lg text-emerald-600/70 hover:text-emerald-700 hover:bg-emerald-500/10"
+                      className="size-7 rounded-lg text-success-emphasis/70 hover:text-success-emphasis hover:bg-success/10"
                       title="Квитанция"
                       onClick={() =>
                         setReceiptPayment({
@@ -537,9 +537,9 @@ function MonthlyCalendar({
           className={cn(
             'group flex flex-col items-center gap-2 rounded-2xl border p-3 transition-all duration-200',
             isCurrent && 'ring-2 ring-offset-1',
-            status === 'full' && 'border-emerald-200 bg-emerald-50/50 ring-emerald-400 dark:border-emerald-500/30 dark:bg-emerald-500/5',
-            status === 'partial' && 'border-amber-200 bg-amber-50/50 ring-amber-400 dark:border-amber-500/30 dark:bg-amber-500/5',
-            status === 'none' && 'border-red-200 bg-red-50/50 ring-red-400 dark:border-red-500/30 dark:bg-red-500/5',
+            status === 'full' && 'border-success/30 bg-success-muted/50 ring-success/30 dark:border-success/30 dark:bg-success/5',
+            status === 'partial' && 'border-warning/30 bg-warning-muted/50 ring-warning/30 dark:border-warning/30 dark:bg-warning/5',
+            status === 'none' && 'border-danger/30 bg-danger-muted/50 ring-danger/30 dark:border-danger/30 dark:bg-danger/5',
             status === 'future' && 'border-border/40 bg-muted/20 opacity-50 ring-border',
           )}
         >
@@ -561,7 +561,7 @@ function MonthlyCalendar({
 function MonthCircle({ status, ratio = 0 }: { status: PaymentStatus; ratio?: number }) {
   if (status === 'full') {
     return (
-      <div className="flex size-9 items-center justify-center rounded-full bg-emerald-500 shadow-md ring-4 ring-emerald-100 dark:ring-emerald-500/20">
+      <div className="flex size-9 items-center justify-center rounded-full bg-success shadow-md ring-4 ring-success/30 dark:ring-success/20">
         <Check className="size-4 text-white stroke-[3]" />
       </div>
     );
@@ -569,7 +569,7 @@ function MonthCircle({ status, ratio = 0 }: { status: PaymentStatus; ratio?: num
 
   if (status === 'none') {
     return (
-      <div className="flex size-9 items-center justify-center rounded-full bg-red-500 shadow-md ring-4 ring-red-100 dark:ring-red-500/20">
+      <div className="flex size-9 items-center justify-center rounded-full bg-danger shadow-md ring-4 ring-danger/30 dark:ring-danger/20">
         <X className="size-4 text-white stroke-[3]" />
       </div>
     );
@@ -589,7 +589,7 @@ function MonthCircle({ status, ratio = 0 }: { status: PaymentStatus; ratio?: num
   const percent = Math.round(clamped * 100);
   return (
     <div
-      className="size-9 rounded-full shadow-md ring-4 ring-amber-100 dark:ring-amber-500/20 flex items-center justify-center overflow-hidden"
+      className="size-9 rounded-full shadow-md ring-4 ring-warning/30 dark:ring-warning/20 flex items-center justify-center overflow-hidden"
       style={{
         background: `conic-gradient(#22c55e 0deg ${paidDeg}deg, #ef4444 ${paidDeg}deg 360deg)`,
       }}
@@ -618,9 +618,9 @@ function PaymentStatusBadge({
   if (status === 'future') return null;
 
   const configs = {
-    full: { bg: 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-300 dark:border-emerald-500/30', dotBg: 'bg-emerald-500', label: paid },
-    partial: { bg: 'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-500/10 dark:text-amber-300 dark:border-amber-500/30', dotBg: '', label: partial },
-    none: { bg: 'bg-red-50 text-red-600 border-red-200 dark:bg-red-500/10 dark:text-red-400 dark:border-red-500/30', dotBg: 'bg-red-500', label: unpaid },
+    full: { bg: 'bg-success-muted text-success-emphasis border-success/30 dark:bg-success/10 dark:text-success-emphasis dark:border-success/30', dotBg: 'bg-success', label: paid },
+    partial: { bg: 'bg-warning-muted text-warning-emphasis border-warning/30 dark:bg-warning/10 dark:text-warning-emphasis dark:border-warning/30', dotBg: '', label: partial },
+    none: { bg: 'bg-danger-muted text-danger-emphasis border-danger/30 dark:bg-danger/10 dark:text-danger-emphasis dark:border-danger/30', dotBg: 'bg-danger', label: unpaid },
     future: { bg: '', dotBg: '', label: '' },
   };
 
@@ -670,9 +670,9 @@ function PaymentStatusCircle({
 
   const label = status === 'full' ? paidLabel : status === 'partial' ? partialLabel : unpaidLabel;
   const textColor =
-    status === 'full' ? 'text-emerald-600 dark:text-emerald-400' :
-    status === 'partial' ? 'text-amber-600 dark:text-amber-400' :
-    'text-red-600 dark:text-red-400';
+    status === 'full' ? 'text-success-emphasis' :
+    status === 'partial' ? 'text-warning-emphasis' :
+    'text-danger-emphasis';
 
   return (
     <div className="flex items-center gap-2.5">

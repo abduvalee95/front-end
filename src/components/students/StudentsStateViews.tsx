@@ -8,8 +8,8 @@ export function TeacherPrompt() {
   const t = useTranslations('students');
   return (
     <div className="flex flex-col items-center justify-center px-6 py-16 text-center">
-      <div className="mb-4 flex size-14 items-center justify-center rounded-2xl bg-indigo-50 dark:bg-indigo-500/10">
-        <BookOpen className="size-6 text-indigo-500" />
+      <div className="mb-4 flex size-14 items-center justify-center rounded-2xl bg-primary-muted dark:bg-primary/10">
+        <BookOpen className="size-6 text-primary-emphasis" />
       </div>
       <p className="text-sm font-bold text-foreground">{t('select_teacher')}</p>
       <p className="mt-1.5 max-w-xs text-xs text-muted-foreground">{t('select_teacher_desc')}</p>
@@ -48,8 +48,8 @@ export function EmptyState({
 export function ErrorState({ onRetry }: { onRetry: () => void }) {
   return (
     <div className="flex flex-col items-center justify-center px-6 py-16 text-center">
-      <div className="mb-4 flex size-14 items-center justify-center rounded-2xl bg-red-50 dark:bg-red-500/10">
-        <AlertCircle className="size-6 text-red-500" />
+      <div className="mb-4 flex size-14 items-center justify-center rounded-2xl bg-danger-muted dark:bg-danger/10">
+        <AlertCircle className="size-6 text-danger-emphasis" />
       </div>
       <p className="text-sm font-bold">Failed to load students</p>
       <p className="mt-1.5 text-xs text-muted-foreground">Check backend connection and try again.</p>

@@ -78,12 +78,12 @@ export function IntegrationsTab({
   return (
     <div className="space-y-6 transition-all duration-300 animate-in fade-in slide-in-from-bottom-4">
       {/* Telegram */}
-      <Card className={`border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden transition-all duration-300 ${formData.telegram_enabled ? 'ring-1 ring-blue-500/20' : ''}`}>
-        <CardHeader className={`border-b transition-colors ${formData.telegram_enabled ? 'bg-blue-50/50 dark:bg-blue-900/20' : 'bg-slate-50/50 dark:bg-slate-900/50'}`}>
+      <Card className={`border-border shadow-sm overflow-hidden transition-all duration-300 ${formData.telegram_enabled ? 'ring-1 ring-primary/20' : ''}`}>
+        <CardHeader className={`border-b transition-colors ${formData.telegram_enabled ? 'bg-primary-muted/50 dark:bg-primary-muted/20' : 'bg-muted/50 dark:bg-card/50'}`}>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <div className={`size-12 rounded-xl flex items-center justify-center transition-colors ${
-                formData.telegram_enabled ? 'bg-blue-500 text-white' : 'bg-slate-200 dark:bg-slate-800 text-slate-500'
+                formData.telegram_enabled ? 'bg-primary text-white' : 'bg-muted dark:bg-card text-muted-foreground'
               }`}>
                 <Send className="size-6" />
               </div>
@@ -109,7 +109,7 @@ export function IntegrationsTab({
                 placeholder="123456789:ABCdefGHIjklMNOpqrSTUvwxyz"
                 className="h-11 font-mono text-sm"
               />
-              <p className="text-xs text-slate-500">{t('bot_token_help')}</p>
+              <p className="text-xs text-muted-foreground">{t('bot_token_help')}</p>
             </div>
             <div className="space-y-2">
               <Label className="text-sm font-medium">{t('chat_id')}</Label>
@@ -119,15 +119,15 @@ export function IntegrationsTab({
                 placeholder="-1001234567890"
                 className="h-11 font-mono text-sm"
               />
-              <p className="text-xs text-slate-500">{t('chat_id_help')}</p>
+              <p className="text-xs text-muted-foreground">{t('chat_id_help')}</p>
             </div>
           </div>
           
           {formData.telegram_enabled && formData.telegram_bot_token && formData.telegram_chat_id && (
             <Alert className={`${
-              telegramStatus === 'success' ? 'border-green-500/50 bg-green-50 dark:bg-green-900/20' :
-              telegramStatus === 'error' ? 'border-red-500/50 bg-red-50 dark:bg-red-900/20' :
-              'border-blue-500/50 bg-blue-50 dark:bg-blue-900/20'
+              telegramStatus === 'success' ? 'border-success/50 bg-success-muted/20' :
+              telegramStatus === 'error' ? 'border-danger/50 bg-danger-muted/20' :
+              'border-primary/50 bg-primary-muted/20'
             }`}>
               <Info className="size-4" />
               <AlertDescription className="flex items-center justify-between">
@@ -155,12 +155,12 @@ export function IntegrationsTab({
       </Card>
 
       {/* WhatsApp */}
-      <Card className={`border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden transition-all duration-300 ${formData.whatsapp_enabled ? 'ring-1 ring-emerald-500/20' : ''}`}>
-        <CardHeader className={`border-b transition-colors ${formData.whatsapp_enabled ? 'bg-emerald-50/50 dark:bg-emerald-900/20' : 'bg-slate-50/50 dark:bg-slate-900/50'}`}>
+      <Card className={`border-border shadow-sm overflow-hidden transition-all duration-300 ${formData.whatsapp_enabled ? 'ring-1 ring-success/20' : ''}`}>
+        <CardHeader className={`border-b transition-colors ${formData.whatsapp_enabled ? 'bg-success-muted/50 dark:bg-success-muted/20' : 'bg-muted/50 dark:bg-card/50'}`}>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <div className={`size-12 rounded-xl flex items-center justify-center transition-colors ${
-                formData.whatsapp_enabled ? 'bg-emerald-500 text-white' : 'bg-slate-200 dark:bg-slate-800 text-slate-500'
+                formData.whatsapp_enabled ? 'bg-success text-white' : 'bg-muted dark:bg-card text-muted-foreground'
               }`}>
                 <MessageSquare className="size-6" />
               </div>
@@ -207,9 +207,9 @@ export function IntegrationsTab({
           
           {formData.whatsapp_enabled && formData.whatsapp_cloud_token && formData.whatsapp_phone_number_id && (
             <Alert className={`${
-              whatsappStatus === 'success' ? 'border-green-500/50 bg-green-50 dark:bg-green-900/20' :
-              whatsappStatus === 'error' ? 'border-red-500/50 bg-red-50 dark:bg-red-900/20' :
-              'border-emerald-500/50 bg-emerald-50 dark:bg-emerald-900/20'
+              whatsappStatus === 'success' ? 'border-success/50 bg-success-muted/20' :
+              whatsappStatus === 'error' ? 'border-danger/50 bg-danger-muted/20' :
+              'border-success/50 bg-success-muted/20'
             }`}>
               <Info className="size-4" />
               <AlertDescription className="flex items-center justify-between">

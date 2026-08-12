@@ -62,25 +62,25 @@ function ProposalCard({
   };
 
   return (
-    <div className="rounded-xl border border-violet-200 bg-violet-50/60 p-3 my-1 space-y-2">
-      <p className="text-[10px] font-bold uppercase tracking-wider text-violet-500">{t('needs_confirm')}</p>
-      <p className="text-xs font-semibold text-slate-800">{proposal.summary}</p>
+    <div className="rounded-xl border border-primary/30 bg-primary-muted/60 p-3 my-1 space-y-2">
+      <p className="text-[10px] font-bold uppercase tracking-wider text-primary-emphasis">{t('needs_confirm')}</p>
+      <p className="text-xs font-semibold text-foreground">{proposal.summary}</p>
       {state === 'done' ? (
-        <p className="text-xs text-emerald-600 font-bold">✓ {t('done')}</p>
+        <p className="text-xs text-success-emphasis font-bold">✓ {t('done')}</p>
       ) : state === 'error' ? (
-        <p className="text-xs text-red-500">{t('action_error')}</p>
+        <p className="text-xs text-danger-emphasis">{t('action_error')}</p>
       ) : (
         <div className="flex gap-2">
           <button
             onClick={handleConfirmClick}
             disabled={state === 'loading'}
-            className="flex-1 rounded-lg bg-violet-600 py-1.5 text-xs font-bold text-white hover:bg-violet-700 disabled:opacity-50 transition-colors"
+            className="flex-1 rounded-lg bg-primary py-1.5 text-xs font-bold text-white hover:bg-primary disabled:opacity-50 transition-colors"
           >
             {state === 'loading' ? t('typing') : t('confirm')}
           </button>
           <button
             onClick={() => setState('idle')}
-            className="rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-medium text-slate-500 hover:bg-slate-50 transition-colors"
+            className="rounded-lg border border-border px-3 py-1.5 text-xs font-medium text-muted-foreground hover:bg-muted transition-colors"
           >
             {t('cancel')}
           </button>
@@ -113,29 +113,29 @@ function ToolResultCard({
   if (toolName === 'find_student' && result?.found === true) {
     const s = result.student as StudentResult;
     return (
-      <div className="rounded-xl border border-indigo-100 bg-indigo-50/60 p-3 text-xs space-y-1.5 my-1">
+      <div className="rounded-xl border border-primary/30 bg-primary-muted/60 p-3 text-xs space-y-1.5 my-1">
         <div className="flex items-center gap-2">
-          <span className="size-7 rounded-lg bg-indigo-200 flex items-center justify-center font-bold text-indigo-700 text-sm">
+          <span className="size-7 rounded-lg bg-primary-muted flex items-center justify-center font-bold text-primary-emphasis text-sm">
             {s?.name?.charAt(0) ?? '?'}
           </span>
           <div>
-            <p className="font-bold text-slate-800 text-sm">{s?.name}</p>
-            <p className="text-slate-500">{s?.phone}</p>
+            <p className="font-bold text-foreground text-sm">{s?.name}</p>
+            <p className="text-muted-foreground">{s?.phone}</p>
           </div>
           <span
             className={`ml-auto rounded-full px-2 py-0.5 text-[10px] font-bold ${
               s?.status === 'ACTIVE'
-                ? 'bg-emerald-100 text-emerald-700'
-                : 'bg-slate-100 text-slate-500'
+                ? 'bg-success-muted text-success-emphasis'
+                : 'bg-muted text-muted-foreground'
             }`}
           >
             {s?.status}
           </span>
         </div>
         {(s?.enrollments?.length ?? 0) > 0 && (
-          <div className="pt-1 border-t border-indigo-100">
+          <div className="pt-1 border-t border-primary/30">
             {s?.enrollments?.map((e, i) => (
-              <p key={i} className="text-slate-500">
+              <p key={i} className="text-muted-foreground">
                 📚 {e.group} {e.course ? `— ${e.course}` : ''}
               </p>
             ))}
@@ -151,17 +151,17 @@ function ToolResultCard({
       (result?.students as Array<{ name: string; phone: string; debt: string | number }>) ?? [];
     if (!students.length)
       return (
-        <div className="text-xs text-slate-400 italic my-1">{t('no_debtors')}</div>
+        <div className="text-xs text-muted-foreground italic my-1">{t('no_debtors')}</div>
       );
     return (
-      <div className="rounded-xl border border-amber-100 bg-amber-50/60 p-3 my-1 space-y-1">
-        <p className="text-[10px] font-bold uppercase tracking-wider text-amber-600">
+      <div className="rounded-xl border border-warning/30 bg-warning-muted/60 p-3 my-1 space-y-1">
+        <p className="text-[10px] font-bold uppercase tracking-wider text-warning-emphasis">
           {t('debtors')} ({students.length})
         </p>
         {students.slice(0, 8).map((s, i) => (
           <div key={i} className="flex items-center justify-between text-xs">
-            <span className="font-medium text-slate-700">{s.name}</span>
-            <span className="text-red-600 font-bold">{Number(s.debt).toLocaleString()} KGS</span>
+            <span className="font-medium text-foreground">{s.name}</span>
+            <span className="text-danger-emphasis font-bold">{Number(s.debt).toLocaleString()} KGS</span>
           </div>
         ))}
       </div>
@@ -173,18 +173,18 @@ function ToolResultCard({
     const groups =
       (result?.groups as Array<{ name: string; course?: string; teacher?: string }>) ?? [];
     return (
-      <div className="rounded-xl border border-slate-200 bg-white p-3 my-1 space-y-1.5">
-        <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+      <div className="rounded-xl border border-border bg-white p-3 my-1 space-y-1.5">
+        <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
           {t('today_lessons')}
         </p>
         {groups.slice(0, 6).map((g, i) => (
           <div key={i} className="flex items-center gap-2 text-xs">
-            <span className="size-1.5 rounded-full bg-indigo-400 shrink-0" />
-            <span className="font-medium text-slate-700">{g.name}</span>
-            {g.teacher && <span className="text-slate-400 ml-auto">{g.teacher}</span>}
+            <span className="size-1.5 rounded-full bg-primary shrink-0" />
+            <span className="font-medium text-foreground">{g.name}</span>
+            {g.teacher && <span className="text-muted-foreground ml-auto">{g.teacher}</span>}
           </div>
         ))}
-        {!groups.length && <p className="text-xs text-slate-400">{t('no_lessons')}</p>}
+        {!groups.length && <p className="text-xs text-muted-foreground">{t('no_lessons')}</p>}
       </div>
     );
   }
@@ -193,24 +193,24 @@ function ToolResultCard({
   if (toolName === 'get_financial_summary') {
     if (result?.error === 'forbidden') return null; // model will explain
     return (
-      <div className="rounded-xl border border-emerald-100 bg-emerald-50/60 p-3 my-1 grid grid-cols-2 gap-2">
+      <div className="rounded-xl border border-success/30 bg-success-muted/60 p-3 my-1 grid grid-cols-2 gap-2">
         <div>
-          <p className="text-[10px] text-slate-400">{t('revenue')}</p>
-          <p className="font-bold text-emerald-700 text-sm">
+          <p className="text-[10px] text-muted-foreground">{t('revenue')}</p>
+          <p className="font-bold text-success-emphasis text-sm">
             {Number(result?.revenue || 0).toLocaleString()} KGS
           </p>
         </div>
         <div>
-          <p className="text-[10px] text-slate-400">{t('payments')}</p>
-          <p className="font-bold text-slate-700 text-sm">{String(result?.paymentsCount || 0)}</p>
+          <p className="text-[10px] text-muted-foreground">{t('payments')}</p>
+          <p className="font-bold text-foreground text-sm">{String(result?.paymentsCount || 0)}</p>
         </div>
         <div>
-          <p className="text-[10px] text-slate-400">{t('students')}</p>
-          <p className="font-bold text-slate-700 text-sm">{String(result?.studentsTotal || 0)}</p>
+          <p className="text-[10px] text-muted-foreground">{t('students')}</p>
+          <p className="font-bold text-foreground text-sm">{String(result?.studentsTotal || 0)}</p>
         </div>
         <div>
-          <p className="text-[10px] text-slate-400">{t('attendance')}</p>
-          <p className="font-bold text-slate-700 text-sm">
+          <p className="text-[10px] text-muted-foreground">{t('attendance')}</p>
+          <p className="font-bold text-foreground text-sm">
             {String(result?.attendanceRate || 0)}%
           </p>
         </div>
@@ -331,7 +331,7 @@ export function AICopilot() {
         type="button"
         onClick={() => setIsOpen(true)}
         className={cn(
-          'fixed bottom-24 right-6 z-50 flex size-14 items-center justify-center rounded-full shadow-2xl transition-all duration-500 hover:scale-110 hover:shadow-indigo-500/50 edu-gradient-primary cursor-pointer lg:bottom-6',
+          'fixed bottom-24 right-6 z-50 flex size-14 items-center justify-center rounded-full shadow-2xl transition-all duration-500 hover:scale-110 hover:shadow-primary/50 edu-gradient-primary cursor-pointer lg:bottom-6',
           isOpen ? 'scale-0 opacity-0 pointer-events-none' : 'scale-100 opacity-100',
         )}
       >
@@ -369,7 +369,7 @@ export function AICopilot() {
         <div className="flex-1 overflow-y-auto p-4 space-y-4">
           {messages.length === 0 ? (
             <div className="flex h-full flex-col items-center justify-center text-center space-y-3 opacity-70">
-              <div className="flex size-16 items-center justify-center rounded-full bg-indigo-500/10 text-indigo-500">
+              <div className="flex size-16 items-center justify-center rounded-full bg-primary/10 text-primary-emphasis">
                 <Sparkles className="size-8" />
               </div>
               <div>
@@ -385,7 +385,7 @@ export function AICopilot() {
                   <button
                     key={s}
                     onClick={() => setInput(s)}
-                    className="rounded-full border border-indigo-200 bg-indigo-50 px-3 py-1 text-[11px] font-medium text-indigo-600 hover:bg-indigo-100 transition-colors"
+                    className="rounded-full border border-primary/30 bg-primary-muted px-3 py-1 text-[11px] font-medium text-primary-emphasis hover:bg-primary-muted transition-colors"
                   >
                     {s}
                   </button>
@@ -438,7 +438,7 @@ export function AICopilot() {
 
           {/* Error display */}
           {error && (
-            <div className="flex items-center gap-2 rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-600 dark:border-red-900 dark:bg-red-950/30 dark:text-red-400">
+            <div className="flex items-center gap-2 rounded-xl border border-danger/30 bg-danger-muted px-3 py-2 text-xs text-danger-emphasis dark:border-danger/30 dark:bg-danger-muted/30 dark:text-danger-emphasis">
               <AlertCircle className="size-4 shrink-0" />
               <span>{t('error_prefix')} {error.message}</span>
             </div>
@@ -462,7 +462,7 @@ export function AICopilot() {
               size="icon"
               variant="ghost"
               onClick={handleMic}
-              className={`absolute right-10 size-8 rounded-lg ${isListening ? 'text-red-500' : 'text-slate-400'}`}
+              className={`absolute right-10 size-8 rounded-lg ${isListening ? 'text-danger-emphasis' : 'text-muted-foreground'}`}
             >
               <Mic className="size-4" />
             </Button>

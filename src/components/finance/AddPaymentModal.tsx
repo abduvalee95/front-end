@@ -114,7 +114,7 @@ export function AddPaymentModal({ open, onClose, studentId, studentName }: AddPa
       <DialogContent>
         <DialogHeader>
           <div className="flex items-center gap-3">
-            <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-600">
+            <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-success/10 text-success-emphasis">
               <CreditCard className="size-5" />
             </div>
             <div>
@@ -213,7 +213,7 @@ export function AddPaymentModal({ open, onClose, studentId, studentName }: AddPa
             type="submit"
             form="add-payment-form"
             disabled={createPayment.isPending}
-            className="rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white"
+            className="rounded-xl bg-success hover:bg-success text-white"
           >
             {createPayment.isPending && <Loader2 className="mr-2 size-4 animate-spin" />}
             <Plus className="mr-1.5 size-4" />

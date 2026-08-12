@@ -88,9 +88,9 @@ export function ProfileTab({ user, profileData, handleProfileChange }: ProfileTa
   return (
     <div className="space-y-6 transition-all duration-300 animate-in fade-in slide-in-from-bottom-4">
       {/* Avatar Section */}
-      <Card className="border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
-        <CardHeader className="bg-gradient-to-r from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 border-b border-slate-200 dark:border-slate-800">
-          <CardTitle className="text-lg font-semibold flex items-center gap-2">
+      <Card>
+        <CardHeader className="border-b border-border bg-muted/50">
+          <CardTitle className="flex items-center gap-2 text-card-foreground">
             <User className="size-5 text-primary" />
             {t('profile_photo')}
           </CardTitle>
@@ -99,31 +99,32 @@ export function ProfileTab({ user, profileData, handleProfileChange }: ProfileTa
         <CardContent className="p-6">
           <div className="flex items-center gap-6">
             <div className="relative">
-              <Avatar className="size-24 border-4 border-white dark:border-slate-800 shadow-lg">
+              <Avatar className="size-24 border-4 border-card shadow-card">
                 <AvatarImage src={profileData.avatar_url} />
-                <AvatarFallback className="bg-gradient-to-br from-primary to-primary/60 text-white text-2xl font-bold">
+                <AvatarFallback className="bg-primary text-2xl font-bold text-primary-foreground">
                   {profileData.full_name?.charAt(0).toUpperCase() || 'U'}
                 </AvatarFallback>
               </Avatar>
               <button 
                 onClick={() => fileInputRef.current?.click()}
-                className="absolute -bottom-2 -right-2 size-8 bg-primary text-white rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition-transform"
+                aria-label={t('change_photo')}
+                className="absolute -bottom-2 -right-2 flex size-8 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-card transition-transform hover:scale-110"
               >
                 <Upload className="size-4" />
               </button>
               <input ref={fileInputRef} type="file" accept="image/*" className="hidden" />
             </div>
             <div className="flex-1">
-              <p className="font-semibold text-slate-900 dark:text-white">{profileData.full_name}</p>
-              <p className="text-sm text-slate-500 dark:text-slate-400 capitalize">{user?.role?.replace('_', ' ').toLowerCase()}</p>
+              <p className="text-h3 text-foreground">{profileData.full_name}</p>
+              <p className="text-body-sm capitalize text-muted-foreground">{user?.role?.replace('_', ' ').toLowerCase()}</p>
               <div className="flex gap-2 mt-3">
-                <Button size="sm" variant="outline" onClick={() => fileInputRef.current?.click()}>
-                  <Upload className="size-4 mr-2" />
+                <Button size="sm" variant="secondary" onClick={() => fileInputRef.current?.click()}>
+                  <Upload className="size-4" />
                   {t('change_photo')}
                 </Button>
                 {profileData.avatar_url && (
-                  <Button size="sm" variant="ghost" className="text-red-500 hover:text-red-600">
-                    <X className="size-4 mr-2" />
+                  <Button size="sm" variant="danger">
+                    <X className="size-4" />
                     {t('remove')}
                   </Button>
                 )}
@@ -134,15 +135,15 @@ export function ProfileTab({ user, profileData, handleProfileChange }: ProfileTa
       </Card>
 
       {/* Personal Info */}
-      <Card className="border-slate-200 dark:border-slate-800 shadow-sm">
-        <CardHeader className="border-b border-slate-200 dark:border-slate-800">
-          <CardTitle className="text-lg font-semibold">{t('personal_info')}</CardTitle>
+      <Card>
+        <CardHeader className="border-b border-border">
+          <CardTitle>{t('personal_info')}</CardTitle>
           <CardDescription>{t('personal_info_desc')}</CardDescription>
         </CardHeader>
         <CardContent className="p-6 space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="full_name" className="text-sm font-medium">{t('full_name')}</Label>
+              <Label htmlFor="full_name" className="text-h4">{t('full_name')}</Label>
               <Input 
                 id="full_name" 
                 value={profileData.full_name} 
@@ -151,7 +152,7 @@ export function ProfileTab({ user, profileData, handleProfileChange }: ProfileTa
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="profile_email" className="text-sm font-medium">{t('email')}</Label>
+              <Label htmlFor="profile_email" className="text-h4">{t('email')}</Label>
               <Input 
                 id="profile_email" 
                 type="email" 
@@ -161,7 +162,7 @@ export function ProfileTab({ user, profileData, handleProfileChange }: ProfileTa
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="profile_phone" className="text-sm font-medium">{t('phone')}</Label>
+              <Label htmlFor="profile_phone" className="text-h4">{t('phone')}</Label>
               <Input 
                 id="profile_phone" 
                 value={profileData.phone} 
@@ -171,25 +172,25 @@ export function ProfileTab({ user, profileData, handleProfileChange }: ProfileTa
               />
             </div>
             <div className="space-y-2">
-              <Label className="text-sm font-medium">{t('role')}</Label>
-              <div className="h-11 flex items-center px-3 rounded-md border bg-slate-50 dark:bg-slate-900 text-sm text-slate-600 dark:text-slate-400">
+              <Label className="text-h4">{t('role')}</Label>
+              <div className="flex h-11 items-center rounded-control border border-border bg-muted px-3 text-body-sm text-muted-foreground">
                 {user?.role?.replace('_', ' ')}
               </div>
             </div>
           </div>
         </CardContent>
-        <CardFooter className="border-t border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50 px-6 py-4 flex justify-end">
-          <Button onClick={handleSaveProfile} disabled={savingProfile} className="bg-primary hover:bg-primary/90">
-            {savingProfile ? <Loader2 className="size-4 mr-2 animate-spin" /> : <Save className="size-4 mr-2" />}
+        <CardFooter className="justify-end px-6 py-4">
+          <Button onClick={handleSaveProfile} disabled={savingProfile}>
+            {savingProfile ? <Loader2 className="size-4 animate-spin" /> : <Save className="size-4" />}
             {t('save_changes')}
           </Button>
         </CardFooter>
       </Card>
 
       {/* Password Change */}
-      <Card className="border-slate-200 dark:border-slate-800 shadow-sm">
-        <CardHeader className="border-b border-slate-200 dark:border-slate-800">
-          <CardTitle className="text-lg font-semibold flex items-center gap-2">
+      <Card>
+        <CardHeader className="border-b border-border">
+          <CardTitle className="flex items-center gap-2">
             <Key className="size-5 text-primary" />
             {t('change_password')}
           </CardTitle>
@@ -198,7 +199,7 @@ export function ProfileTab({ user, profileData, handleProfileChange }: ProfileTa
         <CardContent className="p-6 space-y-4">
           <div className="space-y-4 max-w-md">
             <div className="space-y-2">
-              <Label className="text-sm font-medium">{t('current_password')}</Label>
+              <Label className="text-h4">{t('current_password')}</Label>
               <div className="relative">
                 <Input 
                   type={showPassword.current ? 'text' : 'password'} 
@@ -208,7 +209,7 @@ export function ProfileTab({ user, profileData, handleProfileChange }: ProfileTa
                 />
                 <button 
                   onClick={() => setShowPassword(prev => ({ ...prev, current: !prev.current }))}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground transition-colors hover:text-foreground"
                 >
                   {showPassword.current ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
                 </button>
@@ -216,7 +217,7 @@ export function ProfileTab({ user, profileData, handleProfileChange }: ProfileTa
             </div>
             
             <div className="space-y-2">
-              <Label className="text-sm font-medium">{t('new_password')}</Label>
+              <Label className="text-h4">{t('new_password')}</Label>
               <div className="relative">
                 <Input 
                   type={showPassword.new ? 'text' : 'password'} 
@@ -226,7 +227,7 @@ export function ProfileTab({ user, profileData, handleProfileChange }: ProfileTa
                 />
                 <button 
                   onClick={() => setShowPassword(prev => ({ ...prev, new: !prev.new }))}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground transition-colors hover:text-foreground"
                 >
                   {showPassword.new ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
                 </button>
@@ -234,11 +235,11 @@ export function ProfileTab({ user, profileData, handleProfileChange }: ProfileTa
               {passwordData.new && (
                 <div className="space-y-2">
                   <div className="flex justify-between text-xs">
-                    <span className="text-slate-500">{t('password_strength')}</span>
-                    <span className={`font-medium ${
-                      getPasswordStrength(passwordData.new) >= 75 ? 'text-green-500' : 
-                      getPasswordStrength(passwordData.new) >= 50 ? 'text-yellow-500' : 'text-red-500'
-                    }`}>
+                    <span className="text-muted-foreground">{t('password_strength')}</span>
+                    <span className={
+                      getPasswordStrength(passwordData.new) >= 75 ? 'font-medium text-success-emphasis' :
+                      getPasswordStrength(passwordData.new) >= 50 ? 'font-medium text-warning-emphasis' : 'font-medium text-danger-emphasis'
+                    }>
                       {getPasswordStrength(passwordData.new) >= 75 ? t('strong') : 
                        getPasswordStrength(passwordData.new) >= 50 ? t('medium') : t('weak')}
                     </span>
@@ -249,7 +250,7 @@ export function ProfileTab({ user, profileData, handleProfileChange }: ProfileTa
             </div>
             
             <div className="space-y-2">
-              <Label className="text-sm font-medium">{t('confirm_password')}</Label>
+              <Label className="text-h4">{t('confirm_password')}</Label>
               <div className="relative">
                 <Input 
                   type={showPassword.confirm ? 'text' : 'password'} 
@@ -259,7 +260,7 @@ export function ProfileTab({ user, profileData, handleProfileChange }: ProfileTa
                 />
                 <button 
                   onClick={() => setShowPassword(prev => ({ ...prev, confirm: !prev.confirm }))}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground transition-colors hover:text-foreground"
                 >
                   {showPassword.confirm ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
                 </button>
@@ -267,13 +268,12 @@ export function ProfileTab({ user, profileData, handleProfileChange }: ProfileTa
             </div>
           </div>
         </CardContent>
-        <CardFooter className="border-t border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50 px-6 py-4 flex justify-end">
+        <CardFooter className="justify-end px-6 py-4">
           <Button
             onClick={handleUpdatePassword}
             disabled={savingPassword || !passwordData.current || passwordData.new.length < 6 || passwordData.new !== passwordData.confirm}
-            className="bg-primary hover:bg-primary/90"
           >
-            {savingPassword ? <Loader2 className="size-4 mr-2 animate-spin" /> : <Key className="size-4 mr-2" />}
+            {savingPassword ? <Loader2 className="size-4 animate-spin" /> : <Key className="size-4" />}
             {t('update_password')}
           </Button>
         </CardFooter>

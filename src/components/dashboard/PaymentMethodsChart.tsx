@@ -14,12 +14,14 @@ import {
 } from 'recharts';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useTranslations } from '@/i18n/index';
+import { seriesColor, useChartTheme } from '@/lib/chart-theme';
 import type { PaymentByMethod } from '@/services/dashboard';
 
-const PAYMENT_METHOD_COLORS: Record<string, string> = {
-  CASH: '#2dd4bf',
-  CARD: '#3b82f6',
-  TRANSFER: '#8b5cf6',
+/** Position in the shared chart ramp. */
+const PAYMENT_METHOD_SERIES: Record<string, number> = {
+  CASH: 1,
+  CARD: 0,
+  TRANSFER: 5,
 };
 
 interface PaymentMethodsChartProps {
@@ -36,6 +38,7 @@ const METHOD_LABEL_KEYS: Record<string, string> = {
 export function PaymentMethodsChart({ paymentsByMethod, isLoading }: PaymentMethodsChartProps) {
   const t = useTranslations('dashboard');
   const tFinance = useTranslations('finance');
+  const chart = useChartTheme();
 
   const barData = useMemo(() => {
     if (!paymentsByMethod) return [];
@@ -44,19 +47,19 @@ export function PaymentMethodsChart({ paymentsByMethod, isLoading }: PaymentMeth
       return {
         name: key ? tFinance(key) : item.method || 'Unknown',
         value: item.count,
-        color: PAYMENT_METHOD_COLORS[item.method || ''] || '#64748b',
+        color: seriesColor(chart, PAYMENT_METHOD_SERIES[item.method ?? ''] ?? 5),
       };
     });
-  }, [paymentsByMethod, tFinance]);
+  }, [paymentsByMethod, tFinance, chart]);
 
   return (
-    <div className="bg-card rounded-2xl p-6 min-w-0 shadow-sm">
+    <div className="min-w-0 rounded-card border border-border bg-card p-6 shadow-card">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h3 className="text-sm font-bold text-foreground tracking-tight">{t('payment_methods')}</h3>
-          <p className="text-[11px] text-muted-foreground font-medium mt-0.5">{t('transaction_breakdown')}</p>
+          <h3 className="text-h3 text-foreground">{t('payment_methods')}</h3>
+          <p className="mt-0.5 text-caption font-normal text-muted-foreground">{t('transaction_breakdown')}</p>
         </div>
-        <div className="flex size-7 items-center justify-center rounded-lg bg-muted">
+        <div className="flex size-7 items-center justify-center rounded-control bg-muted">
           <Clock className="size-3.5 text-muted-foreground" strokeWidth={2} />
         </div>
       </div>
@@ -71,29 +74,23 @@ export function PaymentMethodsChart({ paymentsByMethod, isLoading }: PaymentMeth
         <div className="h-[280px] w-full mt-4 min-h-[280px]">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={barData} margin={{ top: 0, right: 0, left: -20, bottom: 0 }} barSize={45}>
-              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--border))" />
+              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={chart.grid} />
               <XAxis
                 dataKey="name"
                 axisLine={false}
                 tickLine={false}
-                tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12, fontWeight: 600 }}
+                tick={{ fill: chart.axis, fontSize: 12, fontWeight: 500 }}
               />
               <YAxis
                 axisLine={false}
                 tickLine={false}
-                tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
+                tick={{ fill: chart.axis, fontSize: 12 }}
               />
               <Tooltip
-                cursor={{ fill: 'hsl(var(--muted))' }}
-                contentStyle={{
-                  borderRadius: '16px',
-                  border: '1px solid hsl(var(--border))',
-                  background: 'hsl(var(--popover))',
-                  color: 'hsl(var(--popover-foreground))',
-                  boxShadow: '0 10px 30px rgba(0,0,0,0.1)',
-                }}
+                cursor={{ fill: chart.grid, fillOpacity: 0.4 }}
+                contentStyle={chart.tooltip}
               />
-              <Bar dataKey="value" radius={[10, 10, 10, 10]}>
+              <Bar dataKey="value" radius={[8, 8, 8, 8]}>
                 {barData.map((entry, index) => (
                   <Cell key={`cell-${index}`} fill={entry.color} />
                 ))}
@@ -102,7 +99,7 @@ export function PaymentMethodsChart({ paymentsByMethod, isLoading }: PaymentMeth
           </ResponsiveContainer>
         </div>
       ) : (
-        <div className="h-[280px] flex items-center justify-center text-muted-foreground text-sm">
+        <div className="flex h-[280px] items-center justify-center text-body-sm text-muted-foreground">
           {t('no_payment_data')}
         </div>
       )}

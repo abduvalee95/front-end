@@ -18,23 +18,23 @@ export default function AdminUsersPage() {
         <div className="pointer-events-none absolute inset-0 opacity-[0.05] [background-image:linear-gradient(rgba(255,255,255,0.6)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.6)_1px,transparent_1px)] [background-size:36px_36px]" />
         <div className="relative z-10 flex flex-col justify-between gap-6 md:flex-row md:items-center">
           <div className="space-y-2">
-            <p className="flex items-center gap-2 font-mono text-[10px] font-bold uppercase tracking-[0.28em] text-cyan-300/80">
+            <p className="flex items-center gap-2 font-mono text-[10px] font-bold uppercase tracking-[0.28em] text-primary-emphasis/80">
               <ShieldCheck className="size-3.5" /> {t('console_tag')}
             </p>
             <h1 className="text-3xl font-black tracking-tight md:text-4xl">
               {t('users.title')}
             </h1>
-            <p className="max-w-xl font-medium text-slate-400">
+            <p className="max-w-xl font-medium text-muted-foreground">
               {t('users.subtitle')}
             </p>
           </div>
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-4 rounded-2xl border border-white/10 bg-white/5 px-6 py-4 backdrop-blur-md">
-              <div className="flex size-12 items-center justify-center rounded-xl border border-cyan-400/20 bg-cyan-500/15">
-                <Users className="size-6 text-cyan-400" />
+              <div className="flex size-12 items-center justify-center rounded-xl border border-primary/20 bg-primary/15">
+                <Users className="size-6 text-primary-emphasis" />
               </div>
               <div>
-                <p className="font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-cyan-200/60">{t('users.total_platform')}</p>
+                <p className="font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-primary-emphasis/60">{t('users.total_platform')}</p>
                 <p className="text-2xl font-black tabular-nums text-white">{totalUsers ?? '—'}</p>
               </div>
             </div>

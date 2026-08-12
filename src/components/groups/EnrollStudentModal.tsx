@@ -173,7 +173,7 @@ export function EnrollStudentModal({ groupId, groupName }: EnrollStudentModalPro
       <DialogContent className="sm:max-w-[560px]">
         <DialogHeader>
           <div className="flex items-center gap-3">
-            <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-600">
+            <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-success/10 text-success-emphasis">
               <UserPlus className="size-5" />
             </div>
             <div>
@@ -200,7 +200,7 @@ export function EnrollStudentModal({ groupId, groupName }: EnrollStudentModalPro
                 onClick={toggleAll}
                 className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
               >
-                {allSelected ? <CheckSquare className="size-3.5 text-emerald-600" /> : <Square className="size-3.5" />}
+                {allSelected ? <CheckSquare className="size-3.5 text-success-emphasis" /> : <Square className="size-3.5" />}
                 {allSelected ? t('deselect_all') : t('select_all')}
               </button>
             )}
@@ -239,12 +239,12 @@ export function EnrollStudentModal({ groupId, groupName }: EnrollStudentModalPro
                     onClick={() => toggleStudent(s.id)}
                     className={`w-full flex items-center gap-3 rounded-xl border px-3 py-2 text-left transition-colors ${
                       checked
-                        ? 'border-emerald-500/40 bg-emerald-500/8 text-foreground'
+                        ? 'border-success/40 bg-success/8 text-foreground'
                         : 'border-border/50 bg-transparent hover:bg-muted/30'
                     }`}
                   >
                     {checked
-                      ? <CheckSquare className="size-4 shrink-0 text-emerald-600" />
+                      ? <CheckSquare className="size-4 shrink-0 text-success-emphasis" />
                       : <Square className="size-4 shrink-0 text-muted-foreground/50" />
                     }
                     <div className="min-w-0 flex-1">
@@ -262,7 +262,7 @@ export function EnrollStudentModal({ groupId, groupName }: EnrollStudentModalPro
             <Button
               onClick={handleEnroll}
               disabled={isEnrolling}
-              className="w-full rounded-xl h-9 bg-emerald-600 hover:bg-emerald-700 text-white"
+              className="w-full rounded-xl h-9 bg-success hover:bg-success text-white"
             >
               {isEnrolling ? (
                 <><Loader2 className="mr-2 size-4 animate-spin" />{t('enrolling')}</>
@@ -314,7 +314,7 @@ export function EnrollStudentModal({ groupId, groupName }: EnrollStudentModalPro
                           <p className="mt-1 text-[10.5px] font-semibold tabular-nums text-muted-foreground/80">
                             {fee > 0 ? `${new Intl.NumberFormat('ru-RU').format(net)} сом` : '—'}
                             {discount > 0 && (
-                              <span className="ml-1 text-amber-600 dark:text-amber-400">
+                              <span className="ml-1 text-warning-emphasis">
                                 ({t('discount_short')} {new Intl.NumberFormat('ru-RU').format(discount)})
                               </span>
                             )}
@@ -364,7 +364,7 @@ export function EnrollStudentModal({ groupId, groupName }: EnrollStudentModalPro
                             />
                           </div>
                           <div className="flex-1 min-w-[110px]">
-                            <Label className="text-[10px] font-bold uppercase tracking-wider text-amber-700 dark:text-amber-400">
+                            <Label className="text-[10px] font-bold uppercase tracking-wider text-warning-emphasis">
                               {t('discount')}
                             </Label>
                             <Input
@@ -379,7 +379,7 @@ export function EnrollStudentModal({ groupId, groupName }: EnrollStudentModalPro
                           </div>
                           <Button
                             size="sm"
-                            className="h-8 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white"
+                            className="h-8 rounded-lg bg-success hover:bg-success text-white"
                             disabled={isSavingFee}
                             onClick={() => saveEdit(enrollment.id)}
                           >

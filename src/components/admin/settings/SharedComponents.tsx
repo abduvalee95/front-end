@@ -57,10 +57,10 @@ export function ToggleRow({ title, desc, checked, onCheckedChange, icon, danger 
     <div className="flex items-center justify-between px-4 py-3.5 rounded-xl border border-border/60 bg-muted/30 hover:bg-muted/60 transition-colors">
       <div className="space-y-0.5 min-w-0 pr-4">
         <div className="flex items-center gap-2">
-          {icon && <span className={danger ? 'text-red-500' : 'text-muted-foreground'}>{icon}</span>}
-          <Label className={`text-sm font-bold cursor-pointer ${danger ? 'text-red-700' : 'text-foreground'}`}>{title}</Label>
+          {icon && <span className={danger ? 'text-danger-emphasis' : 'text-muted-foreground'}>{icon}</span>}
+          <Label className={`text-sm font-bold cursor-pointer ${danger ? 'text-danger-emphasis' : 'text-foreground'}`}>{title}</Label>
           {danger && checked && (
-            <Badge className="bg-red-100 text-red-600 border-red-500/30 rounded-md text-[10px] px-1.5 h-4">ACTIVE</Badge>
+            <Badge className="bg-danger-muted text-danger-emphasis border-danger/30 rounded-md text-[10px] px-1.5 h-4">ACTIVE</Badge>
           )}
         </div>
         <p className="text-xs text-muted-foreground">{desc}</p>
@@ -106,8 +106,8 @@ export function SecurityScoreCard({ mandatory2FA, ipWhitelisting }: SecurityScor
   ];
   const score = checks.filter((c) => c.ok).length;
   const pct = Math.round((score / checks.length) * 100);
-  const color = pct >= 75 ? 'text-emerald-500' : pct >= 50 ? 'text-amber-500' : 'text-red-500';
-  const barColor = pct >= 75 ? 'bg-emerald-500' : pct >= 50 ? 'bg-amber-500' : 'bg-red-500/100';
+  const color = pct >= 75 ? 'text-success-emphasis' : pct >= 50 ? 'text-warning-emphasis' : 'text-danger-emphasis';
+  const barColor = pct >= 75 ? 'bg-success' : pct >= 50 ? 'bg-warning' : 'bg-danger/100';
 
   return (
     <Card className="rounded-2xl border-border shadow-sm h-fit">
@@ -123,7 +123,7 @@ export function SecurityScoreCard({ mandatory2FA, ipWhitelisting }: SecurityScor
           {checks.map((c) => (
             <div key={c.label} className="flex items-center gap-2 text-xs">
               {c.ok
-                ? <CheckCircle2 className="size-3.5 text-emerald-500 shrink-0" />
+                ? <CheckCircle2 className="size-3.5 text-success-emphasis shrink-0" />
                 : <XCircle className="size-3.5 text-muted-foreground/50 shrink-0" />
               }
               <span className={c.ok ? 'text-foreground/90 font-medium' : 'text-muted-foreground'}>{c.label}</span>

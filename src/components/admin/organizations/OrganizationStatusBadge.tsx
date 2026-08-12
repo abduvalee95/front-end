@@ -18,14 +18,14 @@ export function OrganizationStatusBadge({ status }: OrganizationStatusBadgeProps
       className={cn(
         'gap-1.5 font-medium',
         isActive
-          ? 'bg-teal-100 text-teal-700 border-teal-200 dark:bg-teal-950 dark:text-teal-300 dark:border-teal-800'
-          : 'bg-amber-100 text-amber-700 border-amber-200 dark:bg-amber-950 dark:text-amber-300 dark:border-amber-800',
+          ? 'bg-success-muted text-success-emphasis border-success/30 dark:bg-success-muted dark:text-success-emphasis dark:border-success/30'
+          : 'bg-warning-muted text-warning-emphasis border-warning/30 dark:bg-warning-muted dark:text-warning-emphasis dark:border-warning/30',
       )}
     >
       <span
         className={cn(
           'size-1.5 rounded-full',
-          isActive ? 'bg-teal-500' : 'bg-amber-500',
+          isActive ? 'bg-success' : 'bg-warning',
         )}
       />
       {isActive ? t('active') : t('inactive')}

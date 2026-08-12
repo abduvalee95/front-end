@@ -13,6 +13,8 @@ import {
 } from 'recharts';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { StatCard } from '@/components/ui/stat-card';
+import { seriesColor, useChartTheme } from '@/lib/chart-theme';
 import { Skeleton } from '@/components/ui/skeleton';
 import { analyticsService } from '@/services/analytics';
 import { useTranslations } from '@/i18n/index';
@@ -25,53 +27,10 @@ function fmtShortDate(s: string) {
   return `${d.getDate()} ${d.toLocaleString('ru', { month: 'short' })}`;
 }
 
-// ─── Stat card ────────────────────────────────────────────────────────────────
-function StatCard({
-  icon: Icon, label, value, sub, color = 'blue', loading,
-}: {
-  icon: React.ElementType;
-  label: string;
-  value: string | number;
-  sub?: string;
-  color?: 'blue' | 'emerald' | 'rose' | 'amber' | 'violet';
-  loading?: boolean;
-}) {
-  const colors = {
-    blue:   'bg-blue-50 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400',
-    emerald:'bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400',
-    rose:   'bg-rose-50 text-rose-600 dark:bg-rose-500/10 dark:text-rose-400',
-    amber:  'bg-amber-50 text-amber-600 dark:bg-amber-500/10 dark:text-amber-400',
-    violet: 'bg-violet-50 text-violet-600 dark:bg-violet-500/10 dark:text-violet-400',
-  };
-  return (
-    <Card>
-      <CardContent className="p-5">
-        <div className="flex items-start gap-3">
-          <div className={cn('flex size-10 shrink-0 items-center justify-center rounded-xl', colors[color])}>
-            <Icon className="size-5" />
-          </div>
-          <div className="min-w-0 flex-1">
-            <p className="text-xs font-medium text-muted-foreground truncate">{label}</p>
-            {loading ? (
-              <Skeleton className="mt-1 h-7 w-24" />
-            ) : (
-              <p className="mt-0.5 text-2xl font-black tabular-nums text-foreground">{value}</p>
-            )}
-            {sub && !loading && (
-              <p className="mt-0.5 text-xs text-muted-foreground">{sub}</p>
-            )}
-          </div>
-        </div>
-      </CardContent>
-    </Card>
-  );
-}
-
-const PIE_COLORS = ['#3B82F6', '#10B981', '#F59E0B', '#8B5CF6', '#EF4444', '#06B6D4'];
-
 // ─── Page ─────────────────────────────────────────────────────────────────────
 export default function ReportsPage() {
   const t = useTranslations('reports');
+  const chart = useChartTheme();
   const [activeTab, setActiveTab]       = useState<ReportsTab>('finance');
   const [filterMode, setFilterMode]     = useState<FilterMode>('preset');
   const [preset, setPreset]             = useState<Preset>('30d');
@@ -169,32 +128,32 @@ export default function ReportsPage() {
               icon={Wallet}
               label={t('total_income')}
               value={fin ? fmtMoney(fin.summary.totalIncome) : '—'}
-              sub={`${fin?.summary.paymentCount ?? '—'} ${t('payments')}`}
-              color="emerald"
-              loading={financeQ.isLoading}
+              hint={`${fin?.summary.paymentCount ?? '—'} ${t('payments')}`}
+              tone="success"
+              isLoading={financeQ.isLoading}
             />
             <StatCard
               icon={TrendingDown}
               label={t('total_expenses')}
               value={fin ? fmtMoney(fin.summary.totalExpenses) : '—'}
-              sub={`${fin?.summary.expenseCount ?? '—'} ${t('expenses')}`}
-              color="rose"
-              loading={financeQ.isLoading}
+              hint={`${fin?.summary.expenseCount ?? '—'} ${t('expenses')}`}
+              tone="danger"
+              isLoading={financeQ.isLoading}
             />
             <StatCard
               icon={TrendingUp}
               label={t('profit')}
               value={fin ? fmtMoney(fin.summary.profit) : '—'}
-              color={fin && fin.summary.profit >= 0 ? 'blue' : 'rose'}
-              loading={financeQ.isLoading}
+              tone={fin && fin.summary.profit >= 0 ? 'primary' : 'danger'}
+              isLoading={financeQ.isLoading}
             />
             <StatCard
               icon={Users}
               label={t('students_active')}
               value={s?.studentsActive ?? '—'}
-              sub={`${t('of')} ${s?.studentsTotal ?? '—'} ${t('students_total_short')}`}
-              color="violet"
-              loading={summaryQ.isLoading}
+              hint={`${t('of')} ${s?.studentsTotal ?? '—'} ${t('students_total_short')}`}
+              tone="primary"
+              isLoading={summaryQ.isLoading}
             />
           </div>
 
@@ -214,18 +173,18 @@ export default function ReportsPage() {
                   <AreaChart data={revenueChartData} margin={{ left: 0, right: 8, top: 4, bottom: 0 }}>
                     <defs>
                       <linearGradient id="revenueGrad" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stopColor="#10B981" stopOpacity={0.25} />
-                        <stop offset="100%" stopColor="#10B981" stopOpacity={0} />
+                        <stop offset="0%" stopColor={seriesColor(chart, 1)} stopOpacity={0.3} />
+                        <stop offset="100%" stopColor={seriesColor(chart, 1)} stopOpacity={0} />
                       </linearGradient>
                     </defs>
-                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" strokeOpacity={0.5} />
-                    <XAxis dataKey="date" tick={{ fontSize: 11 }} tickLine={false} axisLine={false} />
-                    <YAxis tick={{ fontSize: 11 }} tickLine={false} axisLine={false} tickFormatter={(v) => `${Math.round(v / 1000)}k`} />
+                    <CartesianGrid strokeDasharray="3 3" stroke={chart.grid} />
+                    <XAxis dataKey="date" tick={{ fontSize: 11, fill: chart.axis }} tickLine={false} axisLine={false} />
+                    <YAxis tick={{ fontSize: 11, fill: chart.axis }} tickLine={false} axisLine={false} tickFormatter={(v) => `${Math.round(v / 1000)}k`} />
                     <Tooltip
                       formatter={(v) => [fmtMoney(Number(v)), t('amount')]}
-                      contentStyle={{ borderRadius: 10, fontSize: 12, border: '1px solid hsl(var(--border))' }}
+                      contentStyle={chart.tooltip}
                     />
-                    <Area type="monotone" dataKey="amount" stroke="#10B981" strokeWidth={2} fill="url(#revenueGrad)" dot={false} />
+                    <Area type="monotone" dataKey="amount" stroke={seriesColor(chart, 1)} strokeWidth={2} fill="url(#revenueGrad)" dot={false} />
                   </AreaChart>
                 </ResponsiveContainer>
               )}
@@ -247,17 +206,17 @@ export default function ReportsPage() {
                       <RePieChart>
                         <Pie data={methodChartData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={70} label={({ name, percent }) => `${name} ${((percent ?? 0) * 100).toFixed(0)}%`} labelLine={false} fontSize={11}>
                           {methodChartData.map((_, i) => (
-                            <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />
+                            <Cell key={i} fill={seriesColor(chart, i)} />
                           ))}
                         </Pie>
-                        <Tooltip formatter={(v) => fmtMoney(Number(v))} contentStyle={{ borderRadius: 10, fontSize: 12 }} />
+                        <Tooltip formatter={(v) => fmtMoney(Number(v))} contentStyle={chart.tooltip} />
                       </RePieChart>
                     </ResponsiveContainer>
                     <div className="mt-2 space-y-1.5">
                       {methodChartData.map((m, i) => (
                         <div key={m.name} className="flex items-center justify-between text-xs">
                           <span className="flex items-center gap-1.5">
-                            <span className="inline-block size-2 rounded-full" style={{ background: PIE_COLORS[i % PIE_COLORS.length] }} />
+                            <span className="inline-block size-2 rounded-full" style={{ background: seriesColor(chart, i) }} />
                             {m.name}
                           </span>
                           <span className="font-semibold tabular-nums">{fmtMoney(m.value)}</span>
@@ -283,11 +242,11 @@ export default function ReportsPage() {
                   ) : (
                     <ResponsiveContainer width="100%" height={180}>
                       <BarChart data={expenseChartData} margin={{ left: 0, right: 8, top: 4, bottom: 0 }}>
-                        <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" strokeOpacity={0.5} />
-                        <XAxis dataKey="name" tick={{ fontSize: 10 }} tickLine={false} axisLine={false} />
-                        <YAxis tick={{ fontSize: 10 }} tickLine={false} axisLine={false} tickFormatter={(v) => `${Math.round(v / 1000)}k`} />
-                        <Tooltip formatter={(v) => [fmtMoney(Number(v)), t('amount')]} contentStyle={{ borderRadius: 10, fontSize: 12 }} />
-                        <Bar dataKey="value" fill="#EF4444" radius={[4, 4, 0, 0]} />
+                        <CartesianGrid strokeDasharray="3 3" stroke={chart.grid} />
+                        <XAxis dataKey="name" tick={{ fontSize: 10, fill: chart.axis }} tickLine={false} axisLine={false} />
+                        <YAxis tick={{ fontSize: 10, fill: chart.axis }} tickLine={false} axisLine={false} tickFormatter={(v) => `${Math.round(v / 1000)}k`} />
+                        <Tooltip formatter={(v) => [fmtMoney(Number(v)), t('amount')]} contentStyle={chart.tooltip} />
+                        <Bar dataKey="value" fill={seriesColor(chart, 3)} radius={[4, 4, 0, 0]} />
                       </BarChart>
                     </ResponsiveContainer>
                   )}
@@ -298,22 +257,22 @@ export default function ReportsPage() {
           {/* Finance summary row */}
           {fin && (
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-              <Card className="border-emerald-200/60 dark:border-emerald-500/20">
+              <Card className="border-success/60 dark:border-success/20">
                 <CardContent className="p-4 text-center">
-                  <p className="text-[11px] font-semibold uppercase tracking-wider text-emerald-600/70">{t('total_income')}</p>
-                  <p className="mt-1 text-xl font-black tabular-nums text-emerald-600">{fmtMoney(fin.summary.totalIncome)}</p>
+                  <p className="text-[11px] font-semibold uppercase tracking-wider text-success-emphasis/70">{t('total_income')}</p>
+                  <p className="mt-1 text-xl font-black tabular-nums text-success-emphasis">{fmtMoney(fin.summary.totalIncome)}</p>
                 </CardContent>
               </Card>
-              <Card className="border-rose-200/60 dark:border-rose-500/20">
+              <Card className="border-danger/60 dark:border-danger/20">
                 <CardContent className="p-4 text-center">
-                  <p className="text-[11px] font-semibold uppercase tracking-wider text-rose-600/70">{t('total_expenses')}</p>
-                  <p className="mt-1 text-xl font-black tabular-nums text-rose-600">{fmtMoney(fin.summary.totalExpenses)}</p>
+                  <p className="text-[11px] font-semibold uppercase tracking-wider text-danger-emphasis/70">{t('total_expenses')}</p>
+                  <p className="mt-1 text-xl font-black tabular-nums text-danger-emphasis">{fmtMoney(fin.summary.totalExpenses)}</p>
                 </CardContent>
               </Card>
-              <Card className={cn('col-span-2 sm:col-span-1', fin.summary.profit >= 0 ? 'border-blue-200/60 dark:border-blue-500/20' : 'border-rose-200/60 dark:border-rose-500/20')}>
+              <Card className={cn('col-span-2 sm:col-span-1', fin.summary.profit >= 0 ? 'border-primary/60 dark:border-primary/20' : 'border-danger/60 dark:border-danger/20')}>
                 <CardContent className="p-4 text-center">
-                  <p className={cn('text-[11px] font-semibold uppercase tracking-wider', fin.summary.profit >= 0 ? 'text-blue-600/70' : 'text-rose-600/70')}>{t('profit')}</p>
-                  <p className={cn('mt-1 text-xl font-black tabular-nums', fin.summary.profit >= 0 ? 'text-blue-600' : 'text-rose-600')}>{fmtMoney(fin.summary.profit)}</p>
+                  <p className={cn('text-[11px] font-semibold uppercase tracking-wider', fin.summary.profit >= 0 ? 'text-primary-emphasis/70' : 'text-danger-emphasis/70')}>{t('profit')}</p>
+                  <p className={cn('mt-1 text-xl font-black tabular-nums', fin.summary.profit >= 0 ? 'text-primary-emphasis' : 'text-danger-emphasis')}>{fmtMoney(fin.summary.profit)}</p>
                 </CardContent>
               </Card>
             </div>
@@ -325,10 +284,10 @@ export default function ReportsPage() {
       {activeTab === 'students' && (
         <div className="mt-6 space-y-5">
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-            <StatCard icon={Users} label={t('students_total')} value={s?.studentsTotal ?? '—'} color="blue" loading={summaryQ.isLoading} />
-            <StatCard icon={UserCheck} label={t('students_active')} value={s?.studentsActive ?? '—'} color="emerald" loading={summaryQ.isLoading} />
-            <StatCard icon={GraduationCap} label={t('enrollments')} value={s?.enrollmentsTotal ?? '—'} color="violet" loading={summaryQ.isLoading} />
-            <StatCard icon={Activity} label={t('attendance_rate')} value={s ? `${s.attendanceRate}%` : '—'} color="amber" loading={summaryQ.isLoading} />
+            <StatCard icon={Users} label={t('students_total')} value={s?.studentsTotal ?? '—'} tone="primary" isLoading={summaryQ.isLoading} />
+            <StatCard icon={UserCheck} label={t('students_active')} value={s?.studentsActive ?? '—'} tone="success" isLoading={summaryQ.isLoading} />
+            <StatCard icon={GraduationCap} label={t('enrollments')} value={s?.enrollmentsTotal ?? '—'} tone="primary" isLoading={summaryQ.isLoading} />
+            <StatCard icon={Activity} label={t('attendance_rate')} value={s ? `${s.attendanceRate}%` : '—'} tone="warning" isLoading={summaryQ.isLoading} />
           </div>
 
           {/* Attendance breakdown */}
@@ -341,27 +300,27 @@ export default function ReportsPage() {
                 <div className="space-y-3">
                   <div className="flex items-center justify-between text-sm">
                     <span className="flex items-center gap-2">
-                      <span className="size-3 rounded-full bg-emerald-500" />
+                      <span className="size-3 rounded-full bg-success" />
                       {t('attendance_present')}
                     </span>
                     <span className="font-bold tabular-nums">{s.attendancePresent}</span>
                   </div>
                   <div className="h-3 overflow-hidden rounded-full bg-muted">
                     <div
-                      className="h-full rounded-full bg-emerald-500 transition-all"
+                      className="h-full rounded-full bg-success transition-all"
                       style={{ width: `${s.attendancePresent + s.attendanceAbsent > 0 ? (s.attendancePresent / (s.attendancePresent + s.attendanceAbsent)) * 100 : 0}%` }}
                     />
                   </div>
                   <div className="flex items-center justify-between text-sm">
                     <span className="flex items-center gap-2">
-                      <span className="size-3 rounded-full bg-rose-400" />
+                      <span className="size-3 rounded-full bg-danger" />
                       {t('attendance_absent')}
                     </span>
                     <span className="font-bold tabular-nums">{s.attendanceAbsent}</span>
                   </div>
                   <div className="flex items-center gap-4 pt-2 text-xs text-muted-foreground">
                     <span>{t('total_records')}: {s.attendancePresent + s.attendanceAbsent}</span>
-                    <Badge variant="outline" className={cn('rounded-full font-bold', s.attendanceRate >= 80 ? 'border-emerald-300/70 bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-300' : 'border-amber-300/70 bg-amber-50 text-amber-700 dark:bg-amber-500/10 dark:text-amber-300')}>
+                    <Badge variant="outline" className={cn('rounded-full font-bold', s.attendanceRate >= 80 ? 'border-success/70 bg-success-muted text-success-emphasis dark:bg-success/10 dark:text-success-emphasis' : 'border-warning/70 bg-warning-muted text-warning-emphasis dark:bg-warning/10 dark:text-warning-emphasis')}>
                       {s.attendanceRate}% {t('attendance_rate')}
                     </Badge>
                   </div>
@@ -376,7 +335,7 @@ export default function ReportsPage() {
           <div className="grid gap-3 sm:grid-cols-2">
             <Card>
               <CardContent className="flex items-center gap-4 p-5">
-                <div className="flex size-12 items-center justify-center rounded-xl bg-blue-50 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400">
+                <div className="flex size-12 items-center justify-center rounded-xl bg-primary-muted text-primary-emphasis dark:bg-primary/10 dark:text-primary-emphasis">
                   <BarChart3 className="size-6" />
                 </div>
                 <div>
@@ -389,7 +348,7 @@ export default function ReportsPage() {
             </Card>
             <Card>
               <CardContent className="flex items-center gap-4 p-5">
-                <div className="flex size-12 items-center justify-center rounded-xl bg-violet-50 text-violet-600 dark:bg-violet-500/10 dark:text-violet-400">
+                <div className="flex size-12 items-center justify-center rounded-xl bg-primary-muted text-primary-emphasis dark:bg-primary/10 dark:text-primary-emphasis">
                   <Calendar className="size-6" />
                 </div>
                 <div>
@@ -409,7 +368,7 @@ export default function ReportsPage() {
         <div className="mt-6 space-y-5">
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
             {(['NEW', 'CONTACTED', 'CONVERTED', 'LOST'] as const).map((status) => {
-              const colors = { NEW: 'blue', CONTACTED: 'amber', CONVERTED: 'emerald', LOST: 'rose' } as const;
+              const tones = { NEW: 'primary', CONTACTED: 'warning', CONVERTED: 'success', LOST: 'danger' } as const;
               const icons = { NEW: Target, CONTACTED: RefreshCw, CONVERTED: UserCheck, LOST: TrendingDown };
               const count = leadsQ.data?.find((l) => l.status === status)?.count ?? 0;
               return (
@@ -418,8 +377,8 @@ export default function ReportsPage() {
                   icon={icons[status]}
                   label={t(`lead_${status.toLowerCase()}`)}
                   value={count}
-                  color={colors[status]}
-                  loading={leadsQ.isLoading}
+                  tone={tones[status]}
+                  isLoading={leadsQ.isLoading}
                 />
               );
             })}
@@ -436,14 +395,14 @@ export default function ReportsPage() {
               ) : (
                 <ResponsiveContainer width="100%" height={200}>
                   <BarChart data={leadChartData} margin={{ left: 0, right: 8, top: 4, bottom: 0 }}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" strokeOpacity={0.5} />
-                    <XAxis dataKey="name" tick={{ fontSize: 12 }} tickLine={false} axisLine={false} />
-                    <YAxis tick={{ fontSize: 12 }} tickLine={false} axisLine={false} allowDecimals={false} />
-                    <Tooltip contentStyle={{ borderRadius: 10, fontSize: 12 }} />
+                    <CartesianGrid strokeDasharray="3 3" stroke={chart.grid} />
+                    <XAxis dataKey="name" tick={{ fontSize: 12, fill: chart.axis }} tickLine={false} axisLine={false} />
+                    <YAxis tick={{ fontSize: 12, fill: chart.axis }} tickLine={false} axisLine={false} allowDecimals={false} />
+                    <Tooltip contentStyle={chart.tooltip} />
                     <Bar dataKey="count" radius={[6, 6, 0, 0]}>
                       {leadChartData.map((entry, i) => {
-                        const colorMap: Record<string, string> = { NEW: '#3B82F6', CONTACTED: '#F59E0B', CONVERTED: '#10B981', LOST: '#EF4444' };
-                        return <Cell key={i} fill={colorMap[entry.name] ?? '#8B5CF6'} />;
+                        const seriesIdx: Record<string, number> = { NEW: 0, CONTACTED: 2, CONVERTED: 1, LOST: 3 };
+                        return <Cell key={i} fill={seriesColor(chart, seriesIdx[entry.name] ?? 5)} />;
                       })}
                     </Bar>
                   </BarChart>
@@ -471,7 +430,7 @@ export default function ReportsPage() {
                       </div>
                       <div className="flex items-center justify-between text-sm">
                         <span className="text-muted-foreground">{t('conversion_rate')}</span>
-                        <Badge variant="outline" className={cn('rounded-full font-bold', convRate >= 30 ? 'border-emerald-300/70 bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-300' : 'border-amber-300/70 bg-amber-50 text-amber-700 dark:bg-amber-500/10 dark:text-amber-300')}>
+                        <Badge variant="outline" className={cn('rounded-full font-bold', convRate >= 30 ? 'border-success/70 bg-success-muted text-success-emphasis dark:bg-success/10 dark:text-success-emphasis' : 'border-warning/70 bg-warning-muted text-warning-emphasis dark:bg-warning/10 dark:text-warning-emphasis')}>
                           {convRate}%
                         </Badge>
                       </div>

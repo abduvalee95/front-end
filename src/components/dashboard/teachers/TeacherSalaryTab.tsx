@@ -86,11 +86,11 @@ export function TeacherSalaryTab({ teacherId, teacherName: _teacherName }: Props
               <p className="font-medium">{salaryTypeLabel[preview.salary_type] ?? preview.salary_type}</p>
             </div>
             {isPaid ? (
-              <Badge className="bg-green-100 text-green-700 border-green-200">
+              <Badge className="bg-success-muted text-success-emphasis border-success/30">
                 <CheckCircle2 className="h-3 w-3 mr-1" /> {t('paid')}
               </Badge>
             ) : (
-              <Badge variant="outline" className="text-orange-600 border-orange-300">
+              <Badge variant="outline" className="text-warning-emphasis border-warning/30">
                 <Clock className="h-3 w-3 mr-1" /> {t('pending')}
               </Badge>
             )}

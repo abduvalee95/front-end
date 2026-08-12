@@ -58,7 +58,7 @@ export function EditSubjectModal({ subject, open, onClose }: EditSubjectModalPro
       <DialogContent>
         <DialogHeader>
           <div className="flex items-center gap-3">
-            <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-indigo-500/10 text-indigo-600">
+            <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary-emphasis">
               <BookOpen className="size-5" />
             </div>
             <div>

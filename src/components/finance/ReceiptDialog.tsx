@@ -95,7 +95,7 @@ export function ReceiptDialog({ payment, open, onClose }: ReceiptDialogProps) {
 
           {/* Scrollable receipt preview container */}
           <div
-            className="rounded-xl border border-border/50 bg-gray-50 overflow-auto"
+            className="rounded-xl border border-border/50 bg-muted overflow-auto"
             style={{ maxHeight: '60vh' }}
           >
             {/* A4 receipt — off-screen, captured for print/pdf A4 actions */}

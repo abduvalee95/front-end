@@ -74,7 +74,7 @@ export function CreateLeadModal({ isOpen, onClose }: CreateLeadModalProps) {
       <DialogContent>
         <DialogHeader>
           <div className="flex items-center gap-3">
-            <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-indigo-500/10 text-indigo-500">
+            <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary-emphasis">
               <Users className="size-5" />
             </div>
             <div>

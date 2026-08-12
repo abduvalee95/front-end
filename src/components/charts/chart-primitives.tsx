@@ -25,17 +25,10 @@ import {
 } from 'recharts';
 import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
+import { SERIES_LIGHT } from '@/lib/chart-theme';
 
-export const CHART_COLORS = [
-  '#3B82F6', // blue
-  '#8B5CF6', // violet
-  '#06B6D4', // cyan
-  '#10B981', // emerald
-  '#F59E0B', // amber
-  '#EF4444', // red
-  '#EC4899', // pink
-  '#14B8A6', // teal
-];
+/** @deprecated Use `useChartTheme().series` — kept for non-reactive callers. */
+export const CHART_COLORS = SERIES_LIGHT;
 
 interface ChartFrameProps {
   title: string;

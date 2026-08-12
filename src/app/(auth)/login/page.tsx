@@ -201,7 +201,7 @@ function LoginForm() {
 
               <Button
                 type="submit"
-                className="h-11 w-full bg-slate-950 text-white shadow-[0_16px_35px_rgba(15,23,42,0.22)] hover:bg-slate-800 dark:bg-primary dark:text-primary-foreground dark:hover:bg-primary/90"
+                className="h-11 w-full bg-card text-white shadow-[0_16px_35px_rgba(15,23,42,0.22)] hover:bg-card dark:bg-primary dark:text-primary-foreground dark:hover:bg-primary/90"
                 size="lg"
                 disabled={isLoading}
               >

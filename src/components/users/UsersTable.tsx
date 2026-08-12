@@ -69,11 +69,11 @@ export function UsersTable() {
 
   const getRoleBadge = (role: UserRole) => {
     const variants: Record<UserRole, string> = {
-      ADMIN: 'bg-rose-50 text-rose-700 border-rose-200/50',
-      MANAGER: 'bg-indigo-50 text-indigo-700 border-indigo-200/50',
-      TEACHER: 'bg-teal-50 text-teal-700 border-teal-200/50',
-      STUDENT: 'bg-amber-50 text-amber-700 border-amber-200/50',
-      SUPER_ADMIN: 'bg-purple-50 text-purple-700 border-purple-200/50',
+      ADMIN: 'bg-danger-muted text-danger-emphasis border-danger/50',
+      MANAGER: 'bg-primary-muted text-primary-emphasis border-primary/50',
+      TEACHER: 'bg-success-muted text-success-emphasis border-success/50',
+      STUDENT: 'bg-warning-muted text-warning-emphasis border-warning/50',
+      SUPER_ADMIN: 'bg-primary-muted text-primary-emphasis border-primary/50',
     };
 
     return (

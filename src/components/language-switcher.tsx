@@ -55,13 +55,13 @@ export function LanguageSwitcher({ className, variant = 'header' }: LanguageSwit
           onClick={() => handleLocaleChange(opt.value)}
           className={cn(
             'flex items-center gap-2.5 cursor-pointer text-sm',
-            opt.value === locale && 'font-bold text-blue-600 bg-blue-50'
+            opt.value === locale && 'font-bold text-primary-emphasis bg-primary-muted'
           )}
         >
           <span className="text-base">{opt.flag}</span>
           <span>{opt.label}</span>
           {opt.value === locale && (
-            <span className="ml-auto text-[10px] bg-blue-100 text-blue-600 px-1.5 py-0.5 rounded-md font-bold">
+            <span className="ml-auto text-[10px] bg-primary-muted text-primary-emphasis px-1.5 py-0.5 rounded-md font-bold">
               ✓
             </span>
           )}
@@ -75,13 +75,13 @@ export function LanguageSwitcher({ className, variant = 'header' }: LanguageSwit
       <DropdownMenu>
         <DropdownMenuTrigger
           className={cn(
-            'flex items-center gap-2 px-3 py-2 rounded-xl text-blue-100/60 hover:bg-white/5 hover:text-white transition-all text-[13px] font-semibold w-full',
+            'flex items-center gap-2 px-3 py-2 rounded-xl text-primary-emphasis/60 hover:bg-white/5 hover:text-white transition-all text-[13px] font-semibold w-full',
             isPending && 'opacity-60 pointer-events-none',
             className
           )}
           disabled={isPending}
         >
-          <Globe className="size-5 shrink-0 text-blue-200/40" />
+          <Globe className="size-5 shrink-0 text-primary-emphasis/40" />
           <span>{current.flag} {current.label}</span>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" side="top" className="min-w-[170px]">
@@ -95,7 +95,7 @@ export function LanguageSwitcher({ className, variant = 'header' }: LanguageSwit
     <DropdownMenu>
       <DropdownMenuTrigger
         className={cn(
-          'flex items-center gap-1.5 rounded-xl font-semibold text-sm px-2.5 py-1.5 hover:bg-slate-100 transition-colors text-slate-600',
+          'flex items-center gap-1.5 rounded-xl font-semibold text-sm px-2.5 py-1.5 hover:bg-muted transition-colors text-foreground',
           isPending && 'opacity-60 pointer-events-none',
           className
         )}

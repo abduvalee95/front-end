@@ -30,6 +30,8 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { PageHeader } from '@/components/ui/page-header';
+import { StatCard } from '@/components/ui/stat-card';
 import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
 import {
@@ -123,8 +125,8 @@ export function GroupsWorkspace() {
         <div className="mx-auto mb-5 flex size-16 items-center justify-center rounded-2xl bg-muted text-muted-foreground">
           <AlertCircle className="size-8" />
         </div>
-        <h1 className="text-2xl font-black">{tCommon('groups_unavailable')}</h1>
-        <p className="mt-2 text-sm text-muted-foreground">
+        <h1 className="text-h2">{tCommon('groups_unavailable')}</h1>
+        <p className="mt-2 text-body-sm text-muted-foreground">
           {tCommon('role_no_access')} {role ? `(${role})` : ''}
         </p>
       </div>
@@ -132,44 +134,27 @@ export function GroupsWorkspace() {
   }
 
   return (
-    <div className="space-y-7 animate-in fade-in duration-700">
-      {/* Hero */}
-      <section className="overflow-hidden rounded-[1.75rem] border border-white/70 bg-white/82 shadow-[0_18px_70px_rgba(15,23,42,0.08)] backdrop-blur dark:border-white/10 dark:bg-white/5">
-        <div className="relative p-6 sm:p-8">
-          <div className="absolute inset-y-0 right-0 hidden w-1/2 bg-[radial-gradient(circle_at_70%_35%,rgba(139,92,246,0.22),transparent_18rem),radial-gradient(circle_at_90%_80%,rgba(59,130,246,0.18),transparent_14rem)] lg:block" />
-          <div className="relative flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
-            <div className="flex-1">
-              <div className="flex items-center gap-3 mb-5">
-                <Badge variant="outline" className="rounded-full border-primary/20 bg-primary/7 text-primary">
-                  <Users2 className="mr-1.5 size-3.5" />
-                  {teacherScoped ? tCommon('your_groups') : tCommon('group_management')}
-                </Badge>
-                {canManage && <CreateGroupModal />}
-              </div>
-              <h1 className="max-w-3xl text-3xl font-black tracking-tight text-foreground sm:text-5xl">
-                {teacherScoped ? tCommon('your_teaching_groups') : t('title')}
-              </h1>
-              <p className="mt-4 max-w-2xl text-sm leading-6 text-muted-foreground sm:text-base">
-                {teacherScoped ? t('subtitle_teacher') : t('subtitle')}
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
+    <div className="space-y-5 animate-in fade-in duration-500">
+      <PageHeader
+        icon={Users2}
+        eyebrow={teacherScoped ? tCommon('your_groups') : tCommon('group_management')}
+        title={teacherScoped ? tCommon('your_teaching_groups') : t('title')}
+        subtitle={teacherScoped ? t('subtitle_teacher') : t('subtitle')}
+        actions={canManage ? <CreateGroupModal /> : undefined}
+      />
 
-      {/* Metrics */}
       <section className="grid grid-cols-1 gap-4 md:grid-cols-3">
-        <MetricCard icon={Users2} label={tCommon('total_groups')} value={scopedGroups.length.toString()} tone="violet" />
-        <MetricCard icon={Layers3} label={tCommon('courses')} value={uniqueCourses.toString()} tone="blue" />
-        <MetricCard icon={GraduationCap} label={tCommon('teachers')} value={uniqueTeachers.toString()} tone="amber" />
+        <StatCard icon={Users2} label={tCommon('total_groups')} value={scopedGroups.length} tone="primary" />
+        <StatCard icon={Layers3} label={tCommon('courses')} value={uniqueCourses} tone="neutral" />
+        <StatCard icon={GraduationCap} label={tCommon('teachers')} value={uniqueTeachers} tone="success" />
       </section>
 
       {/* Table card */}
-      <Card className="border-white/70 bg-white/82 shadow-[0_16px_60px_rgba(15,23,42,0.08)] backdrop-blur dark:border-white/10 dark:bg-white/5">
+      <Card>
         <CardHeader className="gap-5 px-5 pt-5 sm:px-6 sm:pt-6">
           <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
             <div>
-              <CardTitle className="text-xl font-bold">{tCommon('group_roster')}</CardTitle>
+              <CardTitle>{tCommon('group_roster')}</CardTitle>
               <CardDescription>
                 {teacherScoped ? t('subtitle_teacher') : t('subtitle')}
               </CardDescription>
@@ -238,7 +223,7 @@ export function GroupsWorkspace() {
           {groupsQuery.isLoading ? (
             <div className="space-y-2">
               {Array.from({ length: 5 }).map((_, i) => (
-                <Skeleton key={i} className="h-14 rounded-xl bg-violet-100/50 dark:bg-violet-950/30" />
+                <Skeleton key={i} className="h-14 rounded-xl bg-primary-muted/50 dark:bg-primary-muted/30" />
               ))}
             </div>
           ) : groupsQuery.isError ? (
@@ -284,7 +269,7 @@ export function GroupsWorkspace() {
                       <TableCell className="pl-4">
                         <div className="flex items-center gap-3">
                           <Avatar className="size-9 rounded-xl">
-                            <AvatarFallback className="rounded-xl bg-violet-500/10 font-bold text-violet-600">
+                            <AvatarFallback className="rounded-xl bg-primary/10 font-bold text-primary-emphasis">
                               {group.name.charAt(0).toUpperCase()}
                             </AvatarFallback>
                           </Avatar>
@@ -297,7 +282,7 @@ export function GroupsWorkspace() {
                         </div>
                       </TableCell>
                       <TableCell>
-                        <Badge variant="outline" className="rounded-full border-blue-200 bg-blue-50 text-blue-700 dark:border-blue-500/30 dark:bg-blue-500/10 dark:text-blue-300">
+                        <Badge variant="outline" className="rounded-full border-primary/30 bg-primary-muted text-primary-emphasis dark:border-primary/30 dark:bg-primary/10 dark:text-primary-emphasis">
                           {group.course?.title ?? '—'}
                         </Badge>
                       </TableCell>
@@ -348,37 +333,5 @@ export function GroupsWorkspace() {
         </CardContent>
       </Card>
     </div>
-  );
-}
-
-function MetricCard({
-  icon: Icon,
-  label,
-  value,
-  tone,
-}: {
-  icon: typeof Users2;
-  label: string;
-  value: string;
-  tone: 'violet' | 'blue' | 'amber';
-}) {
-  const tones = {
-    violet: 'from-violet-500 to-purple-500',
-    blue: 'from-blue-500 to-sky-500',
-    amber: 'from-amber-400 to-orange-500',
-  };
-
-  return (
-    <Card className="border-white/70 bg-white/80 shadow-[0_14px_50px_rgba(15,23,42,0.07)] backdrop-blur dark:border-white/10 dark:bg-white/5">
-      <CardContent className="flex items-center justify-between p-5">
-        <div>
-          <p className="text-sm font-medium text-muted-foreground">{label}</p>
-          <p className="mt-1 text-3xl font-black tabular-nums text-foreground">{value}</p>
-        </div>
-        <div className={cn('flex size-12 items-center justify-center rounded-2xl bg-gradient-to-br text-white shadow-lg', tones[tone])}>
-          <Icon className="size-5" />
-        </div>
-      </CardContent>
-    </Card>
   );
 }

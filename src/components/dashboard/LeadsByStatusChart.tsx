@@ -5,13 +5,15 @@ import { TrendingUp } from 'lucide-react';
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useTranslations } from '@/i18n/index';
+import { seriesColor, useChartTheme } from '@/lib/chart-theme';
 import type { StatusCount } from '@/services/dashboard';
 
-const LEAD_STATUS_COLORS: Record<string, string> = {
-  NEW: '#3b82f6',
-  CONTACTED: '#6366f1',
-  CONVERTED: '#10b981',
-  LOST: '#ef4444',
+/** Position in the shared chart ramp, so statuses read the same everywhere. */
+const LEAD_STATUS_SERIES: Record<string, number> = {
+  NEW: 0,
+  CONTACTED: 4,
+  CONVERTED: 1,
+  LOST: 3,
 };
 
 interface LeadsByStatusChartProps {
@@ -21,24 +23,25 @@ interface LeadsByStatusChartProps {
 
 export function LeadsByStatusChart({ leadsByStatus, isLoading }: LeadsByStatusChartProps) {
   const t = useTranslations('dashboard');
+  const chart = useChartTheme();
 
   const pieData = useMemo(() => {
     if (!leadsByStatus) return [];
     return leadsByStatus.map((item) => ({
       name: item.status,
       value: item.count,
-      color: LEAD_STATUS_COLORS[item.status] || '#64748b',
+      color: seriesColor(chart, LEAD_STATUS_SERIES[item.status] ?? 5),
     }));
-  }, [leadsByStatus]);
+  }, [leadsByStatus, chart]);
 
   return (
-    <div className="bg-card rounded-2xl p-6 min-w-0 shadow-sm">
+    <div className="min-w-0 rounded-card border border-border bg-card p-6 shadow-card">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h3 className="text-sm font-bold text-foreground tracking-tight">{t('leads_by_status')}</h3>
-          <p className="text-[11px] text-muted-foreground font-medium mt-0.5">{t('conversion_funnel_overview')}</p>
+          <h3 className="text-h3 text-foreground">{t('leads_by_status')}</h3>
+          <p className="mt-0.5 text-caption font-normal text-muted-foreground">{t('conversion_funnel_overview')}</p>
         </div>
-        <div className="flex size-7 items-center justify-center rounded-lg bg-muted">
+        <div className="flex size-7 items-center justify-center rounded-control bg-muted">
           <TrendingUp className="size-3.5 text-muted-foreground" strokeWidth={2} />
         </div>
       </div>
@@ -66,14 +69,7 @@ export function LeadsByStatusChart({ leadsByStatus, isLoading }: LeadsByStatusCh
                   ))}
                 </Pie>
                 <Tooltip
-                  contentStyle={{
-                    borderRadius: '16px',
-                    border: '1px solid hsl(var(--border))',
-                    background: 'hsl(var(--popover))',
-                    color: 'hsl(var(--popover-foreground))',
-                    boxShadow: '0 10px 30px rgba(0,0,0,0.1)',
-                  }}
-                  itemStyle={{ fontWeight: 'bold' }}
+                  contentStyle={chart.tooltip}
                 />
               </PieChart>
             </ResponsiveContainer>
@@ -82,13 +78,13 @@ export function LeadsByStatusChart({ leadsByStatus, isLoading }: LeadsByStatusCh
             {pieData.map((item) => (
               <div key={item.name} className="flex items-center gap-2">
                 <div className="size-2 rounded-full" style={{ backgroundColor: item.color }} />
-                <span className="text-xs font-bold text-muted-foreground">{item.name}</span>
+                <span className="text-caption text-muted-foreground">{item.name}</span>
               </div>
             ))}
           </div>
         </>
       ) : (
-        <div className="h-[300px] flex items-center justify-center text-muted-foreground text-sm">
+        <div className="flex h-[300px] items-center justify-center text-body-sm text-muted-foreground">
           {t('no_lead_data')}
         </div>
       )}

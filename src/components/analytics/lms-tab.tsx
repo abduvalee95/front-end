@@ -104,7 +104,7 @@ export function LMSTab() {
 
         <div className="bg-card border border-border rounded-2xl p-6">
           <div className="flex items-center gap-2 mb-4">
-            <CalendarDays className="h-4 w-4 text-cyan-500" />
+            <CalendarDays className="h-4 w-4 text-primary-emphasis" />
             <h3 className="font-semibold">Upcoming Lessons</h3>
           </div>
           {summary.isLoading ? (
@@ -124,7 +124,7 @@ export function LMSTab() {
                   key={l.id}
                   className="flex items-start gap-3 p-3 rounded-lg hover:bg-muted/40 transition-colors"
                 >
-                  <div className="h-10 w-10 rounded-lg bg-cyan-500/10 text-cyan-600 flex items-center justify-center shrink-0">
+                  <div className="h-10 w-10 rounded-lg bg-primary/10 text-primary-emphasis flex items-center justify-center shrink-0">
                     <CalendarDays className="h-5 w-5" />
                   </div>
                   <div className="min-w-0 flex-1">

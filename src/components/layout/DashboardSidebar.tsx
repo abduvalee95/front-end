@@ -99,7 +99,7 @@ export function DashboardSidebar() {
       {/* Sidebar Toggle Button */}
       <button 
         onClick={handleToggle}
-        className="absolute -right-3 top-10 size-6 bg-blue-500 rounded-full flex items-center justify-center border border-white/10 shadow-lg hover:scale-110 transition-transform z-30"
+        className="absolute -right-3 top-10 size-6 bg-primary rounded-full flex items-center justify-center border border-white/10 shadow-lg hover:scale-110 transition-transform z-30"
       >
         {isCollapsed ? <Menu className="size-3.5" /> : <ChevronLeft className="size-3.5" />}
       </button>
@@ -128,7 +128,7 @@ export function DashboardSidebar() {
               </div>
             ) : (
               <div className="flex flex-col items-center gap-3 w-full">
-                <div className="size-16 rounded-2xl overflow-hidden ring-2 ring-white/10 shadow-lg shadow-blue-900/30">
+                <div className="size-16 rounded-2xl overflow-hidden ring-2 ring-white/10 shadow-lg shadow-primary/30">
                   <Image
                     src={logoUrl}
                     alt={orgName ?? ''}
@@ -139,7 +139,7 @@ export function DashboardSidebar() {
                 </div>
                 <div className="text-center w-full px-1">
                   <p className="text-[13px] font-bold text-white truncate leading-tight">{orgName}</p>
-                  <p className="text-[10px] text-blue-200/40 uppercase tracking-wider mt-0.5">Education Center</p>
+                  <p className="text-[10px] text-primary-emphasis/40 uppercase tracking-wider mt-0.5">Education Center</p>
                 </div>
               </div>
             )
@@ -147,7 +147,7 @@ export function DashboardSidebar() {
             isCollapsed ? null : (
               <div className="text-center w-full px-1 py-2">
                 <p className="text-[13px] font-bold text-white truncate leading-tight">{orgName}</p>
-                <p className="text-[10px] text-blue-200/40 uppercase tracking-wider mt-0.5">Education Center</p>
+                <p className="text-[10px] text-primary-emphasis/40 uppercase tracking-wider mt-0.5">Education Center</p>
               </div>
             )
           ) : (
@@ -155,7 +155,7 @@ export function DashboardSidebar() {
               "flex items-center justify-center rounded-3xl transition-all duration-500 group relative overflow-hidden",
               isCollapsed ? "size-14" : "size-34"
             )}>
-              <div className="absolute inset-0 bg-gradient-to-tr from-blue-400/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+              <div className="absolute inset-0 bg-gradient-to-tr from-primary/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
               <div className="relative z-10 transition-transform duration-500 group-hover:scale-110">
                 <Image
                   src="/logo.svg"
@@ -177,7 +177,7 @@ export function DashboardSidebar() {
           <div key={group.groupKey} className="space-y-1.5">
             {!isCollapsed && (
               <div className="px-4 mb-2">
-                <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-blue-200/30">
+                <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-primary-emphasis/30">
                   {tNav(group.groupKey as Parameters<typeof tNav>[0])}
                 </p>
               </div>
@@ -193,13 +193,13 @@ export function DashboardSidebar() {
                     className={cn(
                       "flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all duration-300 group relative text-[14px] font-semibold",
                       isActive
-                        ? "bg-gradient-to-r from-blue-400 to-cyan-400 text-white shadow-lg shadow-blue-500/30"
-                        : "text-blue-100/60 hover:bg-white/5 hover:text-white",
+                        ? "bg-gradient-to-r from-primary to-primary text-white shadow-lg shadow-primary/30"
+                        : "text-primary-emphasis/60 hover:bg-white/5 hover:text-white",
                       isCollapsed && "justify-center px-2"
                     )}
                     aria-label={label}
                   >
-                    <item.icon className={cn("size-5 shrink-0 transition-colors", isActive ? "text-white" : "text-blue-200/40 group-hover:text-blue-200")} />
+                    <item.icon className={cn("size-5 shrink-0 transition-colors", isActive ? "text-white" : "text-primary-emphasis/40 group-hover:text-primary-emphasis")} />
                     {!isCollapsed && <span>{label}</span>}
                     {isCollapsed && (
                       <div className="absolute left-full ml-4 px-2 py-1 bg-[#22315e] border border-white/10 rounded-md text-[10px] text-white opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-50">
@@ -215,23 +215,23 @@ export function DashboardSidebar() {
       </div>
 
       {/* Footer Controls */}
-      <div className="p-4 mt-auto border-t border-white/5 bg-blue-900/10">
+      <div className="p-4 mt-auto border-t border-white/5 bg-primary-muted/10">
         <div className="flex items-center gap-3">
           {!isCollapsed ? (
             <div className="flex flex-1 items-center gap-3 px-3 py-3 rounded-2xl bg-white/5 border border-white/5 backdrop-blur-sm">
-              <Avatar className="size-9 border-2 border-blue-400/20">
+              <Avatar className="size-9 border-2 border-primary/20">
                 <AvatarImage src={user?.avatar_url} alt={user?.full_name} />
-                <AvatarFallback className="bg-blue-600 text-white font-bold text-[10px]">
+                <AvatarFallback className="bg-primary text-white font-bold text-[10px]">
                   {user?.full_name?.charAt(0).toUpperCase() || 'A'}
                 </AvatarFallback>
               </Avatar>
               <div className="flex-1 min-w-0">
                 <p className="text-[13px] font-bold text-white truncate leading-none mb-1">{user?.full_name || 'Admin User'}</p>
-                <p className="text-[10px] font-medium text-blue-200/40 uppercase tracking-wider truncate">{user?.role?.replace('_', ' ') || 'Manager'}</p>
+                <p className="text-[10px] font-medium text-primary-emphasis/40 uppercase tracking-wider truncate">{user?.role?.replace('_', ' ') || 'Manager'}</p>
               </div>
               <button 
                 onClick={() => logout()}
-                className="size-10 flex items-center justify-center rounded-xl bg-red-500/10 border border-red-500/20 text-red-500 hover:bg-red-500 hover:text-white transition-all shadow-lg shadow-red-500/10 group shrink-0"
+                className="size-10 flex items-center justify-center rounded-xl bg-danger/10 border border-danger/20 text-danger-emphasis hover:bg-danger hover:text-white transition-all shadow-lg shadow-danger/10 group shrink-0"
                 title={tAuth('logout')}
               >
                 <LogOut className="size-5 transition-transform group-hover:translate-x-0.5" />
@@ -240,7 +240,7 @@ export function DashboardSidebar() {
           ) : (
             <button 
               onClick={() => logout()}
-              className="w-full size-12 flex items-center justify-center rounded-2xl bg-red-500/10 border border-red-500/20 text-red-500 hover:bg-red-500 hover:text-white transition-all shadow-lg shadow-red-500/10 group"
+              className="w-full size-12 flex items-center justify-center rounded-2xl bg-danger/10 border border-danger/20 text-danger-emphasis hover:bg-danger hover:text-white transition-all shadow-lg shadow-danger/10 group"
               title={tAuth('logout')}
             >
               <LogOut className="size-6 transition-transform group-hover:translate-x-0.5" />

@@ -109,12 +109,12 @@ export function ReportsTabBar({
   const weekOptions  = buildWeekOptions();
 
   return (
-    <div className="sticky top-[72px] z-30 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8 bg-background/95 backdrop-blur-sm border-b border-border/50 pt-5">
+    <div className="sticky top-[72px] z-30 -mx-4 border-b border-border bg-background/95 px-4 pt-5 backdrop-blur-sm sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
       {/* Title + filter row */}
       <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
         <div>
-          <h1 className="text-xl font-black tracking-tight text-foreground leading-none">{t('title')}</h1>
-          <p className="mt-1 text-xs text-muted-foreground">
+          <h1 className="text-h1 text-foreground">{t('title')}</h1>
+          <p className="mt-1 text-caption font-normal text-muted-foreground">
             {format(dateFrom, 'dd MMM yyyy', { locale: ru })} — {format(dateTo, 'dd MMM yyyy', { locale: ru })}
           </p>
         </div>
@@ -122,15 +122,15 @@ export function ReportsTabBar({
         {/* Filter controls */}
         <div className="flex flex-wrap items-center gap-2">
           {/* Quick presets */}
-          <div className="flex items-center gap-0.5 rounded-xl border border-border/60 bg-muted/40 p-1">
+          <div className="flex items-center gap-0.5 rounded-control border border-border bg-muted p-1">
             {PRESETS.map((p) => (
               <button
                 key={p.key}
                 onClick={() => { onPresetChange(p.key); onFilterModeChange('preset'); }}
                 className={cn(
-                  'rounded-lg px-3 py-1.5 text-xs font-semibold transition-all duration-150 cursor-pointer',
+                  'cursor-pointer rounded-control px-3 py-1.5 text-caption transition-colors duration-150',
                   filterMode === 'preset' && preset === p.key
-                    ? 'bg-background text-foreground shadow-sm'
+                    ? 'bg-card text-foreground shadow-card'
                     : 'text-muted-foreground hover:text-foreground',
                 )}
               >
@@ -140,14 +140,14 @@ export function ReportsTabBar({
           </div>
 
           {/* Divider */}
-          <div className="h-5 w-px bg-border/60 hidden sm:block" />
+          <div className="hidden h-5 w-px bg-border sm:block" />
 
           {/* Month picker */}
           <div className={cn(
-            'flex items-center gap-1.5 rounded-xl border px-2.5 py-1.5 transition-all duration-150 cursor-pointer',
+            'flex cursor-pointer items-center gap-1.5 rounded-control border px-2.5 py-1.5 transition-colors duration-150',
             filterMode === 'month'
-              ? 'border-primary/50 bg-primary/8 text-primary'
-              : 'border-border/60 bg-muted/40 text-muted-foreground hover:text-foreground',
+              ? 'border-primary/40 bg-primary-muted text-primary-emphasis dark:text-primary'
+              : 'border-border bg-muted text-muted-foreground hover:text-foreground',
           )}>
             <CalendarDays className="size-3.5 shrink-0 pointer-events-none" aria-hidden="true" />
             <select
@@ -158,7 +158,7 @@ export function ReportsTabBar({
                   onFilterModeChange('month');
                 }
               }}
-              className="text-xs font-semibold bg-transparent border-0 outline-none cursor-pointer max-w-[130px]"
+              className="max-w-[130px] cursor-pointer border-0 bg-transparent text-caption outline-none"
               aria-label={t('filter_by_month')}
             >
               <option value="">{t('filter_by_month')}</option>
@@ -170,10 +170,10 @@ export function ReportsTabBar({
 
           {/* Week picker */}
           <div className={cn(
-            'flex items-center gap-1.5 rounded-xl border px-2.5 py-1.5 transition-all duration-150 cursor-pointer',
+            'flex cursor-pointer items-center gap-1.5 rounded-control border px-2.5 py-1.5 transition-colors duration-150',
             filterMode === 'week'
-              ? 'border-primary/50 bg-primary/8 text-primary'
-              : 'border-border/60 bg-muted/40 text-muted-foreground hover:text-foreground',
+              ? 'border-primary/40 bg-primary-muted text-primary-emphasis dark:text-primary'
+              : 'border-border bg-muted text-muted-foreground hover:text-foreground',
           )}>
             <CalendarRange className="size-3.5 shrink-0 pointer-events-none" aria-hidden="true" />
             <select
@@ -184,7 +184,7 @@ export function ReportsTabBar({
                   onFilterModeChange('week');
                 }
               }}
-              className="text-xs font-semibold bg-transparent border-0 outline-none cursor-pointer max-w-[160px]"
+              className="max-w-[160px] cursor-pointer border-0 bg-transparent text-caption outline-none"
               aria-label={t('filter_by_week')}
             >
               <option value="">{t('filter_by_week')}</option>
@@ -205,7 +205,7 @@ export function ReportsTabBar({
             aria-selected={activeTab === value}
             onClick={() => onTabChange(value)}
             className={cn(
-              'relative flex h-11 items-center gap-2 px-4 text-sm font-semibold transition-colors cursor-pointer',
+              'relative flex h-11 cursor-pointer items-center gap-2 px-4 text-body-sm font-medium transition-colors',
               'after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[2px] after:rounded-t-full after:bg-primary after:transition-transform after:duration-200',
               activeTab === value
                 ? 'text-primary after:scale-x-100'

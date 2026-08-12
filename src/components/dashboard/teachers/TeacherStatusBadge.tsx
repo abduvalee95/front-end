@@ -14,28 +14,28 @@ export function TeacherStatusBadge({ status }: TeacherStatusBadgeProps) {
   switch (status) {
     case 'ACTIVE':
       return (
-        <Badge variant="outline" className="bg-teal-50 text-teal-700 border-teal-200/50 gap-1.5 px-2 py-0.5">
+        <Badge variant="outline" className="bg-success-muted text-success-emphasis border-success/50 gap-1.5 px-2 py-0.5">
           <CheckCircle2 className="size-3" />
           {t('status_active')}
         </Badge>
       );
     case 'INACTIVE':
       return (
-        <Badge variant="destructive" className="bg-amber-50 text-amber-700 border-amber-200/50 gap-1.5 px-2 py-0.5">
+        <Badge variant="destructive" className="bg-warning-muted text-warning-emphasis border-warning/50 gap-1.5 px-2 py-0.5">
           <XCircle className="size-3" />
           {t('status_inactive')}
         </Badge>
       );
     case 'ON_LEAVE':
       return (
-        <Badge variant="secondary" className="bg-blue-50 text-blue-700 border-blue-200/50 gap-1.5 px-2 py-0.5">
+        <Badge variant="secondary" className="bg-primary-muted text-primary-emphasis border-primary/50 gap-1.5 px-2 py-0.5">
           <Clock className="size-3" />
           {t('status_on_leave')}
         </Badge>
       );
     case 'DELETED':
       return (
-        <Badge variant="outline" className="bg-red-50 text-red-600 border-red-200/50 gap-1.5 px-2 py-0.5">
+        <Badge variant="outline" className="bg-danger-muted text-danger-emphasis border-danger/50 gap-1.5 px-2 py-0.5">
           <Trash2 className="size-3" />
           {t('status_deleted')}
         </Badge>

@@ -27,6 +27,7 @@ import {
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { PageHeader } from '@/components/ui/page-header';
 import { format, addDays, subDays } from 'date-fns';
 import { cn } from '@/lib/utils';
 import { useGroups } from '@/hooks/useGroups';
@@ -177,36 +178,32 @@ export default function JournalPage() {
 
   return (
     <div className="space-y-4 motion-safe:animate-in motion-safe:fade-in motion-safe:duration-500">
-      {/* Brand row */}
-      <div className="flex items-end justify-between flex-wrap gap-3">
-        <div>
-          <p className="text-[10px] font-bold tracking-[0.22em] uppercase text-muted-foreground">
-            BILIM NURU
-          </p>
-          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight mt-1">
-            {t('title')}
-          </h1>
-        </div>
-        {isAdmin && (
-          <Badge variant="secondary" className="gap-1.5">
-            <ShieldCheck className="size-3" aria-hidden="true" />
-            <span className="text-[10px] uppercase tracking-wider font-bold">{t('admin_view')}</span>
-          </Badge>
-        )}
-      </div>
+      <PageHeader
+        icon={BookOpen}
+        title={t('title')}
+        subtitle={t('subtitle')}
+        actions={
+          isAdmin ? (
+            <Badge variant="primary" className="gap-1.5">
+              <ShieldCheck className="size-3" aria-hidden="true" />
+              {t('admin_view')}
+            </Badge>
+          ) : undefined
+        }
+      />
 
       {/* ============ BENTO GRID ============ */}
       <div className="grid grid-cols-12 gap-3 sm:gap-4 auto-rows-min">
 
         {/* (1) Date hero — wide */}
-        <Card className="col-span-12 lg:col-span-8 p-5 sm:p-6 rounded-2xl border-border/60 shadow-sm">
+        <Card className="col-span-12 p-5 sm:p-6 lg:col-span-8">
           <div className="flex items-center justify-between flex-wrap gap-4">
             <div className="flex items-center gap-3">
               <Button
                 variant="outline"
                 size="icon"
                 aria-label={tCommon('previous')}
-                className="size-11 rounded-xl"
+                className="size-11"
                 onClick={() => setCurrentDate((d) => subDays(d, 1))}
               >
                 <ChevronLeft aria-hidden="true" className="size-5" />
@@ -215,20 +212,16 @@ export default function JournalPage() {
               <div className="min-w-0">
                 <div className="flex items-center gap-2">
                   <CalendarDays className="size-4 text-muted-foreground" aria-hidden="true" />
-                  <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground">
-                    {format(currentDate, 'EEEE')}
-                  </p>
+                  <p className="text-caption text-muted-foreground">{format(currentDate, 'EEEE')}</p>
                 </div>
-                <p className="text-2xl sm:text-3xl font-extrabold tracking-tight leading-none mt-1">
-                  {format(currentDate, 'dd MMMM yyyy')}
-                </p>
+                <p className="mt-1 text-h1 text-foreground">{format(currentDate, 'dd MMMM yyyy')}</p>
               </div>
 
               <Button
                 variant="outline"
                 size="icon"
                 aria-label={tCommon('next')}
-                className="size-11 rounded-xl"
+                className="size-11"
                 onClick={() => setCurrentDate((d) => addDays(d, 1))}
               >
                 <ChevronRight aria-hidden="true" className="size-5" />
@@ -269,7 +262,7 @@ export default function JournalPage() {
                 {hasChanges && !upsert.isPending && (
                   <span
                     aria-label={t('unsaved')}
-                    className="absolute -top-1 -right-1 size-3 rounded-full bg-amber-400 ring-2 ring-background"
+                    className="absolute -top-1 -right-1 size-3 rounded-full bg-warning ring-2 ring-background"
                   />
                 )}
               </Button>
@@ -400,7 +393,7 @@ export default function JournalPage() {
                   variant="outline"
                   size="sm"
                   onClick={markAllPresent}
-                  className="shrink-0 h-8 rounded-xl gap-1.5 text-[11px] font-bold text-emerald-600 border-emerald-200 hover:bg-emerald-50 dark:text-emerald-400 dark:border-emerald-800 dark:hover:bg-emerald-950 cursor-pointer"
+                  className="shrink-0 h-8 rounded-xl gap-1.5 text-[11px] font-bold text-success-emphasis border-success/30 hover:bg-success-muted dark:text-success-emphasis dark:border-success/30 dark:hover:bg-success-muted cursor-pointer"
                   aria-label={t('mark_all_present')}
                 >
                   <CheckCheck className="size-3.5" aria-hidden="true" />
@@ -576,14 +569,14 @@ interface StatTileProps {
 }
 function StatTile({ icon, label, value, pct, tone }: StatTileProps) {
   const toneMap = {
-    emerald: 'bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-300',
-    amber: 'bg-amber-50 text-amber-700 dark:bg-amber-500/10 dark:text-amber-300',
-    rose: 'bg-rose-50 text-rose-700 dark:bg-rose-500/10 dark:text-rose-300',
+    emerald: 'bg-success-muted text-success-emphasis dark:bg-success/10 dark:text-success-emphasis',
+    amber: 'bg-warning-muted text-warning-emphasis dark:bg-warning/10 dark:text-warning-emphasis',
+    rose: 'bg-danger-muted text-danger-emphasis dark:bg-danger/10 dark:text-danger-emphasis',
   } as const;
   const barMap = {
-    emerald: 'bg-emerald-500',
-    amber: 'bg-amber-500',
-    rose: 'bg-rose-500',
+    emerald: 'bg-success',
+    amber: 'bg-warning',
+    rose: 'bg-danger',
   } as const;
   return (
     <div className={cn('rounded-xl px-3 py-3 flex flex-col gap-1.5', toneMap[tone])}>
@@ -612,19 +605,19 @@ interface SegBtnProps {
 function SegBtn({ active, tone, label, onClick, children }: SegBtnProps) {
   const activeMap = {
     emerald:
-      'bg-emerald-500 text-white shadow-[0_6px_20px_-4px_rgba(16,185,129,0.55)] ring-4 ring-emerald-500/15 dark:ring-emerald-400/20',
+      'bg-success text-white shadow-[0_6px_20px_-4px_rgba(16,185,129,0.55)] ring-4 ring-success/15 dark:ring-success/20',
     amber:
-      'bg-amber-500 text-white shadow-[0_6px_20px_-4px_rgba(245,158,11,0.55)] ring-4 ring-amber-500/15 dark:ring-amber-400/20',
+      'bg-warning text-white shadow-[0_6px_20px_-4px_rgba(245,158,11,0.55)] ring-4 ring-warning/15 dark:ring-warning/20',
     rose:
-      'bg-rose-500 text-white shadow-[0_6px_20px_-4px_rgba(244,63,94,0.55)] ring-4 ring-rose-500/15 dark:ring-rose-400/20',
+      'bg-danger text-white shadow-[0_6px_20px_-4px_rgba(244,63,94,0.55)] ring-4 ring-danger/15 dark:ring-danger/20',
   } as const;
   const idleMap = {
     emerald:
-      'border-emerald-200/70 text-emerald-600 hover:bg-emerald-50 hover:border-emerald-300 dark:border-emerald-500/20 dark:text-emerald-400 dark:hover:bg-emerald-500/10',
+      'border-success/70 text-success-emphasis hover:bg-success-muted hover:border-success/30 dark:border-success/20 dark:text-success-emphasis dark:hover:bg-success/10',
     amber:
-      'border-amber-200/70 text-amber-600 hover:bg-amber-50 hover:border-amber-300 dark:border-amber-500/20 dark:text-amber-400 dark:hover:bg-amber-500/10',
+      'border-warning/70 text-warning-emphasis hover:bg-warning-muted hover:border-warning/30 dark:border-warning/20 dark:text-warning-emphasis dark:hover:bg-warning/10',
     rose:
-      'border-rose-200/70 text-rose-600 hover:bg-rose-50 hover:border-rose-300 dark:border-rose-500/20 dark:text-rose-400 dark:hover:bg-rose-500/10',
+      'border-danger/70 text-danger-emphasis hover:bg-danger-muted hover:border-danger/30 dark:border-danger/20 dark:text-danger-emphasis dark:hover:bg-danger/10',
   } as const;
   return (
     <button

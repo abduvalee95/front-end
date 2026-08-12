@@ -54,12 +54,12 @@ export function OrganizationTab({
 
   return (
     <div className="space-y-6 transition-all duration-300 animate-in fade-in slide-in-from-bottom-4">
-      <Card className="border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
+      <Card className="border-border shadow-sm overflow-hidden">
         <div className="h-32 bg-gradient-to-r from-primary/20 via-primary/10 to-primary/5" />
         <CardContent className="px-6 pb-6 -mt-12">
           <div className="flex items-end gap-4">
             <div className="relative group">
-              <div className="size-24 rounded-2xl bg-white dark:bg-slate-900 border-4 border-white dark:border-slate-950 shadow-lg flex items-center justify-center overflow-hidden">
+              <div className="size-24 rounded-2xl bg-white dark:bg-card border-4 border-white dark:border-border shadow-lg flex items-center justify-center overflow-hidden">
                 {formData.logo_url ? (
                   <img
                     src={formData.logo_url}
@@ -90,18 +90,18 @@ export function OrganizationTab({
               />
             </div>
             <div className="pb-2">
-              <h3 className="text-xl font-bold text-slate-900 dark:text-white">{formData.name || 'Organization'}</h3>
+              <h3 className="text-xl font-bold text-foreground dark:text-white">{formData.name || 'Organization'}</h3>
               <Badge variant={formData.status === 'ACTIVE' ? 'default' : 'secondary'} className="mt-1">
                 {formData.status}
               </Badge>
-              <p className="text-xs text-slate-400 mt-1.5">{t('click_to_upload_logo')}</p>
+              <p className="text-xs text-muted-foreground mt-1.5">{t('click_to_upload_logo')}</p>
             </div>
           </div>
         </CardContent>
       </Card>
 
-      <Card className="border-slate-200 dark:border-slate-800 shadow-sm">
-        <CardHeader className="border-b border-slate-200 dark:border-slate-800">
+      <Card className="border-border shadow-sm">
+        <CardHeader className="border-b border-border">
           <CardTitle className="text-lg font-semibold">{t('organization_details')}</CardTitle>
           <CardDescription>{t('organization_details_desc')}</CardDescription>
         </CardHeader>
@@ -136,7 +136,7 @@ export function OrganizationTab({
             <div className="space-y-2">
               <Label className="text-sm font-medium">{t('organization_id')}</Label>
               <div className="flex gap-2">
-                <div className="flex-1 h-11 flex items-center px-3 rounded-md border bg-slate-50 dark:bg-slate-900 text-sm font-mono text-slate-600">
+                <div className="flex-1 h-11 flex items-center px-3 rounded-md border bg-muted dark:bg-card text-sm font-mono text-foreground">
                   {settings?.id}
                 </div>
                 <Button 
@@ -145,13 +145,13 @@ export function OrganizationTab({
                   className="h-11 w-11"
                   onClick={() => handleCopyToClipboard(settings?.id || '')}
                 >
-                  {copied ? <Check className="size-4 text-green-500" /> : <Copy className="size-4" />}
+                  {copied ? <Check className="size-4 text-success-emphasis" /> : <Copy className="size-4" />}
                 </Button>
               </div>
             </div>
           </div>
         </CardContent>
-        <CardFooter className="border-t border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50 px-6 py-4 flex justify-end">
+        <CardFooter className="border-t border-border bg-muted/50 dark:bg-card/50 px-6 py-4 flex justify-end">
           <Button 
             onClick={handleSaveOrganization} 
             disabled={updateSettingsPending}

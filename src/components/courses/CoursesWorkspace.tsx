@@ -7,6 +7,7 @@ import { toast } from 'sonner';
 import {
   AlertCircle,
   BookOpen,
+  CheckCircle2,
   Library,
   Loader2,
   RefreshCw,
@@ -26,6 +27,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Card, CardContent } from '@/components/ui/card';
+import { PageHeader } from '@/components/ui/page-header';
 import { cn } from '@/lib/utils';
 import { CreateCourseModal } from './CreateCourseModal';
 import { EditCourseModal } from './EditCourseModal';
@@ -82,8 +84,8 @@ export function CoursesWorkspace() {
         <div className="mx-auto mb-5 flex size-16 items-center justify-center rounded-2xl bg-muted text-muted-foreground">
           <AlertCircle className="size-8" />
         </div>
-        <h1 className="text-2xl font-black">{t('courses_unavailable')}</h1>
-        <p className="mt-2 text-sm text-muted-foreground">
+        <h1 className="text-h2">{t('courses_unavailable')}</h1>
+        <p className="mt-2 text-body-sm text-muted-foreground">
           {t('courses_unavailable_desc').replace('{role}', role || '')}
         </p>
       </div>
@@ -91,46 +93,22 @@ export function CoursesWorkspace() {
   }
 
   return (
-    <div className="space-y-8 animate-in fade-in duration-700">
-      {/* Hero */}
-      <section className="overflow-hidden rounded-[1.75rem] border border-white/70 bg-white/82 shadow-[0_18px_70px_rgba(15,23,42,0.08)] backdrop-blur dark:border-white/10 dark:bg-white/5">
-        <div className="relative p-6 sm:p-8">
-          <div className="absolute inset-y-0 right-0 hidden w-1/2 bg-[radial-gradient(circle_at_70%_35%,rgba(99,102,241,0.22),transparent_18rem),radial-gradient(circle_at_90%_80%,rgba(59,130,246,0.18),transparent_14rem)] lg:block" />
-          <div className="relative flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
-            <div className="flex-1">
-              <div className="flex items-center gap-3 mb-5">
-                <Badge variant="outline" className="rounded-full border-indigo-500/20 bg-indigo-500/10 text-indigo-700 dark:text-indigo-300">
-                  <Library className="mr-1.5 size-3.5" />
-                  {t('course_management')}
-                </Badge>
-                {canManage && <CreateCourseModal />}
-              </div>
-              <h1 className="max-w-3xl text-3xl font-black tracking-tight text-foreground sm:text-5xl">
-                {t('educational_programs')}
-              </h1>
-              <p className="mt-4 max-w-2xl text-sm leading-6 text-muted-foreground sm:text-base">
-                {t('educational_programs_desc')}
-              </p>
-            </div>
-            
-            {/* Quick Metrics right in the hero */}
-            <div className="flex shrink-0 gap-4">
-              <div className="flex flex-col items-center justify-center rounded-2xl bg-white/40 px-5 py-3 shadow-inner ring-1 ring-white/50 backdrop-blur-md dark:bg-black/20 dark:ring-white/10">
-                <span className="text-3xl font-black text-indigo-600 dark:text-indigo-400">{allCourses.length}</span>
-                <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">{t('total_courses')}</span>
-              </div>
-              <div className="flex flex-col items-center justify-center rounded-2xl bg-white/40 px-5 py-3 shadow-inner ring-1 ring-white/50 backdrop-blur-md dark:bg-black/20 dark:ring-white/10">
-                <span className="text-3xl font-black text-emerald-600 dark:text-emerald-400">{activeCourses}</span>
-                <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">{t('active_now')}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+    <div className="space-y-5 animate-in fade-in duration-500">
+      <PageHeader
+        icon={Library}
+        eyebrow={t('course_management')}
+        title={t('educational_programs')}
+        subtitle={t('educational_programs_desc')}
+        actions={canManage ? <CreateCourseModal /> : undefined}
+        stats={[
+          { label: t('total_courses'), value: allCourses.length, icon: Library, tone: 'primary' },
+          { label: t('active_now'), value: activeCourses, icon: CheckCircle2, tone: 'success' },
+        ]}
+      />
 
       {/* Toolbar */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <h2 className="text-xl font-bold tracking-tight">{t('all_courses')}</h2>
+        <h2 className="text-h2 text-foreground">{t('all_courses')}</h2>
         <div className="flex flex-col gap-3 sm:flex-row">
           <div className="relative sm:w-72">
             {isSearching ? (
@@ -173,7 +151,7 @@ export function CoursesWorkspace() {
       {coursesQuery.isLoading ? (
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {Array.from({ length: 8 }).map((_, i) => (
-            <Skeleton key={i} className="h-56 rounded-[1.5rem] bg-indigo-100/50 dark:bg-indigo-950/30" />
+            <Skeleton key={i} className="h-56 rounded-[1.5rem] bg-primary-muted/50 dark:bg-primary-muted/30" />
           ))}
         </div>
       ) : coursesQuery.isError ? (
@@ -206,10 +184,10 @@ export function CoursesWorkspace() {
           {rows.map((course) => (
             <Card 
               key={course.id} 
-              className="group relative flex flex-col overflow-hidden rounded-[1.5rem] border-white/70 bg-white/80 shadow-md backdrop-blur transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-indigo-500/10 dark:border-white/10 dark:bg-white/5"
+              className="group relative flex flex-col overflow-hidden rounded-[1.5rem] border-white/70 bg-white/80 shadow-md backdrop-blur transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-primary/10 dark:border-white/10 dark:bg-white/5"
             >
               {/* Card Header with subtle gradient */}
-              <div className="relative h-24 w-full bg-gradient-to-br from-indigo-500/10 via-purple-500/5 to-transparent">
+              <div className="relative h-24 w-full bg-gradient-to-br from-primary/10 via-primary/5 to-transparent">
                 <div className="absolute right-4 top-4 flex items-center justify-end gap-1">
                   {canManage && (
                     <>
@@ -231,7 +209,7 @@ export function CoursesWorkspace() {
                     </>
                   )}
                 </div>
-                <div className="absolute -bottom-6 left-5 flex size-12 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 text-white shadow-lg ring-4 ring-background">
+                <div className="absolute -bottom-6 left-5 flex size-12 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-primary text-white shadow-lg ring-4 ring-background">
                   <GraduationCap className="size-6" />
                 </div>
               </div>
@@ -257,8 +235,8 @@ export function CoursesWorkspace() {
                     className={cn(
                       "rounded-full border-transparent shadow-inner",
                       course.status === 'ACTIVE' 
-                        ? 'bg-emerald-500/10 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-400' 
-                        : 'bg-slate-500/10 text-slate-600 dark:bg-slate-500/20 dark:text-slate-400'
+                        ? 'bg-success/10 text-success-emphasis dark:bg-success/20 dark:text-success-emphasis' 
+                        : 'bg-muted/10 text-foreground dark:bg-muted/20 dark:text-muted-foreground'
                     )}
                   >
                     {course.status}

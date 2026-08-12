@@ -16,7 +16,10 @@ import {
 import { useOrganizationSettings, useUpdateOrganizationSettings, useUploadOrganizationLogo } from '@/hooks/useOrganization';
 import { useAuthStore } from '@/store/auth.store';
 import { Card, CardContent } from '@/components/ui/card';
+import { PageHeader } from '@/components/ui/page-header';
+import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
+import { cn } from '@/lib/utils';
 import type { OrganizationSettings } from '@/services/organization';
 
 import { ProfileTab } from '@/components/settings/ProfileTab';
@@ -71,7 +74,7 @@ export default function SettingsPage() {
       <div className="flex items-center justify-center h-96">
         <div className="flex flex-col items-center gap-4">
           <Loader2 className="size-10 animate-spin text-primary" />
-          <p className="text-sm text-muted-foreground">{tCommon('loading')}...</p>
+          <p className="text-body-sm text-muted-foreground">{tCommon('loading')}...</p>
         </div>
       </div>
     );
@@ -109,57 +112,67 @@ export default function SettingsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-950 dark:to-slate-900">
-      {/* Header */}
-      <div className="bg-white dark:bg-slate-950 border-b border-slate-200 dark:border-slate-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="flex flex-col gap-1">
-            <div className="flex items-center gap-2 text-primary font-semibold text-xs uppercase tracking-wider">
-              <Settings className="size-4" />
-              <span>{t('title')}</span>
-            </div>
-            <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">{t('title')}</h1>
-            <p className="text-slate-500 dark:text-slate-400">{t('subtitle')}</p>
-          </div>
+    <div className="space-y-5">
+      <PageHeader
+        icon={Settings}
+        title={t('title')}
+        subtitle={t('subtitle')}
+      />
+
+      <div className="flex flex-col gap-5 lg:flex-row">
+        {/* Sidebar Navigation */}
+        <div className="shrink-0 lg:w-72">
+          <Card className="sticky top-6">
+            <CardContent className="p-2">
+              <nav className="space-y-1">
+                {settingsNav.map((item) => {
+                  const Icon = item.icon;
+                  const isActive = activeTab === item.id;
+                  return (
+                    <button
+                      key={item.id}
+                      onClick={() => setActiveTab(item.id)}
+                      aria-current={isActive ? 'page' : undefined}
+                      className={cn(
+                        'group flex w-full items-center gap-3 rounded-control px-3 py-2.5 text-left transition-colors duration-200',
+                        isActive
+                          ? 'bg-primary text-primary-foreground'
+                          : 'text-muted-foreground hover:bg-muted hover:text-foreground',
+                      )}
+                    >
+                      <Icon
+                        className={cn(
+                          'size-5 shrink-0',
+                          isActive ? 'text-primary-foreground' : 'text-muted-foreground',
+                        )}
+                      />
+                      <div className="min-w-0 flex-1">
+                        <p className="text-h4">{item.label}</p>
+                        <p
+                          className={cn(
+                            'truncate text-caption font-normal',
+                            isActive ? 'text-primary-foreground/80' : 'text-muted-foreground',
+                          )}
+                        >
+                          {item.desc}
+                        </p>
+                      </div>
+                      <ChevronRight
+                        className={cn(
+                          'size-4 shrink-0 transition-transform',
+                          isActive ? 'rotate-90 text-primary-foreground' : 'text-muted-foreground',
+                        )}
+                      />
+                    </button>
+                  );
+                })}
+              </nav>
+            </CardContent>
+          </Card>
         </div>
-      </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="flex flex-col lg:flex-row gap-8">
-          {/* Sidebar Navigation */}
-          <div className="lg:w-72 flex-shrink-0">
-            <Card className="border-slate-200 dark:border-slate-800 shadow-sm sticky top-6">
-              <CardContent className="p-2">
-                <nav className="space-y-1">
-                  {settingsNav.map((item) => {
-                    const Icon = item.icon;
-                    const isActive = activeTab === item.id;
-                    return (
-                      <button
-                        key={item.id}
-                        onClick={() => setActiveTab(item.id)}
-                        className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left transition-all duration-200 group ${
-                          isActive
-                            ? 'bg-primary text-primary-foreground shadow-md shadow-primary/20'
-                            : 'hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400'
-                        }`}
-                      >
-                        <Icon className={`size-5 ${isActive ? 'text-primary-foreground' : 'text-slate-400 group-hover:text-slate-600'}`} />
-                        <div className="flex-1 min-w-0">
-                          <p className={`font-semibold text-sm ${isActive ? 'text-primary-foreground' : ''}`}>{item.label}</p>
-                          <p className={`text-xs truncate ${isActive ? 'text-primary-foreground/70' : 'text-slate-400'}`}>{item.desc}</p>
-                        </div>
-                        <ChevronRight className={`size-4 transition-transform ${isActive ? 'rotate-90 text-primary-foreground' : 'text-slate-300'}`} />
-                      </button>
-                    );
-                  })}
-                </nav>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Main Content */}
-          <div className="flex-1 min-w-0">
+        {/* Main Content */}
+        <div className="min-w-0 flex-1">
             {activeTab === 'profile' && (
               <ProfileTab
                 user={user}
@@ -187,32 +200,24 @@ export default function SettingsPage() {
                 updateSettingsPending={updateSettings.isPending}
               />
             )}
-            {activeTab === 'security' && <SecurityTab />}
-            {activeTab === 'users' && (
-              <div className="space-y-6">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="size-10 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center shrink-0">
-                      <Users className="size-5 text-primary" />
-                    </div>
-                    <div>
-                      <h2 className="text-xl font-bold tracking-tight">{t('users')}</h2>
-                      <p className="text-xs text-muted-foreground mt-0.5">{t('users_desc')}</p>
-                    </div>
-                  </div>
-                  <button
-                    onClick={() => setInviteModalOpen(true)}
-                    className="inline-flex items-center gap-2 rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground shadow-sm hover:bg-primary/90 transition-colors"
-                  >
+          {activeTab === 'security' && <SecurityTab />}
+          {activeTab === 'users' && (
+            <div className="space-y-4">
+              <PageHeader
+                icon={Users}
+                title={t('users')}
+                subtitle={t('users_desc')}
+                actions={
+                  <Button onClick={() => setInviteModalOpen(true)}>
                     <Plus className="size-4" />
-                    Invite User
-                  </button>
-                </div>
-                <UsersTable />
-                <InviteUserModal open={inviteModalOpen} onOpenChange={setInviteModalOpen} />
-              </div>
-            )}
-          </div>
+                    {t('invite_user')}
+                  </Button>
+                }
+              />
+              <UsersTable />
+              <InviteUserModal open={inviteModalOpen} onOpenChange={setInviteModalOpen} />
+            </div>
+          )}
         </div>
       </div>
     </div>

@@ -168,7 +168,7 @@ export default function TeachersTable({
         </div>
 
         {/* Desktop table */}
-        <div className="hidden md:block rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+        <div className="hidden md:block rounded-xl border border-border bg-white shadow-sm overflow-hidden">
           <Table>
             <TableHeader>
               <TableRow>
@@ -186,15 +186,15 @@ export default function TeachersTable({
                   <TableRow key={i}>
                     <TableCell className="pl-4">
                       <div className="flex items-center gap-3">
-                        <Skeleton className="size-8 rounded-lg shrink-0 bg-indigo-100/50 dark:bg-indigo-950/30" />
+                        <Skeleton className="size-8 rounded-lg shrink-0 bg-primary-muted/50 dark:bg-primary-muted/30" />
                         <div className="space-y-1.5">
-                          <Skeleton className="h-3.5 w-32 bg-indigo-100/50 dark:bg-indigo-950/30" />
-                          <Skeleton className="h-3 w-24 bg-indigo-100/50 dark:bg-indigo-950/30" />
+                          <Skeleton className="h-3.5 w-32 bg-primary-muted/50 dark:bg-primary-muted/30" />
+                          <Skeleton className="h-3 w-24 bg-primary-muted/50 dark:bg-primary-muted/30" />
                         </div>
                       </div>
                     </TableCell>
                     {[0,1,2,3].map((j) => (
-                      <TableCell key={j}><Skeleton className="h-4 w-20 bg-indigo-100/50 dark:bg-indigo-950/30" /></TableCell>
+                      <TableCell key={j}><Skeleton className="h-4 w-20 bg-primary-muted/50 dark:bg-primary-muted/30" /></TableCell>
                     ))}
                     <TableCell />
                   </TableRow>
@@ -214,7 +214,7 @@ export default function TeachersTable({
                 items.map((teacher) => (
                   <TableRow
                     key={teacher.id}
-                    className="hover:bg-slate-50 transition-colors border-b border-slate-100 last:border-0"
+                    className="hover:bg-muted transition-colors border-b border-border last:border-0"
                   >
                     <TableCell className="pl-4">
                       <div className="flex items-center gap-3">
@@ -248,11 +248,11 @@ export default function TeachersTable({
                         <Button
                           variant="ghost"
                           size="icon"
-                          className="size-8 rounded-lg hover:bg-slate-100"
+                          className="size-8 rounded-lg hover:bg-muted"
                           onClick={() => onViewClick(teacher)}
                           aria-label="View"
                         >
-                          <Eye className="size-4 text-slate-500" />
+                          <Eye className="size-4 text-muted-foreground" />
                         </Button>
                       ) : (
                         <TeacherActionsMenu
@@ -279,13 +279,13 @@ export default function TeachersTable({
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                      <Skeleton className="size-10 rounded-lg bg-indigo-100/50 dark:bg-indigo-950/30" />
+                      <Skeleton className="size-10 rounded-lg bg-primary-muted/50 dark:bg-primary-muted/30" />
                       <div className="space-y-1.5">
-                        <Skeleton className="h-4 w-28 bg-indigo-100/50 dark:bg-indigo-950/30" />
-                        <Skeleton className="h-3 w-16 bg-indigo-100/50 dark:bg-indigo-950/30" />
+                        <Skeleton className="h-4 w-28 bg-primary-muted/50 dark:bg-primary-muted/30" />
+                        <Skeleton className="h-3 w-16 bg-primary-muted/50 dark:bg-primary-muted/30" />
                       </div>
                     </div>
-                    <Skeleton className="size-8 rounded-md bg-indigo-100/50 dark:bg-indigo-950/30" />
+                    <Skeleton className="size-8 rounded-md bg-primary-muted/50 dark:bg-primary-muted/30" />
                   </div>
                 </CardContent>
               </Card>
@@ -301,7 +301,7 @@ export default function TeachersTable({
             items.map((teacher) => (
               <Card
                 key={teacher.id}
-                className="bg-white border-slate-200 shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer"
+                className="bg-white border-border shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer"
                 onClick={() => onViewClick(teacher)}
               >
                 <CardContent className="p-4">
@@ -400,8 +400,8 @@ function TeacherActionsMenu({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger render={
-        <Button variant="ghost" size="icon" className="size-8 rounded-lg hover:bg-slate-100" aria-label="Actions">
-          <MoreHorizontal className="size-4 text-slate-500" />
+        <Button variant="ghost" size="icon" className="size-8 rounded-lg hover:bg-muted" aria-label="Actions">
+          <MoreHorizontal className="size-4 text-muted-foreground" />
         </Button>
       } />
       <DropdownMenuContent align="end">
@@ -416,7 +416,7 @@ function TeacherActionsMenu({
         <DropdownMenuSeparator />
         <DropdownMenuItem
           onClick={onToggleStatus}
-          className={teacher.status === 'ACTIVE' ? 'text-amber-600 focus:text-amber-600' : 'text-teal-600 focus:text-teal-600'}
+          className={teacher.status === 'ACTIVE' ? 'text-warning-emphasis focus:text-warning-emphasis' : 'text-success-emphasis focus:text-success-emphasis'}
         >
           <Power className="mr-2 size-4" />
           {teacher.status === 'ACTIVE' ? tMenu('deactivate') : tMenu('activate')}
@@ -448,8 +448,8 @@ function EmptyState({
   const tC = useTranslations('common');
   return (
     <div className="flex flex-col items-center justify-center py-16 gap-3">
-      <div className="h-16 w-16 rounded-2xl bg-indigo-50 border border-indigo-100 flex items-center justify-center mb-4">
-        <GraduationCap className="h-8 w-8 text-indigo-500" />
+      <div className="h-16 w-16 rounded-2xl bg-primary-muted border border-primary/30 flex items-center justify-center mb-4">
+        <GraduationCap className="h-8 w-8 text-primary-emphasis" />
       </div>
       <div className="text-center">
         <h3 className="text-lg font-semibold">

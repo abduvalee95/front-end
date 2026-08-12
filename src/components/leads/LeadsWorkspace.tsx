@@ -23,6 +23,7 @@ import { useLeads, useConvertLead, useUpdateLead } from '@/hooks/useLeads';
 import { Lead, LeadStatus } from '@/types/analytics';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
+import { PageHeader } from '@/components/ui/page-header';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import {
@@ -59,10 +60,10 @@ export function LeadsWorkspace() {
 
   const getStatusBadge = (status: LeadStatus) => {
     switch (status) {
-      case 'NEW': return <Badge variant="secondary" className="bg-blue-500/10 text-blue-500 border-blue-500/20">{t('status_new')}</Badge>;
-      case 'CONTACTED': return <Badge variant="secondary" className="bg-amber-500/10 text-amber-500 border-amber-500/20">{t('status_contacted')}</Badge>;
-      case 'CONVERTED': return <Badge variant="secondary" className="bg-emerald-500/10 text-emerald-500 border-emerald-500/20">{t('status_converted')}</Badge>;
-      case 'LOST': return <Badge variant="secondary" className="bg-rose-500/10 text-rose-500 border-rose-500/20">{t('status_lost')}</Badge>;
+      case 'NEW': return <Badge variant="secondary" className="bg-primary/10 text-primary-emphasis border-primary/20">{t('status_new')}</Badge>;
+      case 'CONTACTED': return <Badge variant="secondary" className="bg-warning/10 text-warning-emphasis border-warning/20">{t('status_contacted')}</Badge>;
+      case 'CONVERTED': return <Badge variant="secondary" className="bg-success/10 text-success-emphasis border-success/20">{t('status_converted')}</Badge>;
+      case 'LOST': return <Badge variant="secondary" className="bg-danger/10 text-danger-emphasis border-danger/20">{t('status_lost')}</Badge>;
     }
   };
 
@@ -84,44 +85,43 @@ export function LeadsWorkspace() {
   };
 
   return (
-    <div className="space-y-6">
-      {/* Header section */}
-      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">{t('title')}</h1>
-          <p className="text-muted-foreground mt-1">{t('subtitle')}</p>
-        </div>
-        <div className="flex items-center gap-2">
-          <div className="flex items-center border border-border rounded-lg p-0.5 bg-muted">
-            <Button
-              variant={view === 'kanban' ? 'default' : 'ghost'}
-              size="sm"
-              className="h-7 px-2.5 rounded-md"
-              onClick={() => setView('kanban')}
-            >
-              <LayoutGrid className="size-4" />
+    <div className="space-y-5">
+      <PageHeader
+        icon={Users}
+        title={t('title')}
+        subtitle={t('subtitle')}
+        actions={
+          <>
+            <div className="flex items-center rounded-control border border-border bg-muted p-0.5">
+              <Button
+                variant={view === 'kanban' ? 'primary' : 'ghost'}
+                size="sm"
+                aria-label={t('view_kanban')}
+                aria-pressed={view === 'kanban'}
+                onClick={() => setView('kanban')}
+              >
+                <LayoutGrid className="size-4" />
+              </Button>
+              <Button
+                variant={view === 'table' ? 'primary' : 'ghost'}
+                size="sm"
+                aria-label={t('view_table')}
+                aria-pressed={view === 'table'}
+                onClick={() => setView('table')}
+              >
+                <List className="size-4" />
+              </Button>
+            </div>
+            <Button onClick={() => setIsCreateModalOpen(true)}>
+              <Users className="size-4" />
+              {t('add_lead')}
             </Button>
-            <Button
-              variant={view === 'table' ? 'default' : 'ghost'}
-              size="sm"
-              className="h-7 px-2.5 rounded-md"
-              onClick={() => setView('table')}
-            >
-              <List className="size-4" />
-            </Button>
-          </div>
-          <Button 
-            className="edu-gradient-primary text-white"
-            onClick={() => setIsCreateModalOpen(true)}
-          >
-            <Users className="mr-2 size-4" />
-            {t('add_lead')}
-          </Button>
-        </div>
-      </div>
+          </>
+        }
+      />
 
       {/* Filters & Search — only in table view */}
-      {view === 'table' && <div className="grid grid-cols-1 md:grid-cols-4 gap-4 bg-card border border-border p-4 rounded-2xl shadow-sm">
+      {view === 'table' && <div className="grid grid-cols-1 md:grid-cols-4 gap-4 rounded-card border border-border bg-card p-4 shadow-card">
         <div className="md:col-span-2 relative">
           {isSearching ? (
             <Loader2 className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-primary animate-spin pointer-events-none" />
@@ -209,7 +209,7 @@ export function LeadsWorkspace() {
                   <tr key={lead.id} className="hover:bg-muted/30 transition-colors group">
                     <td className="px-6 py-4">
                       <div className="flex flex-col">
-                        <span className="font-bold text-foreground group-hover:text-indigo-500 transition-colors">
+                        <span className="font-bold text-foreground group-hover:text-primary-emphasis transition-colors">
                           {lead.full_name}
                         </span>
                         <div className="flex items-center gap-1.5 text-xs text-muted-foreground mt-1">
@@ -239,7 +239,7 @@ export function LeadsWorkspace() {
                         <Button 
                           size="sm" 
                           variant="ghost" 
-                          className="h-8 w-8 p-0 text-indigo-500 hover:text-indigo-600 hover:bg-indigo-500/10"
+                          className="h-8 w-8 p-0 text-primary-emphasis hover:text-primary-emphasis hover:bg-primary/10"
                           onClick={() => handleAIAction(lead)}
                           title={t('generate_ai_response')}
                         >
@@ -256,12 +256,12 @@ export function LeadsWorkspace() {
                             <DropdownMenuGroup>
                             <DropdownMenuLabel>{t('title')}</DropdownMenuLabel>
                             <DropdownMenuItem onClick={() => handleAIAction(lead)}>
-                              <Sparkles className="mr-2 size-4 text-indigo-500" />
+                              <Sparkles className="mr-2 size-4 text-primary-emphasis" />
                               {t('generate_ai_response')}
                             </DropdownMenuItem>
                             <DropdownMenuSeparator />
                             <DropdownMenuItem
-                              className="text-emerald-500"
+                              className="text-success-emphasis"
                               onClick={() => handleConvert(lead)}
                               disabled={lead.status === 'CONVERTED' || lead.status === 'LOST' || convertLead.isPending}
                             >
@@ -269,7 +269,7 @@ export function LeadsWorkspace() {
                               {convertLead.isPending ? tCommon('loading') : t('convert')}
                             </DropdownMenuItem>
                             <DropdownMenuItem
-                              className="text-rose-500"
+                              className="text-danger-emphasis"
                               onClick={() => handleMarkLost(lead)}
                               disabled={lead.status === 'LOST' || updateLead.isPending}
                             >

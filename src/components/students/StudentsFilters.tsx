@@ -102,9 +102,9 @@ export function StudentsFilters({
                 'h-7 rounded-lg px-3 text-xs font-semibold transition-all',
                 statusFilter === val
                   ? val === 'ACTIVE'
-                    ? 'bg-emerald-600 text-white shadow-sm'
+                    ? 'bg-success text-white shadow-sm'
                     : val === 'INACTIVE'
-                      ? 'bg-slate-600 text-white shadow-sm'
+                      ? 'bg-muted text-white shadow-sm'
                       : 'bg-background text-foreground shadow-sm'
                   : 'text-muted-foreground hover:text-foreground',
               )}
@@ -119,9 +119,9 @@ export function StudentsFilters({
           {(
             [
               { val: '', label: t('pay_filter_all'), activeClass: 'bg-background text-foreground shadow-sm' },
-              { val: 'paid', label: t('pay_paid'), activeClass: 'bg-emerald-600 text-white shadow-sm' },
-              { val: 'partial', label: t('pay_partial'), activeClass: 'bg-amber-500 text-white shadow-sm' },
-              { val: 'unpaid', label: t('pay_unpaid'), activeClass: 'bg-rose-600 text-white shadow-sm' },
+              { val: 'paid', label: t('pay_paid'), activeClass: 'bg-success text-white shadow-sm' },
+              { val: 'partial', label: t('pay_partial'), activeClass: 'bg-warning text-white shadow-sm' },
+              { val: 'unpaid', label: t('pay_unpaid'), activeClass: 'bg-danger text-white shadow-sm' },
             ]
           ).map(({ val, label, activeClass }) => (
             <button
@@ -202,7 +202,7 @@ export function StudentsFilters({
                 className={cn(
                   'h-7 rounded-lg px-3 text-xs font-semibold transition-all',
                   viewMode === val
-                    ? 'bg-slate-950 text-white shadow-sm dark:bg-primary'
+                    ? 'bg-card text-white shadow-sm dark:bg-primary'
                     : 'text-muted-foreground hover:text-foreground',
                 )}
               >

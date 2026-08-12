@@ -37,7 +37,7 @@ export function StatusConfirmDialog({ org, isLoading, onConfirm, onCancel }: Sta
             className={cn(
               isDeactivating
                 ? 'bg-destructive/10 text-destructive'
-                : 'bg-teal-100 text-teal-600 dark:bg-teal-950 dark:text-teal-400',
+                : 'bg-success-muted text-success-emphasis dark:bg-success-muted dark:text-success-emphasis',
             )}
           >
             {isDeactivating

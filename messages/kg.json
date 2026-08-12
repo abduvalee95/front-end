@@ -201,7 +201,8 @@
     "revenue_trend_sub": "Бул ай",
     "amount": "Сумма",
     "transactions": "Транзакциялар",
-    "no_revenue_data": "Киреше маалыматтары жок"
+    "no_revenue_data": "Киреше маалыматтары жок",
+    "teacher_quick_links": "Жумуш күнүңүзгө тез өтүңүз"
   },
   "leads": {
     "title": "Лидтер",
@@ -241,7 +242,9 @@
     "lead_moved_to": "Лид {status} га жылдырылды",
     "converted": "айландырылды",
     "ai_assistant": "AI жардамчы",
-    "name_placeholder": "Мисалы: Али"
+    "name_placeholder": "Мисалы: Али",
+    "view_kanban": "Канбан",
+    "view_table": "Таблица"
   },
   "students": {
     "title": "Окуучулар",
@@ -795,7 +798,8 @@
     "users_desc": "Кызматкерлерди башкаруу",
     "update_password": "Сырсөздү жаңылоо",
     "password_updated": "Сырсөз жаңыланды. Кайра кириңиз.",
-    "profile_updated": "Профиль жаңыланды"
+    "profile_updated": "Профиль жаңыланды",
+    "invite_user": "Колдонуучу чакыруу"
   },
   "header": {
     "search_placeholder": "Окуучу, мугалим, класстарды издөө...",

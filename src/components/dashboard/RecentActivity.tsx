@@ -38,11 +38,11 @@ export function RecentActivity({ summary, isLoading }: RecentActivityProps) {
               key={lesson.id}
               className="group flex gap-3 rounded-xl p-2.5 cursor-pointer hover:bg-accent transition-colors"
             >
-              <div className="size-8 rounded-lg shrink-0 flex items-center justify-center bg-indigo-50 text-indigo-400 dark:bg-indigo-500/10 dark:text-indigo-300">
+              <div className="size-8 rounded-lg shrink-0 flex items-center justify-center bg-primary-muted text-primary-emphasis dark:bg-primary/10 dark:text-primary-emphasis">
                 <CalendarDays className="size-3.5" strokeWidth={2} />
               </div>
               <div className="min-w-0">
-                <p className="text-[12px] font-semibold text-foreground group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors truncate">
+                <p className="text-[12px] font-semibold text-foreground group-hover:text-primary-emphasis dark:group-hover:text-primary-emphasis transition-colors truncate">
                   {lesson.title}
                 </p>
                 <p className="text-[10px] font-medium text-muted-foreground truncate">{lesson.course_title}</p>
@@ -55,7 +55,7 @@ export function RecentActivity({ summary, isLoading }: RecentActivityProps) {
       </div>
 
       <div className="mt-5 pt-5 border-t border-border">
-        <div className="rounded-xl bg-gradient-to-br from-muted to-indigo-50/60 dark:to-indigo-500/5 p-4">
+        <div className="rounded-xl bg-gradient-to-br from-muted to-primary/60 dark:to-primary/5 p-4">
           <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-muted-foreground mb-3">
             {t('overall_attendance')}
           </p>

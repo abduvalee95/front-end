@@ -24,8 +24,8 @@ export default function ErrorPage({ error, reset }: ErrorProps) {
     <div className="min-h-[60vh] flex items-center justify-center px-4">
       <div className="w-full max-w-md text-center space-y-6">
         {/* Icon */}
-        <div className="mx-auto flex size-16 items-center justify-center rounded-2xl bg-red-500/10">
-          <AlertTriangle className="size-8 text-red-500" />
+        <div className="mx-auto flex size-16 items-center justify-center rounded-2xl bg-danger/10">
+          <AlertTriangle className="size-8 text-danger-emphasis" />
         </div>
 
         {/* Message */}
@@ -37,7 +37,7 @@ export default function ErrorPage({ error, reset }: ErrorProps) {
             {t('try_again')}
           </p>
           {process.env.NODE_ENV === 'development' && error.message && (
-            <pre className="mt-4 rounded-xl border border-red-200 bg-red-50 p-3 text-left text-xs text-red-700 dark:border-red-900 dark:bg-red-950/30 dark:text-red-400 overflow-auto max-h-32">
+            <pre className="mt-4 rounded-xl border border-danger/30 bg-danger-muted p-3 text-left text-xs text-danger-emphasis dark:border-danger/30 dark:bg-danger-muted/30 dark:text-danger-emphasis overflow-auto max-h-32">
               {error.message}
             </pre>
           )}

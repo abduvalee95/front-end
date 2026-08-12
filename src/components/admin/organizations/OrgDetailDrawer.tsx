@@ -84,7 +84,7 @@ export function OrgDetailDrawer({ org, onClose, onEdit, onToggleStatus }: OrgDet
                   'flex-1',
                   org.status === 'ACTIVE'
                     ? 'border-destructive/30 text-destructive hover:bg-destructive/10'
-                    : 'border-teal-500/30 text-teal-600 dark:text-teal-400 hover:bg-teal-500/10',
+                    : 'border-success/30 text-success-emphasis hover:bg-success/10',
                 )}
                 onClick={() => onToggleStatus(org)}
               >

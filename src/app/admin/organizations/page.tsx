@@ -56,17 +56,17 @@ export default function OrganizationsPage() {
         <div className="pointer-events-none absolute inset-0 opacity-[0.05] [background-image:linear-gradient(rgba(255,255,255,0.6)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.6)_1px,transparent_1px)] [background-size:36px_36px]" />
         <div className="relative flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <p className="mb-2 flex items-center gap-2 font-mono text-[10px] font-bold uppercase tracking-[0.28em] text-cyan-300/80">
+            <p className="mb-2 flex items-center gap-2 font-mono text-[10px] font-bold uppercase tracking-[0.28em] text-primary-emphasis/80">
               <Building2 className="size-3.5" /> {t('console_tag')}
             </p>
             <h1 className="text-2xl font-black tracking-tight sm:text-3xl">{tNav('organizations')}</h1>
-            <p className="mt-1 text-sm text-slate-400">
+            <p className="mt-1 text-sm text-muted-foreground">
               {t('orgs.subtitle')}
             </p>
           </div>
           <button
             onClick={() => setCreateOpen(true)}
-            className="group flex h-10 shrink-0 items-center gap-2 rounded-xl border border-cyan-400/25 bg-cyan-400/10 px-4 text-sm font-bold text-cyan-100 backdrop-blur-sm transition-all hover:border-cyan-400/40 hover:bg-cyan-400/20"
+            className="group flex h-10 shrink-0 items-center gap-2 rounded-xl border border-primary/25 bg-primary/10 px-4 text-sm font-bold text-primary-emphasis backdrop-blur-sm transition-all hover:border-primary/40 hover:bg-primary/20"
           >
             <Building2 className="size-4 transition-transform group-hover:scale-110" />
             {t('orgs.create')}

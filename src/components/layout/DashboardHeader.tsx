@@ -79,7 +79,7 @@ export function DashboardHeader() {
             render={
               <Button variant="ghost" size="icon" className="size-9 sm:size-10 rounded-full text-muted-foreground hover:bg-muted/80 hover:text-foreground transition-colors relative focus-visible:ring-0">
                 <Bell className="size-5" />
-                <span className="absolute top-2 right-2.5 size-2 bg-rose-500 border-2 border-background rounded-full animate-pulse" />
+                <span className="absolute top-2 right-2.5 size-2 bg-danger border-2 border-background rounded-full animate-pulse" />
               </Button>
             }
           />
@@ -87,13 +87,13 @@ export function DashboardHeader() {
           <DropdownMenuContent align="end" className="w-[320px] p-4 rounded-3xl border-border/50 bg-background/95 backdrop-blur-xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)] dark:shadow-[0_10px_40px_-10px_rgba(0,0,0,0.5)]">
             <div className="flex items-center justify-between mb-4 px-1">
               <h4 className="font-bold text-foreground tracking-tight">{t('notifications')}</h4>
-              <span className="text-[10px] font-bold text-indigo-500 bg-indigo-500/10 px-2 py-1 rounded-full uppercase tracking-wider">3 {t('new_notification')}</span>
+              <span className="text-[10px] font-bold text-primary-emphasis bg-primary/10 px-2 py-1 rounded-full uppercase tracking-wider">3 {t('new_notification')}</span>
             </div>
             
             <DropdownMenuGroup className="space-y-1">
               {[1, 2, 3].map((n) => (
                 <DropdownMenuItem key={n} className="flex gap-3 p-2.5 focus:bg-muted/50 rounded-2xl transition-colors cursor-pointer group/item items-start">
-                  <div className="size-10 bg-indigo-500/10 text-indigo-500 rounded-xl shrink-0 flex items-center justify-center group-hover/item:bg-indigo-500 group-hover/item:text-white transition-colors">
+                  <div className="size-10 bg-primary/10 text-primary-emphasis rounded-xl shrink-0 flex items-center justify-center group-hover/item:bg-primary group-hover/item:text-white transition-colors">
                     <Bell className="size-4" />
                   </div>
                   <div className="space-y-0.5 flex-1 min-w-0">
@@ -118,7 +118,7 @@ export function DashboardHeader() {
         <DropdownMenu>
           <DropdownMenuTrigger
             render={
-              <Button className="size-9 sm:size-10 p-0 rounded-full bg-gradient-to-tr from-indigo-500 to-cyan-400 hover:from-indigo-600 hover:to-cyan-500 text-white shadow-lg shadow-indigo-500/25 transition-all hover:scale-105 active:scale-95 border-0 focus-visible:ring-0">
+              <Button className="size-9 sm:size-10 p-0 rounded-full bg-gradient-to-tr from-primary to-primary hover:from-primary hover:to-primary text-white shadow-lg shadow-primary/25 transition-all hover:scale-105 active:scale-95 border-0 focus-visible:ring-0">
                 <Plus className="size-5" />
               </Button>
             }
@@ -127,23 +127,23 @@ export function DashboardHeader() {
           <DropdownMenuContent align="end" className="w-56 p-2 rounded-2xl border-border/50 bg-background/95 backdrop-blur-xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)] dark:shadow-[0_10px_40px_-10px_rgba(0,0,0,0.5)]">
             <DropdownMenuGroup>
               <DropdownMenuItem onClick={() => setIsStudentModalOpen(true)} className="flex items-center gap-3 px-3 py-2.5 rounded-xl cursor-pointer focus:bg-muted/50 transition-colors">
-                <div className="p-1.5 rounded-lg bg-blue-500/10 text-blue-500"><GraduationCap className="size-4" /></div>
+                <div className="p-1.5 rounded-lg bg-primary/10 text-primary-emphasis"><GraduationCap className="size-4" /></div>
                 <span className="font-medium text-sm">{t('add_student')}</span>
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => setIsLeadModalOpen(true)} className="flex items-center gap-3 px-3 py-2.5 rounded-xl cursor-pointer focus:bg-muted/50 transition-colors">
-                <div className="p-1.5 rounded-lg bg-emerald-500/10 text-emerald-500"><Users className="size-4" /></div>
+                <div className="p-1.5 rounded-lg bg-success/10 text-success-emphasis"><Users className="size-4" /></div>
                 <span className="font-medium text-sm">{t('add_lead')}</span>
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => setIsTeacherModalOpen(true)} className="flex items-center gap-3 px-3 py-2.5 rounded-xl cursor-pointer focus:bg-muted/50 transition-colors">
-                <div className="p-1.5 rounded-lg bg-purple-500/10 text-purple-500"><UserPlus className="size-4" /></div>
+                <div className="p-1.5 rounded-lg bg-primary/10 text-primary-emphasis"><UserPlus className="size-4" /></div>
                 <span className="font-medium text-sm">{t('add_teacher')}</span>
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => setIsCourseModalOpen(true)} className="flex items-center gap-3 px-3 py-2.5 rounded-xl cursor-pointer focus:bg-muted/50 transition-colors">
-                <div className="p-1.5 rounded-lg bg-amber-500/10 text-amber-500"><BookOpen className="size-4" /></div>
+                <div className="p-1.5 rounded-lg bg-warning/10 text-warning-emphasis"><BookOpen className="size-4" /></div>
                 <span className="font-medium text-sm">{t('add_course')}</span>
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => setIsGroupModalOpen(true)} className="flex items-center gap-3 px-3 py-2.5 rounded-xl cursor-pointer focus:bg-muted/50 transition-colors">
-                <div className="p-1.5 rounded-lg bg-pink-500/10 text-pink-500"><Users2 className="size-4" /></div>
+                <div className="p-1.5 rounded-lg bg-danger/10 text-danger-emphasis"><Users2 className="size-4" /></div>
                 <span className="font-medium text-sm">{t('add_group')}</span>
               </DropdownMenuItem>
             </DropdownMenuGroup>
@@ -158,7 +158,7 @@ export function DashboardHeader() {
               <div className="flex items-center justify-center p-1 rounded-full bg-transparent hover:bg-muted/50 border border-transparent hover:border-border/50 shadow-sm cursor-pointer transition-all hover:scale-105 ml-0.5 sm:ml-1">
                 <Avatar className="size-8 sm:size-9 border-2 border-background shadow-sm">
                   <AvatarImage src={user?.avatar_url} alt={user?.full_name} />
-                  <AvatarFallback className="bg-gradient-to-br from-indigo-500 to-cyan-500 text-white font-bold text-sm">
+                  <AvatarFallback className="bg-gradient-to-br from-primary to-primary text-white font-bold text-sm">
                     {user?.full_name?.split(' ').map(n => n[0]).join('').toUpperCase() || 'U'}
                   </AvatarFallback>
                 </Avatar>
@@ -191,7 +191,7 @@ export function DashboardHeader() {
             
             <DropdownMenuSeparator className="my-1 bg-border/50" />
             
-            <DropdownMenuItem onClick={() => logout()} className="flex items-center gap-3 px-3 py-2.5 rounded-xl cursor-pointer text-rose-500 focus:text-rose-600 focus:bg-rose-500/10 transition-colors">
+            <DropdownMenuItem onClick={() => logout()} className="flex items-center gap-3 px-3 py-2.5 rounded-xl cursor-pointer text-danger-emphasis focus:text-danger-emphasis focus:bg-danger/10 transition-colors">
               <LogOut className="size-4" />
               <span className="font-medium">{t('logout')}</span>
             </DropdownMenuItem>

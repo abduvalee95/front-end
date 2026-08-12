@@ -33,10 +33,10 @@ const auditLogs = [
 ];
 
 const RESOURCE_METRICS = [
-  { labelKey: 'settings.cpu_usage', value: 28, color: 'bg-cyan-500' },
-  { labelKey: 'settings.memory', value: 61, color: 'bg-violet-500' },
-  { labelKey: 'settings.disk', value: 44, color: 'bg-emerald-500' },
-  { labelKey: 'settings.network', value: 15, color: 'bg-amber-500' },
+  { labelKey: 'settings.cpu_usage', value: 28, color: 'bg-primary' },
+  { labelKey: 'settings.memory', value: 61, color: 'bg-primary' },
+  { labelKey: 'settings.disk', value: 44, color: 'bg-success' },
+  { labelKey: 'settings.network', value: 15, color: 'bg-warning' },
 ];
 
 const NAV_ITEMS = [
@@ -94,12 +94,12 @@ export default function AdminSettingsPage() {
           <h1 className="text-2xl font-black tracking-tight text-foreground">{t('settings.title')}</h1>
           <p className="mt-0.5 text-sm text-muted-foreground">{t('settings.subtitle')}</p>
         </div>
-        <div className="mt-1 flex shrink-0 items-center gap-2 rounded-full border border-emerald-500/25 bg-emerald-500/10 px-3.5 py-2">
+        <div className="mt-1 flex shrink-0 items-center gap-2 rounded-full border border-success/25 bg-success/10 px-3.5 py-2">
           <span className="relative flex size-2">
-            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
-            <span className="relative inline-flex size-2 rounded-full bg-emerald-500" />
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-success opacity-75" />
+            <span className="relative inline-flex size-2 rounded-full bg-success" />
           </span>
-          <span className="text-xs font-semibold text-emerald-600 dark:text-emerald-400">{t('all_operational')}</span>
+          <span className="text-xs font-semibold text-success-emphasis">{t('all_operational')}</span>
         </div>
       </div>
 
@@ -152,14 +152,14 @@ export default function AdminSettingsPage() {
           {/* Live Status Panel */}
           <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-[linear-gradient(165deg,#07111f_0%,#0c2733_70%)] p-4">
             <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_80%_0%,rgba(3,203,231,0.16),transparent_8rem)]" />
-            <p className="relative mb-3 font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-cyan-200/60">
+            <p className="relative mb-3 font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-primary-emphasis/60">
               {t('live_status')}
             </p>
             <div className="relative space-y-2.5">
               {SYSTEM_METRICS.map((m) => (
                 <div key={m.labelKey} className="flex items-center justify-between">
-                  <span className="text-[11px] text-slate-400">{t(m.labelKey)}</span>
-                  <span className="font-mono text-[11px] font-bold text-cyan-400">{m.value}</span>
+                  <span className="text-[11px] text-muted-foreground">{t(m.labelKey)}</span>
+                  <span className="font-mono text-[11px] font-bold text-primary-emphasis">{m.value}</span>
                 </div>
               ))}
             </div>

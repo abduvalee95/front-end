@@ -68,7 +68,7 @@ Matn juda uzun bo'lmasin, samimiy va professional bo'lsin. O'zbek tilida yoz.`;
       <DialogContent className="sm:max-w-[500px] border-white/20 bg-background/95 backdrop-blur-xl">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-xl">
-            <Sparkles className="size-5 text-indigo-500" />
+            <Sparkles className="size-5 text-primary-emphasis" />
             AI Lead Assistant
           </DialogTitle>
           <DialogDescription>
@@ -79,8 +79,8 @@ Matn juda uzun bo'lmasin, samimiy va professional bo'lsin. O'zbek tilida yoz.`;
         <div className="mt-4 space-y-4">
           {!responseText && !isLoading ? (
             <div className="flex flex-col items-center justify-center py-8 text-center space-y-4">
-              <div className="size-16 rounded-full bg-indigo-500/10 flex items-center justify-center">
-                <Send className="size-8 text-indigo-500" />
+              <div className="size-16 rounded-full bg-primary/10 flex items-center justify-center">
+                <Send className="size-8 text-primary-emphasis" />
               </div>
               <p className="text-sm text-muted-foreground max-w-[300px]">
                 Click the button below to generate a professional marketing message for this lead.
@@ -105,7 +105,7 @@ Matn juda uzun bo'lmasin, samimiy va professional bo'lsin. O'zbek tilida yoz.`;
                   responseText
                 )}
                 {isLoading && responseText && (
-                  <span className="inline-block w-1.5 h-4 ml-1 bg-indigo-500 animate-pulse align-middle" />
+                  <span className="inline-block w-1.5 h-4 ml-1 bg-primary animate-pulse align-middle" />
                 )}
               </div>
 
@@ -118,7 +118,7 @@ Matn juda uzun bo'lmasin, samimiy va professional bo'lsin. O'zbek tilida yoz.`;
                   disabled={!responseText || isLoading}
                   className={cn(
                     "transition-all",
-                    copied ? "bg-emerald-500 hover:bg-emerald-600 text-white" : "edu-gradient-primary text-white"
+                    copied ? "bg-success hover:bg-success text-white" : "edu-gradient-primary text-white"
                   )}
                 >
                   {copied ? (

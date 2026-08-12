@@ -42,10 +42,10 @@ export function LeadsKanban({ leads, isLoading, onAIAction }: LeadsKanbanProps) 
   const convertLead = useConvertLead();
 
   const COLUMNS: { status: LeadStatus; label: string; color: string }[] = [
-    { status: 'NEW', label: t('status_new'), color: 'bg-blue-500' },
-    { status: 'CONTACTED', label: t('status_contacted'), color: 'bg-amber-500' },
-    { status: 'CONVERTED', label: t('status_converted'), color: 'bg-emerald-500' },
-    { status: 'LOST', label: t('status_lost'), color: 'bg-rose-500' },
+    { status: 'NEW', label: t('status_new'), color: 'bg-primary' },
+    { status: 'CONTACTED', label: t('status_contacted'), color: 'bg-warning' },
+    { status: 'CONVERTED', label: t('status_converted'), color: 'bg-success' },
+    { status: 'LOST', label: t('status_lost'), color: 'bg-danger' },
   ];
 
   const handleDragStart = (e: React.DragEvent, id: string) => {
@@ -89,7 +89,7 @@ export function LeadsKanban({ leads, isLoading, onAIAction }: LeadsKanbanProps) 
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 h-[600px]">
         {COLUMNS.map((col) => (
-          <div key={col.status} className="bg-slate-50/50 dark:bg-slate-900/50 border border-dashed border-border rounded-2xl p-4 space-y-4">
+          <div key={col.status} className="bg-muted/50 dark:bg-card/50 border border-dashed border-border rounded-2xl p-4 space-y-4">
             <Skeleton className="h-6 w-32 mb-6" />
             <Skeleton className="h-[140px] w-full rounded-xl" />
             <Skeleton className="h-[140px] w-full rounded-xl" />
@@ -125,19 +125,19 @@ export function LeadsKanban({ leads, isLoading, onAIAction }: LeadsKanbanProps) 
             </div>
 
             {/* Column Body */}
-            <div className="flex-1 bg-slate-50/50 dark:bg-slate-900/50 rounded-2xl p-3 border border-dashed border-border flex flex-col gap-3 min-h-[500px]">
+            <div className="flex-1 bg-muted/50 dark:bg-card/50 rounded-2xl p-3 border border-dashed border-border flex flex-col gap-3 min-h-[500px]">
               {columnLeads.map((lead) => (
                 <div
                   key={lead.id}
                   draggable
                   onDragStart={(e) => handleDragStart(e, lead.id)}
                   className={cn(
-                    "bg-card border border-border rounded-xl p-4 shadow-sm cursor-grab active:cursor-grabbing hover:shadow-md hover:border-indigo-500/50 transition-all group",
+                    "bg-card border border-border rounded-xl p-4 shadow-sm cursor-grab active:cursor-grabbing hover:shadow-md hover:border-primary/50 transition-all group",
                     draggedId === lead.id && "opacity-50 scale-95"
                   )}
                 >
                   <div className="flex justify-between items-start mb-2">
-                    <h4 className="font-bold text-sm leading-tight group-hover:text-indigo-500 transition-colors">
+                    <h4 className="font-bold text-sm leading-tight group-hover:text-primary-emphasis transition-colors">
                       {lead.full_name}
                     </h4>
                     <DropdownMenu>
@@ -158,12 +158,12 @@ export function LeadsKanban({ leads, isLoading, onAIAction }: LeadsKanbanProps) 
                         <DropdownMenuGroup>
                           <DropdownMenuLabel>{t('title')}</DropdownMenuLabel>
                           <DropdownMenuItem onClick={() => onAIAction?.(lead)}>
-                            <Sparkles className="mr-2 size-4 text-indigo-500" />
+                            <Sparkles className="mr-2 size-4 text-primary-emphasis" />
                             {t('generate_ai_response')}
                           </DropdownMenuItem>
                           <DropdownMenuSeparator />
                           <DropdownMenuItem
-                            className="text-emerald-500"
+                            className="text-success-emphasis"
                             onClick={() => handleConvert(lead)}
                             disabled={lead.status === 'CONVERTED' || lead.status === 'LOST' || convertLead.isPending}
                           >
@@ -171,7 +171,7 @@ export function LeadsKanban({ leads, isLoading, onAIAction }: LeadsKanbanProps) 
                             {convertLead.isPending ? tCommon('loading') : t('convert')}
                           </DropdownMenuItem>
                           <DropdownMenuItem
-                            className="text-rose-500"
+                            className="text-danger-emphasis"
                             onClick={() => handleMarkLost(lead)}
                             disabled={lead.status === 'LOST' || updateLead.isPending}
                           >
@@ -204,7 +204,7 @@ export function LeadsKanban({ leads, isLoading, onAIAction }: LeadsKanbanProps) 
                         <Button 
                           size="icon" 
                           variant="ghost" 
-                          className="size-7 text-emerald-500 hover:text-emerald-600 hover:bg-emerald-500/10"
+                          className="size-7 text-success-emphasis hover:text-success-emphasis hover:bg-success/10"
                           onClick={() => handleConvert(lead)}
                           title={t('convert')}
                         >
@@ -214,7 +214,7 @@ export function LeadsKanban({ leads, isLoading, onAIAction }: LeadsKanbanProps) 
                       <Button 
                         size="icon" 
                         variant="ghost" 
-                        className="size-7 text-indigo-500 hover:text-indigo-600 hover:bg-indigo-500/10"
+                        className="size-7 text-primary-emphasis hover:text-primary-emphasis hover:bg-primary/10"
                         title={t('ai_assistant')}
                         onClick={() => onAIAction?.(lead)}
                       >

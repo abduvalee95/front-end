@@ -91,7 +91,7 @@ export function GlobalSearch() {
     groups.push({
       type: t('search_students'),
       icon: <GraduationCap className="size-3" />,
-      color: 'text-blue-500 bg-blue-500/10',
+      color: 'text-primary-emphasis bg-primary/10',
       items: studentsData.items.slice(0, 4).map((s) => ({
         id: s.id,
         label: s.name,
@@ -105,7 +105,7 @@ export function GlobalSearch() {
     groups.push({
       type: t('search_leads'),
       icon: <Users className="size-3" />,
-      color: 'text-emerald-500 bg-emerald-500/10',
+      color: 'text-success-emphasis bg-success/10',
       items: leadsData.items.slice(0, 4).map((l) => ({
         id: l.id,
         label: l.full_name,
@@ -119,7 +119,7 @@ export function GlobalSearch() {
     groups.push({
       type: t('search_teachers'),
       icon: <UserPlus className="size-3" />,
-      color: 'text-purple-500 bg-purple-500/10',
+      color: 'text-primary-emphasis bg-primary/10',
       items: teachersData.items.slice(0, 4).map((tc) => ({
         id: tc.id,
         label: tc.full_name,
@@ -173,7 +173,7 @@ export function GlobalSearch() {
         aria-label="Open search"
       >
         <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
-          <Search className="size-4 text-muted-foreground group-hover:text-indigo-500 transition-colors" />
+          <Search className="size-4 text-muted-foreground group-hover:text-primary-emphasis transition-colors" />
         </div>
         <div className="w-full h-10 pl-11 pr-16 flex items-center bg-muted/30 hover:bg-muted/50 border border-transparent rounded-full text-sm text-muted-foreground/60 font-medium transition-all select-none">
           {t('search_placeholder')}

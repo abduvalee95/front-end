@@ -56,22 +56,22 @@ export function GroupsKanbanBoard({ groups, canManage, isDeleting, onDelete }: G
     {
       id: 'forming',
       title: t('kanban_forming'),
-      color: 'bg-amber-500/10 border-amber-500/20 text-amber-700 dark:text-amber-400',
-      dotColor: 'bg-amber-500',
+      color: 'bg-warning/10 border-warning/20 text-warning-emphasis',
+      dotColor: 'bg-warning',
       items: forming,
     },
     {
       id: 'active',
       title: t('kanban_active'),
-      color: 'bg-emerald-500/10 border-emerald-500/20 text-emerald-700 dark:text-emerald-400',
-      dotColor: 'bg-emerald-500',
+      color: 'bg-success/10 border-success/20 text-success-emphasis',
+      dotColor: 'bg-success',
       items: active,
     },
     {
       id: 'completed',
       title: t('kanban_completed'),
-      color: 'bg-slate-500/10 border-slate-500/20 text-slate-700 dark:text-slate-400',
-      dotColor: 'bg-slate-500',
+      color: 'bg-muted/10 border-border/20 text-foreground dark:text-muted-foreground',
+      dotColor: 'bg-muted',
       items: completed,
     },
   ];
@@ -114,7 +114,7 @@ export function GroupsKanbanBoard({ groups, canManage, isDeleting, onDelete }: G
                   <CardContent className="p-4">
                     {/* Course Badge & Actions */}
                     <div className="mb-3 flex items-start justify-between gap-2">
-                      <Badge variant="outline" className="rounded-md border-indigo-500/20 bg-indigo-500/10 text-indigo-700 dark:text-indigo-400">
+                      <Badge variant="outline" className="rounded-md border-primary/20 bg-primary/10 text-primary-emphasis">
                         {group.course?.title ?? t('no_course')}
                       </Badge>
                       
@@ -174,7 +174,7 @@ export function GroupsKanbanBoard({ groups, canManage, isDeleting, onDelete }: G
                           <span>{t('in_progress_label')}</span>
                         </div>
                         <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted">
-                          <div className="h-full bg-emerald-500 w-[50%] animate-pulse rounded-full" />
+                          <div className="h-full bg-success w-[50%] animate-pulse rounded-full" />
                         </div>
                       </div>
                     )}

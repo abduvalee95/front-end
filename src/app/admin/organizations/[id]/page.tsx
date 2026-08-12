@@ -58,7 +58,7 @@ export default function OrganizationDetailPage() {
   if (isError) {
     return (
       <div className="flex flex-col items-center justify-center py-32 gap-4">
-        <AlertCircle className="h-10 w-10 text-red-400" />
+        <AlertCircle className="h-10 w-10 text-danger-emphasis" />
         <p className="text-white/50 text-sm">Ошибка при загрузке данных</p>
         <Button variant="outline" size="sm" onClick={() => refetch()} className="border-white/10 text-white">
           <RefreshCw className="mr-2 h-4 w-4" /> Повторить
@@ -124,8 +124,8 @@ export default function OrganizationDetailPage() {
               size="sm"
               onClick={() => setStatusTarget(org)}
               className={org.status === 'ACTIVE'
-                ? 'border-red-500/20 text-red-400 hover:bg-red-500/10'
-                : 'border-emerald-500/20 text-emerald-400 hover:bg-emerald-500/10'}
+                ? 'border-danger/20 text-danger-emphasis hover:bg-danger/10'
+                : 'border-success/20 text-success-emphasis hover:bg-success/10'}
             >
               <Power className="mr-2 h-4 w-4" />
               {org.status === 'ACTIVE' ? "To'xtatish" : 'Faollashtirish'}

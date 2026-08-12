@@ -35,9 +35,9 @@ function getGroupStatus(startDate: string, endDate: string) {
 }
 
 const STATUS_CLASSES = {
-  forming: 'border-amber-500/20 bg-amber-500/10 text-amber-700 dark:text-amber-400',
-  active: 'border-emerald-500/20 bg-emerald-500/10 text-emerald-700 dark:text-emerald-400',
-  completed: 'border-slate-500/20 bg-slate-500/10 text-slate-700 dark:text-slate-400',
+  forming: 'border-warning/20 bg-warning/10 text-warning-emphasis',
+  active: 'border-success/20 bg-success/10 text-success-emphasis',
+  completed: 'border-border/20 bg-muted/10 text-foreground dark:text-muted-foreground',
 } as const;
 
 function formatDate(d: string) {
@@ -125,7 +125,7 @@ export function GroupDetailWorkspace({ groupId }: GroupDetailWorkspaceProps) {
                   {t(`status_${status}`)}
                 </Badge>
                 {group.course && (
-                  <Badge variant="outline" className="rounded-full border-blue-200 bg-blue-50 text-blue-700 dark:border-blue-500/30 dark:bg-blue-500/10 dark:text-blue-300">
+                  <Badge variant="outline" className="rounded-full border-primary/30 bg-primary-muted text-primary-emphasis dark:border-primary/30 dark:bg-primary/10 dark:text-primary-emphasis">
                     {group.course.title}
                   </Badge>
                 )}
@@ -253,7 +253,7 @@ export function GroupDetailWorkspace({ groupId }: GroupDetailWorkspaceProps) {
                   className="flex items-center gap-3 rounded-xl border border-border/70 bg-muted/30 px-4 py-3 transition-colors hover:bg-muted/50"
                 >
                   <Avatar className="size-9 rounded-xl">
-                    <AvatarFallback className="rounded-xl bg-violet-500/10 text-xs font-bold text-violet-600">
+                    <AvatarFallback className="rounded-xl bg-primary/10 text-xs font-bold text-primary-emphasis">
                       {enrollment.student?.name?.charAt(0)?.toUpperCase() ?? 'S'}
                     </AvatarFallback>
                   </Avatar>
@@ -290,9 +290,9 @@ function InfoCard({
   tone: 'violet' | 'blue' | 'amber';
 }) {
   const tones = {
-    violet: 'from-violet-500 to-purple-500',
-    blue: 'from-blue-500 to-sky-500',
-    amber: 'from-amber-400 to-orange-500',
+    violet: 'from-primary to-primary',
+    blue: 'from-primary to-primary',
+    amber: 'from-warning to-warning',
   };
 
   return (

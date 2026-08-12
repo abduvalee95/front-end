@@ -179,15 +179,15 @@ export default function OrganizationsTable({
                   <TableRow key={i}>
                     <TableCell className="pl-4">
                       <div className="flex items-center gap-3">
-                        <Skeleton className="size-8 rounded-lg shrink-0 bg-indigo-100/50 dark:bg-indigo-950/30" />
+                        <Skeleton className="size-8 rounded-lg shrink-0 bg-primary-muted/50 dark:bg-primary-muted/30" />
                         <div className="space-y-1.5">
-                          <Skeleton className="h-3.5 w-32 bg-indigo-100/50 dark:bg-indigo-950/30" />
-                          <Skeleton className="h-3 w-24 bg-indigo-100/50 dark:bg-indigo-950/30" />
+                          <Skeleton className="h-3.5 w-32 bg-primary-muted/50 dark:bg-primary-muted/30" />
+                          <Skeleton className="h-3 w-24 bg-primary-muted/50 dark:bg-primary-muted/30" />
                         </div>
                       </div>
                     </TableCell>
                     {[0,1,2,3].map((j) => (
-                      <TableCell key={j}><Skeleton className="h-4 w-20 bg-indigo-100/50 dark:bg-indigo-950/30" /></TableCell>
+                      <TableCell key={j}><Skeleton className="h-4 w-20 bg-primary-muted/50 dark:bg-primary-muted/30" /></TableCell>
                     ))}
                     <TableCell />
                   </TableRow>
@@ -206,7 +206,7 @@ export default function OrganizationsTable({
                 items.map((org) => (
                   <TableRow
                     key={org.id}
-                    className="hover:bg-indigo-50/50 dark:hover:bg-indigo-950/20 transition-colors cursor-pointer"
+                    className="hover:bg-primary-muted/50 dark:hover:bg-primary-muted/20 transition-colors cursor-pointer"
                     onClick={() => onDetailClick(org)}
                   >
                     <TableCell className="pl-4">
@@ -257,13 +257,13 @@ export default function OrganizationsTable({
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                      <Skeleton className="size-10 rounded-lg bg-indigo-100/50 dark:bg-indigo-950/30" />
+                      <Skeleton className="size-10 rounded-lg bg-primary-muted/50 dark:bg-primary-muted/30" />
                       <div className="space-y-1.5">
-                        <Skeleton className="h-4 w-28 bg-indigo-100/50 dark:bg-indigo-950/30" />
-                        <Skeleton className="h-3 w-16 bg-indigo-100/50 dark:bg-indigo-950/30" />
+                        <Skeleton className="h-4 w-28 bg-primary-muted/50 dark:bg-primary-muted/30" />
+                        <Skeleton className="h-3 w-16 bg-primary-muted/50 dark:bg-primary-muted/30" />
                       </div>
                     </div>
-                    <Skeleton className="size-8 rounded-md bg-indigo-100/50 dark:bg-indigo-950/30" />
+                    <Skeleton className="size-8 rounded-md bg-primary-muted/50 dark:bg-primary-muted/30" />
                   </div>
                 </CardContent>
               </Card>
@@ -276,7 +276,7 @@ export default function OrganizationsTable({
             />
           ) : (
             items.map((org) => (
-              <Card key={org.id} className="cursor-pointer hover:bg-indigo-50/50 dark:hover:bg-indigo-950/20 transition-colors" onClick={() => onDetailClick(org)}>
+              <Card key={org.id} className="cursor-pointer hover:bg-primary-muted/50 dark:hover:bg-primary-muted/20 transition-colors" onClick={() => onDetailClick(org)}>
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3 min-w-0">

@@ -10,6 +10,9 @@ import {
   Wallet,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { PageHeader } from '@/components/ui/page-header';
+import { StatCard } from '@/components/ui/stat-card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useTranslations } from '@/i18n/index';
 import {
@@ -19,11 +22,11 @@ import {
   useFinanceSummary,
   usePayments,
 } from '@/hooks/useFinance';
+import { formatAmount } from './utils';
 import { AddExpenseModal } from './AddExpenseModal';
 import { AddPaymentModal } from './AddPaymentModal';
 import { CashflowBar } from './CashflowBar';
 import { ExpensesTable } from './ExpensesTable';
-import { FinanceStatCard } from './FinanceStatCard';
 import { PaymentsTable } from './PaymentsTable';
 
 export function FinanceWorkspace() {
@@ -57,95 +60,79 @@ export function FinanceWorkspace() {
   const expenseShare = totalFlow > 0 ? Math.round(((summary?.totalExpenses ?? 0) / totalFlow) * 100) : 0;
 
   return (
-    <Tabs defaultValue="payments" className="flex flex-col gap-5 p-6">
-      {/* Header + Tabs */}
-      <div className="flex flex-col gap-4">
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <div className="flex items-center gap-2.5">
-              <div className="size-9 shrink-0 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-500 flex items-center justify-center text-white shadow-sm">
-                <Wallet className="size-4.5" />
-              </div>
-              <div>
-                <h1 className="text-[17px] font-black tracking-tight leading-none">{t('title')}</h1>
-                <p className="text-[12px] text-muted-foreground/70 font-medium mt-0.5">{t('subtitle')}</p>
-              </div>
-            </div>
-          </div>
-          <div className="flex items-center gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              className="rounded-xl gap-1.5 h-8 px-3.5 text-[12.5px] font-semibold border-rose-200/80 text-rose-600 hover:bg-rose-50 hover:border-rose-300 dark:border-rose-900 dark:text-rose-400 dark:hover:bg-rose-950/50"
-              onClick={() => setExpenseModalOpen(true)}
-            >
-              <TrendingDown className="size-3.5" />
+    <Tabs defaultValue="payments" className="flex flex-col gap-5">
+      <PageHeader
+        icon={Wallet}
+        title={t('title')}
+        subtitle={t('subtitle')}
+        actions={
+          <>
+            <Button variant="danger" size="sm" onClick={() => setExpenseModalOpen(true)}>
+              <TrendingDown className="size-4" />
               {t('add_expense')}
             </Button>
-            <Button
-              size="sm"
-              className="rounded-xl gap-1.5 h-8 px-3.5 text-[12.5px] font-semibold bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm"
-              onClick={() => setPaymentModalOpen(true)}
-            >
-              <Plus className="size-3.5" />
+            <Button size="sm" onClick={() => setPaymentModalOpen(true)}>
+              <Plus className="size-4" />
               {t('add_payment')}
             </Button>
-          </div>
-        </div>
+          </>
+        }
+      />
 
-        {/* Tabs */}
-        <TabsList className="h-12 rounded-2xl bg-muted/70 dark:bg-white/5 p-1.5 gap-1 inline-flex w-fit shadow-[0_2px_12px_rgba(15,23,42,0.04)] ring-1 ring-border/40">
+      <TabsList className="inline-flex h-11 w-fit gap-1 rounded-card border border-border bg-muted p-1">
           <TabsTrigger
             value="payments"
-            className="h-9 px-4 rounded-xl gap-2 text-[13px] font-semibold text-muted-foreground/80 hover:text-foreground hover:bg-background/50 data-active:bg-background data-active:text-foreground data-active:shadow-[0_4px_14px_rgba(15,23,42,0.08)] data-active:ring-1 data-active:ring-border/60 transition-all duration-200"
+            className="h-9 gap-2 rounded-control px-4 text-body-sm font-medium text-muted-foreground transition-colors duration-200 hover:text-foreground data-active:bg-card data-active:text-foreground data-active:shadow-card"
           >
-            <ReceiptText className="size-4 text-emerald-500 dark:text-emerald-400" />
+            <ReceiptText className="size-4 text-success-emphasis" />
             <span>{t('payments')}</span>
             {paymentsQuery.data?.meta.total !== undefined && (
-              <span className="inline-flex items-center justify-center min-w-[22px] h-[20px] px-1.5 rounded-full bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 text-[10.5px] font-black tabular-nums leading-none">
+              <Badge variant="success" className="tabular-nums">
                 {paymentsQuery.data.meta.total}
-              </span>
+              </Badge>
             )}
           </TabsTrigger>
           <TabsTrigger
             value="expenses"
-            className="h-9 px-4 rounded-xl gap-2 text-[13px] font-semibold text-muted-foreground/80 hover:text-foreground hover:bg-background/50 data-active:bg-background data-active:text-foreground data-active:shadow-[0_4px_14px_rgba(15,23,42,0.08)] data-active:ring-1 data-active:ring-border/60 transition-all duration-200"
+            className="h-9 gap-2 rounded-control px-4 text-body-sm font-medium text-muted-foreground transition-colors duration-200 hover:text-foreground data-active:bg-card data-active:text-foreground data-active:shadow-card"
           >
-            <ShoppingBag className="size-4 text-rose-500 dark:text-rose-400" />
+            <ShoppingBag className="size-4 text-danger-emphasis" />
             <span>{t('expenses')}</span>
             {expensesQuery.data?.meta.total !== undefined && (
-              <span className="inline-flex items-center justify-center min-w-[22px] h-[20px] px-1.5 rounded-full bg-rose-500/15 text-rose-700 dark:text-rose-300 text-[10.5px] font-black tabular-nums leading-none">
+              <Badge variant="danger" className="tabular-nums">
                 {expensesQuery.data.meta.total}
-              </span>
+              </Badge>
             )}
           </TabsTrigger>
-        </TabsList>
-      </div>
+      </TabsList>
 
       {/* Stat Cards */}
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-        <FinanceStatCard
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+        <StatCard
+          icon={TrendingUp}
+          tone="success"
           label={t('total_revenue')}
-          value={summary?.totalIncome}
-          icon={<TrendingUp className="size-4.5" />}
-          type="income"
-          sub={`${paymentsQuery.data?.meta.total ?? 0} ${t('payments')}`}
-          barRatio={incomeShare}
+          value={summary === undefined ? '—' : formatAmount(summary.totalIncome)}
+          hint={`${paymentsQuery.data?.meta.total ?? 0} ${t('payments')}`}
+          progress={incomeShare}
+          isLoading={summaryQuery.isLoading}
         />
-        <FinanceStatCard
+        <StatCard
+          icon={TrendingDown}
+          tone="danger"
           label={t('total_expenses')}
-          value={summary?.totalExpenses}
-          icon={<TrendingDown className="size-4.5" />}
-          type="expense"
-          sub={`${expensesQuery.data?.meta.total ?? 0} ${tCommon('transactions')}`}
-          barRatio={expenseShare}
+          value={summary === undefined ? '—' : formatAmount(summary.totalExpenses)}
+          hint={`${expensesQuery.data?.meta.total ?? 0} ${tCommon('transactions')}`}
+          progress={expenseShare}
+          isLoading={summaryQuery.isLoading}
         />
-        <FinanceStatCard
+        <StatCard
+          icon={Wallet}
+          tone="primary"
           label={t('net_profit')}
-          value={summary?.profit}
-          icon={<Wallet className="size-4.5" />}
-          type="profit"
-          sub={tCommon('income_minus_expenses')}
+          value={summary === undefined ? '—' : formatAmount(summary.profit)}
+          hint={tCommon('income_minus_expenses')}
+          isLoading={summaryQuery.isLoading}
         />
       </div>
 

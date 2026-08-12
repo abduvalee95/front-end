@@ -82,7 +82,7 @@ export function CreateCourseModal({ open: externalOpen, onClose }: CreateCourseM
       {!isControlled && (
         <DialogTrigger
           render={
-            <Button className="gap-2 bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg shadow-indigo-600/20 rounded-xl h-10 px-5">
+            <Button className="gap-2 bg-primary hover:bg-primary text-white shadow-lg shadow-primary/20 rounded-xl h-10 px-5">
               <Plus className="size-4" />
               {t('add_course')}
             </Button>
@@ -92,7 +92,7 @@ export function CreateCourseModal({ open: externalOpen, onClose }: CreateCourseM
       <DialogContent>
         <DialogHeader>
           <div className="flex items-center gap-3">
-            <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-indigo-500/10 text-indigo-600">
+            <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary-emphasis">
               <BookOpen className="size-5" />
             </div>
             <div>

@@ -82,9 +82,9 @@ export function PlatformSection({
           </CardContent>
           <CardFooter className="border-t border-border/60 bg-muted/40 p-4 flex items-center justify-between gap-4">
             {maintenanceMode ? (
-              <Alert className="rounded-xl border-amber-200 bg-amber-50 py-2 px-3 flex-1">
-                <AlertTriangle className="size-3.5 text-amber-600" />
-                <AlertDescription className="text-amber-700 text-xs">{t('settings.maintenance_warning')}</AlertDescription>
+              <Alert className="rounded-xl border-warning/30 bg-warning-muted py-2 px-3 flex-1">
+                <AlertTriangle className="size-3.5 text-warning-emphasis" />
+                <AlertDescription className="text-warning-emphasis text-xs">{t('settings.maintenance_warning')}</AlertDescription>
               </Alert>
             ) : (
               <div />
@@ -99,7 +99,7 @@ export function PlatformSection({
             <CardHeader className="pb-3 relative">
               <div className="flex items-center gap-2.5">
                 <div className="size-8 rounded-lg bg-white/10 flex items-center justify-center">
-                  <Activity className="size-4 text-cyan-400" />
+                  <Activity className="size-4 text-primary-emphasis" />
                 </div>
                 <CardTitle className="text-sm text-white">{t('settings.system_health')}</CardTitle>
               </div>
@@ -108,23 +108,23 @@ export function PlatformSection({
               {systemMetrics.map((m) => (
                 <div key={m.label} className="flex items-center justify-between text-xs">
                   <span className="text-muted-foreground">{m.label}</span>
-                  <span className="font-bold text-cyan-400 font-mono">{m.value}</span>
+                  <span className="font-bold text-primary-emphasis font-mono">{m.value}</span>
                 </div>
               ))}
             </CardContent>
           </Card>
 
           {maintenanceMode ? (
-            <Alert className="rounded-2xl border-amber-200 bg-amber-50">
-              <AlertTriangle className="size-4 text-amber-600" />
-              <AlertTitle className="text-amber-800 font-bold text-sm">{t('settings.maintenance_active')}</AlertTitle>
-              <AlertDescription className="text-amber-700 text-xs">{t('settings.maintenance_active_desc')}</AlertDescription>
+            <Alert className="rounded-2xl border-warning/30 bg-warning-muted">
+              <AlertTriangle className="size-4 text-warning-emphasis" />
+              <AlertTitle className="text-warning-emphasis font-bold text-sm">{t('settings.maintenance_active')}</AlertTitle>
+              <AlertDescription className="text-warning-emphasis text-xs">{t('settings.maintenance_active_desc')}</AlertDescription>
             </Alert>
           ) : (
-            <Alert className="rounded-2xl border-emerald-200 bg-emerald-50">
-              <Zap className="size-4 text-emerald-600" />
-              <AlertTitle className="text-emerald-800 font-bold text-sm">{t('settings.platform_live')}</AlertTitle>
-              <AlertDescription className="text-emerald-700 text-xs">{t('settings.platform_live_desc')}</AlertDescription>
+            <Alert className="rounded-2xl border-success/30 bg-success-muted">
+              <Zap className="size-4 text-success-emphasis" />
+              <AlertTitle className="text-success-emphasis font-bold text-sm">{t('settings.platform_live')}</AlertTitle>
+              <AlertDescription className="text-success-emphasis text-xs">{t('settings.platform_live_desc')}</AlertDescription>
             </Alert>
           )}
         </div>

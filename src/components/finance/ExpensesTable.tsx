@@ -8,7 +8,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { useTranslations } from '@/i18n/index';
 import { cn } from '@/lib/utils';
 import type { Expense } from '@/types/finance';
-import { CATEGORY_COLORS, formatAmount, formatDate } from './utils';
+import { CATEGORY_TONES, formatAmount, formatDate } from './utils';
 
 interface ExpensesTableProps {
   expenses: Expense[];
@@ -24,13 +24,13 @@ export function ExpensesTable({ expenses, isLoading, onAddExpense, onDelete, isD
 
   const emptyState = (
     <div className="flex flex-col items-center gap-3 py-14">
-      <div className="size-12 rounded-2xl bg-rose-500/10 flex items-center justify-center">
-        <ShoppingBag className="size-5 text-rose-500" />
+      <div className="size-12 rounded-2xl bg-danger/10 flex items-center justify-center">
+        <ShoppingBag className="size-5 text-danger-emphasis" />
       </div>
       <p className="text-[13px] font-semibold text-muted-foreground/70">No expenses yet</p>
       <button
         onClick={onAddExpense}
-        className="text-[12px] font-bold text-rose-600 hover:text-rose-700 underline-offset-2 hover:underline"
+        className="text-[12px] font-bold text-danger-emphasis hover:text-danger-emphasis underline-offset-2 hover:underline"
       >
         Add first expense
       </button>
@@ -55,20 +55,14 @@ export function ExpensesTable({ expenses, isLoading, onAddExpense, onDelete, isD
           emptyState
         ) : (
           expenses.map((e) => (
-            <div key={e.id} className="flex items-center gap-3 px-4 py-3 hover:bg-rose-500/[0.03] transition-colors group">
+            <div key={e.id} className="flex items-center gap-3 px-4 py-3 hover:bg-danger/[0.03] transition-colors group">
               {/* Primary: description + category */}
               <div className="flex-1 min-w-0 space-y-1">
                 <p className="text-[13px] font-semibold text-foreground truncate">
                   {e.description ?? e.category}
                 </p>
                 <div className="flex items-center gap-2">
-                  <Badge
-                    variant="outline"
-                    className={cn(
-                      'rounded-full text-[10px] px-2 py-0 h-4 font-semibold border',
-                      CATEGORY_COLORS[e.category] ?? CATEGORY_COLORS.OTHER,
-                    )}
-                  >
+                  <Badge variant={CATEGORY_TONES[e.category] ?? CATEGORY_TONES.OTHER}>
                     {e.category}
                   </Badge>
                   <span className="text-[11px] text-muted-foreground/55 tabular-nums">
@@ -78,7 +72,7 @@ export function ExpensesTable({ expenses, isLoading, onAddExpense, onDelete, isD
               </div>
               {/* Primary: amount + delete */}
               <div className="flex items-center gap-2 shrink-0">
-                <span className="text-[14px] font-black text-rose-600 dark:text-rose-400 tabular-nums">
+                <span className="text-[14px] font-black text-danger-emphasis tabular-nums">
                   -{formatAmount(e.amount)}
                 </span>
                 <Button
@@ -135,12 +129,12 @@ export function ExpensesTable({ expenses, isLoading, onAddExpense, onDelete, isD
               </TableRow>
             ) : (
               expenses.map((e) => (
-                <TableRow key={e.id} className="group border-b border-border/30 hover:bg-rose-500/[0.03] transition-colors">
+                <TableRow key={e.id} className="group border-b border-border/30 hover:bg-danger/[0.03] transition-colors">
                   <TableCell className="py-3 pl-4 max-w-[220px] truncate text-[11.5px] text-muted-foreground/65">
                     {e.description ?? '—'}
                   </TableCell>
                   <TableCell className="text-right pr-4">
-                    <span className="text-[13px] font-black text-rose-600 dark:text-rose-400 tabular-nums">
+                    <span className="text-[13px] font-black text-danger-emphasis tabular-nums">
                       -{formatAmount(e.amount)}
                     </span>
                   </TableCell>
@@ -150,13 +144,7 @@ export function ExpensesTable({ expenses, isLoading, onAddExpense, onDelete, isD
                     </span>
                   </TableCell>
                   <TableCell>
-                    <Badge
-                      variant="outline"
-                      className={cn(
-                        'rounded-full text-[10.5px] px-2.5 py-0.5 font-semibold border',
-                        CATEGORY_COLORS[e.category] ?? CATEGORY_COLORS.OTHER,
-                      )}
-                    >
+                    <Badge variant={CATEGORY_TONES[e.category] ?? CATEGORY_TONES.OTHER}>
                       {e.category}
                     </Badge>
                   </TableCell>
