@@ -55,19 +55,25 @@ export function DashboardHeader() {
 
   return (
     <header className={cn(
-      "sticky top-0 z-40 flex h-[72px] w-full items-center justify-between gap-2 px-3 sm:px-6 lg:px-10 transition-all duration-500",
+      "group/hdr sticky top-0 z-40 flex h-[72px] w-full items-center justify-between gap-2 px-3 sm:px-6 lg:px-10 transition-all duration-500",
       isScrolled
         ? "bg-background/70 backdrop-blur-2xl shadow-sm border-b border-border/50 supports-[backdrop-filter]:bg-background/40"
         : "bg-transparent"
     )}>
       {/* Left: Brand mark (mobile/tablet only — the sidebar carries it on desktop) + Search.
           `min-w-0` lets this side actually shrink below its content's natural width instead
-          of pushing the action icons on the right past the edge of a narrow viewport. */}
-      <div className="flex flex-1 min-w-0 items-center gap-2 sm:gap-3 max-w-md">
+          of pushing the action icons on the right past the edge of a narrow viewport.
+
+          On a phone the six action controls plus the brand mark leave the field roughly
+          40px — too narrow to type in. So while the search holds focus, the brand and the
+          action cluster step aside and the field takes the whole row. `group-focus-within`
+          (not `:focus`) keeps it expanded while the user is clicking a result, since the
+          dropdown lives inside the same header. */}
+      <div className="flex flex-1 min-w-0 items-center gap-2 sm:gap-3 max-w-md max-sm:group-focus-within/hdr:max-w-none">
         <Link
           href="/dashboard"
           aria-label={t('brand_home')}
-          className="lg:hidden shrink-0 flex size-9 items-center justify-center rounded-full bg-sidebar-bg overflow-hidden"
+          className="lg:hidden shrink-0 flex size-9 items-center justify-center rounded-full bg-sidebar-bg overflow-hidden max-sm:group-focus-within/hdr:hidden"
         >
           {brandLogo ? (
             <Image src={brandLogo} alt="" width={36} height={36} className="size-full object-cover" />
@@ -79,7 +85,7 @@ export function DashboardHeader() {
       </div>
 
       {/* Right: Actions */}
-      <div className="flex items-center gap-0.5 shrink-0 sm:gap-2.5">
+      <div className="flex items-center gap-0.5 shrink-0 sm:gap-2.5 max-sm:group-focus-within/hdr:hidden">
         {/* Quick Help */}
         <Button
           variant="ghost"
