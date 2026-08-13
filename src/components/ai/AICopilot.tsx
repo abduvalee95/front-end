@@ -349,13 +349,13 @@ export function AICopilot() {
             </div>
             <div>
               <h3 className="font-bold leading-none tracking-tight">AI Copilot</h3>
-              <p className="text-caption text-background/80">Powered by Groq</p>
+              <p className="text-caption text-primary-foreground/80">Powered by Groq</p>
             </div>
           </div>
           <button
             type="button"
             onClick={() => setIsOpen(false)}
-            className="flex size-8 items-center justify-center rounded-lg text-background hover:bg-card transition-colors cursor-pointer"
+            className="flex size-8 cursor-pointer items-center justify-center rounded-control text-primary-foreground transition-colors hover:bg-primary-foreground/15"
           >
             <X className="size-5" />
           </button>

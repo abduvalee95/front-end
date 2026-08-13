@@ -64,7 +64,7 @@ export default function AdminDashboardPage() {
             </span>
             <Link
               href="/admin/organizations"
-              className="group flex items-center gap-1.5 rounded-full border border-border bg-card px-4 py-2 text-xs font-bold text-background backdrop-blur-sm transition-colors hover:bg-card"
+              className="group flex items-center gap-1.5 rounded-control border border-border bg-card px-4 py-2 text-caption text-card-foreground backdrop-blur-sm transition-colors hover:bg-muted"
             >
               {tNav('organizations')}
               <ArrowUpRight className="size-3.5 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />

@@ -160,7 +160,7 @@ export function SidebarNav({ onNavClick, isMobile }: SidebarNavProps) {
           {!isMobile && (
             <button 
               onClick={() => setIsCollapsed(!isCollapsed)}
-              className="flex items-center justify-center h-10 rounded-xl hover:bg-card transition-colors border border-border text-muted-foreground hover:text-background backdrop-blur-sm"
+              className="flex h-10 items-center justify-center rounded-control border border-sidebar-border text-sidebar-text backdrop-blur-sm transition-colors hover:bg-sidebar-hover-bg hover:text-sidebar-active"
               title={tCommon('toggle_sidebar')}
               aria-label={tCommon('toggle_sidebar')}
             >
