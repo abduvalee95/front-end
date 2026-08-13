@@ -213,7 +213,7 @@ export function DashboardHeader() {
             
             <DropdownMenuGroup>
               <DropdownMenuItem
-                onClick={() => router.push('/profile')}
+                onClick={() => router.push('/settings')}
                 className="flex items-center gap-3 px-3 py-2.5 rounded-xl cursor-pointer focus:bg-muted/50 transition-colors"
               >
                 <User className="size-4 text-muted-foreground" />
