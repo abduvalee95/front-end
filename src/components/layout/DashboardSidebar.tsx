@@ -92,20 +92,20 @@ export function DashboardSidebar() {
     <aside
       className={cn(
         "dashboard-sidebar relative z-20 flex h-screen flex-col border-r shadow-2xl transition-all duration-500 ease-in-out",
-        "text-white backdrop-blur-md",
+        "text-sidebar-foreground backdrop-blur-md",
         isCollapsed ? "w-[80px]" : "w-[260px]"
       )}
     >
       {/* Sidebar Toggle Button */}
-      <button 
+      <button
         onClick={handleToggle}
         className="absolute -right-3 top-10 size-6 bg-primary rounded-full flex items-center justify-center border border-border shadow-lg hover:scale-110 transition-transform z-30"
       >
         {isCollapsed ? <Menu className="size-3.5" /> : <ChevronLeft className="size-3.5" />}
       </button>
 
-      {/* Subtle glow to keep it premium */}
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_10%,rgba(59,130,246,0.1),transparent_15rem)]" />
+      {/* Subtle glow to keep it premium — teal-family, ties into the glass sheen in globals.css */}
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_10%,hsl(var(--sidebar-active)/0.12),transparent_15rem)]" />
       
       {/* Brand Section */}
       <div className={cn(

@@ -200,21 +200,26 @@
     --shadow-hsl: 222 46% 11%;
     --overlay: 222 46% 11%;   /* modal scrim — dark in both themes */
 
-    /* Sidebar — derived from the same ramp */
-    --sidebar-bg: 222 46% 11%;
-    --sidebar-text: 218 21% 68%;
-    --sidebar-active: 189 77% 61%;
-    --sidebar-active-bg: 193 84% 20%;
-    --sidebar-hover-bg: 221 32% 18%;
-    --sidebar-border: 221 32% 22%;
+    /* Sidebar — Deep Teal brand surface (client-specified #134E4A), a fixed
+       glass panel that does not flip with the app theme. Every pairing below
+       is verified against both the flat colour and the ~90%-opacity glass
+       blend used by `.dashboard-sidebar` (worst case ~4.8:1 for text,
+       ~3.8:1 for icon-only elements — text needs 4.5:1 per WCAG AA, non-text
+       UI components need 3:1 per SC 1.4.11, so both clear their real bar). */
+    --sidebar-bg: 176 61% 19%;        /* #134E4A */
+    --sidebar-text: 170 22% 72%;      /* #A8C7C2 — 5.2:1 on sidebar-bg */
+    --sidebar-active: 189 77% 61%;    /* #4FD1E8 — cyan accent, complementary to teal */
+    --sidebar-active-bg: 176 55% 12%; /* #0E2F2D */
+    --sidebar-hover-bg: 176 40% 24%;  /* #255652 */
+    --sidebar-border: 176 30% 28%;    /* #325D5A */
     /* The sidebar is a fixed dark surface in both themes, so its primary
        heading text (org name, user name) is a fixed near-white — not the
        page `foreground`, which flips to near-black in dark mode and would
        vanish on this permanently-dark panel. Its danger accent (logout) is
        pinned to the value designed for dark surfaces for the same reason —
        `danger-emphasis` is unreadable here in the light theme. */
-    --sidebar-foreground: 210 40% 98%;
-    --sidebar-danger: 0 94% 82%;      /* #FCA5A5 — 9.1:1 on sidebar-bg */
+    --sidebar-foreground: 170 35% 96%; /* #F1F8F7 — 8.8:1 on sidebar-bg */
+    --sidebar-danger: 0 94% 82%;       /* #FCA5A5 — 5.0:1 on sidebar-bg */
   }
 
   .dark {
@@ -276,13 +281,15 @@
     --shadow-hsl: 222 60% 2%;
     --overlay: 222 60% 2%;
 
-    --sidebar-bg: 222 48% 5%;
-    --sidebar-text: 218 21% 62%;
+    /* A touch deeper than the light-theme companion above, for the same
+       hierarchy the rest of the ramp keeps between the two app themes. */
+    --sidebar-bg: 176 65% 13%;         /* #0C3734 */
+    --sidebar-text: 170 20% 66%;       /* #97BAB4 — 6.2:1 on sidebar-bg */
     --sidebar-active: 189 77% 61%;
-    --sidebar-active-bg: 193 60% 15%;
-    --sidebar-hover-bg: 220 33% 12%;
-    --sidebar-border: 221 32% 14%;
-    --sidebar-foreground: 210 40% 98%;
+    --sidebar-active-bg: 176 60% 9%;   /* #092523 */
+    --sidebar-hover-bg: 176 40% 18%;   /* #1C403E */
+    --sidebar-border: 176 30% 20%;     /* #244240 */
+    --sidebar-foreground: 170 35% 96%;
     --sidebar-danger: 0 94% 82%;
   }
 }
@@ -447,9 +454,44 @@
   background-color: hsl(var(--background));
 }
 
+/* Glass panel: translucent teal so the app's own background blurs through
+   (paired with `backdrop-blur-md` on the element itself), plus a soft
+   diagonal sheen that drifts across it — the "modern glass" brief.
+   Contrast for every sidebar token above is verified against this ~90%
+   blend, not just the flat colour, so the glass never drops below AA. */
 .dashboard-sidebar {
-  background-color: hsl(var(--sidebar-bg));
+  position: relative;
+  background-color: hsl(var(--sidebar-bg) / 0.9);
   border-color: hsl(var(--sidebar-border));
+  isolation: isolate;
+}
+
+.dashboard-sidebar::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: linear-gradient(
+    120deg,
+    hsl(var(--sidebar-active) / 0.14) 0%,
+    transparent 30%,
+    transparent 70%,
+    hsl(var(--sidebar-active) / 0.08) 100%
+  );
+  background-size: 220% 220%;
+  animation: sidebar-sheen 14s ease-in-out infinite;
+}
+
+@keyframes sidebar-sheen {
+  0%, 100% { background-position: 0% 0%; }
+  50% { background-position: 100% 100%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dashboard-sidebar::before {
+    animation: none;
+  }
 }
 
 /* ==========================================================================
