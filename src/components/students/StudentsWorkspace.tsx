@@ -292,6 +292,7 @@ export function StudentsWorkspace() {
         partialCount={partialCount}
         teacherScoped={teacherScoped}
         canManageScope={canManageScope}
+        isLoading={loading}
       />
 
       <StudentsFilters

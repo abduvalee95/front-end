@@ -852,7 +852,9 @@
     "search_navigate": "navigate",
     "search_open": "open",
     "search_close": "close",
-    "new_notification": "new"
+    "new_notification": "new",
+    "profile_menu": "Profile menu",
+    "brand_home": "Go to dashboard"
   },
   "lang_switcher": {
     "label": "Select language",

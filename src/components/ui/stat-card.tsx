@@ -103,7 +103,12 @@ export function StatCard({
         <div className="mt-3 h-1.5 w-full overflow-hidden rounded-control bg-muted">
           <div
             className={cn('h-full rounded-control transition-[width] duration-700', TONE_FILL[tone])}
-            style={{ width: `${Math.min(Math.max(progress, 0), 100)}%` }}
+            // `Number.isFinite` guards NaN specifically: Math.min/max pass NaN
+            // through unchanged, which produces an invalid `width` string that
+            // the browser drops — a bare div then defaults to 100% of its
+            // block-level container, filling the bar while the value beside
+            // it reads 0 or blank.
+            style={{ width: `${Number.isFinite(progress) ? Math.min(Math.max(progress, 0), 100) : 0}%` }}
           />
         </div>
       )}

@@ -17,6 +17,10 @@ interface StudentsHeroProps {
   partialCount: number;
   teacherScoped: boolean;
   canManageScope: boolean;
+  /** True while the underlying query is still on its first fetch — the
+   * counts above default to 0 until then, so the header shows skeletons
+   * instead of a misleading "0" for every stat. */
+  isLoading?: boolean;
 }
 
 export function StudentsHero({
@@ -31,6 +35,7 @@ export function StudentsHero({
   partialCount,
   teacherScoped,
   canManageScope,
+  isLoading = false,
 }: StudentsHeroProps) {
   const t = useTranslations('students');
   const tCommon = useTranslations('common');
@@ -53,6 +58,7 @@ export function StudentsHero({
         subtitle={teacherScoped ? t('subtitle_teacher') : t('subtitle')}
         actions={canManageScope ? <CreateStudentModal /> : undefined}
         stats={stats}
+        statsLoading={isLoading}
       />
 
       {rowsLength > 0 && (

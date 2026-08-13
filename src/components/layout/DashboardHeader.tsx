@@ -1,9 +1,12 @@
 'use client';
 
+import Image from 'next/image';
+import Link from 'next/link';
 import { Bell, Plus, HelpCircle, User, LogOut, Settings, GraduationCap, Users, BookOpen, UserPlus, Users2 } from 'lucide-react';
 import { useTranslations } from '@/i18n/index';
 import { useAuthStore } from '@/store/auth.store';
 import { useAuth } from '@/hooks/useAuth';
+import { useOrganizationSettings } from '@/hooks/useOrganization';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/ThemeToggle';
@@ -33,6 +36,8 @@ export function DashboardHeader() {
   const { logout } = useAuth();
   const router = useRouter();
   const [isScrolled, setIsScrolled] = useState(false);
+  const { data: orgSettings } = useOrganizationSettings();
+  const brandLogo = orgSettings?.logo_url ?? user?.organization_logo_url;
 
   const [isStudentModalOpen, setIsStudentModalOpen] = useState(false);
   const [isLeadModalOpen, setIsLeadModalOpen] = useState(false);
@@ -50,34 +55,59 @@ export function DashboardHeader() {
 
   return (
     <header className={cn(
-      "sticky top-0 z-40 flex h-[72px] w-full items-center justify-between px-6 lg:px-10 transition-all duration-500",
-      isScrolled 
-        ? "bg-background/70 backdrop-blur-2xl shadow-sm border-b border-border/50 supports-[backdrop-filter]:bg-background/40" 
+      "sticky top-0 z-40 flex h-[72px] w-full items-center justify-between gap-2 px-3 sm:px-6 lg:px-10 transition-all duration-500",
+      isScrolled
+        ? "bg-background/70 backdrop-blur-2xl shadow-sm border-b border-border/50 supports-[backdrop-filter]:bg-background/40"
         : "bg-transparent"
     )}>
-      {/* Left: Global Search */}
-      <div className="flex flex-1 items-center max-w-md">
+      {/* Left: Brand mark (mobile/tablet only — the sidebar carries it on desktop) + Search.
+          `min-w-0` lets this side actually shrink below its content's natural width instead
+          of pushing the action icons on the right past the edge of a narrow viewport. */}
+      <div className="flex flex-1 min-w-0 items-center gap-2 sm:gap-3 max-w-md">
+        <Link
+          href="/dashboard"
+          aria-label={t('brand_home')}
+          className="lg:hidden shrink-0 flex size-9 items-center justify-center rounded-full bg-sidebar-bg overflow-hidden"
+        >
+          {brandLogo ? (
+            <Image src={brandLogo} alt="" width={36} height={36} className="size-full object-cover" />
+          ) : (
+            <Image src="/logo.svg" alt="" width={20} height={20} className="object-contain brightness-0 invert opacity-90" />
+          )}
+        </Link>
         <GlobalSearch />
       </div>
 
       {/* Right: Actions */}
-      <div className="flex items-center gap-1.5 sm:gap-2.5">
+      <div className="flex items-center gap-0.5 shrink-0 sm:gap-2.5">
         {/* Quick Help */}
-        <Button variant="ghost" size="icon" className="size-9 sm:size-10 rounded-full text-muted-foreground hover:bg-muted/80 hover:text-foreground transition-colors">
+        <Button
+          variant="ghost"
+          size="icon"
+          aria-label={t('help')}
+          title={t('help')}
+          className="size-11 rounded-full text-muted-foreground hover:bg-muted/80 hover:text-foreground transition-colors"
+        >
           <HelpCircle className="size-5" />
         </Button>
 
         {/* Language Switcher */}
-        <LanguageSwitcher className="size-9 sm:size-10 bg-transparent border border-border/30 rounded-full flex items-center justify-center p-0 transition-all hover:bg-muted/80 hover:border-border/60 text-muted-foreground hover:text-foreground hover:opacity-100" />
+        <LanguageSwitcher className="size-11 bg-transparent border border-border/30 rounded-full flex items-center justify-center p-0 transition-all hover:bg-muted/80 hover:border-border/60 text-muted-foreground hover:text-foreground hover:opacity-100" />
 
         {/* Theme Toggle */}
-        <ThemeToggle className="size-9 sm:size-10 bg-transparent border border-border/30 rounded-full flex items-center justify-center p-0 transition-all hover:bg-muted/80 hover:border-border/60 text-muted-foreground hover:text-foreground hover:opacity-100" />
+        <ThemeToggle className="size-11 bg-transparent border border-border/30 rounded-full flex items-center justify-center p-0 transition-all hover:bg-muted/80 hover:border-border/60 text-muted-foreground hover:text-foreground hover:opacity-100" />
 
         {/* Notifications */}
         <DropdownMenu>
           <DropdownMenuTrigger
             render={
-              <Button variant="ghost" size="icon" className="size-9 sm:size-10 rounded-full text-muted-foreground hover:bg-muted/80 hover:text-foreground transition-colors relative focus-visible:ring-0">
+              <Button
+                variant="ghost"
+                size="icon"
+                aria-label={t('notifications')}
+                title={t('notifications')}
+                className="size-11 rounded-full text-muted-foreground hover:bg-muted/80 hover:text-foreground transition-colors relative focus-visible:ring-0"
+              >
                 <Bell className="size-5" />
                 <span className="absolute top-2 right-2.5 size-2 bg-danger border-2 border-background rounded-full animate-pulse" />
               </Button>
@@ -118,7 +148,11 @@ export function DashboardHeader() {
         <DropdownMenu>
           <DropdownMenuTrigger
             render={
-              <Button className="size-9 sm:size-10 p-0 rounded-full bg-gradient-to-tr from-primary to-primary hover:from-primary hover:to-primary text-background shadow-lg shadow-primary/25 transition-all hover:scale-105 active:scale-95 border-0 focus-visible:ring-0">
+              <Button
+                aria-label={t('quick_create')}
+                title={t('quick_create')}
+                className="size-11 p-0 rounded-full bg-primary hover:bg-primary-emphasis text-primary-foreground shadow-lg shadow-primary/25 transition-all hover:scale-105 active:scale-95 border-0 focus-visible:ring-0"
+              >
                 <Plus className="size-5" />
               </Button>
             }
@@ -155,10 +189,15 @@ export function DashboardHeader() {
           <DropdownMenuTrigger
             nativeButton={false}
             render={
-              <div className="flex items-center justify-center p-1 rounded-full bg-transparent hover:bg-muted/50 border border-transparent hover:border-border/50 shadow-sm cursor-pointer transition-all hover:scale-105 ml-0.5 sm:ml-1">
+              <div
+                role="button"
+                tabIndex={0}
+                aria-label={t('profile_menu')}
+                className="flex items-center justify-center size-11 rounded-full bg-transparent hover:bg-muted/50 border border-transparent hover:border-border/50 shadow-sm cursor-pointer transition-all hover:scale-105 ml-0.5 sm:ml-1"
+              >
                 <Avatar className="size-8 sm:size-9 border-2 border-background shadow-sm">
                   <AvatarImage src={user?.avatar_url} alt={user?.full_name} />
-                  <AvatarFallback className="bg-gradient-to-br from-primary to-primary text-background font-bold text-sm">
+                  <AvatarFallback className="bg-primary text-primary-foreground font-bold text-sm">
                     {user?.full_name?.split(' ').map(n => n[0]).join('').toUpperCase() || 'U'}
                   </AvatarFallback>
                 </Avatar>

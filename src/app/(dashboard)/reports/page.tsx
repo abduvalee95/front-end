@@ -97,7 +97,8 @@ export default function ReportsPage() {
   }));
 
   const leadChartData = (leadsQ.data ?? []).map((l) => ({
-    name: l.status,
+    status: l.status,
+    name: t(`lead_${l.status.toLowerCase()}` as Parameters<typeof t>[0]),
     count: l.count,
   }));
 
@@ -402,7 +403,7 @@ export default function ReportsPage() {
                     <Bar dataKey="count" radius={[6, 6, 0, 0]}>
                       {leadChartData.map((entry, i) => {
                         const seriesIdx: Record<string, number> = { NEW: 0, CONTACTED: 2, CONVERTED: 1, LOST: 3 };
-                        return <Cell key={i} fill={seriesColor(chart, seriesIdx[entry.name] ?? 5)} />;
+                        return <Cell key={i} fill={seriesColor(chart, seriesIdx[entry.status] ?? 5)} />;
                       })}
                     </Bar>
                   </BarChart>

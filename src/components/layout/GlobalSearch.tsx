@@ -163,9 +163,14 @@ export function GlobalSearch() {
 
   return (
     <>
-      {/* Search Trigger */}
+      {/* Search Trigger.
+          `min-w-0` is required alongside `w-full`: as an implicit flex item of
+          its parent header row, this div's default flex-basis would otherwise
+          be computed from `width: 100%` *before* shrinking, letting it request
+          more room than the row actually has and visually overlap the action
+          icons on a narrow viewport instead of shrinking to fit. */}
       <div
-        className="relative w-full group cursor-text"
+        className="relative w-full min-w-0 group cursor-text"
         onClick={openSearch}
         role="button"
         tabIndex={0}
@@ -175,11 +180,11 @@ export function GlobalSearch() {
         <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
           <Search className="size-4 text-muted-foreground group-hover:text-primary-emphasis transition-colors" />
         </div>
-        <div className="w-full h-10 pl-11 pr-16 flex items-center bg-muted/30 hover:bg-muted/50 border border-transparent rounded-full text-sm text-muted-foreground/60 font-medium transition-all select-none">
+        <div className="w-full h-10 pl-11 pr-4 sm:pr-16 flex items-center bg-muted/30 hover:bg-muted/50 border border-transparent rounded-full text-sm text-muted-foreground/60 font-medium transition-all select-none truncate">
           {t('search_placeholder')}
         </div>
-        <div className="absolute inset-y-0 right-2 flex items-center pointer-events-none">
-          <kbd className="hidden sm:flex items-center gap-1 px-2 py-0.5 text-caption font-bold text-muted-foreground bg-background/80 border border-border/50 rounded-full shadow-sm">
+        <div className="absolute inset-y-0 right-2 hidden sm:flex items-center pointer-events-none">
+          <kbd className="flex items-center gap-1 px-2 py-0.5 text-caption font-bold text-muted-foreground bg-background/80 border border-border/50 rounded-full shadow-sm">
             <Command className="size-3" /> K
           </kbd>
         </div>

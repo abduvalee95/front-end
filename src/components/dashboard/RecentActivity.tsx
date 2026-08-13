@@ -14,6 +14,15 @@ interface RecentActivityProps {
 export function RecentActivity({ summary, isLoading }: RecentActivityProps) {
   const t = useTranslations('dashboard');
 
+  // Clamp and validate once, so the percentage text and the bar fill can
+  // never disagree — an unclamped `NaN`/negative/>100 value (or a shape
+  // mismatch that isn't a plain number) would otherwise fall through to an
+  // invalid inline `width`, which the browser drops, and a bare <div> with
+  // no explicit width defaults to 100% of its block-level container: a
+  // "full" bar sitting next to a "0%" label.
+  const rawRate = Number(summary?.attendanceRate);
+  const attendanceRate = Number.isFinite(rawRate) ? Math.min(Math.max(rawRate, 0), 100) : 0;
+
   return (
     <div className="bg-card rounded-2xl p-6 h-full shadow-sm">
       <div className="flex items-center justify-between mb-5">
@@ -64,7 +73,7 @@ export function RecentActivity({ summary, isLoading }: RecentActivityProps) {
             <Skeleton className="h-8 w-20 mb-3" />
           ) : (
             <div className="flex items-baseline gap-1.5 mb-3">
-              <span className="text-2xl font-semibold text-foreground tabular-nums">{summary?.attendanceRate || 0}</span>
+              <span className="text-2xl font-semibold text-foreground tabular-nums">{attendanceRate}</span>
               <span className="text-xs font-bold text-muted-foreground">%</span>
               <span className="text-caption font-medium text-muted-foreground ml-1">
                 {summary?.attendancePresent || 0} {t('present')}
@@ -74,7 +83,7 @@ export function RecentActivity({ summary, isLoading }: RecentActivityProps) {
           <div className="w-full h-1.5 bg-muted rounded-full overflow-hidden">
             <div
               className="h-full rounded-full bg-primary transition-all duration-1000"
-              style={{ width: `${summary?.attendanceRate || 0}%` }}
+              style={{ width: `${attendanceRate}%` }}
             />
           </div>
         </div>

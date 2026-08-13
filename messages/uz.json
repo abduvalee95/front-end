@@ -909,7 +909,10 @@
     "search_navigate": "navigatsiya",
     "search_open": "ochish",
     "search_close": "yopish",
-    "new_notification": "yangi"
+    "new_notification": "yangi",
+    "help": "Yordam",
+    "profile_menu": "Profil menyusi",
+    "brand_home": "Bosh sahifaga o‘tish"
   },
   "lang_switcher": {
     "label": "Tilni tanlang",

@@ -853,7 +853,9 @@
     "search_no_results": "Ничего не найдено",
     "search_navigate": "навигация",
     "search_open": "открыть",
-    "search_close": "закрыть"
+    "search_close": "закрыть",
+    "profile_menu": "Меню профиля",
+    "brand_home": "На главную"
   },
   "lang_switcher": {
     "label": "Выберите язык",

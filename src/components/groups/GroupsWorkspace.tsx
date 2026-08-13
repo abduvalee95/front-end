@@ -142,9 +142,9 @@ export function GroupsWorkspace() {
       />
 
       <section className="grid grid-cols-1 gap-4 md:grid-cols-3">
-        <StatCard icon={Users2} label={tCommon('total_groups')} value={scopedGroups.length} tone="primary" />
-        <StatCard icon={Layers3} label={tCommon('courses')} value={uniqueCourses} tone="neutral" />
-        <StatCard icon={GraduationCap} label={tCommon('teachers')} value={uniqueTeachers} tone="success" />
+        <StatCard icon={Users2} label={tCommon('total_groups')} value={scopedGroups.length} tone="primary" isLoading={groupsQuery.isLoading} />
+        <StatCard icon={Layers3} label={tCommon('courses')} value={uniqueCourses} tone="neutral" isLoading={groupsQuery.isLoading} />
+        <StatCard icon={GraduationCap} label={tCommon('teachers')} value={uniqueTeachers} tone="success" isLoading={groupsQuery.isLoading} />
       </section>
 
       {/* Table card */}

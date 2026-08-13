@@ -74,14 +74,15 @@ export function LanguageSwitcher({ className, variant = 'header' }: LanguageSwit
     return (
       <DropdownMenu>
         <DropdownMenuTrigger
+          aria-label={t('label')}
           className={cn(
-            'flex items-center gap-2 px-3 py-2 rounded-xl text-primary-emphasis/60 hover:bg-card hover:text-white transition-all text-body-sm font-semibold w-full',
+            'flex items-center gap-2 px-3 py-2 rounded-xl text-sidebar-text hover:bg-sidebar-hover-bg hover:text-sidebar-foreground transition-all text-body-sm font-semibold w-full',
             isPending && 'opacity-60 pointer-events-none',
             className
           )}
           disabled={isPending}
         >
-          <Globe className="size-5 shrink-0 text-primary-emphasis/40" />
+          <Globe className="size-5 shrink-0" />
           <span>{current.flag} {current.label}</span>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" side="top" className="min-w-[170px]">
@@ -94,6 +95,8 @@ export function LanguageSwitcher({ className, variant = 'header' }: LanguageSwit
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
+        aria-label={t('label')}
+        title={t('label')}
         className={cn(
           'flex items-center gap-1.5 rounded-xl font-semibold text-sm px-2.5 py-1.5 hover:bg-muted transition-colors text-foreground',
           isPending && 'opacity-60 pointer-events-none',

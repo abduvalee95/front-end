@@ -829,7 +829,9 @@
     "search_navigate": "навигация",
     "search_open": "ачуу",
     "search_close": "жабуу",
-    "new_notification": "жаңы"
+    "new_notification": "жаңы",
+    "profile_menu": "Профиль менюсу",
+    "brand_home": "Башкы бетке"
   },
   "lang_switcher": {
     "label": "Тилди тандаңыз",

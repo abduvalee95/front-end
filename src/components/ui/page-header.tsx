@@ -4,6 +4,7 @@ import type { ReactNode } from 'react';
 import type { LucideIcon } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
+import { Skeleton } from '@/components/ui/skeleton';
 import { TONE_SURFACE, type Tone } from '@/components/ui/tone';
 
 export interface PageHeaderStat {
@@ -23,6 +24,14 @@ export interface PageHeaderProps {
   /** Buttons; use `<Button />` so sizing and spacing stay consistent. */
   actions?: ReactNode;
   stats?: PageHeaderStat[];
+  /**
+   * While true, each stat's number and caption render as a skeleton instead
+   * of the real `value`/`label`. Pass this whenever a stat is derived from a
+   * query result that can start at a fallback zero (`data?.total ?? 0`) —
+   * without it, the count would flash "0" for a frame before the real total
+   * arrives, which reads as an empty account rather than a loading state.
+   */
+  statsLoading?: boolean;
   className?: string;
 }
 
@@ -40,6 +49,7 @@ export function PageHeader({
   icon: Icon,
   actions,
   stats,
+  statsLoading = false,
   className,
 }: PageHeaderProps) {
   return (
@@ -96,12 +106,19 @@ export function PageHeader({
                   <StatIcon className="size-3.5" strokeWidth={2} />
                 </span>
               )}
-              <div className="min-w-0">
-                <dd className="text-h4 tabular-nums text-foreground">{value}</dd>
-                <dt className="truncate text-caption font-normal text-muted-foreground">
-                  {label}
-                </dt>
-              </div>
+              {statsLoading ? (
+                <div className="min-w-0 space-y-1.5">
+                  <Skeleton className="h-4 w-10" />
+                  <Skeleton className="h-3 w-16" />
+                </div>
+              ) : (
+                <div className="min-w-0">
+                  <dd className="text-h4 tabular-nums text-foreground">{value}</dd>
+                  <dt className="truncate text-caption font-normal text-muted-foreground">
+                    {label}
+                  </dt>
+                </div>
+              )}
             </div>
           ))}
         </dl>

@@ -104,6 +104,7 @@ export function CoursesWorkspace() {
           { label: t('total_courses'), value: allCourses.length, icon: Library, tone: 'primary' },
           { label: t('active_now'), value: activeCourses, icon: CheckCircle2, tone: 'success' },
         ]}
+        statsLoading={coursesQuery.isLoading}
       />
 
       {/* Toolbar */}

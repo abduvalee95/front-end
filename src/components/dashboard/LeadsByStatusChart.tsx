@@ -16,6 +16,14 @@ const LEAD_STATUS_SERIES: Record<string, number> = {
   LOST: 3,
 };
 
+/** Raw backend status code -> the `leads` i18n namespace key for its label. */
+const LEAD_STATUS_LABEL_KEYS: Record<string, string> = {
+  NEW: 'status_new',
+  CONTACTED: 'status_contacted',
+  CONVERTED: 'status_converted',
+  LOST: 'status_lost',
+};
+
 interface LeadsByStatusChartProps {
   leadsByStatus: StatusCount[] | undefined;
   isLoading: boolean;
@@ -23,16 +31,20 @@ interface LeadsByStatusChartProps {
 
 export function LeadsByStatusChart({ leadsByStatus, isLoading }: LeadsByStatusChartProps) {
   const t = useTranslations('dashboard');
+  const tLeads = useTranslations('leads');
   const chart = useChartTheme();
 
   const pieData = useMemo(() => {
     if (!leadsByStatus) return [];
-    return leadsByStatus.map((item) => ({
-      name: item.status,
-      value: item.count,
-      color: seriesColor(chart, LEAD_STATUS_SERIES[item.status] ?? 5),
-    }));
-  }, [leadsByStatus, chart]);
+    return leadsByStatus.map((item) => {
+      const labelKey = LEAD_STATUS_LABEL_KEYS[item.status];
+      return {
+        name: labelKey ? tLeads(labelKey) : item.status,
+        value: item.count,
+        color: seriesColor(chart, LEAD_STATUS_SERIES[item.status] ?? 5),
+      };
+    });
+  }, [leadsByStatus, chart, tLeads]);
 
   return (
     <div className="min-w-0 rounded-card border border-border bg-card p-6 shadow-card">

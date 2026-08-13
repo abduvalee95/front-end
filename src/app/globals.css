@@ -114,6 +114,8 @@
   --color-sidebar-active-bg: hsl(var(--sidebar-active-bg));
   --color-sidebar-hover-bg: hsl(var(--sidebar-hover-bg));
   --color-sidebar-border: hsl(var(--sidebar-border));
+  --color-sidebar-foreground: hsl(var(--sidebar-foreground));
+  --color-sidebar-danger: hsl(var(--sidebar-danger));
 
   /* Tailwind's built-in radius and shadow scales are re-pointed at the two
      tokens above, so `rounded-xl` or `shadow-lg` in older markup cannot
@@ -205,6 +207,14 @@
     --sidebar-active-bg: 193 84% 20%;
     --sidebar-hover-bg: 221 32% 18%;
     --sidebar-border: 221 32% 22%;
+    /* The sidebar is a fixed dark surface in both themes, so its primary
+       heading text (org name, user name) is a fixed near-white — not the
+       page `foreground`, which flips to near-black in dark mode and would
+       vanish on this permanently-dark panel. Its danger accent (logout) is
+       pinned to the value designed for dark surfaces for the same reason —
+       `danger-emphasis` is unreadable here in the light theme. */
+    --sidebar-foreground: 210 40% 98%;
+    --sidebar-danger: 0 94% 82%;      /* #FCA5A5 — 9.1:1 on sidebar-bg */
   }
 
   .dark {
@@ -272,6 +282,8 @@
     --sidebar-active-bg: 193 60% 15%;
     --sidebar-hover-bg: 220 33% 12%;
     --sidebar-border: 221 32% 14%;
+    --sidebar-foreground: 210 40% 98%;
+    --sidebar-danger: 0 94% 82%;
   }
 }
 

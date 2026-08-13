@@ -138,16 +138,16 @@ export function DashboardSidebar() {
                   />
                 </div>
                 <div className="text-center w-full px-1">
-                  <p className="text-body-sm font-bold text-background truncate leading-tight">{orgName}</p>
-                  <p className="text-caption text-primary-emphasis/40 uppercase tracking-wider mt-0.5">Education Center</p>
+                  <p className="text-body-sm font-bold text-sidebar-foreground truncate leading-tight">{orgName}</p>
+                  <p className="text-caption text-sidebar-text uppercase tracking-wider mt-0.5">Education Center</p>
                 </div>
               </div>
             )
           ) : orgName ? (
             isCollapsed ? null : (
               <div className="text-center w-full px-1 py-2">
-                <p className="text-body-sm font-bold text-background truncate leading-tight">{orgName}</p>
-                <p className="text-caption text-primary-emphasis/40 uppercase tracking-wider mt-0.5">Education Center</p>
+                <p className="text-body-sm font-bold text-sidebar-foreground truncate leading-tight">{orgName}</p>
+                <p className="text-caption text-sidebar-text uppercase tracking-wider mt-0.5">Education Center</p>
               </div>
             )
           ) : (
@@ -177,7 +177,7 @@ export function DashboardSidebar() {
           <div key={group.groupKey} className="space-y-1.5">
             {!isCollapsed && (
               <div className="px-4 mb-2">
-                <p className="text-caption font-bold uppercase tracking-normal text-primary-emphasis/30">
+                <p className="text-caption font-bold uppercase tracking-normal text-sidebar-text">
                   {tNav(group.groupKey as Parameters<typeof tNav>[0])}
                 </p>
               </div>
@@ -193,8 +193,8 @@ export function DashboardSidebar() {
                     className={cn(
                       "flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all duration-300 group relative text-body font-semibold",
                       isActive
-                        ? "bg-gradient-to-r from-primary to-primary text-white shadow-lg shadow-primary/30"
-                        : "text-primary-emphasis/60 hover:bg-card hover:text-white",
+                        ? "bg-primary text-primary-foreground shadow-lg shadow-primary/30"
+                        : "text-sidebar-text hover:bg-sidebar-hover-bg hover:text-sidebar-foreground",
                       isCollapsed && "justify-center px-2"
                     )}
                     aria-label={label}
@@ -202,7 +202,7 @@ export function DashboardSidebar() {
                     <item.icon className={cn("size-5 shrink-0 transition-colors", isActive ? "text-primary-foreground" : "text-sidebar-text group-hover:text-sidebar-active")} />
                     {!isCollapsed && <span>{label}</span>}
                     {isCollapsed && (
-                      <div className="pointer-events-none absolute left-full z-50 ml-4 whitespace-nowrap rounded-control border border-border bg-popover px-2 py-1 text-caption text-popover-foreground opacity-0 shadow-card transition-opacity group-hover:opacity-100">
+                      <div className="pointer-events-none absolute left-full z-50 ml-4 whitespace-nowrap rounded-control border border-border bg-popover px-2 py-1 text-caption text-popover-foreground opacity-0 shadow-card transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100">
                         {label}
                       </div>
                     )}
@@ -215,10 +215,10 @@ export function DashboardSidebar() {
       </div>
 
       {/* Footer Controls */}
-      <div className="p-4 mt-auto border-t border-border bg-primary-muted/10">
+      <div className="p-4 mt-auto border-t border-sidebar-border bg-sidebar-bg">
         <div className="flex items-center gap-3">
           {!isCollapsed ? (
-            <div className="flex flex-1 items-center gap-3 px-3 py-3 rounded-2xl bg-card border border-border backdrop-blur-sm">
+            <div className="flex flex-1 items-center gap-3 px-3 py-3 rounded-2xl bg-sidebar-hover-bg border border-sidebar-border backdrop-blur-sm">
               <Avatar className="size-9 border-2 border-primary/20">
                 <AvatarImage src={user?.avatar_url} alt={user?.full_name} />
                 <AvatarFallback className="bg-primary text-primary-foreground font-bold text-caption">
@@ -226,12 +226,12 @@ export function DashboardSidebar() {
                 </AvatarFallback>
               </Avatar>
               <div className="flex-1 min-w-0">
-                <p className="text-body-sm font-bold text-background truncate leading-none mb-1">{user?.full_name || 'Admin User'}</p>
-                <p className="text-caption font-medium text-primary-emphasis/40 uppercase tracking-wider truncate">{user?.role?.replace('_', ' ') || 'Manager'}</p>
+                <p className="text-body-sm font-bold text-sidebar-foreground truncate leading-none mb-1">{user?.full_name || 'Admin User'}</p>
+                <p className="text-caption font-medium text-sidebar-text uppercase tracking-wider truncate">{user?.role?.replace('_', ' ') || 'Manager'}</p>
               </div>
               <button 
                 onClick={() => logout()}
-                className="size-10 flex items-center justify-center rounded-xl bg-danger/10 border border-danger/20 text-danger-emphasis hover:bg-danger/90 hover:text-danger-foreground transition-all shadow-lg shadow-danger/10 group shrink-0"
+                className="size-10 flex items-center justify-center rounded-xl bg-sidebar-danger/10 border border-sidebar-danger/20 text-sidebar-danger hover:bg-danger hover:text-danger-foreground hover:border-transparent transition-all shadow-lg shadow-danger/10 group shrink-0"
                 title={tAuth('logout')}
               >
                 <LogOut className="size-5 transition-transform group-hover:translate-x-0.5" />
@@ -240,7 +240,7 @@ export function DashboardSidebar() {
           ) : (
             <button 
               onClick={() => logout()}
-              className="w-full size-12 flex items-center justify-center rounded-2xl bg-danger/10 border border-danger/20 text-danger-emphasis hover:bg-danger/90 hover:text-danger-foreground transition-all shadow-lg shadow-danger/10 group"
+              className="w-full size-12 flex items-center justify-center rounded-2xl bg-sidebar-danger/10 border border-sidebar-danger/20 text-sidebar-danger hover:bg-danger hover:text-danger-foreground hover:border-transparent transition-all shadow-lg shadow-danger/10 group"
               title={tAuth('logout')}
             >
               <LogOut className="size-6 transition-transform group-hover:translate-x-0.5" />
