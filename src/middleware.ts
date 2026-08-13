@@ -65,11 +65,28 @@ export default async function middleware(request: NextRequest) {
   ];
   const authRoutes = ['/login']; // Routes that logged-in users shouldn't access (like login page)
 
+  /**
+   * Assets served straight out of /public.
+   *
+   * Anchored to a SINGLE path segment on purpose. `/logo.svg` is an asset;
+   * `/students/42.svg` is the student-detail route with a crafted id. Any rule
+   * that looks for a dot *anywhere* in the path — which is what the previous
+   * `pathname.includes('.')` check did — hands an attacker every dynamic route
+   * in the app as a public one, since `[id]` happily matches `abc.def`.
+   *
+   * Failing the other way is safe: a newly added nested asset would require a
+   * session rather than skipping auth.
+   */
+  const ROOT_STATIC_ASSET =
+    /^\/[^/]+\.(?:svg|png|jpg|jpeg|gif|webp|avif|ico|bmp|css|js|map|txt|xml|json|webmanifest|woff2?|ttf|otf|eot)$/;
+
   const isPublicRoute = publicRoutes.includes(pathname) ||
     pathname.startsWith('/_next/') ||
     pathname.startsWith('/api/auth/') || // Auth endpoints are public
-    pathname.includes('.') || // Static files
-    pathname === '/favicon.ico';
+    // Workflow runtime endpoints carry their own signed tokens (see
+    // src/app/.well-known/workflow/**) and are called without a session.
+    pathname.startsWith('/.well-known/') ||
+    ROOT_STATIC_ASSET.test(pathname);
 
   const isAuthRoute = authRoutes.some((route) => pathname.startsWith(route));
 
@@ -123,5 +140,16 @@ export default async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)'],
+  /**
+   * Only framework-reserved prefixes are excluded here, because anything the
+   * matcher skips never reaches the auth check above.
+   *
+   * The previous `.*\.(?:svg|png|…)$` exclusion was a second, independent
+   * bypass of exactly the same shape as the `includes('.')` one: it is
+   * unanchored, so `/students/42.png` matched it, middleware never ran, and
+   * the route rendered to anonymous users. Extension-based exclusions cannot
+   * be made safe while dynamic segments exist — /public assets are handled by
+   * the single-segment ROOT_STATIC_ASSET rule inside the middleware instead.
+   */
+  matcher: ['/((?!_next/static|_next/image|favicon.ico).*)'],
 };
