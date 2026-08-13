@@ -94,7 +94,7 @@ export function GroupsKanbanBoard({ groups, canManage, isDeleting, onDelete }: G
               <span className={cn('size-2.5 rounded-full', column.dotColor)} />
               <h3 className="font-bold tracking-tight">{column.title}</h3>
             </div>
-            <Badge variant="secondary" className="rounded-full bg-white/50 dark:bg-black/20">
+            <Badge variant="neutral">
               {column.items.length}
             </Badge>
           </div>
@@ -109,7 +109,7 @@ export function GroupsKanbanBoard({ groups, canManage, isDeleting, onDelete }: G
               column.items.map((group) => (
                 <Card 
                   key={group.id} 
-                  className="group relative flex flex-col overflow-hidden rounded-[1.25rem] border-border/60 bg-card shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md"
+                  className="group relative flex flex-col overflow-hidden rounded-card border-border/60 bg-card shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md"
                 >
                   <CardContent className="p-4">
                     {/* Course Badge & Actions */}
@@ -151,7 +151,7 @@ export function GroupsKanbanBoard({ groups, canManage, isDeleting, onDelete }: G
                     <div className="flex flex-col gap-3 rounded-xl bg-muted/40 p-3">
                       <div className="flex items-center gap-2.5">
                         <Avatar className="size-6">
-                          <AvatarFallback className="bg-primary/10 text-[10px] font-bold text-primary">
+                          <AvatarFallback className="bg-primary/10 text-caption font-bold text-primary">
                             {group.teacher?.full_name?.charAt(0) ?? 'T'}
                           </AvatarFallback>
                         </Avatar>
@@ -169,7 +169,7 @@ export function GroupsKanbanBoard({ groups, canManage, isDeleting, onDelete }: G
                     {/* Duration Progress Bar (Visual flair for Active) */}
                     {column.id === 'active' && (
                       <div className="mt-4">
-                        <div className="mb-1 flex justify-between text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                        <div className="mb-1 flex justify-between text-caption font-bold uppercase tracking-wider text-muted-foreground">
                           <span>{t('duration_progress')}</span>
                           <span>{t('in_progress_label')}</span>
                         </div>

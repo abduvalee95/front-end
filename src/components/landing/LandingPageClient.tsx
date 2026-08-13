@@ -32,7 +32,7 @@ export function LandingPageClient() {
   ];
 
   return (
-    <div className="bg-white antialiased" style={{ color: '#0B1437', fontFamily: 'var(--font-geist-sans), Aptos, "Segoe UI", system-ui, sans-serif' }}>
+    <div className="bg-white text-[#0F1729] antialiased" style={{ fontFamily: 'var(--font-sans)' }}>
       <LandingNav />
       <LandingHero />
       <LandingFeatures />

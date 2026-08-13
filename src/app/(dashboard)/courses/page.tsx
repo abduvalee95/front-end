@@ -8,7 +8,8 @@ import { SubjectsWorkspace } from '@/components/subjects/SubjectsWorkspace';
 import { useCourses } from '@/hooks/useCourses';
 import { useSubjects } from '@/hooks/useSubjects';
 import { useAuthStore } from '@/store/auth.store';
-import { cn } from '@/lib/utils';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 
 type Tab = 'courses' | 'subjects';
 
@@ -24,64 +25,32 @@ export default function CoursesPage() {
   const coursesCount = coursesQuery.data?.length ?? 0;
   const subjectsCount = subjectsQuery.data?.length ?? 0;
 
-  const tabs: { id: Tab; label: string; icon: typeof BookMarked; count: number; accent: string; countCls: string }[] = [
-    {
-      id: 'courses',
-      label: t('tab_courses'),
-      icon: BookMarked,
-      count: coursesCount,
-      accent: 'data-active:text-primary-emphasis dark:data-active:text-primary-emphasis',
-      countCls: 'bg-primary/12 text-primary-emphasis',
-    },
-    {
-      id: 'subjects',
-      label: t('tab_subjects'),
-      icon: Layers,
-      count: subjectsCount,
-      accent: 'data-active:text-success-emphasis dark:data-active:text-success-emphasis',
-      countCls: 'bg-success/12 text-success-emphasis',
-    },
+  const tabs: { id: Tab; label: string; icon: typeof BookMarked; count: number }[] = [
+    { id: 'courses', label: t('tab_courses'), icon: BookMarked, count: coursesCount },
+    { id: 'subjects', label: t('tab_subjects'), icon: Layers, count: subjectsCount },
   ];
 
   return (
     <div className="space-y-5">
       {/* ── Tab bar ── */}
-      <div className="flex items-center gap-1 w-fit rounded-2xl bg-muted/60 dark:bg-white/5 p-1.5 ring-1 ring-border/40 shadow-sm">
-        {tabs.map(({ id, label, icon: Icon, count, countCls }) => {
+      <div className="flex w-fit items-center gap-1 rounded-control border border-border bg-muted p-1" role="tablist">
+        {tabs.map(({ id, label, icon: Icon, count }) => {
           const isActive = active === id;
           return (
-            <button
+            <Button
               key={id}
               type="button"
+              role="tab"
+              aria-selected={isActive}
+              variant={isActive ? 'primary' : 'ghost'}
               onClick={() => setActive(id)}
-              data-active={isActive ? '' : undefined}
-              className={cn(
-                'flex items-center gap-2 h-9 px-3 sm:px-4 rounded-xl text-[13px] font-semibold transition-all duration-200 whitespace-nowrap',
-                isActive
-                  ? 'bg-background text-foreground shadow-[0_2px_10px_rgba(15,23,42,0.08)] ring-1 ring-border/50'
-                  : 'text-muted-foreground hover:text-foreground hover:bg-background/50',
-              )}
             >
-              <Icon
-                className={cn(
-                  'size-4 shrink-0 transition-colors',
-                  isActive
-                    ? id === 'courses'
-                      ? 'text-primary-emphasis'
-                      : 'text-success-emphasis'
-                    : 'text-muted-foreground/60',
-                )}
-              />
+              <Icon className="size-4 shrink-0" aria-hidden="true" />
               <span className="hidden sm:inline">{label}</span>
-              <span
-                className={cn(
-                  'inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full text-[10px] font-black tabular-nums leading-none transition-colors',
-                  isActive ? countCls : 'bg-muted-foreground/10 text-muted-foreground/60',
-                )}
-              >
+              <Badge variant="neutral" className="tabular-nums">
                 {count}
-              </span>
-            </button>
+              </Badge>
+            </Button>
           );
         })}
       </div>

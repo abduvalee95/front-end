@@ -28,7 +28,7 @@ export function AuditLogSection({ auditLogs }: AuditLogSectionProps) {
       <Card className="rounded-2xl border-border shadow-sm overflow-hidden">
         <CardHeader className="pb-4 border-b border-border/60 bg-muted/40 flex flex-row items-center justify-between">
           <div>
-            <CardTitle className="text-base font-black">{t('settings.activity_log')}</CardTitle>
+            <CardTitle className="text-base font-semibold">{t('settings.activity_log')}</CardTitle>
             <CardDescription>{t('settings.activity_log_desc')}</CardDescription>
           </div>
           <Button
@@ -51,7 +51,7 @@ export function AuditLogSection({ auditLogs }: AuditLogSectionProps) {
                   <p className="text-xs text-muted-foreground mt-0.5">{log.user}</p>
                 </div>
               </div>
-              <Badge variant="outline" className="rounded-lg text-[10px] shrink-0 ml-4">{log.time}</Badge>
+              <Badge variant="outline" className="rounded-lg text-caption shrink-0 ml-4">{log.time}</Badge>
             </div>
           ))}
         </CardContent>

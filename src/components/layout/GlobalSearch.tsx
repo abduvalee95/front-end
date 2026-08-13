@@ -179,7 +179,7 @@ export function GlobalSearch() {
           {t('search_placeholder')}
         </div>
         <div className="absolute inset-y-0 right-2 flex items-center pointer-events-none">
-          <kbd className="hidden sm:flex items-center gap-1 px-2 py-0.5 text-[10px] font-bold text-muted-foreground bg-background/80 border border-border/50 rounded-full shadow-sm">
+          <kbd className="hidden sm:flex items-center gap-1 px-2 py-0.5 text-caption font-bold text-muted-foreground bg-background/80 border border-border/50 rounded-full shadow-sm">
             <Command className="size-3" /> K
           </kbd>
         </div>
@@ -192,11 +192,11 @@ export function GlobalSearch() {
           onClick={closeSearch}
         >
           {/* Backdrop */}
-          <div className="absolute inset-0 bg-black/25 backdrop-blur-sm" />
+          <div className="absolute inset-0 bg-overlay/50 backdrop-blur-sm" />
 
           {/* Palette */}
           <div
-            className="relative w-full max-w-xl mx-4 bg-background/98 backdrop-blur-2xl rounded-2xl border border-border/50 shadow-[0_24px_80px_-10px_rgba(0,0,0,0.18)] overflow-hidden"
+            className="relative w-full max-w-xl mx-4 bg-background/98 backdrop-blur-2xl rounded-2xl border border-border/50 shadow-card overflow-hidden"
             onClick={(e) => e.stopPropagation()}
             onKeyDown={handleKeyDownPalette}
             role="dialog"
@@ -227,7 +227,7 @@ export function GlobalSearch() {
                   <X className="size-3" />
                 </button>
               )}
-              <kbd className="hidden sm:flex items-center text-[10px] font-bold text-muted-foreground bg-muted/80 px-2 py-0.5 rounded-md border border-border/50 shrink-0">
+              <kbd className="hidden sm:flex items-center text-caption font-bold text-muted-foreground bg-muted/80 px-2 py-0.5 rounded-md border border-border/50 shrink-0">
                 ESC
               </kbd>
             </div>
@@ -262,10 +262,10 @@ export function GlobalSearch() {
                   <div key={group.type} className="py-2">
                     {/* Group header */}
                     <div className="px-4 py-1.5 flex items-center gap-2">
-                      <span className={cn('p-1 rounded-md text-[11px]', group.color)}>
+                      <span className={cn('p-1 rounded-md text-caption', group.color)}>
                         {group.icon}
                       </span>
-                      <span className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground/50">
+                      <span className="text-caption font-bold uppercase tracking-widest text-muted-foreground/50">
                         {group.type}
                       </span>
                     </div>
@@ -285,11 +285,11 @@ export function GlobalSearch() {
                           )}
                         >
                           <div className="flex-1 min-w-0">
-                            <p className="text-[13px] font-semibold text-foreground truncate leading-snug">
+                            <p className="text-body-sm font-semibold text-foreground truncate leading-snug">
                               {item.label}
                             </p>
                             {item.subtitle && (
-                              <p className="text-[11px] text-muted-foreground truncate mt-0.5">
+                              <p className="text-caption text-muted-foreground truncate mt-0.5">
                                 {item.subtitle}
                               </p>
                             )}
@@ -304,7 +304,7 @@ export function GlobalSearch() {
 
               {/* Footer hint */}
               {hasResults && (
-                <div className="px-4 py-2.5 border-t border-border/20 flex items-center gap-4 text-[10px] text-muted-foreground/40 font-medium">
+                <div className="px-4 py-2.5 border-t border-border/20 flex items-center gap-4 text-caption text-muted-foreground/40 font-medium">
                   <span>↑↓ {t('search_navigate')}</span>
                   <span>↵ {t('search_open')}</span>
                   <span>ESC {t('search_close')}</span>

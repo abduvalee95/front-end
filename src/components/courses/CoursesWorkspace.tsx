@@ -13,7 +13,6 @@ import {
   RefreshCw,
   Search,
   Trash2,
-  Users2,
   GraduationCap,
   X,
 } from 'lucide-react';
@@ -35,6 +34,7 @@ import { EditCourseModal } from './EditCourseModal';
 export function CoursesWorkspace() {
   const user = useAuthStore((s) => s.user);
   const t = useTranslations('courses');
+  const tCommon = useTranslations('common');
   const role = user?.role;
   const canManage = role === 'ADMIN' || role === 'MANAGER';
   // Note: Both Teachers and Students can view courses according to the controller
@@ -120,28 +120,31 @@ export function CoursesWorkspace() {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder={t('search_courses')}
-              className={cn('pl-9 bg-white/50 dark:bg-white/5 backdrop-blur-sm', search && 'pr-9')}
+              className={cn('pl-9 bg-card  backdrop-blur-sm', search && 'pr-9')}
             />
             {search && (
-              <button
+              <Button
                 type="button"
+                variant="ghost"
+                size="icon-xs"
+                aria-label={tCommon('clear')}
                 onClick={clearSearch}
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 rounded-full p-0.5 text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+                className="absolute right-2 top-1/2 -translate-y-1/2"
               >
                 <X className="size-3.5" />
-              </button>
+              </Button>
             )}
           </div>
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="h-9 rounded-lg border border-input bg-white/50 dark:bg-white/5 backdrop-blur-sm px-3 text-sm text-foreground outline-none transition-colors focus:ring-2 focus:ring-ring"
+            className="h-9 rounded-lg border border-input bg-card backdrop-blur-sm px-3 text-sm text-foreground outline-none transition-colors focus:ring-2 focus:ring-ring"
           >
             <option value="">{t('all_statuses')}</option>
             <option value="ACTIVE">{t('status_active')}</option>
             <option value="INACTIVE">{t('status_inactive')}</option>
           </select>
-          <Button variant="outline" size="icon" onClick={refresh} className="size-9 shrink-0 bg-white/50 dark:bg-white/5" title={t('refresh')}>
+          <Button variant="outline" size="icon" onClick={refresh} className="size-9 shrink-0 bg-card" title={t('refresh')}>
             <RefreshCw className={cn('size-4', coursesQuery.isLoading && 'animate-spin')} />
           </Button>
         </div>
@@ -151,7 +154,7 @@ export function CoursesWorkspace() {
       {coursesQuery.isLoading ? (
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {Array.from({ length: 8 }).map((_, i) => (
-            <Skeleton key={i} className="h-56 rounded-[1.5rem] bg-primary-muted/50 dark:bg-primary-muted/30" />
+            <Skeleton key={i} className="h-56 rounded-card bg-primary-muted/50 dark:bg-primary-muted/30" />
           ))}
         </div>
       ) : coursesQuery.isError ? (
@@ -165,7 +168,7 @@ export function CoursesWorkspace() {
           </Button>
         </div>
       ) : rows.length === 0 ? (
-        <div className="flex flex-col items-center justify-center rounded-3xl border border-dashed border-border px-6 py-24 text-center bg-white/30 dark:bg-white/5 backdrop-blur-sm">
+        <div className="flex flex-col items-center justify-center rounded-3xl border border-dashed border-border px-6 py-24 text-center bg-card backdrop-blur-sm">
           <div className="mb-4 flex size-16 items-center justify-center rounded-2xl bg-muted text-muted-foreground">
             <BookOpen className="size-8" />
           </div>
@@ -184,7 +187,7 @@ export function CoursesWorkspace() {
           {rows.map((course) => (
             <Card 
               key={course.id} 
-              className="group relative flex flex-col overflow-hidden rounded-[1.5rem] border-white/70 bg-white/80 shadow-md backdrop-blur transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-primary/10 dark:border-white/10 dark:bg-white/5"
+              className="group relative flex flex-col overflow-hidden rounded-card border-border bg-card shadow-md backdrop-blur transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-primary/10"
             >
               {/* Card Header with subtle gradient */}
               <div className="relative h-24 w-full bg-gradient-to-br from-primary/10 via-primary/5 to-transparent">
@@ -195,7 +198,7 @@ export function CoursesWorkspace() {
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="size-8 bg-white/50 text-destructive hover:bg-destructive/90 hover:text-white backdrop-blur-md transition-colors"
+                        className="size-8"
                         disabled={isDeleting === course.id}
                         onClick={() => handleDelete(course.id, course.title)}
                         title={t('delete_course')}
@@ -209,7 +212,7 @@ export function CoursesWorkspace() {
                     </>
                   )}
                 </div>
-                <div className="absolute -bottom-6 left-5 flex size-12 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-primary text-white shadow-lg ring-4 ring-background">
+                <div className="absolute -bottom-6 left-5 flex size-12 items-center justify-center rounded-card bg-primary text-primary-foreground shadow-card ring-4 ring-background">
                   <GraduationCap className="size-6" />
                 </div>
               </div>
@@ -227,8 +230,8 @@ export function CoursesWorkspace() {
 
                 <div className="mt-5 flex items-end justify-between border-t border-border/50 pt-4">
                   <div>
-                    <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1">{t('price')}</p>
-                    <p className="text-xl font-black text-foreground">{course.price}</p>
+                    <p className="text-caption font-bold uppercase tracking-widest text-muted-foreground mb-1">{t('price')}</p>
+                    <p className="text-xl font-semibold text-foreground">{course.price}</p>
                   </div>
                   <Badge 
                     variant="outline" 

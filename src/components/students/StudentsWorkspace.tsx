@@ -341,13 +341,9 @@ export function StudentsWorkspace() {
             </p>
           </div>
           {(search || statusFilter || paymentFilter) && (
-            <button
-              type="button"
-              onClick={resetFilters}
-              className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground hover:text-foreground transition-colors rounded-lg border border-border/60 px-2.5 py-1.5"
-            >
-              <X className="size-3" /> {t('clear_filters')}
-            </button>
+            <Button type="button" variant="secondary" size="sm" onClick={resetFilters}>
+              <X className="size-3.5" /> {t('clear_filters')}
+            </Button>
           )}
         </div>
 
@@ -371,29 +367,29 @@ export function StudentsWorkspace() {
           <Table>
             <TableHeader>
               <TableRow className="hover:bg-transparent border-b border-border/50">
-                <TableHead className="w-8 pl-5 text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
+                <TableHead className="w-8 pl-5 text-caption font-bold uppercase tracking-wider text-muted-foreground">
                   {t('col_number')}
                 </TableHead>
-                <TableHead className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
+                <TableHead className="text-caption font-bold uppercase tracking-wider text-muted-foreground">
                   {t('col_student')}
                 </TableHead>
-                <TableHead className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
+                <TableHead className="text-caption font-bold uppercase tracking-wider text-muted-foreground">
                   {t('col_status')}
                 </TableHead>
-                <TableHead className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
+                <TableHead className="text-caption font-bold uppercase tracking-wider text-muted-foreground">
                   {t('col_payment')} · {currentMonth}
                 </TableHead>
-                <TableHead className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
+                <TableHead className="text-caption font-bold uppercase tracking-wider text-muted-foreground">
                   {teacherScoped ? t('col_group_course') : t('col_group_course')}
                 </TableHead>
-                <TableHead className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
+                <TableHead className="text-caption font-bold uppercase tracking-wider text-muted-foreground">
                   {teacherScoped ? t('col_teacher') : t('col_phone')}
                 </TableHead>
-                <TableHead className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
+                <TableHead className="text-caption font-bold uppercase tracking-wider text-muted-foreground">
                   {t('discount')}
                 </TableHead>
                 {canManageScope && (
-                  <TableHead className="w-20 pr-4 text-right text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
+                  <TableHead className="w-20 pr-4 text-right text-caption font-bold uppercase tracking-wider text-muted-foreground">
                     {t('col_actions')}
                   </TableHead>
                 )}

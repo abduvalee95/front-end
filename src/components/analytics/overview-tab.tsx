@@ -14,6 +14,7 @@ import {
 import { usePlatformAnalytics, usePlatformAI } from '@/hooks/useAnalytics';
 import { MetricCard, AIBanner, InsightCard, SectionHeader } from './shared';
 import { AreaChartWrapper, ChartFrame, DonutChartWrapper } from '@/components/charts/chart-primitives';
+import { seriesColor, useChartTheme } from '@/lib/chart-theme';
 
 function money(n: number): string {
   if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(2)}M`;
@@ -22,6 +23,7 @@ function money(n: number): string {
 }
 
 export function OverviewTab() {
+  const chart = useChartTheme();
   const { summary, paymentsByDay, paymentsByMethod, finance } = usePlatformAnalytics();
   const ai = usePlatformAI();
 
@@ -150,7 +152,7 @@ export function OverviewTab() {
         >
           <AreaChartWrapper
             data={chartData}
-            lines={[{ key: 'payments', label: 'Payments', color: '#10B981' }]}
+            lines={[{ key: 'payments', label: 'Payments', color: seriesColor(chart, 1) }]}
             yFormatter={money}
           />
         </ChartFrame>

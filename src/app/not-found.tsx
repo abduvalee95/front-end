@@ -12,7 +12,7 @@ export default function NotFound() {
         <div className="mx-auto mb-6 flex size-20 items-center justify-center rounded-2xl bg-muted">
           <FileQuestion className="size-10 text-muted-foreground" />
         </div>
-        <h1 className="text-3xl font-black tracking-tight text-foreground mb-2">{t('code')}</h1>
+        <h1 className="text-3xl font-semibold tracking-tight text-foreground mb-2">{t('code')}</h1>
         <p className="text-base font-semibold text-foreground mb-1">{t('title')}</p>
         <p className="text-sm text-muted-foreground mb-6">{t('description')}</p>
         <Link

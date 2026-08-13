@@ -195,14 +195,10 @@ export function EnrollStudentModal({ groupId, groupName }: EnrollStudentModalPro
               )}
             </Label>
             {availableStudents.length > 0 && (
-              <button
-                type="button"
-                onClick={toggleAll}
-                className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
-              >
+              <Button type="button" variant="ghost" size="sm" onClick={toggleAll}>
                 {allSelected ? <CheckSquare className="size-3.5 text-success-emphasis" /> : <Square className="size-3.5" />}
                 {allSelected ? t('deselect_all') : t('select_all')}
-              </button>
+              </Button>
             )}
           </div>
 
@@ -237,11 +233,7 @@ export function EnrollStudentModal({ groupId, groupName }: EnrollStudentModalPro
                     key={s.id}
                     type="button"
                     onClick={() => toggleStudent(s.id)}
-                    className={`w-full flex items-center gap-3 rounded-xl border px-3 py-2 text-left transition-colors ${
-                      checked
-                        ? 'border-success/40 bg-success/8 text-foreground'
-                        : 'border-border/50 bg-transparent hover:bg-muted/30'
-                    }`}
+                    className={`w-full flex items-center gap-3 rounded-xl border px-3 py-2 text-left transition-colors ${ checked ? 'border-success/40 bg-success/8 text-foreground' : 'border-border/50 bg-transparent hover:bg-muted/30' }`}
                   >
                     {checked
                       ? <CheckSquare className="size-4 shrink-0 text-success-emphasis" />
@@ -262,7 +254,7 @@ export function EnrollStudentModal({ groupId, groupName }: EnrollStudentModalPro
             <Button
               onClick={handleEnroll}
               disabled={isEnrolling}
-              className="w-full rounded-xl h-9 bg-success hover:bg-success text-white"
+              className="w-full rounded-xl h-9 bg-success hover:bg-success/90 text-success-foreground"
             >
               {isEnrolling ? (
                 <><Loader2 className="mr-2 size-4 animate-spin" />{t('enrolling')}</>
@@ -311,7 +303,7 @@ export function EnrollStudentModal({ groupId, groupName }: EnrollStudentModalPro
                           {enrollment.student?.phone ?? '—'}
                         </p>
                         {(fee > 0 || discount > 0) && !isEditing && (
-                          <p className="mt-1 text-[10.5px] font-semibold tabular-nums text-muted-foreground/80">
+                          <p className="mt-1 text-caption font-semibold tabular-nums text-muted-foreground/80">
                             {fee > 0 ? `${new Intl.NumberFormat('ru-RU').format(net)} сом` : '—'}
                             {discount > 0 && (
                               <span className="ml-1 text-warning-emphasis">
@@ -322,7 +314,7 @@ export function EnrollStudentModal({ groupId, groupName }: EnrollStudentModalPro
                         )}
                       </div>
                       <div className="flex items-center gap-2">
-                        <Badge variant="outline" className="rounded-full text-[10px] px-2 py-0.5">
+                        <Badge variant="outline" className="rounded-full text-caption px-2 py-0.5">
                           {enrollment.student?.status ?? 'N/A'}
                         </Badge>
                         <Button
@@ -350,7 +342,7 @@ export function EnrollStudentModal({ groupId, groupName }: EnrollStudentModalPro
                       <div className="border-t border-border/40 px-3 py-2.5 bg-background/50">
                         <div className="flex flex-wrap items-end gap-2">
                           <div className="flex-1 min-w-[110px]">
-                            <Label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                            <Label className="text-caption font-bold uppercase tracking-wider text-muted-foreground">
                               {t('monthly_fee')}
                             </Label>
                             <Input
@@ -364,7 +356,7 @@ export function EnrollStudentModal({ groupId, groupName }: EnrollStudentModalPro
                             />
                           </div>
                           <div className="flex-1 min-w-[110px]">
-                            <Label className="text-[10px] font-bold uppercase tracking-wider text-warning-emphasis">
+                            <Label className="text-caption font-bold uppercase tracking-wider text-warning-emphasis">
                               {t('discount')}
                             </Label>
                             <Input
@@ -379,7 +371,7 @@ export function EnrollStudentModal({ groupId, groupName }: EnrollStudentModalPro
                           </div>
                           <Button
                             size="sm"
-                            className="h-8 rounded-lg bg-success hover:bg-success text-white"
+                            className="h-8 rounded-lg bg-success hover:bg-success/90 text-success-foreground"
                             disabled={isSavingFee}
                             onClick={() => saveEdit(enrollment.id)}
                           >

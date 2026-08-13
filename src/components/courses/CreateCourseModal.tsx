@@ -82,7 +82,7 @@ export function CreateCourseModal({ open: externalOpen, onClose }: CreateCourseM
       {!isControlled && (
         <DialogTrigger
           render={
-            <Button className="gap-2 bg-primary hover:bg-primary text-white shadow-lg shadow-primary/20 rounded-xl h-10 px-5">
+            <Button>
               <Plus className="size-4" />
               {t('add_course')}
             </Button>

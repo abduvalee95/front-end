@@ -106,7 +106,10 @@
     "more": "Еще",
     "menu": "Меню",
     "logout": "Выход",
-    "print_receipt": "Kvitansiya chop etish"
+    "print_receipt": "Kvitansiya chop etish",
+    "clear": "Очистить",
+    "decrease": "Уменьшить",
+    "increase": "Увеличить"
   },
   "nav": {
     "dashboard": "Панель управления",
@@ -688,7 +691,10 @@
     "todo_done": "Выполнено",
     "todo_empty": "Задач пока нет",
     "todo_empty_hint": "Добавьте задачу сверху",
-    "clear_done": "Очистить выполненные"
+    "clear_done": "Очистить выполненные",
+    "subtitle": "Недельная сетка занятий по вашим группам",
+    "todo_subtitle": "Личный список задач",
+    "todo_due": "Срок"
   },
   "attendance_page": {
     "title": "Посещаемость",
@@ -822,7 +828,8 @@
     "update_password": "Обновить пароль",
     "password_updated": "Пароль обновлён. Войдите заново.",
     "profile_updated": "Профиль обновлён",
-    "invite_user": "Пригласить пользователя"
+    "invite_user": "Пригласить пользователя",
+    "toggle_password": "Показать/скрыть пароль"
   },
   "header": {
     "search_placeholder": "Поиск студентов, учителей, классов...",

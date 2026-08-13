@@ -259,20 +259,20 @@ export default function ReportsPage() {
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
               <Card className="border-success/60 dark:border-success/20">
                 <CardContent className="p-4 text-center">
-                  <p className="text-[11px] font-semibold uppercase tracking-wider text-success-emphasis/70">{t('total_income')}</p>
-                  <p className="mt-1 text-xl font-black tabular-nums text-success-emphasis">{fmtMoney(fin.summary.totalIncome)}</p>
+                  <p className="text-caption font-semibold uppercase tracking-wider text-success-emphasis/70">{t('total_income')}</p>
+                  <p className="mt-1 text-xl font-semibold tabular-nums text-success-emphasis">{fmtMoney(fin.summary.totalIncome)}</p>
                 </CardContent>
               </Card>
               <Card className="border-danger/60 dark:border-danger/20">
                 <CardContent className="p-4 text-center">
-                  <p className="text-[11px] font-semibold uppercase tracking-wider text-danger-emphasis/70">{t('total_expenses')}</p>
-                  <p className="mt-1 text-xl font-black tabular-nums text-danger-emphasis">{fmtMoney(fin.summary.totalExpenses)}</p>
+                  <p className="text-caption font-semibold uppercase tracking-wider text-danger-emphasis/70">{t('total_expenses')}</p>
+                  <p className="mt-1 text-xl font-semibold tabular-nums text-danger-emphasis">{fmtMoney(fin.summary.totalExpenses)}</p>
                 </CardContent>
               </Card>
               <Card className={cn('col-span-2 sm:col-span-1', fin.summary.profit >= 0 ? 'border-primary/60 dark:border-primary/20' : 'border-danger/60 dark:border-danger/20')}>
                 <CardContent className="p-4 text-center">
-                  <p className={cn('text-[11px] font-semibold uppercase tracking-wider', fin.summary.profit >= 0 ? 'text-primary-emphasis/70' : 'text-danger-emphasis/70')}>{t('profit')}</p>
-                  <p className={cn('mt-1 text-xl font-black tabular-nums', fin.summary.profit >= 0 ? 'text-primary-emphasis' : 'text-danger-emphasis')}>{fmtMoney(fin.summary.profit)}</p>
+                  <p className={cn('text-caption font-semibold uppercase tracking-wider', fin.summary.profit >= 0 ? 'text-primary-emphasis/70' : 'text-danger-emphasis/70')}>{t('profit')}</p>
+                  <p className={cn('mt-1 text-xl font-semibold tabular-nums', fin.summary.profit >= 0 ? 'text-primary-emphasis' : 'text-danger-emphasis')}>{fmtMoney(fin.summary.profit)}</p>
                 </CardContent>
               </Card>
             </div>
@@ -341,7 +341,7 @@ export default function ReportsPage() {
                 <div>
                   <p className="text-xs font-medium text-muted-foreground">{t('groups_total')}</p>
                   {summaryQ.isLoading ? <Skeleton className="mt-1 h-7 w-16" /> : (
-                    <p className="mt-0.5 text-3xl font-black text-foreground">{s?.groupsTotal ?? '—'}</p>
+                    <p className="mt-0.5 text-3xl font-semibold text-foreground">{s?.groupsTotal ?? '—'}</p>
                   )}
                 </div>
               </CardContent>
@@ -354,7 +354,7 @@ export default function ReportsPage() {
                 <div>
                   <p className="text-xs font-medium text-muted-foreground">{t('courses_total')}</p>
                   {summaryQ.isLoading ? <Skeleton className="mt-1 h-7 w-16" /> : (
-                    <p className="mt-0.5 text-3xl font-black text-foreground">{s?.coursesTotal ?? '—'}</p>
+                    <p className="mt-0.5 text-3xl font-semibold text-foreground">{s?.coursesTotal ?? '—'}</p>
                   )}
                 </div>
               </CardContent>

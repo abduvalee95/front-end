@@ -106,7 +106,10 @@
     "more": "More",
     "menu": "Menu",
     "logout": "Logout",
-    "print_receipt": "Kvitansiya chop etish"
+    "print_receipt": "Kvitansiya chop etish",
+    "clear": "Clear",
+    "decrease": "Decrease",
+    "increase": "Increase"
   },
   "nav": {
     "dashboard": "Dashboard",
@@ -688,7 +691,10 @@
     "todo_done": "Done",
     "todo_empty": "No tasks yet",
     "todo_empty_hint": "Add a task above",
-    "clear_done": "Clear completed"
+    "clear_done": "Clear completed",
+    "subtitle": "Weekly lesson grid across your groups",
+    "todo_subtitle": "Personal task list for this workspace",
+    "todo_due": "Due date"
   },
   "attendance_page": {
     "title": "Attendance",
@@ -822,7 +828,8 @@
     "update_password": "Update Password",
     "password_updated": "Password updated. Please log in again.",
     "profile_updated": "Profile updated",
-    "invite_user": "Invite user"
+    "invite_user": "Invite user",
+    "toggle_password": "Toggle password visibility"
   },
   "header": {
     "search_placeholder": "Search students, teachers, classes...",

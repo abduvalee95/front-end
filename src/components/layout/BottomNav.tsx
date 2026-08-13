@@ -73,7 +73,7 @@ export function BottomNav() {
   return (
     <>
       <nav
-        className="lg:hidden fixed bottom-0 inset-x-0 z-40 bottom-nav-safe border-t border-border/70 bg-white/95 backdrop-blur-lg shadow-[0_-2px_12px_rgba(15,23,42,0.06)]"
+        className="lg:hidden fixed bottom-0 inset-x-0 z-40 bottom-nav-safe border-t border-border/70 bg-card backdrop-blur-lg shadow-card"
         style={{ height: 'calc(var(--bottom-nav-h) + env(safe-area-inset-bottom, 0px))' }}
         aria-label="Mobile bottom navigation"
       >
@@ -87,7 +87,7 @@ export function BottomNav() {
                 <Link
                   href={item.href}
                   className={cn(
-                    'flex h-full flex-col items-center justify-center gap-1 text-[10px] font-medium transition-colors',
+                    'flex h-full flex-col items-center justify-center gap-1 text-caption font-medium transition-colors',
                     active ? 'text-primary-emphasis' : 'text-muted-foreground active:text-foreground',
                   )}
                   aria-current={active ? 'page' : undefined}
@@ -103,7 +103,7 @@ export function BottomNav() {
               type="button"
               onClick={() => setOpen(true)}
               className={cn(
-                'flex h-full w-full flex-col items-center justify-center gap-1 text-[10px] font-medium transition-colors',
+                'flex h-full w-full flex-col items-center justify-center gap-1 text-caption font-medium transition-colors',
                 open ? 'text-primary-emphasis' : 'text-muted-foreground active:text-foreground',
               )}
               aria-label="More menu"
@@ -125,7 +125,7 @@ export function BottomNav() {
         >
           <div className="absolute inset-0 bg-card/40 backdrop-blur-sm animate-in fade-in duration-150" />
           <div
-            className="absolute bottom-0 inset-x-0 bg-white rounded-t-3xl shadow-2xl animate-in slide-in-from-bottom duration-200"
+            className="absolute bottom-0 inset-x-0 bg-card rounded-t-3xl shadow-2xl animate-in slide-in-from-bottom duration-200"
             style={{ paddingBottom: 'calc(env(safe-area-inset-bottom, 0px) + 16px)' }}
             onClick={(e) => e.stopPropagation()}
           >
@@ -156,7 +156,7 @@ export function BottomNav() {
                       href={item.href}
                       onClick={() => setOpen(false)}
                       className={cn(
-                        'flex flex-col items-center justify-center gap-1.5 rounded-2xl px-2 py-3 text-[11px] font-medium transition-colors',
+                        'flex flex-col items-center justify-center gap-1.5 rounded-2xl px-2 py-3 text-caption font-medium transition-colors',
                         active
                           ? 'bg-primary-muted text-primary-emphasis'
                           : 'text-foreground active:bg-muted',

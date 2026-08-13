@@ -51,15 +51,15 @@ export default function OrganizationsPage() {
     <div className="space-y-6 animate-in fade-in duration-500">
 
       {/* ── Page header ── */}
-      <div className="relative mb-6 overflow-hidden rounded-[24px] border border-white/10 bg-[linear-gradient(160deg,#07111f_0%,#0c2733_60%,#081726_100%)] p-6 text-white shadow-xl sm:p-7">
+      <div className="relative mb-6 overflow-hidden rounded-card border border-border bg-[linear-gradient(160deg,#07111f_0%,#0c2733_60%,#081726_100%)] p-6 text-background shadow-xl sm:p-7">
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_85%_20%,rgba(3,203,231,0.2),transparent_18rem)]" />
         <div className="pointer-events-none absolute inset-0 opacity-[0.05] [background-image:linear-gradient(rgba(255,255,255,0.6)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.6)_1px,transparent_1px)] [background-size:36px_36px]" />
         <div className="relative flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <p className="mb-2 flex items-center gap-2 font-mono text-[10px] font-bold uppercase tracking-[0.28em] text-primary-emphasis/80">
+            <p className="mb-2 flex items-center gap-2 tabular-nums text-caption font-bold uppercase tracking-normal text-primary-emphasis/80">
               <Building2 className="size-3.5" /> {t('console_tag')}
             </p>
-            <h1 className="text-2xl font-black tracking-tight sm:text-3xl">{tNav('organizations')}</h1>
+            <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">{tNav('organizations')}</h1>
             <p className="mt-1 text-sm text-muted-foreground">
               {t('orgs.subtitle')}
             </p>

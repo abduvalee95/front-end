@@ -130,7 +130,7 @@ export default function StudentDetailPage() {
         </Button>
         <div className="flex-1">
           <div className="flex flex-wrap items-center gap-3">
-            <h1 className="text-3xl font-black tracking-tight">{student.name}</h1>
+            <h1 className="text-3xl font-semibold tracking-tight">{student.name}</h1>
             {!paymentsQuery.isLoading && (
               <PaymentStatusBadge
                 status={currentMonthData?.status ?? 'none'}
@@ -316,7 +316,7 @@ export default function StudentDetailPage() {
                               </div>
                             ) : (
                               <button
-                                className="mt-2 flex items-center gap-1 text-[11px] text-muted-foreground/60 hover:text-warning-emphasis transition-colors"
+                                className="mt-2 flex items-center gap-1 text-caption text-muted-foreground/60 hover:text-warning-emphasis transition-colors"
                                 onClick={() => {
                                   setDiscountInput(discount > 0 ? String(discount) : '');
                                   setEditingDiscountId(enrollment.id);
@@ -331,22 +331,22 @@ export default function StudentDetailPage() {
                             <div className="shrink-0 text-right">
                               {discount > 0 ? (
                                 <>
-                                  <p className="text-[11px] text-muted-foreground line-through tabular-nums">
+                                  <p className="text-caption text-muted-foreground line-through tabular-nums">
                                     {formatAmount(baseFee)}
                                   </p>
-                                  <p className="text-sm font-black tabular-nums text-success-emphasis">
+                                  <p className="text-sm font-semibold tabular-nums text-success-emphasis">
                                     {formatAmount(netFee)}
                                   </p>
-                                  <Badge variant="outline" className="mt-1 rounded-full border-warning/70 bg-warning-muted text-[10px] font-bold text-warning-emphasis dark:border-warning/30 dark:bg-warning/10 dark:text-warning-emphasis">
+                                  <Badge variant="outline" className="mt-1 rounded-full border-warning/70 bg-warning-muted text-caption font-bold text-warning-emphasis dark:border-warning/30 dark:bg-warning/10 dark:text-warning-emphasis">
                                     −{formatAmount(discount)}
                                   </Badge>
                                 </>
                               ) : (
-                                <p className="text-sm font-black tabular-nums text-foreground">
+                                <p className="text-sm font-semibold tabular-nums text-foreground">
                                   {formatAmount(baseFee)}
                                 </p>
                               )}
-                              <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/60 mt-1">
+                              <p className="text-caption font-semibold uppercase tracking-wider text-muted-foreground/60 mt-1">
                                 /{t('per_month_short')}
                               </p>
                             </div>
@@ -402,7 +402,7 @@ export default function StudentDetailPage() {
           </div>
           <Button
             size="sm"
-            className="rounded-xl bg-success hover:bg-success text-white h-9"
+            className="rounded-xl bg-success hover:bg-success/90 text-success-foreground h-9"
             onClick={() => setPaymentModalOpen(true)}
           >
             <Plus className="mr-1.5 size-4" />
@@ -442,7 +442,7 @@ export default function StudentDetailPage() {
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Badge variant="outline" className="rounded-full text-[10px] px-2 py-0.5">
+                    <Badge variant="outline" className="rounded-full text-caption px-2 py-0.5">
                       {payment.method}
                     </Badge>
                     <Button
@@ -543,12 +543,12 @@ function MonthlyCalendar({
             status === 'future' && 'border-border/40 bg-muted/20 opacity-50 ring-border',
           )}
         >
-          <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+          <span className="text-caption font-bold uppercase tracking-wider text-muted-foreground">
             {getMonthName(month)}
           </span>
           <MonthCircle status={status} ratio={ratio} />
           {total > 0 && (
-            <span className="text-[9px] font-bold tabular-nums text-muted-foreground leading-none">
+            <span className="text-caption font-bold tabular-nums text-muted-foreground leading-none">
               {new Intl.NumberFormat('ru-RU', { notation: 'compact' }).format(total)} сом
             </span>
           )}
@@ -562,7 +562,7 @@ function MonthCircle({ status, ratio = 0 }: { status: PaymentStatus; ratio?: num
   if (status === 'full') {
     return (
       <div className="flex size-9 items-center justify-center rounded-full bg-success shadow-md ring-4 ring-success/30 dark:ring-success/20">
-        <Check className="size-4 text-white stroke-[3]" />
+        <Check className="size-4 text-background stroke-[3]" />
       </div>
     );
   }
@@ -570,7 +570,7 @@ function MonthCircle({ status, ratio = 0 }: { status: PaymentStatus; ratio?: num
   if (status === 'none') {
     return (
       <div className="flex size-9 items-center justify-center rounded-full bg-danger shadow-md ring-4 ring-danger/30 dark:ring-danger/20">
-        <X className="size-4 text-white stroke-[3]" />
+        <X className="size-4 text-background stroke-[3]" />
       </div>
     );
   }
@@ -591,12 +591,12 @@ function MonthCircle({ status, ratio = 0 }: { status: PaymentStatus; ratio?: num
     <div
       className="size-9 rounded-full shadow-md ring-4 ring-warning/30 dark:ring-warning/20 flex items-center justify-center overflow-hidden"
       style={{
-        background: `conic-gradient(#22c55e 0deg ${paidDeg}deg, #ef4444 ${paidDeg}deg 360deg)`,
+        background: `conic-gradient(hsl(var(--success)) 0deg ${paidDeg}deg, hsl(var(--danger)) ${paidDeg}deg 360deg)`,
       }}
       title={`${percent}%`}
     >
-      <div className="flex size-5 items-center justify-center rounded-full bg-white/95 dark:bg-background/95">
-        <span className="text-[8px] font-black tabular-nums text-foreground/80 leading-none">
+      <div className="flex size-5 items-center justify-center rounded-full bg-card dark:bg-background/95">
+        <span className="text-caption font-semibold tabular-nums text-foreground/80 leading-none">
           {percent}
         </span>
       </div>
@@ -631,11 +631,11 @@ function PaymentStatusBadge({
       {status === 'partial' ? (
         <span
           className="size-4 rounded-full flex-shrink-0"
-          style={{ background: 'conic-gradient(#22c55e 0deg 180deg, #ef4444 180deg 360deg)' }}
+          style={{ background: 'conic-gradient(hsl(var(--success)) 0deg 180deg, hsl(var(--danger)) 180deg 360deg)' }}
         />
       ) : (
         <span className={cn('flex size-4 items-center justify-center rounded-full flex-shrink-0', cfg.dotBg)}>
-          {status === 'full' ? <Check className="size-2.5 text-white stroke-[3]" /> : <X className="size-2.5 text-white stroke-[3]" />}
+          {status === 'full' ? <Check className="size-2.5 text-background stroke-[3]" /> : <X className="size-2.5 text-background stroke-[3]" />}
         </span>
       )}
       {cfg.label}
@@ -679,9 +679,9 @@ function PaymentStatusCircle({
       <MonthCircle status={status} ratio={ratio} />
       <div>
         <p className={cn('text-sm font-bold', textColor)}>{label}</p>
-        <p className="text-[11px] text-muted-foreground capitalize">{monthName}</p>
+        <p className="text-caption text-muted-foreground capitalize">{monthName}</p>
         {expected !== undefined && expected > 0 && status !== 'future' && (
-          <p className="text-[10px] font-semibold tabular-nums text-muted-foreground/80 mt-0.5">
+          <p className="text-caption font-semibold tabular-nums text-muted-foreground/80 mt-0.5">
             {formatAmount(paid ?? 0)} / {formatAmount(expected)}
           </p>
         )}

@@ -146,7 +146,7 @@ export function AddExpenseModal({ open, onClose }: AddExpenseModalProps) {
             type="submit"
             form="add-expense-form"
             disabled={createExpense.isPending}
-            className="rounded-xl bg-danger hover:bg-danger text-white"
+            
           >
             {createExpense.isPending && <Loader2 className="mr-2 size-4 animate-spin" />}
             <Plus className="mr-1.5 size-4" />

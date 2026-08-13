@@ -136,7 +136,7 @@ export function CreateLeadModal({ isOpen, onClose }: CreateLeadModalProps) {
             >
               {tCommon('cancel')}
             </Button>
-            <Button type="submit" disabled={createLead.isPending} className="w-full sm:w-auto rounded-xl edu-gradient-primary text-white">
+            <Button type="submit" disabled={createLead.isPending} className="w-full sm:w-auto">
               {createLead.isPending ? (
                 <>
                   <Loader2 className="mr-2 size-4 animate-spin" />

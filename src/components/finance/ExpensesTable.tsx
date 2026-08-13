@@ -6,7 +6,6 @@ import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { useTranslations } from '@/i18n/index';
-import { cn } from '@/lib/utils';
 import type { Expense } from '@/types/finance';
 import { CATEGORY_TONES, formatAmount, formatDate } from './utils';
 
@@ -27,13 +26,10 @@ export function ExpensesTable({ expenses, isLoading, onAddExpense, onDelete, isD
       <div className="size-12 rounded-2xl bg-danger/10 flex items-center justify-center">
         <ShoppingBag className="size-5 text-danger-emphasis" />
       </div>
-      <p className="text-[13px] font-semibold text-muted-foreground/70">No expenses yet</p>
-      <button
-        onClick={onAddExpense}
-        className="text-[12px] font-bold text-danger-emphasis hover:text-danger-emphasis underline-offset-2 hover:underline"
-      >
+      <p className="text-body-sm font-semibold text-muted-foreground/70">No expenses yet</p>
+      <Button variant="ghost" size="sm" onClick={onAddExpense}>
         Add first expense
-      </button>
+      </Button>
     </div>
   );
 
@@ -58,21 +54,21 @@ export function ExpensesTable({ expenses, isLoading, onAddExpense, onDelete, isD
             <div key={e.id} className="flex items-center gap-3 px-4 py-3 hover:bg-danger/[0.03] transition-colors group">
               {/* Primary: description + category */}
               <div className="flex-1 min-w-0 space-y-1">
-                <p className="text-[13px] font-semibold text-foreground truncate">
+                <p className="text-body-sm font-semibold text-foreground truncate">
                   {e.description ?? e.category}
                 </p>
                 <div className="flex items-center gap-2">
                   <Badge variant={CATEGORY_TONES[e.category] ?? CATEGORY_TONES.OTHER}>
                     {e.category}
                   </Badge>
-                  <span className="text-[11px] text-muted-foreground/55 tabular-nums">
+                  <span className="text-caption text-muted-foreground/55 tabular-nums">
                     {formatDate(e.paid_at)}
                   </span>
                 </div>
               </div>
               {/* Primary: amount + delete */}
               <div className="flex items-center gap-2 shrink-0">
-                <span className="text-[14px] font-black text-danger-emphasis tabular-nums">
+                <span className="text-body font-semibold text-danger-emphasis tabular-nums">
                   -{formatAmount(e.amount)}
                 </span>
                 <Button
@@ -95,16 +91,16 @@ export function ExpensesTable({ expenses, isLoading, onAddExpense, onDelete, isD
         <Table>
           <TableHeader>
             <TableRow className="bg-muted/30 hover:bg-muted/30 border-b border-border/40">
-              <TableHead className="text-[10.5px] font-bold uppercase tracking-[0.14em] text-muted-foreground/50 py-3 pl-4">
+              <TableHead className="text-caption font-bold uppercase tracking-normal text-muted-foreground/50 py-3 pl-4">
                 {tCommon('description')}
               </TableHead>
-              <TableHead className="text-[10.5px] font-bold uppercase tracking-[0.14em] text-muted-foreground/50 text-right pr-4">
+              <TableHead className="text-caption font-bold uppercase tracking-normal text-muted-foreground/50 text-right pr-4">
                 {t('amount')}
               </TableHead>
-              <TableHead className="text-[10.5px] font-bold uppercase tracking-[0.14em] text-muted-foreground/50">
+              <TableHead className="text-caption font-bold uppercase tracking-normal text-muted-foreground/50">
                 {tCommon('date')}
               </TableHead>
-              <TableHead className="text-[10.5px] font-bold uppercase tracking-[0.14em] text-muted-foreground/50">
+              <TableHead className="text-caption font-bold uppercase tracking-normal text-muted-foreground/50">
                 {t('category')}
               </TableHead>
               <TableHead className="w-10" />
@@ -130,16 +126,16 @@ export function ExpensesTable({ expenses, isLoading, onAddExpense, onDelete, isD
             ) : (
               expenses.map((e) => (
                 <TableRow key={e.id} className="group border-b border-border/30 hover:bg-danger/[0.03] transition-colors">
-                  <TableCell className="py-3 pl-4 max-w-[220px] truncate text-[11.5px] text-muted-foreground/65">
+                  <TableCell className="py-3 pl-4 max-w-[220px] truncate text-caption text-muted-foreground/65">
                     {e.description ?? '—'}
                   </TableCell>
                   <TableCell className="text-right pr-4">
-                    <span className="text-[13px] font-black text-danger-emphasis tabular-nums">
+                    <span className="text-body-sm font-semibold text-danger-emphasis tabular-nums">
                       -{formatAmount(e.amount)}
                     </span>
                   </TableCell>
                   <TableCell>
-                    <span className="text-[11.5px] tabular-nums font-medium text-muted-foreground/60">
+                    <span className="text-caption tabular-nums font-medium text-muted-foreground/60">
                       {formatDate(e.paid_at)}
                     </span>
                   </TableCell>

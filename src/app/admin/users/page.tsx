@@ -13,15 +13,15 @@ export default function AdminUsersPage() {
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
       {/* Header Section */}
-      <div className="relative overflow-hidden rounded-[24px] border border-white/10 bg-[linear-gradient(160deg,#07111f_0%,#0c2733_60%,#081726_100%)] p-7 text-white shadow-2xl sm:p-8">
+      <div className="relative overflow-hidden rounded-card border border-border bg-[linear-gradient(160deg,#07111f_0%,#0c2733_60%,#081726_100%)] p-7 text-background shadow-2xl sm:p-8">
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_85%_15%,rgba(3,203,231,0.2),transparent_22rem)]" />
         <div className="pointer-events-none absolute inset-0 opacity-[0.05] [background-image:linear-gradient(rgba(255,255,255,0.6)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.6)_1px,transparent_1px)] [background-size:36px_36px]" />
         <div className="relative z-10 flex flex-col justify-between gap-6 md:flex-row md:items-center">
           <div className="space-y-2">
-            <p className="flex items-center gap-2 font-mono text-[10px] font-bold uppercase tracking-[0.28em] text-primary-emphasis/80">
+            <p className="flex items-center gap-2 tabular-nums text-caption font-bold uppercase tracking-normal text-primary-emphasis/80">
               <ShieldCheck className="size-3.5" /> {t('console_tag')}
             </p>
-            <h1 className="text-3xl font-black tracking-tight md:text-4xl">
+            <h1 className="text-3xl font-semibold tracking-tight md:text-4xl">
               {t('users.title')}
             </h1>
             <p className="max-w-xl font-medium text-muted-foreground">
@@ -29,13 +29,13 @@ export default function AdminUsersPage() {
             </p>
           </div>
           <div className="flex items-center gap-3">
-            <div className="flex items-center gap-4 rounded-2xl border border-white/10 bg-white/5 px-6 py-4 backdrop-blur-md">
+            <div className="flex items-center gap-4 rounded-2xl border border-border bg-card px-6 py-4 backdrop-blur-md">
               <div className="flex size-12 items-center justify-center rounded-xl border border-primary/20 bg-primary/15">
                 <Users className="size-6 text-primary-emphasis" />
               </div>
               <div>
-                <p className="font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-primary-emphasis/60">{t('users.total_platform')}</p>
-                <p className="text-2xl font-black tabular-nums text-white">{totalUsers ?? '—'}</p>
+                <p className="tabular-nums text-caption font-bold uppercase tracking-normal text-primary-emphasis/60">{t('users.total_platform')}</p>
+                <p className="text-2xl font-semibold tabular-nums text-background">{totalUsers ?? '—'}</p>
               </div>
             </div>
           </div>
@@ -44,10 +44,10 @@ export default function AdminUsersPage() {
 
       {/* Main Content */}
       <div className="grid grid-cols-1 gap-8">
-        <div className="rounded-[24px] border border-border/70 bg-card/80 p-6 shadow-sm backdrop-blur-md transition-shadow hover:shadow-xl sm:p-8">
+        <div className="rounded-card border border-border/70 bg-card/80 p-6 shadow-sm backdrop-blur-md transition-shadow hover:shadow-xl sm:p-8">
           <div className="mb-8 flex items-center justify-between">
             <div>
-              <h3 className="text-xl font-black text-foreground">{t('users.directory')}</h3>
+              <h3 className="text-xl font-semibold text-foreground">{t('users.directory')}</h3>
               <p className="text-sm font-medium text-muted-foreground">{t('users.directory_sub')}</p>
             </div>
             <div className="rounded-2xl bg-muted p-3">

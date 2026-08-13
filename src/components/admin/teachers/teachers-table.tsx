@@ -86,7 +86,7 @@ export function TeachersTable({
               <TableCell colSpan={5} className="py-24 text-center">
                 <div className="flex flex-col items-center justify-center gap-3">
                   <div className="h-16 w-16 rounded-2xl edu-gradient-primary flex items-center justify-center">
-                    <GraduationCap className="h-8 w-8 text-white" />
+                    <GraduationCap className="h-8 w-8 text-background" />
                   </div>
                   <div className="text-center">
                     <h3 className="text-lg font-semibold">No teachers found</h3>
@@ -119,7 +119,7 @@ export function TeachersTable({
                 </TableCell>
 
                 <TableCell>
-                  <span className="text-sm text-muted-foreground font-mono">
+                  <span className="text-sm text-muted-foreground tabular-nums">
                     {teacher.organization_id ? `${teacher.organization_id.substring(0,8)}...` : '—'}
                   </span>
                 </TableCell>

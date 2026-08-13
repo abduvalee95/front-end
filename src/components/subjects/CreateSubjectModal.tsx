@@ -61,7 +61,7 @@ export function CreateSubjectModal({ open: externalOpen, onClose }: CreateSubjec
       {!isControlled && (
         <DialogTrigger
           render={
-            <Button className="gap-2 bg-primary hover:bg-primary text-white shadow-lg shadow-primary/20 rounded-xl h-10 px-5">
+            <Button className="gap-2 bg-primary hover:bg-primary-emphasis text-primary-foreground shadow-lg shadow-primary/20 rounded-xl h-10 px-5">
               <Plus className="size-4" />
               {t('add_subject')}
             </Button>

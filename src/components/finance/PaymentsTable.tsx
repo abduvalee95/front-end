@@ -15,7 +15,6 @@ import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { useTranslations } from '@/i18n/index';
-import { cn } from '@/lib/utils';
 import type { Payment, PaymentMethod } from '@/types/finance';
 import { formatAmount, formatDate, getInitials, METHOD_TONES } from './utils';
 import { ReceiptDialog } from './ReceiptDialog';
@@ -57,19 +56,19 @@ export function PaymentsTable({ payments, isLoading, onAddPayment, onDelete, isD
       <Table>
         <TableHeader>
           <TableRow className="bg-muted/30 hover:bg-muted/30 border-b border-border/40">
-            <TableHead className="text-[10.5px] font-bold uppercase tracking-[0.14em] text-muted-foreground/50 py-3 pl-4 w-[120px]">
+            <TableHead className="text-caption font-bold uppercase tracking-normal text-muted-foreground/50 py-3 pl-4 w-[120px]">
               {tCommon('date')}
             </TableHead>
-            <TableHead className="text-[10.5px] font-bold uppercase tracking-[0.14em] text-muted-foreground/50">
+            <TableHead className="text-caption font-bold uppercase tracking-normal text-muted-foreground/50">
               {tCommon('student')}
             </TableHead>
-            <TableHead className="text-[10.5px] font-bold uppercase tracking-[0.14em] text-muted-foreground/50 text-right pr-4">
+            <TableHead className="text-caption font-bold uppercase tracking-normal text-muted-foreground/50 text-right pr-4">
               {t('amount')}
             </TableHead>
-            <TableHead className="text-[10.5px] font-bold uppercase tracking-[0.14em] text-muted-foreground/50 hidden sm:table-cell">
+            <TableHead className="text-caption font-bold uppercase tracking-normal text-muted-foreground/50 hidden sm:table-cell">
               {t('payment_type')}
             </TableHead>
-            <TableHead className="text-[10.5px] font-bold uppercase tracking-[0.14em] text-muted-foreground/50 hidden md:table-cell">
+            <TableHead className="text-caption font-bold uppercase tracking-normal text-muted-foreground/50 hidden md:table-cell">
               {tCommon('note')}
             </TableHead>
             <TableHead className="w-10" />
@@ -94,13 +93,10 @@ export function PaymentsTable({ payments, isLoading, onAddPayment, onDelete, isD
                   <div className="size-12 rounded-2xl bg-success/10 flex items-center justify-center">
                     <ReceiptText className="size-5 text-success-emphasis" />
                   </div>
-                  <p className="text-[13px] font-semibold text-muted-foreground/70">No payments yet</p>
-                  <button
-                    onClick={onAddPayment}
-                    className="text-[12px] font-bold text-success-emphasis hover:text-success-emphasis underline-offset-2 hover:underline"
-                  >
+                  <p className="text-body-sm font-semibold text-muted-foreground/70">No payments yet</p>
+                  <Button variant="ghost" size="sm" onClick={onAddPayment}>
                     Record first payment
-                  </button>
+                  </Button>
                 </div>
               </TableCell>
             </TableRow>
@@ -108,16 +104,16 @@ export function PaymentsTable({ payments, isLoading, onAddPayment, onDelete, isD
             payments.map((p) => (
               <TableRow key={p.id} className="group border-b border-border/30 hover:bg-success/[0.03] transition-colors">
                 <TableCell className="py-3 pl-4">
-                  <span className="text-[11.5px] tabular-nums font-medium text-muted-foreground/60">
+                  <span className="text-caption tabular-nums font-medium text-muted-foreground/60">
                     {formatDate(p.paid_at)}
                   </span>
                 </TableCell>
                 <TableCell>
                   <div className="flex items-center gap-2.5">
-                    <div className="size-7 shrink-0 rounded-lg bg-success/12 text-[9.5px] font-black text-success-emphasis flex items-center justify-center">
+                    <div className="size-7 shrink-0 rounded-lg bg-success/12 text-caption font-semibold text-success-emphasis flex items-center justify-center">
                       {p.student_name ? getInitials(p.student_name) : '?'}
                     </div>
-                    <span className="text-[13px] font-semibold">{p.student_name ?? '—'}</span>
+                    <span className="text-body-sm font-semibold">{p.student_name ?? '—'}</span>
                   </div>
                 </TableCell>
                 <TableCell className="text-right pr-4">
@@ -131,7 +127,7 @@ export function PaymentsTable({ payments, isLoading, onAddPayment, onDelete, isD
                     {methodLabel(p.method)}
                   </Badge>
                 </TableCell>
-                <TableCell className="text-[11.5px] text-muted-foreground/55 max-w-[160px] truncate hidden md:table-cell">
+                <TableCell className="text-caption text-muted-foreground/55 max-w-[160px] truncate hidden md:table-cell">
                   {p.description || '—'}
                 </TableCell>
                 <TableCell>

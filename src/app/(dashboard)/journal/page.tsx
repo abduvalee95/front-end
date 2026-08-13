@@ -28,6 +28,7 @@ import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { PageHeader } from '@/components/ui/page-header';
+import { TONE_FILL, TONE_INK, TONE_SURFACE, type Tone } from '@/components/ui/tone';
 import { format, addDays, subDays } from 'date-fns';
 import { cn } from '@/lib/utils';
 import { useGroups } from '@/hooks/useGroups';
@@ -246,7 +247,7 @@ export default function JournalPage() {
                 <div className="text-right">
                   <p className="text-base font-bold leading-tight">{selectedGroup.name}</p>
                   {enrollments.length > 0 && (
-                    <p className="text-[11px] text-muted-foreground mt-0.5">
+                    <p className="text-caption text-muted-foreground mt-0.5">
                       {enrollments.length} {t('n_students')}
                     </p>
                   )}
@@ -272,7 +273,7 @@ export default function JournalPage() {
 
         {/* (2) Stats trio — narrow */}
         <Card className="col-span-12 lg:col-span-4 p-5 rounded-2xl border-border/60 shadow-sm">
-          <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground mb-3">
+          <p className="text-caption font-bold uppercase tracking-normal text-muted-foreground mb-3">
             {t('today')}
           </p>
           <div className="grid grid-cols-3 gap-2">
@@ -281,21 +282,21 @@ export default function JournalPage() {
               label={t('present')}
               value={stats.present}
               pct={presentPct}
-              tone="emerald"
+              tone="success"
             />
             <StatTile
               icon={<Clock className="size-4" aria-hidden="true" />}
               label={t('late')}
               value={stats.late}
               pct={latePct}
-              tone="amber"
+              tone="warning"
             />
             <StatTile
               icon={<XCircle className="size-4" aria-hidden="true" />}
               label={t('absent')}
               value={stats.absent}
               pct={absentPct}
-              tone="rose"
+              tone="danger"
             />
           </div>
         </Card>
@@ -304,7 +305,7 @@ export default function JournalPage() {
         <Card className="col-span-12 lg:col-span-3 lg:row-span-2 p-4 rounded-2xl border-border/60 shadow-sm">
           <div className="flex items-center gap-2 mb-3 px-1">
             <Users className="size-4 text-muted-foreground" aria-hidden="true" />
-            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground">
+            <p className="text-caption font-bold uppercase tracking-normal text-muted-foreground">
               {isTeacher ? tCommon('your_groups') : t('all_groups')}
             </p>
           </div>
@@ -343,7 +344,7 @@ export default function JournalPage() {
                       <span className="truncate text-sm font-semibold">{group.name}</span>
                     </div>
                     {group.teacher && !active && !isTeacher && (
-                      <p className="text-[10px] text-muted-foreground mt-0.5 ml-[22px] truncate">
+                      <p className="text-caption text-muted-foreground mt-0.5 ml-[22px] truncate">
                         {group.teacher.full_name}
                       </p>
                     )}
@@ -381,19 +382,19 @@ export default function JournalPage() {
                 className="px-5 sm:px-6 py-3 bg-muted/30 border-b border-border/60 flex items-center justify-between gap-3"
               >
                 <div
-                  className="hidden sm:grid flex-1 text-[10px] tracking-[0.18em] uppercase font-bold text-muted-foreground"
+                  className="hidden sm:grid flex-1 text-caption tracking-normal uppercase font-bold text-muted-foreground"
                   style={{ gridTemplateColumns: '1fr 220px 120px' }}
                 >
                   <span>{tCommon('student')}</span>
                   <span className="text-center">{t('attendance')}</span>
                   <span className="text-center">{t('score')}</span>
                 </div>
-                <span className="sm:hidden text-[10px] tracking-[0.18em] uppercase font-bold text-muted-foreground">{tCommon('student')}</span>
+                <span className="sm:hidden text-caption tracking-normal uppercase font-bold text-muted-foreground">{tCommon('student')}</span>
                 <Button
                   variant="outline"
                   size="sm"
                   onClick={markAllPresent}
-                  className="shrink-0 h-8 rounded-xl gap-1.5 text-[11px] font-bold text-success-emphasis border-success/30 hover:bg-success-muted dark:text-success-emphasis dark:border-success/30 dark:hover:bg-success-muted cursor-pointer"
+                  className="shrink-0 h-8 rounded-xl gap-1.5 text-caption font-bold text-success-emphasis border-success/30 hover:bg-success-muted dark:text-success-emphasis dark:border-success/30 dark:hover:bg-success-muted cursor-pointer"
                   aria-label={t('mark_all_present')}
                 >
                   <CheckCheck className="size-3.5" aria-hidden="true" />
@@ -416,7 +417,7 @@ export default function JournalPage() {
                       <div className="flex items-center gap-3 min-w-0">
                         <span
                           aria-hidden="true"
-                          className="shrink-0 inline-flex size-8 items-center justify-center rounded-lg bg-muted text-[11px] font-bold font-mono text-muted-foreground"
+                          className="shrink-0 inline-flex size-8 items-center justify-center rounded-lg bg-muted text-caption font-bold tabular-nums text-muted-foreground"
                         >
                           {String(idx + 1).padStart(2, '0')}
                         </span>
@@ -431,7 +432,7 @@ export default function JournalPage() {
                       >
                         <SegBtn
                           active={entry?.status === 'PRESENT'}
-                          tone="emerald"
+                          tone="success"
                           label={t('present')}
                           onClick={() => updateStatus(studentId, 'PRESENT')}
                         >
@@ -439,7 +440,7 @@ export default function JournalPage() {
                         </SegBtn>
                         <SegBtn
                           active={entry?.status === 'LATE'}
-                          tone="amber"
+                          tone="warning"
                           label={t('late')}
                           onClick={() => updateStatus(studentId, 'LATE')}
                         >
@@ -447,7 +448,7 @@ export default function JournalPage() {
                         </SegBtn>
                         <SegBtn
                           active={entry?.status === 'ABSENT'}
-                          tone="rose"
+                          tone="danger"
                           label={t('absent')}
                           onClick={() => updateStatus(studentId, 'ABSENT')}
                         >
@@ -457,7 +458,7 @@ export default function JournalPage() {
 
                       {/* Score */}
                       <div className="flex items-center justify-between sm:justify-center gap-1.5">
-                        <span className="text-[10px] sm:hidden text-muted-foreground font-semibold uppercase">
+                        <span className="text-caption sm:hidden text-muted-foreground font-semibold uppercase">
                           {t('score')}
                         </span>
                         <ScoreStepper
@@ -478,10 +479,10 @@ export default function JournalPage() {
         {selectedGroupId && enrollments.length > 0 && (
           <Card className="col-span-12 p-4 rounded-2xl border-border/60 shadow-sm">
             <div className="flex items-center justify-between flex-wrap gap-2">
-              <p className="text-xs text-muted-foreground font-mono">
+              <p className="text-xs text-muted-foreground tabular-nums">
                 {enrollments.length} {t('n_students')} · {format(currentDate, 'dd.MM.yyyy')}
               </p>
-              <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+              <p className="text-caption font-semibold uppercase tracking-wider text-muted-foreground">
                 {presentPct}% {t('present')} · {latePct}% {t('late')} · {absentPct}% {t('absent')}
               </p>
             </div>
@@ -500,6 +501,7 @@ interface ScoreStepperProps {
   name: string;
 }
 function ScoreStepper({ value, onChange, name }: ScoreStepperProps) {
+  const tCommon = useTranslations('common');
   const num = value !== '' ? parseInt(value, 10) : null;
   const hasValue = num !== null && !isNaN(num);
 
@@ -515,19 +517,20 @@ function ScoreStepper({ value, onChange, name }: ScoreStepperProps) {
   return (
     <div
       className={cn(
-        'flex items-center rounded-lg border overflow-hidden transition-colors',
+        'flex items-center overflow-hidden rounded-control border transition-colors',
         hasValue ? 'border-primary' : 'border-border',
       )}
     >
-      <button
+      <Button
         type="button"
+        variant="ghost"
         onClick={decrement}
-        aria-label="Kamaytirish"
+        aria-label={tCommon('decrease')}
         disabled={!hasValue}
-        className="h-10 w-8 flex items-center justify-center text-muted-foreground hover:bg-muted disabled:opacity-30 transition-colors cursor-pointer"
+        className="h-10 w-8 rounded-none px-0"
       >
-        <Minus className="size-3" aria-hidden="true" />
-      </button>
+        <Minus className="size-3.5" aria-hidden="true" />
+      </Button>
       <input
         type="number"
         value={value}
@@ -542,20 +545,21 @@ function ScoreStepper({ value, onChange, name }: ScoreStepperProps) {
         aria-label={name}
         placeholder="—"
         className={cn(
-          'h-10 w-12 text-center text-sm font-bold bg-transparent border-0 outline-none',
+          'h-10 w-12 border-0 bg-transparent text-center text-h4 tabular-nums outline-none',
           '[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none',
           hasValue ? 'text-primary' : 'text-muted-foreground',
         )}
       />
-      <button
+      <Button
         type="button"
+        variant="ghost"
         onClick={increment}
-        aria-label="Ko'paytirish"
+        aria-label={tCommon('increase')}
         disabled={hasValue && num >= 100}
-        className="h-10 w-8 flex items-center justify-center text-muted-foreground hover:bg-muted disabled:opacity-30 transition-colors cursor-pointer"
+        className="h-10 w-8 rounded-none px-0"
       >
-        <Plus className="size-3" aria-hidden="true" />
-      </button>
+        <Plus className="size-3.5" aria-hidden="true" />
+      </Button>
     </div>
   );
 }
@@ -565,31 +569,24 @@ interface StatTileProps {
   label: string;
   value: number;
   pct: number;
-  tone: 'emerald' | 'amber' | 'rose';
+  tone: Tone;
 }
 function StatTile({ icon, label, value, pct, tone }: StatTileProps) {
-  const toneMap = {
-    emerald: 'bg-success-muted text-success-emphasis dark:bg-success/10 dark:text-success-emphasis',
-    amber: 'bg-warning-muted text-warning-emphasis dark:bg-warning/10 dark:text-warning-emphasis',
-    rose: 'bg-danger-muted text-danger-emphasis dark:bg-danger/10 dark:text-danger-emphasis',
-  } as const;
-  const barMap = {
-    emerald: 'bg-success',
-    amber: 'bg-warning',
-    rose: 'bg-danger',
-  } as const;
   return (
-    <div className={cn('rounded-xl px-3 py-3 flex flex-col gap-1.5', toneMap[tone])}>
+    <div className={cn('flex flex-col gap-1.5 rounded-card px-3 py-3', TONE_SURFACE[tone])}>
       <div className="flex items-center gap-1.5">
         {icon}
-        <span className="text-[10px] font-bold uppercase tracking-wider truncate">{label}</span>
+        <span className="truncate text-caption">{label}</span>
       </div>
       <div className="flex items-baseline gap-1">
-        <span className="text-2xl font-extrabold tabular-nums leading-none">{value}</span>
-        <span className="text-[10px] font-semibold opacity-70">{pct}%</span>
+        <span className="text-h1 tabular-nums">{value}</span>
+        <span className="text-caption opacity-70">{pct}%</span>
       </div>
-      <div className="h-1 rounded-full bg-black/10 dark:bg-white/10 overflow-hidden">
-        <div className={cn('h-full transition-all duration-300', barMap[tone])} style={{ width: `${pct}%` }} />
+      <div className="h-1 overflow-hidden rounded-control bg-foreground/10">
+        <div
+          className={cn('h-full transition-[width] duration-300', TONE_FILL[tone])}
+          style={{ width: `${pct}%` }}
+        />
       </div>
     </div>
   );
@@ -597,28 +594,24 @@ function StatTile({ icon, label, value, pct, tone }: StatTileProps) {
 
 interface SegBtnProps {
   active: boolean;
-  tone: 'emerald' | 'amber' | 'rose';
+  tone: Tone;
   label: string;
   onClick: () => void;
   children: React.ReactNode;
 }
+
+/**
+ * Attendance status toggle. Circular by design — it is a one-tap target in a
+ * long roster — but the colour comes from a tone, never a bespoke palette.
+ */
 function SegBtn({ active, tone, label, onClick, children }: SegBtnProps) {
-  const activeMap = {
-    emerald:
-      'bg-success text-white shadow-[0_6px_20px_-4px_rgba(16,185,129,0.55)] ring-4 ring-success/15 dark:ring-success/20',
-    amber:
-      'bg-warning text-white shadow-[0_6px_20px_-4px_rgba(245,158,11,0.55)] ring-4 ring-warning/15 dark:ring-warning/20',
-    rose:
-      'bg-danger text-white shadow-[0_6px_20px_-4px_rgba(244,63,94,0.55)] ring-4 ring-danger/15 dark:ring-danger/20',
-  } as const;
-  const idleMap = {
-    emerald:
-      'border-success/70 text-success-emphasis hover:bg-success-muted hover:border-success/30 dark:border-success/20 dark:text-success-emphasis dark:hover:bg-success/10',
-    amber:
-      'border-warning/70 text-warning-emphasis hover:bg-warning-muted hover:border-warning/30 dark:border-warning/20 dark:text-warning-emphasis dark:hover:bg-warning/10',
-    rose:
-      'border-danger/70 text-danger-emphasis hover:bg-danger-muted hover:border-danger/30 dark:border-danger/20 dark:text-danger-emphasis dark:hover:bg-danger/10',
-  } as const;
+  const activeMap: Record<Tone, string> = {
+    success: 'bg-success text-success-foreground',
+    warning: 'bg-warning text-warning-foreground',
+    danger: 'bg-danger text-danger-foreground',
+    primary: 'bg-primary text-primary-foreground',
+    neutral: 'bg-muted-foreground text-background',
+  };
   return (
     <button
       type="button"
@@ -627,21 +620,21 @@ function SegBtn({ active, tone, label, onClick, children }: SegBtnProps) {
       aria-pressed={active}
       title={label}
       className={cn(
-        'group/seg relative inline-flex size-11 items-center justify-center rounded-full border-2 cursor-pointer',
+        'relative inline-flex size-11 cursor-pointer items-center justify-center rounded-full border-2',
         'transition-[transform,background-color,border-color,box-shadow] duration-200 ease-out',
         'motion-safe:active:scale-95',
-        'focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-ring/40',
-        '[&>svg]:size-5 [&>svg]:transition-transform [&>svg]:duration-200',
+        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/60',
+        '[&>svg]:size-5',
         active
-          ? cn('border-transparent motion-safe:scale-110', activeMap[tone])
-          : cn('bg-background motion-safe:hover:scale-105', idleMap[tone]),
+          ? cn('border-transparent shadow-card motion-safe:scale-110', activeMap[tone])
+          : cn('border-border bg-card motion-safe:hover:scale-105', TONE_INK[tone], 'hover:bg-muted'),
       )}
     >
       {children}
       {active && (
         <span
           aria-hidden="true"
-          className="pointer-events-none absolute -bottom-1 left-1/2 -translate-x-1/2 size-1.5 rounded-full bg-current opacity-90"
+          className="pointer-events-none absolute -bottom-1 left-1/2 size-1.5 -translate-x-1/2 rounded-full bg-current opacity-90"
         />
       )}
     </button>
@@ -656,7 +649,7 @@ interface EmptyBlockProps {
 function EmptyBlock({ icon, title, hint }: EmptyBlockProps) {
   return (
     <div className="flex flex-col items-center justify-center gap-3 py-16 px-4 text-center">
-      <div className="inline-flex size-14 items-center justify-center rounded-2xl bg-muted text-muted-foreground border border-border/60">
+      <div className="inline-flex size-14 items-center justify-center rounded-card border border-border bg-muted text-muted-foreground">
         {icon}
       </div>
       <div>

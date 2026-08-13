@@ -59,7 +59,7 @@ export function OrganizationTab({
         <CardContent className="px-6 pb-6 -mt-12">
           <div className="flex items-end gap-4">
             <div className="relative group">
-              <div className="size-24 rounded-2xl bg-white dark:bg-card border-4 border-white dark:border-border shadow-lg flex items-center justify-center overflow-hidden">
+              <div className="size-24 rounded-2xl bg-card border-4 border-white dark:border-border shadow-lg flex items-center justify-center overflow-hidden">
                 {formData.logo_url ? (
                   <img
                     src={formData.logo_url}
@@ -73,12 +73,12 @@ export function OrganizationTab({
               <button
                 onClick={() => logoInputRef.current?.click()}
                 disabled={uploadLogo.isPending}
-                className="absolute inset-0 rounded-2xl bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                className="absolute inset-0 flex items-center justify-center rounded-card bg-overlay/60 opacity-0 transition-opacity group-hover:opacity-100"
               >
                 {uploadLogo.isPending ? (
-                  <Loader2 className="size-6 text-white animate-spin" />
+                  <Loader2 className="size-6 animate-spin text-background" />
                 ) : (
-                  <Upload className="size-6 text-white" />
+                  <Upload className="size-6 text-background" />
                 )}
               </button>
               <input
@@ -90,7 +90,7 @@ export function OrganizationTab({
               />
             </div>
             <div className="pb-2">
-              <h3 className="text-xl font-bold text-foreground dark:text-white">{formData.name || 'Organization'}</h3>
+              <h3 className="text-h2 text-foreground">{formData.name || 'Organization'}</h3>
               <Badge variant={formData.status === 'ACTIVE' ? 'default' : 'secondary'} className="mt-1">
                 {formData.status}
               </Badge>
@@ -136,7 +136,7 @@ export function OrganizationTab({
             <div className="space-y-2">
               <Label className="text-sm font-medium">{t('organization_id')}</Label>
               <div className="flex gap-2">
-                <div className="flex-1 h-11 flex items-center px-3 rounded-md border bg-muted dark:bg-card text-sm font-mono text-foreground">
+                <div className="flex-1 h-11 flex items-center px-3 rounded-md border bg-muted dark:bg-card text-sm tabular-nums text-foreground">
                   {settings?.id}
                 </div>
                 <Button 

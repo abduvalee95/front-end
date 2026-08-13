@@ -119,7 +119,7 @@ export function LeadsKanban({ leads, isLoading, onAIAction }: LeadsKanbanProps) 
                   {col.label}
                 </h3>
               </div>
-              <Badge variant="secondary" className="font-mono">
+              <Badge variant="secondary" className="tabular-nums">
                 {columnLeads.length}
               </Badge>
             </div>
@@ -195,7 +195,7 @@ export function LeadsKanban({ leads, isLoading, onAIAction }: LeadsKanbanProps) 
                   </div>
 
                   <div className="mt-4 pt-3 border-t border-border flex items-center justify-between">
-                    <Badge variant="outline" className="text-[10px] font-normal py-0">
+                    <Badge variant="outline" className="text-caption font-normal py-0">
                       {lead.source.replace(/_/g, ' ')}
                     </Badge>
                     

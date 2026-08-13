@@ -213,7 +213,7 @@ export function UsersTable() {
                       </Avatar>
                       <div className="min-w-0">
                         <p className="font-medium text-sm truncate">{user.full_name}</p>
-                        <p className="text-[10px] text-muted-foreground truncate">{user.email}</p>
+                        <p className="text-caption text-muted-foreground truncate">{user.email}</p>
                       </div>
                     </div>
                   </TableCell>

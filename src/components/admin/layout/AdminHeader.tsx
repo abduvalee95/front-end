@@ -66,7 +66,7 @@ export function AdminHeader({ onMobileMenuToggle }: AdminHeaderProps) {
 
         {/* Console breadcrumb */}
         <div className="flex min-w-0 items-center gap-2.5">
-          <span className="hidden items-center gap-1.5 font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-muted-foreground/70 md:flex">
+          <span className="hidden items-center gap-1.5 tabular-nums text-caption font-bold uppercase tracking-normal text-muted-foreground/70 md:flex">
             {tNav('admin')}
             <ChevronRight className="size-3 text-muted-foreground/40" />
           </span>
@@ -75,7 +75,7 @@ export function AdminHeader({ onMobileMenuToggle }: AdminHeaderProps) {
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary/60" />
               <span className="relative inline-flex size-2 rounded-full bg-primary" />
             </span>
-            <h2 className="truncate text-base font-extrabold tracking-tight text-foreground sm:text-lg">
+            <h2 className="truncate text-base font-semibold tracking-tight text-foreground sm:text-lg">
               {currentLabel}
             </h2>
           </div>
@@ -98,7 +98,7 @@ export function AdminHeader({ onMobileMenuToggle }: AdminHeaderProps) {
         <div className="flex items-center gap-3 pl-1">
           <div className="hidden text-right sm:block">
             <p className="text-xs font-bold leading-none text-foreground">{user?.full_name ?? 'Super Admin'}</p>
-            <p className="mt-1 font-mono text-[10px] uppercase tracking-[0.16em] text-primary/80">
+            <p className="mt-1 tabular-nums text-caption uppercase tracking-normal text-primary/80">
               {user?.role ?? 'PLATFORM'}
             </p>
           </div>

@@ -82,9 +82,7 @@ export function IntegrationsTab({
         <CardHeader className={`border-b transition-colors ${formData.telegram_enabled ? 'bg-primary-muted/50 dark:bg-primary-muted/20' : 'bg-muted/50 dark:bg-card/50'}`}>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <div className={`size-12 rounded-xl flex items-center justify-center transition-colors ${
-                formData.telegram_enabled ? 'bg-primary text-white' : 'bg-muted dark:bg-card text-muted-foreground'
-              }`}>
+              <div className={`size-12 rounded-xl flex items-center justify-center transition-colors ${ formData.telegram_enabled ? 'bg-primary text-primary-foreground' : 'bg-muted dark:bg-card text-muted-foreground' }`}>
                 <Send className="size-6" />
               </div>
               <div>
@@ -107,7 +105,7 @@ export function IntegrationsTab({
                 value={formData.telegram_bot_token || ''} 
                 onChange={(e) => handleOrgInputChange('telegram_bot_token', e.target.value)}
                 placeholder="123456789:ABCdefGHIjklMNOpqrSTUvwxyz"
-                className="h-11 font-mono text-sm"
+                className="h-11 tabular-nums text-sm"
               />
               <p className="text-xs text-muted-foreground">{t('bot_token_help')}</p>
             </div>
@@ -117,18 +115,14 @@ export function IntegrationsTab({
                 value={formData.telegram_chat_id || ''} 
                 onChange={(e) => handleOrgInputChange('telegram_chat_id', e.target.value)}
                 placeholder="-1001234567890"
-                className="h-11 font-mono text-sm"
+                className="h-11 tabular-nums text-sm"
               />
               <p className="text-xs text-muted-foreground">{t('chat_id_help')}</p>
             </div>
           </div>
           
           {formData.telegram_enabled && formData.telegram_bot_token && formData.telegram_chat_id && (
-            <Alert className={`${
-              telegramStatus === 'success' ? 'border-success/50 bg-success-muted/20' :
-              telegramStatus === 'error' ? 'border-danger/50 bg-danger-muted/20' :
-              'border-primary/50 bg-primary-muted/20'
-            }`}>
+            <Alert className={`${ telegramStatus === 'success' ? 'border-success/50 bg-success-muted/20' : telegramStatus === 'error' ? 'border-danger/50 bg-danger-muted/20' : 'border-primary/50 bg-primary-muted/20' }`}>
               <Info className="size-4" />
               <AlertDescription className="flex items-center justify-between">
                 <span className="text-sm">
@@ -159,9 +153,7 @@ export function IntegrationsTab({
         <CardHeader className={`border-b transition-colors ${formData.whatsapp_enabled ? 'bg-success-muted/50 dark:bg-success-muted/20' : 'bg-muted/50 dark:bg-card/50'}`}>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <div className={`size-12 rounded-xl flex items-center justify-center transition-colors ${
-                formData.whatsapp_enabled ? 'bg-success text-white' : 'bg-muted dark:bg-card text-muted-foreground'
-              }`}>
+              <div className={`size-12 rounded-xl flex items-center justify-center transition-colors ${ formData.whatsapp_enabled ? 'bg-success text-success-foreground' : 'bg-muted dark:bg-card text-muted-foreground' }`}>
                 <MessageSquare className="size-6" />
               </div>
               <div>
@@ -183,7 +175,7 @@ export function IntegrationsTab({
                 type="password"
                 value={formData.whatsapp_cloud_token || ''} 
                 onChange={(e) => handleOrgInputChange('whatsapp_cloud_token', e.target.value)}
-                className="h-11 font-mono text-sm"
+                className="h-11 tabular-nums text-sm"
               />
             </div>
             <div className="space-y-2">
@@ -191,7 +183,7 @@ export function IntegrationsTab({
               <Input 
                 value={formData.whatsapp_phone_number_id || ''} 
                 onChange={(e) => handleOrgInputChange('whatsapp_phone_number_id', e.target.value)}
-                className="h-11 font-mono text-sm"
+                className="h-11 tabular-nums text-sm"
               />
             </div>
             <div className="space-y-2 md:col-span-2">
@@ -200,17 +192,13 @@ export function IntegrationsTab({
                 value={formData.whatsapp_target || ''} 
                 onChange={(e) => handleOrgInputChange('whatsapp_target', e.target.value)}
                 placeholder="996901234567"
-                className="h-11 font-mono text-sm"
+                className="h-11 tabular-nums text-sm"
               />
             </div>
           </div>
           
           {formData.whatsapp_enabled && formData.whatsapp_cloud_token && formData.whatsapp_phone_number_id && (
-            <Alert className={`${
-              whatsappStatus === 'success' ? 'border-success/50 bg-success-muted/20' :
-              whatsappStatus === 'error' ? 'border-danger/50 bg-danger-muted/20' :
-              'border-success/50 bg-success-muted/20'
-            }`}>
+            <Alert className={`${ whatsappStatus === 'success' ? 'border-success/50 bg-success-muted/20' : whatsappStatus === 'error' ? 'border-danger/50 bg-danger-muted/20' : 'border-success/50 bg-success-muted/20' }`}>
               <Info className="size-4" />
               <AlertDescription className="flex items-center justify-between">
                 <span className="text-sm">

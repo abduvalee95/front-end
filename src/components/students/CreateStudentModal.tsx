@@ -240,7 +240,7 @@ export function CreateStudentModal({ open: externalOpen, onClose }: CreateStuden
                   disabled={isLoading}
                   aria-invalid={discountInvalid}
                 />
-                <p className={`text-[11px] ${discountInvalid ? 'text-destructive' : 'text-muted-foreground'}`}>
+                <p className={`text-caption ${discountInvalid ? 'text-destructive' : 'text-muted-foreground'}`}>
                   {discountInvalid ? t('discount_too_high') : t('discount_hint')}
                 </p>
               </div>

@@ -1,10 +1,11 @@
 'use client';
 
-import { Wallet, GraduationCap, Target, CalendarDays, CalendarRange } from 'lucide-react';
+import { BarChart3, Wallet, GraduationCap, Target, CalendarDays, CalendarRange } from 'lucide-react';
 import { format, startOfWeek, endOfWeek, subWeeks, subMonths, startOfMonth, endOfMonth } from 'date-fns';
 import { ru } from 'date-fns/locale';
 import { cn } from '@/lib/utils';
 import { useTranslations } from '@/i18n/index';
+import { PageHeader } from '@/components/ui/page-header';
 
 export type ReportsTab = 'finance' | 'students' | 'leads';
 export type Preset = '7d' | '30d' | '90d' | 'mtd';
@@ -110,17 +111,13 @@ export function ReportsTabBar({
 
   return (
     <div className="sticky top-[72px] z-30 -mx-4 border-b border-border bg-background/95 px-4 pt-5 backdrop-blur-sm sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
-      {/* Title + filter row */}
-      <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
-        <div>
-          <h1 className="text-h1 text-foreground">{t('title')}</h1>
-          <p className="mt-1 text-caption font-normal text-muted-foreground">
-            {format(dateFrom, 'dd MMM yyyy', { locale: ru })} — {format(dateTo, 'dd MMM yyyy', { locale: ru })}
-          </p>
-        </div>
-
-        {/* Filter controls */}
-        <div className="flex flex-wrap items-center gap-2">
+      <PageHeader
+        className="mb-4"
+        icon={BarChart3}
+        title={t('title')}
+        subtitle={`${format(dateFrom, 'dd MMM yyyy', { locale: ru })} — ${format(dateTo, 'dd MMM yyyy', { locale: ru })}`}
+        actions={
+          <>
           {/* Quick presets */}
           <div className="flex items-center gap-0.5 rounded-control border border-border bg-muted p-1">
             {PRESETS.map((p) => (
@@ -193,8 +190,9 @@ export function ReportsTabBar({
               ))}
             </select>
           </div>
-        </div>
-      </div>
+          </>
+        }
+      />
 
       {/* Underline tabs */}
       <div className="flex gap-0" role="tablist">

@@ -6,8 +6,10 @@ import { useLMSAnalytics, useLMSAI } from '@/hooks/useAnalytics';
 import { MetricCard, InsightCard, SectionHeader } from './shared';
 import { BarChartWrapper, ChartFrame } from '@/components/charts/chart-primitives';
 import { Skeleton } from '@/components/ui/skeleton';
+import { seriesColor, useChartTheme } from '@/lib/chart-theme';
 
 export function LMSTab() {
+  const chart = useChartTheme();
   const { summary, invoices } = useLMSAnalytics();
   const { data: insights, isLoading: insightsLoading } = useLMSAI();
   const s = summary.data;
@@ -96,7 +98,7 @@ export function LMSTab() {
         >
           <BarChartWrapper
             data={topCourses}
-            color="#8B5CF6"
+            color={seriesColor(chart, 0)}
             horizontal
             yFormatter={(v) => (v >= 1000 ? `${(v / 1000).toFixed(1)}K` : String(v))}
           />

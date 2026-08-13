@@ -404,7 +404,7 @@ function EmptyState({
   return (
     <div className="flex flex-col items-center justify-center py-16 gap-3">
       <div className="h-16 w-16 rounded-2xl edu-gradient-primary flex items-center justify-center mb-4">
-        <Building2 className="h-8 w-8 text-white" />
+        <Building2 className="h-8 w-8 text-background" />
       </div>
       <div className="text-center">
         <h3 className="text-lg font-semibold">

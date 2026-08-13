@@ -37,7 +37,7 @@ export default function TeachersPage() {
         <div className="flex items-center gap-3">
           <Button
             onClick={() => setIsCreateOpen(true)}
-            className="bg-primary hover:bg-primary text-white shadow-lg shadow-primary/20"
+            
           >
             <Plus className="mr-2 h-4 w-4" /> {t('add_teacher')}
           </Button>

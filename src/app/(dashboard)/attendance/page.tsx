@@ -5,6 +5,14 @@ import { useAuthStore } from '@/store/auth.store';
 import { usePermissions } from '@/hooks/usePermissions';
 import { useTranslations } from '@/i18n/index';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { PageHeader } from '@/components/ui/page-header';
+import { StatCard } from '@/components/ui/stat-card';
+import { TONE_FILL, TONE_SURFACE, type Tone } from '@/components/ui/tone';
+import { seriesColor, useChartTheme } from '@/lib/chart-theme';
 import {
   BookOpen,
   ShieldCheck,
@@ -34,6 +42,7 @@ import {
   Pie,
   Cell,
 } from 'recharts';
+import type { LucideIcon } from 'lucide-react';
 import type { JournalEntryResponse } from '@/types/journal';
 
 type Period = 'week' | 'month' | 'all';
@@ -60,6 +69,8 @@ export default function AttendancePage() {
   const [period, setPeriod] = useState<Period>('week');
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState<'ALL' | 'PRESENT' | 'LATE' | 'ABSENT'>('ALL');
+
+  const chart = useChartTheme();
 
   const { data: groups, isLoading: groupsLoading } = useGroups();
 
@@ -198,11 +209,11 @@ export default function AttendancePage() {
 
   const donutData = useMemo(() => {
     return [
-      { name: tJ('present'), value: totals.present, color: '#15803D' },
-      { name: tJ('late'),    value: totals.late,    color: '#D97706' },
-      { name: tJ('absent'),  value: totals.absent,  color: '#DC2626' },
+      { name: tJ('present'), value: totals.present, color: seriesColor(chart, 1), tone: 'success' as Tone },
+      { name: tJ('late'),    value: totals.late,    color: seriesColor(chart, 2), tone: 'warning' as Tone },
+      { name: tJ('absent'),  value: totals.absent,  color: seriesColor(chart, 3), tone: 'danger' as Tone },
     ].filter((d) => d.value > 0);
-  }, [totals, tJ]);
+  }, [totals, tJ, chart]);
 
   const handleExportCsv = () => {
     if (!filteredRows.length) return;
@@ -240,627 +251,394 @@ export default function AttendancePage() {
     all: t('period_all'),
   };
 
+  /** Attendance rate maps onto the semantic tones, not bespoke colours. */
+  const rateTone = (rate: number): Tone => (rate >= 80 ? 'success' : rate >= 50 ? 'warning' : 'danger');
+  const scoreTone = (score: number): Tone => (score >= 70 ? 'success' : score >= 50 ? 'warning' : 'danger');
+
   return (
-    <div
-        className="flex flex-col lg:flex-row gap-0 rounded-2xl overflow-hidden shadow-2xl p-enter"
-        style={{
-          minHeight: '78vh',
-          border: '1px solid var(--p-shell-border)',
-          background: 'var(--p-bg)',
-        }}
-      >
-        {/* ── MOBILE GROUP SELECTOR ──────────────────── */}
-        <div
-          className="lg:hidden flex flex-col gap-3 px-4 py-4"
-          style={{ background: 'var(--p-sidebar)', borderBottom: '1px solid var(--p-sidebar-border)' }}
-        >
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="jm text-[9px] tracking-[0.22em] uppercase" style={{ color: 'var(--p-sidebar-fg-dim)' }}>
-                {t('name')}
-              </p>
-              <h2 className="syne font-extrabold mt-0.5" style={{ fontSize: 18, color: 'var(--p-sidebar-fg)', letterSpacing: '-0.01em' }}>
-                {t('title')}
-              </h2>
-            </div>
+    <div className="space-y-5 ds-enter">
+      <PageHeader
+        icon={CalendarRange}
+        eyebrow={selectedGroup?.name}
+        title={t('title')}
+        subtitle={
+          dateFrom
+            ? `${format(parseISO(dateFrom), 'dd MMM')} — ${format(parseISO(dateTo!), 'dd MMM yyyy')}`
+            : t('all_time')
+        }
+        actions={
+          <>
             {isAdmin && (
-              <span
-                className="inline-flex items-center gap-1 jm text-[9px] tracking-wider uppercase"
-                style={{ color: 'var(--p-accent)', background: 'var(--p-sidebar-active-bg)', padding: '2px 8px', borderRadius: 4 }}
-              >
-                <ShieldCheck style={{ width: 9, height: 9 }} />
+              <Badge variant="primary" className="gap-1.5">
+                <ShieldCheck className="size-3" aria-hidden="true" />
                 {tJ('admin_view')}
-              </span>
+              </Badge>
             )}
-          </div>
-          <select
-            value={selectedGroupId}
-            onChange={(e) => setSelectedGroupId(e.target.value)}
-            disabled={groupsLoading || visibleGroups.length === 0}
-            className="w-full jm text-[12px] rounded-lg px-3 py-2.5 outline-none"
-            style={{
-              background: 'rgba(255,255,255,0.06)',
-              color: 'var(--p-sidebar-fg)',
-              border: '1px solid var(--p-sidebar-border)',
-            }}
-          >
-            {visibleGroups.length === 0 ? (
-              <option value="">{tCommon('no_data')}</option>
-            ) : (
-              visibleGroups.map((g) => (
-                <option key={g.id} value={g.id} style={{ background: 'var(--p-sidebar)' }}>{g.name}</option>
-              ))
-            )}
-          </select>
-        </div>
-
-        {/* ── SIDEBAR (lg+) ──────────────────────────── */}
-        <aside
-          className="hidden lg:flex flex-col w-64 shrink-0"
-          style={{ background: 'var(--p-sidebar)', borderRight: '1px solid var(--p-sidebar-border)' }}
-        >
-          <div className="px-5 pt-6 pb-5" style={{ borderBottom: '1px solid var(--p-sidebar-border)' }}>
-            <p className="jm text-[9px] tracking-[0.22em] uppercase" style={{ color: 'var(--p-sidebar-fg-dim)' }}>
-              BILIM NURU
-            </p>
-            <h2
-              className="syne mt-1.5 leading-none"
-              style={{ fontSize: 21, fontWeight: 800, color: 'var(--p-sidebar-fg)', letterSpacing: '-0.02em' }}
-            >
-              {t('title')}
-            </h2>
-            {isAdmin && (
-              <span
-                className="inline-flex items-center gap-1 mt-2.5 jm text-[9px] tracking-wider uppercase"
-                style={{ color: 'var(--p-accent)', background: 'var(--p-sidebar-active-bg)', padding: '2px 8px', borderRadius: 4 }}
-              >
-                <ShieldCheck style={{ width: 9, height: 9 }} />
-                {tJ('admin_view')}
-              </span>
-            )}
-          </div>
-
-          <div className="flex-1 py-3 overflow-y-auto">
-            <p className="jm text-[9px] tracking-[0.18em] uppercase px-5 mb-2" style={{ color: 'var(--p-sidebar-fg-dim)' }}>
-              {isTeacher ? tCommon('your_groups') : tJ('all_groups')}
-            </p>
-            {groupsLoading ? (
-              <div className="px-4 space-y-1.5">
-                {Array.from({ length: 4 }).map((_, i) => (
-                  <div key={i} className="h-9 rounded-lg" style={{ background: 'var(--p-sidebar-skel)' }} />
-                ))}
-              </div>
-            ) : visibleGroups.length === 0 ? (
-              <p className="jm text-[11px] px-5" style={{ color: 'var(--p-sidebar-fg-dim)' }}>{tCommon('no_data')}</p>
-            ) : (
-              visibleGroups.map((group) => (
-                <div
-                  key={group.id}
-                  className={cn('p-group', selectedGroupId === group.id && 'active')}
-                  onClick={() => setSelectedGroupId(group.id)}
+            <div className="flex items-center rounded-control border border-border bg-muted p-0.5">
+              {(['week', 'month', 'all'] as Period[]).map((p) => (
+                <Button
+                  key={p}
+                  size="sm"
+                  variant={period === p ? 'primary' : 'ghost'}
+                  aria-pressed={period === p}
+                  onClick={() => setPeriod(p)}
                 >
-                  <div className="flex items-center gap-2">
-                    <BookOpen style={{ width: 11, height: 11, opacity: 0.45, flexShrink: 0 }} />
-                    <span className="truncate">{group.name}</span>
-                  </div>
-                  {group.teacher && selectedGroupId !== group.id && (
-                    <p className="jm text-[10px] mt-0.5 ml-[22px] truncate" style={{ color: 'var(--p-sidebar-fg-dim)' }}>
-                      {group.teacher.full_name}
-                    </p>
-                  )}
-                </div>
-              ))
-            )}
-          </div>
+                  {periodLabel[p]}
+                </Button>
+              ))}
+            </div>
+            <Button variant="secondary" size="sm" disabled={!filteredRows.length} onClick={handleExportCsv}>
+              <Download className="size-4" />
+              CSV
+            </Button>
+          </>
+        }
+      />
 
-          {!isLoading && totals.total > 0 && (
-            <div className="px-5 py-5" style={{ borderTop: '1px solid var(--p-sidebar-border)' }}>
-              <p className="jm text-[9px] tracking-[0.18em] uppercase mb-4" style={{ color: 'var(--p-sidebar-fg-dim)' }}>
-                {periodLabel[period]}
+      <div className="flex flex-col gap-5 lg:flex-row">
+        {/* ── Group picker ─────────────────────────────────────────────── */}
+        <aside className="shrink-0 lg:w-64">
+          <Card className="lg:sticky lg:top-6">
+            <div className="px-4">
+              <p className="text-caption text-muted-foreground">
+                {isTeacher ? tCommon('your_groups') : tJ('all_groups')}
               </p>
-              <div className="space-y-4">
-                {[
-                  { label: tJ('present'), value: totals.present, dot: '#4ADE80' },
-                  { label: tJ('late'),    value: totals.late,    dot: '#FBBF24' },
-                  { label: tJ('absent'),  value: totals.absent,  dot: '#F87171' },
-                ].map((s) => (
-                  <div key={s.label} className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <span className="size-1.5 rounded-full shrink-0" style={{ background: s.dot }} />
-                      <span className="syne font-medium" style={{ fontSize: 12, color: 'var(--p-sidebar-fg-mid)' }}>{s.label}</span>
-                    </div>
-                    <span className="jm font-bold" style={{ fontSize: 22, color: 'var(--p-accent)', lineHeight: 1 }}>
-                      {String(s.value).padStart(2, '0')}
-                    </span>
-                  </div>
-                ))}
-              </div>
             </div>
-          )}
-        </aside>
 
-        {/* ── MAIN PANEL ─────────────────────────────── */}
-        <div className="flex-1 flex flex-col min-w-0">
-          {/* Header */}
-          <div
-            className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 px-4 sm:px-8 pt-5 sm:pt-6 pb-4 sm:pb-5 shrink-0"
-            style={{ borderBottom: '1px solid var(--p-line)', background: 'var(--p-bg)' }}
-          >
-            <div className="flex items-center gap-3">
-              <div
-                className="flex items-center justify-center rounded-xl shrink-0"
-                style={{
-                  width: 40, height: 40,
-                  border: '1px solid var(--p-line-strong)',
-                  background: 'var(--p-card)',
-                  color: 'var(--p-ink-soft)',
-                }}
+            {/* Mobile: a plain select is the right control on a small screen. */}
+            <div className="px-4 lg:hidden">
+              <select
+                value={selectedGroupId}
+                onChange={(e) => setSelectedGroupId(e.target.value)}
+                aria-label={tJ('group')}
+                className="h-9 w-full rounded-control border border-border bg-card px-3 text-body-sm text-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring/60"
               >
-                <CalendarRange style={{ width: 18, height: 18 }} />
-              </div>
-              <div>
-                <p
-                  className="syne leading-none"
-                  style={{ fontSize: 'clamp(18px,3vw,26px)', fontWeight: 800, color: 'var(--p-ink)', letterSpacing: '-0.02em' }}
-                >
-                  {selectedGroup?.name ?? t('title')}
-                </p>
-                <p className="jm text-[11px] mt-1" style={{ color: 'var(--p-ink-soft)' }}>
-                  {dateFrom
-                    ? `${format(parseISO(dateFrom), 'dd MMM')} → ${format(parseISO(dateTo!), 'dd MMM yyyy')}`
-                    : t('all_time')}
-                </p>
-              </div>
+                {visibleGroups.length === 0 ? (
+                  <option value="">{tCommon('no_data')}</option>
+                ) : (
+                  visibleGroups.map((g) => (
+                    <option key={g.id} value={g.id}>{g.name}</option>
+                  ))
+                )}
+              </select>
             </div>
 
-            <div className="flex items-center gap-2 flex-wrap">
-              <div className="flex">
-                {(['week', 'month', 'all'] as Period[]).map((p) => (
-                  <button
-                    key={p}
-                    onClick={() => setPeriod(p)}
-                    className={cn('p-period-btn', period === p && 'active')}
-                  >
-                    {periodLabel[p]}
-                  </button>
-                ))}
-              </div>
-              <button
-                onClick={handleExportCsv}
-                disabled={!filteredRows.length}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 6,
-                  padding: '7px 14px',
-                  borderRadius: 9,
-                  border: '1px solid var(--p-line-strong)',
-                  background: 'var(--p-card)',
-                  color: 'var(--p-ink-soft)',
-                  fontSize: 10,
-                  fontWeight: 700,
-                  fontFamily: "'Syne', system-ui, sans-serif",
-                  letterSpacing: '0.07em',
-                  textTransform: 'uppercase',
-                  cursor: filteredRows.length ? 'pointer' : 'not-allowed',
-                  opacity: filteredRows.length ? 1 : 0.45,
-                  transition: 'all 0.12s ease',
-                } as React.CSSProperties}
-              >
-                <Download style={{ width: 12, height: 12 }} />
-                CSV
-              </button>
-            </div>
-          </div>
-
-          {/* Body */}
-          <div className="flex-1 overflow-y-auto px-4 sm:px-8 py-5">
-            {!selectedGroupId ? (
-              <div className="flex flex-col items-center justify-center h-full gap-3">
-                <div style={{
-                  width: 56, height: 56, borderRadius: 16,
-                  background: 'var(--p-card)',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  border: '1px solid var(--p-line)',
-                }}>
-                  <BookOpen style={{ width: 22, height: 22, color: 'var(--p-ink-faint)' }} />
-                </div>
-                <div className="text-center">
-                  <p className="syne font-bold" style={{ fontSize: 16, color: 'var(--p-ink-soft)' }}>{tJ('group')}</p>
-                  <p className="jm text-[11px] mt-1" style={{ color: 'var(--p-ink-faint)' }}>{tJ('select_group_hint')}</p>
-                </div>
-              </div>
-            ) : isLoading ? (
-              <div className="space-y-4">
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            {/* Desktop: a list, so the roster stays visible while reading. */}
+            <nav className="hidden max-h-[24rem] flex-col overflow-y-auto px-2 lg:flex">
+              {groupsLoading ? (
+                <div className="space-y-1.5 px-2">
                   {Array.from({ length: 4 }).map((_, i) => (
-                    <Skeleton key={i} className="h-24 rounded-2xl" style={{ background: 'var(--p-skel)' }} />
+                    <Skeleton key={i} className="h-9 rounded-control" />
                   ))}
                 </div>
-                <Skeleton className="h-72 rounded-2xl" style={{ background: 'var(--p-skel)' }} />
-              </div>
-            ) : enrollments.length === 0 ? (
-              <div className="flex flex-col items-center justify-center h-full gap-3">
-                <div style={{
-                  width: 56, height: 56, borderRadius: 16,
-                  background: 'var(--p-card)',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  border: '1px solid var(--p-line)',
-                }}>
-                  <AlertCircle style={{ width: 22, height: 22, color: 'var(--p-ink-faint)' }} />
-                </div>
-                <div className="text-center">
-                  <p className="syne font-bold" style={{ fontSize: 16, color: 'var(--p-ink-soft)' }}>{tJ('no_students')}</p>
-                  <p className="jm text-[11px] mt-1" style={{ color: 'var(--p-ink-faint)' }}>{tJ('enroll_first')}</p>
-                </div>
-              </div>
-            ) : (
-              <div className="space-y-4">
-
-                {/* ── STAT CARDS ─────────────────────── */}
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                  <AttStatCard
-                    icon={<TrendingUp style={{ width: 15, height: 15 }} />}
-                    label={t('attendance_rate')}
-                    value={`${totals.rate}%`}
-                    accentColor="var(--p-accent)"
-                  />
-                  <AttStatCard
-                    icon={<Users style={{ width: 15, height: 15 }} />}
-                    label={t('total_lessons')}
-                    value={String(totals.lessons)}
-                    sub={`${enrollments.length} ${tJ('n_students')}`}
-                  />
-                  <AttStatCard
-                    icon={<CheckCircle2 style={{ width: 15, height: 15, color: '#15803D' }} />}
-                    label={tJ('present')}
-                    value={String(totals.present)}
-                    sub={totals.total ? `${Math.round((totals.present / totals.total) * 100)}%` : '—'}
-                    accentColor="#15803D"
-                  />
-                  <AttStatCard
-                    icon={<XCircle style={{ width: 15, height: 15, color: '#DC2626' }} />}
-                    label={tJ('absent')}
-                    value={String(totals.absent)}
-                    sub={totals.total ? `${Math.round((totals.absent / totals.total) * 100)}%` : '—'}
-                    accentColor="#DC2626"
-                  />
-                </div>
-
-                {/* ── CHARTS ─────────────────────────── */}
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
-                  {/* Area chart */}
-                  <div
-                    className="lg:col-span-2 rounded-2xl p-4"
-                    style={{ background: 'var(--p-card)', border: '1px solid var(--p-line-strong)' }}
-                  >
-                    <div className="flex items-center justify-between mb-4">
-                      <p className="syne font-bold" style={{ fontSize: 14, color: 'var(--p-ink)' }}>
-                        {t('attendance_trend')}
-                      </p>
-                      <span className="jm text-[10px]" style={{ color: 'var(--p-ink-faint)' }}>
-                        {periodLabel[period]}
-                      </span>
-                    </div>
-                    <div style={{ height: 220 }}>
-                      {trendData.length === 0 ? (
-                        <div className="h-full flex items-center justify-center jm text-[11px]" style={{ color: 'var(--p-ink-faint)' }}>
-                          {tCommon('no_data')}
-                        </div>
-                      ) : (
-                        <ResponsiveContainer width="100%" height="100%">
-                          <AreaChart data={trendData}>
-                            <defs>
-                              <linearGradient id="att-grad" x1="0" y1="0" x2="0" y2="1">
-                                <stop offset="0%" stopColor="#D97706" stopOpacity={0.35} />
-                                <stop offset="100%" stopColor="#D97706" stopOpacity={0.02} />
-                              </linearGradient>
-                            </defs>
-                            <CartesianGrid strokeDasharray="3 3" stroke="var(--p-line-strong)" opacity={0.6} />
-                            <XAxis dataKey="x" stroke="var(--p-ink-faint)" fontSize={10} fontFamily="'JetBrains Mono', monospace" />
-                            <YAxis stroke="var(--p-ink-faint)" fontSize={10} width={34} tickFormatter={(v) => `${v}%`} fontFamily="'JetBrains Mono', monospace" />
-                            <Tooltip
-                              contentStyle={{
-                                background: 'var(--p-bg)',
-                                border: '1px solid var(--p-line-strong)',
-                                borderRadius: 10,
-                                fontSize: 12,
-                                color: 'var(--p-ink)',
-                                fontFamily: "'JetBrains Mono', monospace",
-                              }}
-                              formatter={(v) => [`${Number(v) || 0}%`, t('attendance_rate')]}
-                            />
-                            <Area
-                              type="monotone"
-                              dataKey="rate"
-                              stroke="#D97706"
-                              strokeWidth={2}
-                              fill="url(#att-grad)"
-                            />
-                          </AreaChart>
-                        </ResponsiveContainer>
+              ) : visibleGroups.length === 0 ? (
+                <p className="px-2 text-body-sm text-muted-foreground">{tCommon('no_data')}</p>
+              ) : (
+                visibleGroups.map((group) => {
+                  const isActive = selectedGroupId === group.id;
+                  return (
+                    <button
+                      key={group.id}
+                      type="button"
+                      aria-current={isActive ? 'true' : undefined}
+                      onClick={() => setSelectedGroupId(group.id)}
+                      className={cn(
+                        'flex w-full flex-col rounded-control px-3 py-2 text-left transition-colors duration-150',
+                        isActive
+                          ? 'bg-primary text-primary-foreground'
+                          : 'text-muted-foreground hover:bg-muted hover:text-foreground',
                       )}
-                    </div>
-                  </div>
-
-                  {/* Donut chart */}
-                  <div
-                    className="rounded-2xl p-4"
-                    style={{ background: 'var(--p-card)', border: '1px solid var(--p-line-strong)' }}
-                  >
-                    <p className="syne font-bold mb-4" style={{ fontSize: 14, color: 'var(--p-ink)' }}>
-                      {t('distribution')}
-                    </p>
-                    <div style={{ height: 180 }}>
-                      {donutData.length === 0 ? (
-                        <div className="h-full flex items-center justify-center jm text-[11px]" style={{ color: 'var(--p-ink-faint)' }}>
-                          {tCommon('no_data')}
-                        </div>
-                      ) : (
-                        <ResponsiveContainer width="100%" height="100%">
-                          <PieChart>
-                            <Pie
-                              data={donutData}
-                              cx="50%" cy="50%"
-                              innerRadius={42} outerRadius={70}
-                              paddingAngle={3}
-                              dataKey="value"
-                            >
-                              {donutData.map((d) => (
-                                <Cell key={d.name} fill={d.color} />
-                              ))}
-                            </Pie>
-                            <Tooltip
-                              contentStyle={{
-                                background: 'var(--p-bg)',
-                                border: '1px solid var(--p-line-strong)',
-                                borderRadius: 10,
-                                fontSize: 12,
-                                color: 'var(--p-ink)',
-                                fontFamily: "'JetBrains Mono', monospace",
-                              }}
-                            />
-                          </PieChart>
-                        </ResponsiveContainer>
-                      )}
-                    </div>
-                    <div className="space-y-2 mt-3">
-                      {donutData.map((d) => (
-                        <div key={d.name} className="flex items-center justify-between">
-                          <div className="flex items-center gap-2">
-                            <span className="size-2 rounded-sm shrink-0" style={{ background: d.color }} />
-                            <span className="syne font-medium text-[12px]" style={{ color: 'var(--p-ink-soft)' }}>{d.name}</span>
-                          </div>
-                          <span className="jm font-bold text-[12px]" style={{ color: 'var(--p-ink)' }}>{d.value}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-
-                {/* ── STUDENT TABLE ───────────────────── */}
-                <div
-                  className="rounded-2xl overflow-hidden"
-                  style={{ background: 'var(--p-card)', border: '1px solid var(--p-line-strong)' }}
-                >
-                  {/* Table header controls */}
-                  <div
-                    className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4"
-                    style={{ borderBottom: '1px solid var(--p-line-strong)' }}
-                  >
-                    <p className="syne font-bold" style={{ fontSize: 14, color: 'var(--p-ink)' }}>
-                      {t('by_student')}
-                    </p>
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <div
-                        className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl"
-                        style={{
-                          background: 'var(--p-bg)',
-                          border: '1px solid var(--p-line-strong)',
-                          minWidth: 180,
-                        }}
-                      >
-                        <Search style={{ width: 12, height: 12, color: 'var(--p-ink-soft)', flexShrink: 0 }} />
-                        <input
-                          value={search}
-                          onChange={(e) => setSearch(e.target.value)}
-                          placeholder={t('search_student')}
-                          className="jm bg-transparent outline-none w-full text-[12px]"
-                          style={{ color: 'var(--p-ink)' }}
-                        />
-                      </div>
-                      <select
-                        value={statusFilter}
-                        onChange={(e) => setStatusFilter(e.target.value as typeof statusFilter)}
-                        className="jm text-[11px] px-2.5 py-1.5 rounded-xl outline-none"
-                        style={{
-                          background: 'var(--p-bg)',
-                          border: '1px solid var(--p-line-strong)',
-                          color: 'var(--p-ink)',
-                        }}
-                      >
-                        <option value="ALL">{t('all_statuses')}</option>
-                        <option value="PRESENT">{tJ('present')}</option>
-                        <option value="LATE">{tJ('late')}</option>
-                        <option value="ABSENT">{tJ('absent')}</option>
-                      </select>
-                    </div>
-                  </div>
-
-                  {/* Column headers */}
-                  <div
-                    className="jm hidden sm:grid px-4 py-2.5 text-[9px] tracking-[0.16em] uppercase"
-                    style={{
-                      gridTemplateColumns: '1.4fr 0.6fr 0.6fr 0.6fr 1.4fr 0.6fr',
-                      borderBottom: '1px solid var(--p-line-strong)',
-                      color: 'var(--p-ink-faint)',
-                      background: 'var(--p-bg)',
-                    }}
-                  >
-                    <span>{tCommon('student')}</span>
-                    <span className="text-center">{tJ('present')}</span>
-                    <span className="text-center">{tJ('late')}</span>
-                    <span className="text-center">{tJ('absent')}</span>
-                    <span>{t('attendance_rate')}</span>
-                    <span className="text-center">{t('avg_score')}</span>
-                  </div>
-
-                  {filteredRows.length === 0 ? (
-                    <div className="flex flex-col items-center justify-center py-12 gap-2">
-                      <AlertCircle style={{ width: 28, height: 28, opacity: 0.2, color: 'var(--p-ink-soft)' }} />
-                      <p className="jm text-[12px]" style={{ color: 'var(--p-ink-faint)' }}>{tCommon('no_data')}</p>
-                    </div>
-                  ) : (
-                    filteredRows.map((row, idx) => (
-                      <div
-                        key={row.student_id}
-                        className="p-att-row p-delay px-4 py-3 flex flex-col gap-2 sm:grid sm:items-center sm:gap-0"
-                        style={{
-                          gridTemplateColumns: '1.4fr 0.6fr 0.6fr 0.6fr 1.4fr 0.6fr',
-                          animationDelay: `${idx * 18}ms`,
-                        }}
-                      >
-                        {/* Name */}
-                        <div className="flex items-center gap-3">
-                          <span
-                            className="jm font-bold shrink-0 flex items-center justify-center"
-                            style={{
-                              width: 28, height: 28, borderRadius: 8,
-                              background: 'var(--p-bg)',
-                              color: 'var(--p-ink-faint)',
-                              fontSize: 11,
-                              border: '1px solid var(--p-line)',
-                            }}
-                          >
-                            {String(idx + 1).padStart(2, '0')}
-                          </span>
-                          <span className="syne font-semibold" style={{ fontSize: 13, color: 'var(--p-ink)' }}>{row.name}</span>
-                        </div>
-
-                        {/* Counts */}
-                        <AttPill value={row.present} hint={tJ('present')} dot="#4ADE80" />
-                        <AttPill value={row.late}    hint={tJ('late')}    dot="#FBBF24" />
-                        <AttPill value={row.absent}  hint={tJ('absent')}  dot="#F87171" />
-
-                        {/* Rate bar */}
-                        <div className="flex items-center gap-2">
-                          <div className="flex-1 p-bar">
-                            <div
-                              className="p-bar-fill"
-                              style={{
-                                width: `${row.rate}%`,
-                                background: row.rate >= 80 ? '#15803D' : row.rate >= 50 ? '#D97706' : '#DC2626',
-                              }}
-                            />
-                          </div>
-                          <span className="jm text-[12px] font-bold tabular-nums" style={{ color: 'var(--p-ink)', minWidth: 36 }}>
-                            {row.rate}%
-                          </span>
-                        </div>
-
-                        {/* Avg score */}
-                        <div className="flex items-center justify-between sm:justify-center gap-2">
-                          <span className="jm text-[10px] sm:hidden" style={{ color: 'var(--p-ink-soft)' }}>
-                            {t('avg_score')}
-                          </span>
-                          {row.avgScore == null ? (
-                            <span className="jm text-[12px]" style={{ color: 'var(--p-ink-faint)' }}>—</span>
-                          ) : (
-                            <span
-                              className="jm text-[12px] font-bold"
-                              style={{
-                                color: '#fff',
-                                background: row.avgScore >= 70 ? '#15803D' : row.avgScore >= 50 ? '#D97706' : '#DC2626',
-                                padding: '3px 9px',
-                                borderRadius: 6,
-                              }}
-                            >
-                              {row.avgScore}
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                    ))
-                  )}
-
-                  {filteredRows.length > 0 && (
-                    <div
-                      className="jm text-[10px] px-4 py-2.5"
-                      style={{
-                        borderTop: '1px solid var(--p-line-strong)',
-                        color: 'var(--p-ink-faint)',
-                        background: 'var(--p-bg)',
-                      }}
                     >
-                      {filteredRows.length} {tJ('n_students')} · {totals.lessons} {t('lessons')}
-                    </div>
-                  )}
-                </div>
+                      <span className="flex items-center gap-2">
+                        <BookOpen className="size-3.5 shrink-0" aria-hidden="true" />
+                        <span className="truncate text-h4">{group.name}</span>
+                      </span>
+                      {group.teacher && !isActive && (
+                        <span className="ml-5.5 truncate text-caption font-normal text-muted-foreground">
+                          {group.teacher.full_name}
+                        </span>
+                      )}
+                    </button>
+                  );
+                })
+              )}
+            </nav>
 
+            {!isLoading && totals.total > 0 && (
+              <div className="mt-1 border-t border-border px-4 pt-4">
+                <p className="text-caption text-muted-foreground">{periodLabel[period]}</p>
+                <dl className="mt-3 space-y-2">
+                  {([
+                    { label: tJ('present'), value: totals.present, tone: 'success' as Tone },
+                    { label: tJ('late'),    value: totals.late,    tone: 'warning' as Tone },
+                    { label: tJ('absent'),  value: totals.absent,  tone: 'danger'  as Tone },
+                  ]).map((s) => (
+                    <div key={s.label} className="flex items-center justify-between">
+                      <dt className="flex items-center gap-2 text-body-sm text-muted-foreground">
+                        <span className={cn('size-2 shrink-0 rounded-full', TONE_FILL[s.tone])} aria-hidden />
+                        {s.label}
+                      </dt>
+                      <dd className="text-h3 tabular-nums text-foreground">{s.value}</dd>
+                    </div>
+                  ))}
+                </dl>
               </div>
             )}
-          </div>
-        </div>
-      </div>
-  );
-}
+          </Card>
+        </aside>
 
-function AttStatCard({
-  icon,
-  label,
-  value,
-  sub,
-  accentColor,
-}: {
-  icon: React.ReactNode;
-  label: string;
-  value: string;
-  sub?: string;
-  accentColor?: string;
-}) {
-  return (
-    <div
-      className="rounded-2xl p-3 sm:p-4 flex flex-col gap-2"
-      style={{ background: 'var(--p-card)', border: '1px solid var(--p-line-strong)' }}
-    >
-      <div className="flex items-center gap-2">
-        <span
-          className="flex items-center justify-center rounded-lg"
-          style={{ width: 26, height: 26, background: 'var(--p-bg)', border: '1px solid var(--p-line)' }}
-        >
-          {icon}
-        </span>
-        <span className="jm text-[9px] tracking-[0.1em] uppercase" style={{ color: 'var(--p-ink-faint)' }}>
-          {label}
-        </span>
-      </div>
-      <div className="flex items-baseline gap-2">
-        <span
-          className="syne leading-none"
-          style={{ fontSize: 30, fontWeight: 800, color: accentColor ?? 'var(--p-ink)', letterSpacing: '-0.02em' }}
-        >
-          {value}
-        </span>
-        {sub && (
-          <span className="jm text-[11px]" style={{ color: 'var(--p-ink-soft)' }}>{sub}</span>
-        )}
+        {/* ── Report ───────────────────────────────────────────────────── */}
+        <div className="min-w-0 flex-1 space-y-4">
+          {!selectedGroupId ? (
+            <EmptyPanel icon={BookOpen} title={tJ('group')} hint={tJ('select_group_hint')} />
+          ) : isLoading ? (
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+                {Array.from({ length: 4 }).map((_, i) => (
+                  <StatCard key={i} isLoading label="" value="" />
+                ))}
+              </div>
+              <Skeleton className="h-72 rounded-card" />
+            </div>
+          ) : enrollments.length === 0 ? (
+            <EmptyPanel icon={AlertCircle} title={tJ('no_students')} hint={tJ('enroll_first')} />
+          ) : (
+            <>
+              <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+                <StatCard
+                  icon={TrendingUp}
+                  tone={rateTone(totals.rate)}
+                  label={t('attendance_rate')}
+                  value={totals.rate}
+                  unit="%"
+                  progress={totals.rate}
+                />
+                <StatCard
+                  icon={Users}
+                  tone="primary"
+                  label={t('total_lessons')}
+                  value={totals.lessons}
+                  hint={`${enrollments.length} ${tJ('n_students')}`}
+                />
+                <StatCard
+                  icon={CheckCircle2}
+                  tone="success"
+                  label={tJ('present')}
+                  value={totals.present}
+                  hint={totals.total ? `${Math.round((totals.present / totals.total) * 100)}%` : '—'}
+                />
+                <StatCard
+                  icon={XCircle}
+                  tone="danger"
+                  label={tJ('absent')}
+                  value={totals.absent}
+                  hint={totals.total ? `${Math.round((totals.absent / totals.total) * 100)}%` : '—'}
+                />
+              </div>
+
+              <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+                <Card className="lg:col-span-2">
+                  <div className="flex items-center justify-between px-4">
+                    <h2 className="text-h3 text-foreground">{t('attendance_trend')}</h2>
+                    <span className="text-caption text-muted-foreground">{periodLabel[period]}</span>
+                  </div>
+                  <div className="h-[220px] px-2">
+                    {trendData.length === 0 ? (
+                      <p className="flex h-full items-center justify-center text-body-sm text-muted-foreground">
+                        {tCommon('no_data')}
+                      </p>
+                    ) : (
+                      <ResponsiveContainer width="100%" height="100%">
+                        <AreaChart data={trendData}>
+                          <defs>
+                            <linearGradient id="att-grad" x1="0" y1="0" x2="0" y2="1">
+                              <stop offset="0%" stopColor={seriesColor(chart, 0)} stopOpacity={0.32} />
+                              <stop offset="100%" stopColor={seriesColor(chart, 0)} stopOpacity={0.02} />
+                            </linearGradient>
+                          </defs>
+                          <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={chart.grid} />
+                          <XAxis dataKey="x" stroke={chart.axis} tick={{ fill: chart.axis, fontSize: 11 }} tickLine={false} axisLine={false} />
+                          <YAxis stroke={chart.axis} tick={{ fill: chart.axis, fontSize: 11 }} width={38} tickLine={false} axisLine={false} tickFormatter={(v) => `${v}%`} />
+                          <Tooltip
+                            contentStyle={chart.tooltip}
+                            formatter={(v) => [`${Number(v) || 0}%`, t('attendance_rate')]}
+                          />
+                          <Area type="monotone" dataKey="rate" stroke={seriesColor(chart, 0)} strokeWidth={2} fill="url(#att-grad)" />
+                        </AreaChart>
+                      </ResponsiveContainer>
+                    )}
+                  </div>
+                </Card>
+
+                <Card>
+                  <h2 className="px-4 text-h3 text-foreground">{t('distribution')}</h2>
+                  <div className="h-[180px]">
+                    {donutData.length === 0 ? (
+                      <p className="flex h-full items-center justify-center text-body-sm text-muted-foreground">
+                        {tCommon('no_data')}
+                      </p>
+                    ) : (
+                      <ResponsiveContainer width="100%" height="100%">
+                        <PieChart>
+                          <Pie data={donutData} cx="50%" cy="50%" innerRadius={42} outerRadius={70} paddingAngle={3} dataKey="value" stroke="none">
+                            {donutData.map((d) => (
+                              <Cell key={d.name} fill={d.color} />
+                            ))}
+                          </Pie>
+                          <Tooltip contentStyle={chart.tooltip} />
+                        </PieChart>
+                      </ResponsiveContainer>
+                    )}
+                  </div>
+                  <dl className="space-y-2 px-4">
+                    {donutData.map((d) => (
+                      <div key={d.name} className="flex items-center justify-between">
+                        <dt className="flex items-center gap-2 text-body-sm text-muted-foreground">
+                          <span className={cn('size-2 shrink-0 rounded-full', TONE_FILL[d.tone])} aria-hidden />
+                          {d.name}
+                        </dt>
+                        <dd className="text-h4 tabular-nums text-foreground">{d.value}</dd>
+                      </div>
+                    ))}
+                  </dl>
+                </Card>
+              </div>
+
+              {/* ── Per-student table ──────────────────────────────────── */}
+              <Card className="gap-0 py-0">
+                <div className="flex flex-col justify-between gap-3 border-b border-border p-4 sm:flex-row sm:items-center">
+                  <h2 className="text-h3 text-foreground">{t('by_student')}</h2>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <div className="relative sm:w-56">
+                      <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+                      <Input
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
+                        placeholder={t('search_student')}
+                        aria-label={t('search_student')}
+                        className="pl-9"
+                      />
+                    </div>
+                    <select
+                      value={statusFilter}
+                      onChange={(e) => setStatusFilter(e.target.value as typeof statusFilter)}
+                      aria-label={t('all_statuses')}
+                      className="h-9 rounded-control border border-border bg-card px-3 text-body-sm text-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring/60"
+                    >
+                      <option value="ALL">{t('all_statuses')}</option>
+                      <option value="PRESENT">{tJ('present')}</option>
+                      <option value="LATE">{tJ('late')}</option>
+                      <option value="ABSENT">{tJ('absent')}</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div
+                  className="hidden border-b border-border bg-muted/50 px-4 py-2 text-caption text-muted-foreground sm:grid"
+                  style={{ gridTemplateColumns: '1.4fr 0.6fr 0.6fr 0.6fr 1.4fr 0.6fr' }}
+                >
+                  <span>{tCommon('student')}</span>
+                  <span className="text-center">{tJ('present')}</span>
+                  <span className="text-center">{tJ('late')}</span>
+                  <span className="text-center">{tJ('absent')}</span>
+                  <span>{t('attendance_rate')}</span>
+                  <span className="text-center">{t('avg_score')}</span>
+                </div>
+
+                {filteredRows.length === 0 ? (
+                  <div className="flex flex-col items-center gap-2 py-12">
+                    <AlertCircle className="size-7 text-muted-foreground" aria-hidden="true" />
+                    <p className="text-body-sm text-muted-foreground">{tCommon('no_data')}</p>
+                  </div>
+                ) : (
+                  filteredRows.map((row, idx) => (
+                    <div
+                      key={row.student_id}
+                      className="flex flex-col gap-2 border-b border-border px-4 py-3 last:border-b-0 transition-colors hover:bg-muted/50 sm:grid sm:items-center sm:gap-0"
+                      style={{ gridTemplateColumns: '1.4fr 0.6fr 0.6fr 0.6fr 1.4fr 0.6fr' }}
+                    >
+                      <div className="flex items-center gap-3">
+                        <span className="flex size-7 shrink-0 items-center justify-center rounded-control bg-muted text-caption tabular-nums text-muted-foreground">
+                          {idx + 1}
+                        </span>
+                        <span className="truncate text-h4 text-foreground">{row.name}</span>
+                      </div>
+
+                      <CountCell value={row.present} hint={tJ('present')} tone="success" />
+                      <CountCell value={row.late}    hint={tJ('late')}    tone="warning" />
+                      <CountCell value={row.absent}  hint={tJ('absent')}  tone="danger" />
+
+                      <div className="flex items-center gap-2">
+                        <div className="h-1.5 flex-1 overflow-hidden rounded-control bg-muted">
+                          <div
+                            className={cn('h-full rounded-control transition-[width] duration-700', TONE_FILL[rateTone(row.rate)])}
+                            style={{ width: `${row.rate}%` }}
+                          />
+                        </div>
+                        <span className="min-w-9 text-h4 tabular-nums text-foreground">{row.rate}%</span>
+                      </div>
+
+                      <div className="flex items-center justify-between gap-2 sm:justify-center">
+                        <span className="text-caption text-muted-foreground sm:hidden">{t('avg_score')}</span>
+                        {row.avgScore == null ? (
+                          <span className="text-body-sm text-muted-foreground">—</span>
+                        ) : (
+                          <Badge variant={scoreTone(row.avgScore)} className="tabular-nums">
+                            {row.avgScore}
+                          </Badge>
+                        )}
+                      </div>
+                    </div>
+                  ))
+                )}
+
+                {filteredRows.length > 0 && (
+                  <div className="border-t border-border bg-muted/50 px-4 py-2.5 text-caption font-normal text-muted-foreground">
+                    {filteredRows.length} {tJ('n_students')} · {totals.lessons} {t('lessons')}
+                  </div>
+                )}
+              </Card>
+            </>
+          )}
+        </div>
       </div>
     </div>
   );
 }
 
-function AttPill({ value, hint, dot }: { value: number; hint: string; dot: string }) {
+/** Shared empty/placeholder panel for the report column. */
+function EmptyPanel({
+  icon: Icon,
+  title,
+  hint,
+}: {
+  icon: LucideIcon;
+  title: string;
+  hint: string;
+}) {
   return (
-    <div className="flex items-center justify-between sm:justify-center gap-1.5">
-      <div className="flex items-center gap-1.5 sm:hidden">
-        <span className="size-1.5 rounded-full shrink-0" style={{ background: dot }} />
-        <span className="jm text-[10px]" style={{ color: 'var(--p-ink-soft)' }}>{hint}</span>
+    <Card className="items-center gap-3 py-16">
+      <span className={cn('flex size-14 items-center justify-center rounded-card', TONE_SURFACE.neutral)}>
+        <Icon className="size-6" aria-hidden="true" />
+      </span>
+      <div className="text-center">
+        <p className="text-h3 text-foreground">{title}</p>
+        <p className="mt-1 text-body-sm text-muted-foreground">{hint}</p>
       </div>
-      <span
-        className="jm font-bold tabular-nums"
-        style={{ fontSize: 13, color: value > 0 ? 'var(--p-ink)' : 'var(--p-ink-faint)' }}
-      >
-        {String(value).padStart(2, '0')}
+    </Card>
+  );
+}
+
+/** One present/late/absent count, with a tone dot on narrow screens. */
+function CountCell({ value, hint, tone }: { value: number; hint: string; tone: Tone }) {
+  return (
+    <div className="flex items-center justify-between gap-1.5 sm:justify-center">
+      <span className="flex items-center gap-1.5 text-caption text-muted-foreground sm:hidden">
+        <span className={cn('size-1.5 shrink-0 rounded-full', TONE_FILL[tone])} aria-hidden />
+        {hint}
+      </span>
+      <span className={cn('text-h4 tabular-nums', value > 0 ? 'text-foreground' : 'text-muted-foreground')}>
+        {value}
       </span>
     </div>
   );

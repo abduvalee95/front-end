@@ -168,7 +168,7 @@ export default function TeachersTable({
         </div>
 
         {/* Desktop table */}
-        <div className="hidden md:block rounded-xl border border-border bg-white shadow-sm overflow-hidden">
+        <div className="hidden md:block rounded-xl border border-border bg-card shadow-sm overflow-hidden">
           <Table>
             <TableHeader>
               <TableRow>
@@ -301,7 +301,7 @@ export default function TeachersTable({
             items.map((teacher) => (
               <Card
                 key={teacher.id}
-                className="bg-white border-border shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer"
+                className="bg-card border-border shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer"
                 onClick={() => onViewClick(teacher)}
               >
                 <CardContent className="p-4">

@@ -8,7 +8,7 @@ interface WorkspaceLoadingProps {
 export function WorkspaceLoading({ hasHero = true, rows = 6 }: WorkspaceLoadingProps) {
   return (
     <div className="space-y-6 animate-in fade-in duration-300">
-      {hasHero && <Skeleton className="h-[180px] w-full rounded-[28px]" />}
+      {hasHero && <Skeleton className="h-[180px] w-full rounded-card" />}
 
       <div className="flex flex-wrap items-center gap-3">
         <Skeleton className="h-9 w-64 rounded-xl" />

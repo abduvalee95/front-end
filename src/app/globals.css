@@ -105,13 +105,35 @@
   --color-info-emphasis: hsl(var(--info-emphasis));
   --color-neutral-muted: hsl(var(--neutral-muted));
   --color-neutral-emphasis: hsl(var(--neutral-emphasis));
+  --color-overlay: hsl(var(--overlay));
 
-  /* Legacy aliases kept so `rounded-lg/md/sm` keep resolving to the scale */
+  /* Sidebar — a dark surface in both themes, so it carries its own ink. */
+  --color-sidebar-bg: hsl(var(--sidebar-bg));
+  --color-sidebar-text: hsl(var(--sidebar-text));
+  --color-sidebar-active: hsl(var(--sidebar-active));
+  --color-sidebar-active-bg: hsl(var(--sidebar-active-bg));
+  --color-sidebar-hover-bg: hsl(var(--sidebar-hover-bg));
+  --color-sidebar-border: hsl(var(--sidebar-border));
+
+  /* Tailwind's built-in radius and shadow scales are re-pointed at the two
+     tokens above, so `rounded-xl` or `shadow-lg` in older markup cannot
+     reintroduce a third radius or a fifth elevation. */
+  --radius-xs: var(--radius-control);
   --radius-sm: var(--radius-control);
   --radius-md: var(--radius-control);
   --radius-lg: var(--radius-card);
   --radius-xl: var(--radius-card);
   --radius-2xl: var(--radius-card);
+  --radius-3xl: var(--radius-card);
+  --radius-4xl: var(--radius-card);
+
+  --shadow-2xs: var(--shadow-card);
+  --shadow-xs: var(--shadow-card);
+  --shadow-sm: var(--shadow-card);
+  --shadow-md: var(--shadow-card);
+  --shadow-lg: var(--shadow-card-hover);
+  --shadow-xl: var(--shadow-card-hover);
+  --shadow-2xl: var(--shadow-card-hover);
 }
 
 @layer base {
@@ -174,6 +196,7 @@
     --destructive-foreground: 0 0% 100%;
 
     --shadow-hsl: 222 46% 11%;
+    --overlay: 222 46% 11%;   /* modal scrim — dark in both themes */
 
     /* Sidebar — derived from the same ramp */
     --sidebar-bg: 222 46% 11%;
@@ -241,6 +264,7 @@
     --destructive-foreground: 0 39% 10%;
 
     --shadow-hsl: 222 60% 2%;
+    --overlay: 222 60% 2%;
 
     --sidebar-bg: 222 48% 5%;
     --sidebar-text: 218 21% 62%;

@@ -87,7 +87,7 @@ export function CreateGroupModal({ open: externalOpen, onClose }: CreateGroupMod
       {!isControlled && (
         <DialogTrigger
           render={
-            <Button className="gap-2 bg-card text-white shadow-md hover:bg-card dark:bg-primary dark:text-primary-foreground dark:hover:bg-primary/90 rounded-xl h-10 px-5">
+            <Button>
               <Plus className="size-4" />
               {t('add_group')}
             </Button>

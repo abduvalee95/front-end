@@ -39,7 +39,7 @@ export function InfrastructureSection({ recentBackups, resourceMetrics }: Infras
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <Card className="rounded-2xl border-border shadow-sm overflow-hidden">
           <CardHeader className="pb-4 border-b border-border/60 bg-muted/40">
-            <CardTitle className="text-base font-black flex items-center gap-2">
+            <CardTitle className="text-base font-semibold flex items-center gap-2">
               <Database className="size-4 text-primary-emphasis" /> {t('settings.db_backups')}
             </CardTitle>
             <CardDescription>{t('settings.db_backups_desc')}</CardDescription>
@@ -47,7 +47,7 @@ export function InfrastructureSection({ recentBackups, resourceMetrics }: Infras
           <CardContent className="pt-5 space-y-4">
             <div className="flex items-center justify-between p-3.5 rounded-xl bg-primary/100/10 border border-primary/20">
               <div>
-                <p className="text-sm font-black text-foreground">{t('settings.next_backup')}</p>
+                <p className="text-sm font-semibold text-foreground">{t('settings.next_backup')}</p>
                 <p className="text-xs text-primary-emphasis font-medium">{t('settings.tonight_at')}</p>
               </div>
               <Button
@@ -64,11 +64,11 @@ export function InfrastructureSection({ recentBackups, resourceMetrics }: Infras
                     <CheckCircle2 className="size-4 text-success-emphasis shrink-0" />
                     <div>
                       <p className="text-xs font-bold text-foreground/90 truncate max-w-[160px]">{b.name}</p>
-                      <p className="text-[10px] text-muted-foreground">{b.date}</p>
+                      <p className="text-caption text-muted-foreground">{b.date}</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-1.5">
-                    <Badge variant="outline" className="rounded-lg text-[10px]">{b.size}</Badge>
+                    <Badge variant="outline" className="rounded-lg text-caption">{b.size}</Badge>
                     <Button
                       variant="ghost"
                       size="icon"
@@ -87,7 +87,7 @@ export function InfrastructureSection({ recentBackups, resourceMetrics }: Infras
         <div className="space-y-4">
           <Card className="rounded-2xl border-border shadow-sm overflow-hidden">
             <CardHeader className="pb-4 border-b border-border/60 bg-muted/40">
-              <CardTitle className="text-base font-black flex items-center gap-2">
+              <CardTitle className="text-base font-semibold flex items-center gap-2">
                 <Cpu className="size-4 text-primary-emphasis" /> {t('settings.resource_monitor')}
               </CardTitle>
             </CardHeader>
@@ -96,7 +96,7 @@ export function InfrastructureSection({ recentBackups, resourceMetrics }: Infras
                 <div key={r.label} className="space-y-1.5">
                   <div className="flex justify-between text-xs font-bold">
                     <span className="text-muted-foreground">{r.label}</span>
-                    <span className="text-foreground font-mono">{r.value}%</span>
+                    <span className="text-foreground tabular-nums">{r.value}%</span>
                   </div>
                   <div className="h-1.5 rounded-full bg-muted overflow-hidden">
                     <div className={`h-full rounded-full ${r.color} transition-all duration-1000`} style={{ width: `${r.value}%` }} />
@@ -108,7 +108,7 @@ export function InfrastructureSection({ recentBackups, resourceMetrics }: Infras
 
           <Card className="rounded-2xl border-danger/20 shadow-sm overflow-hidden">
             <CardHeader className="pb-3 border-b border-danger/20 bg-danger/100/10">
-              <CardTitle className="text-sm font-black text-danger-emphasis flex items-center gap-2">
+              <CardTitle className="text-sm font-semibold text-danger-emphasis flex items-center gap-2">
                 <AlertTriangle className="size-4" /> {t('settings.danger_zone')}
               </CardTitle>
             </CardHeader>

@@ -63,7 +63,7 @@ function ProposalCard({
 
   return (
     <div className="rounded-xl border border-primary/30 bg-primary-muted/60 p-3 my-1 space-y-2">
-      <p className="text-[10px] font-bold uppercase tracking-wider text-primary-emphasis">{t('needs_confirm')}</p>
+      <p className="text-caption font-bold uppercase tracking-wider text-primary-emphasis">{t('needs_confirm')}</p>
       <p className="text-xs font-semibold text-foreground">{proposal.summary}</p>
       {state === 'done' ? (
         <p className="text-xs text-success-emphasis font-bold">✓ {t('done')}</p>
@@ -74,7 +74,7 @@ function ProposalCard({
           <button
             onClick={handleConfirmClick}
             disabled={state === 'loading'}
-            className="flex-1 rounded-lg bg-primary py-1.5 text-xs font-bold text-white hover:bg-primary disabled:opacity-50 transition-colors"
+            className="flex-1 rounded-lg bg-primary py-1.5 text-xs font-bold text-primary-foreground hover:bg-primary-emphasis disabled:opacity-50 transition-colors"
           >
             {state === 'loading' ? t('typing') : t('confirm')}
           </button>
@@ -123,11 +123,7 @@ function ToolResultCard({
             <p className="text-muted-foreground">{s?.phone}</p>
           </div>
           <span
-            className={`ml-auto rounded-full px-2 py-0.5 text-[10px] font-bold ${
-              s?.status === 'ACTIVE'
-                ? 'bg-success-muted text-success-emphasis'
-                : 'bg-muted text-muted-foreground'
-            }`}
+            className={`ml-auto rounded-full px-2 py-0.5 text-caption font-bold ${ s?.status === 'ACTIVE' ? 'bg-success-muted text-success-emphasis' : 'bg-muted text-muted-foreground' }`}
           >
             {s?.status}
           </span>
@@ -155,7 +151,7 @@ function ToolResultCard({
       );
     return (
       <div className="rounded-xl border border-warning/30 bg-warning-muted/60 p-3 my-1 space-y-1">
-        <p className="text-[10px] font-bold uppercase tracking-wider text-warning-emphasis">
+        <p className="text-caption font-bold uppercase tracking-wider text-warning-emphasis">
           {t('debtors')} ({students.length})
         </p>
         {students.slice(0, 8).map((s, i) => (
@@ -173,8 +169,8 @@ function ToolResultCard({
     const groups =
       (result?.groups as Array<{ name: string; course?: string; teacher?: string }>) ?? [];
     return (
-      <div className="rounded-xl border border-border bg-white p-3 my-1 space-y-1.5">
-        <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+      <div className="rounded-xl border border-border bg-card p-3 my-1 space-y-1.5">
+        <p className="text-caption font-bold uppercase tracking-wider text-muted-foreground">
           {t('today_lessons')}
         </p>
         {groups.slice(0, 6).map((g, i) => (
@@ -195,21 +191,21 @@ function ToolResultCard({
     return (
       <div className="rounded-xl border border-success/30 bg-success-muted/60 p-3 my-1 grid grid-cols-2 gap-2">
         <div>
-          <p className="text-[10px] text-muted-foreground">{t('revenue')}</p>
+          <p className="text-caption text-muted-foreground">{t('revenue')}</p>
           <p className="font-bold text-success-emphasis text-sm">
             {Number(result?.revenue || 0).toLocaleString()} KGS
           </p>
         </div>
         <div>
-          <p className="text-[10px] text-muted-foreground">{t('payments')}</p>
+          <p className="text-caption text-muted-foreground">{t('payments')}</p>
           <p className="font-bold text-foreground text-sm">{String(result?.paymentsCount || 0)}</p>
         </div>
         <div>
-          <p className="text-[10px] text-muted-foreground">{t('students')}</p>
+          <p className="text-caption text-muted-foreground">{t('students')}</p>
           <p className="font-bold text-foreground text-sm">{String(result?.studentsTotal || 0)}</p>
         </div>
         <div>
-          <p className="text-[10px] text-muted-foreground">{t('attendance')}</p>
+          <p className="text-caption text-muted-foreground">{t('attendance')}</p>
           <p className="font-bold text-foreground text-sm">
             {String(result?.attendanceRate || 0)}%
           </p>
@@ -335,31 +331,31 @@ export function AICopilot() {
           isOpen ? 'scale-0 opacity-0 pointer-events-none' : 'scale-100 opacity-100',
         )}
       >
-        <Sparkles className="size-6 text-white" />
+        <Sparkles className="size-6 text-background" />
       </button>
 
       {/* Chat Panel */}
       <div
         className={cn(
-          'fixed bottom-24 right-6 z-50 flex h-[600px] w-[380px] flex-col overflow-hidden rounded-2xl border border-white/20 bg-background/95 shadow-2xl backdrop-blur-xl transition-all duration-300 sm:w-[400px] lg:bottom-6',
+          'fixed bottom-24 right-6 z-50 flex h-[600px] w-[380px] flex-col overflow-hidden rounded-2xl border border-border bg-background/95 shadow-2xl backdrop-blur-xl transition-all duration-300 sm:w-[400px] lg:bottom-6',
           isOpen ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0 pointer-events-none',
         )}
       >
         {/* Header */}
-        <div className="flex items-center justify-between edu-gradient-primary px-4 py-3 text-white">
+        <div className="flex items-center justify-between edu-gradient-primary px-4 py-3 text-background">
           <div className="flex items-center gap-2.5">
-            <div className="flex size-8 items-center justify-center rounded-full bg-white/20 backdrop-blur-sm">
+            <div className="flex size-8 items-center justify-center rounded-full bg-card backdrop-blur-sm">
               <Bot className="size-5" />
             </div>
             <div>
               <h3 className="font-bold leading-none tracking-tight">AI Copilot</h3>
-              <p className="text-[10px] text-white/80">Powered by Groq</p>
+              <p className="text-caption text-background/80">Powered by Groq</p>
             </div>
           </div>
           <button
             type="button"
             onClick={() => setIsOpen(false)}
-            className="flex size-8 items-center justify-center rounded-lg text-white hover:bg-white/20 transition-colors cursor-pointer"
+            className="flex size-8 items-center justify-center rounded-lg text-background hover:bg-card transition-colors cursor-pointer"
           >
             <X className="size-5" />
           </button>
@@ -385,7 +381,7 @@ export function AICopilot() {
                   <button
                     key={s}
                     onClick={() => setInput(s)}
-                    className="rounded-full border border-primary/30 bg-primary-muted px-3 py-1 text-[11px] font-medium text-primary-emphasis hover:bg-primary-muted transition-colors"
+                    className="rounded-full border border-primary/30 bg-primary-muted px-3 py-1 text-caption font-medium text-primary-emphasis hover:bg-primary-muted transition-colors"
                   >
                     {s}
                   </button>
@@ -413,7 +409,7 @@ export function AICopilot() {
                     >
                       <div className="flex items-center gap-1.5 opacity-70">
                         {m.role === 'user' ? <User className="size-3" /> : <Bot className="size-3" />}
-                        <span className="text-[10px] font-bold uppercase tracking-wider">
+                        <span className="text-caption font-bold uppercase tracking-wider">
                           {m.role === 'user' ? t('you') : 'Copilot'}
                         </span>
                       </div>

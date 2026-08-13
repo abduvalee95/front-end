@@ -22,7 +22,7 @@ export function SectionHeader({ icon, title, desc }: SectionHeaderProps) {
         {icon}
       </div>
       <div>
-        <h2 className="text-base font-black text-foreground leading-tight">{title}</h2>
+        <h2 className="text-base font-semibold text-foreground leading-tight">{title}</h2>
         <p className="text-xs text-muted-foreground">{desc}</p>
       </div>
     </div>
@@ -37,7 +37,7 @@ export interface FormFieldProps {
 export function FormField({ label, children }: FormFieldProps) {
   return (
     <div className="space-y-1.5">
-      <Label className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">{label}</Label>
+      <Label className="text-caption font-bold uppercase tracking-wider text-muted-foreground">{label}</Label>
       {children}
     </div>
   );
@@ -60,7 +60,7 @@ export function ToggleRow({ title, desc, checked, onCheckedChange, icon, danger 
           {icon && <span className={danger ? 'text-danger-emphasis' : 'text-muted-foreground'}>{icon}</span>}
           <Label className={`text-sm font-bold cursor-pointer ${danger ? 'text-danger-emphasis' : 'text-foreground'}`}>{title}</Label>
           {danger && checked && (
-            <Badge className="bg-danger-muted text-danger-emphasis border-danger/30 rounded-md text-[10px] px-1.5 h-4">ACTIVE</Badge>
+            <Badge className="bg-danger-muted text-danger-emphasis border-danger/30 rounded-md text-caption px-1.5 h-4">ACTIVE</Badge>
           )}
         </div>
         <p className="text-xs text-muted-foreground">{desc}</p>
@@ -112,10 +112,10 @@ export function SecurityScoreCard({ mandatory2FA, ipWhitelisting }: SecurityScor
   return (
     <Card className="rounded-2xl border-border shadow-sm h-fit">
       <CardHeader className="pb-3">
-        <CardTitle className="text-sm font-black">{t('settings.security_score')}</CardTitle>
+        <CardTitle className="text-sm font-semibold">{t('settings.security_score')}</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        <div className={`text-5xl font-black text-center tabular-nums ${color}`}>{pct}%</div>
+        <div className={`text-5xl font-semibold text-center tabular-nums ${color}`}>{pct}%</div>
         <div className="h-2 rounded-full bg-muted overflow-hidden">
           <div className={`h-full rounded-full transition-all duration-700 ${barColor}`} style={{ width: `${pct}%` }} />
         </div>

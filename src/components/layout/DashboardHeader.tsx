@@ -84,21 +84,21 @@ export function DashboardHeader() {
             }
           />
           
-          <DropdownMenuContent align="end" className="w-[320px] p-4 rounded-3xl border-border/50 bg-background/95 backdrop-blur-xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)] dark:shadow-[0_10px_40px_-10px_rgba(0,0,0,0.5)]">
+          <DropdownMenuContent align="end" className="w-[320px] p-4 rounded-3xl border-border/50 bg-background/95 backdrop-blur-xl shadow-card">
             <div className="flex items-center justify-between mb-4 px-1">
               <h4 className="font-bold text-foreground tracking-tight">{t('notifications')}</h4>
-              <span className="text-[10px] font-bold text-primary-emphasis bg-primary/10 px-2 py-1 rounded-full uppercase tracking-wider">3 {t('new_notification')}</span>
+              <span className="text-caption font-bold text-primary-emphasis bg-primary/10 px-2 py-1 rounded-full uppercase tracking-wider">3 {t('new_notification')}</span>
             </div>
             
             <DropdownMenuGroup className="space-y-1">
               {[1, 2, 3].map((n) => (
                 <DropdownMenuItem key={n} className="flex gap-3 p-2.5 focus:bg-muted/50 rounded-2xl transition-colors cursor-pointer group/item items-start">
-                  <div className="size-10 bg-primary/10 text-primary-emphasis rounded-xl shrink-0 flex items-center justify-center group-hover/item:bg-primary group-hover/item:text-white transition-colors">
+                  <div className="size-10 bg-primary/10 text-primary-emphasis rounded-xl shrink-0 flex items-center justify-center group-hover/item:bg-primary group-hover/item:text-primary-foreground transition-colors">
                     <Bell className="size-4" />
                   </div>
                   <div className="space-y-0.5 flex-1 min-w-0">
                     <p className="text-xs font-semibold text-foreground line-clamp-1">New student enrollment</p>
-                    <p className="text-[10px] text-muted-foreground font-medium">2 minutes ago</p>
+                    <p className="text-caption text-muted-foreground font-medium">2 minutes ago</p>
                   </div>
                 </DropdownMenuItem>
               ))}
@@ -118,13 +118,13 @@ export function DashboardHeader() {
         <DropdownMenu>
           <DropdownMenuTrigger
             render={
-              <Button className="size-9 sm:size-10 p-0 rounded-full bg-gradient-to-tr from-primary to-primary hover:from-primary hover:to-primary text-white shadow-lg shadow-primary/25 transition-all hover:scale-105 active:scale-95 border-0 focus-visible:ring-0">
+              <Button className="size-9 sm:size-10 p-0 rounded-full bg-gradient-to-tr from-primary to-primary hover:from-primary hover:to-primary text-background shadow-lg shadow-primary/25 transition-all hover:scale-105 active:scale-95 border-0 focus-visible:ring-0">
                 <Plus className="size-5" />
               </Button>
             }
           />
           
-          <DropdownMenuContent align="end" className="w-56 p-2 rounded-2xl border-border/50 bg-background/95 backdrop-blur-xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)] dark:shadow-[0_10px_40px_-10px_rgba(0,0,0,0.5)]">
+          <DropdownMenuContent align="end" className="w-56 p-2 rounded-2xl border-border/50 bg-background/95 backdrop-blur-xl shadow-card">
             <DropdownMenuGroup>
               <DropdownMenuItem onClick={() => setIsStudentModalOpen(true)} className="flex items-center gap-3 px-3 py-2.5 rounded-xl cursor-pointer focus:bg-muted/50 transition-colors">
                 <div className="p-1.5 rounded-lg bg-primary/10 text-primary-emphasis"><GraduationCap className="size-4" /></div>
@@ -158,7 +158,7 @@ export function DashboardHeader() {
               <div className="flex items-center justify-center p-1 rounded-full bg-transparent hover:bg-muted/50 border border-transparent hover:border-border/50 shadow-sm cursor-pointer transition-all hover:scale-105 ml-0.5 sm:ml-1">
                 <Avatar className="size-8 sm:size-9 border-2 border-background shadow-sm">
                   <AvatarImage src={user?.avatar_url} alt={user?.full_name} />
-                  <AvatarFallback className="bg-gradient-to-br from-primary to-primary text-white font-bold text-sm">
+                  <AvatarFallback className="bg-gradient-to-br from-primary to-primary text-background font-bold text-sm">
                     {user?.full_name?.split(' ').map(n => n[0]).join('').toUpperCase() || 'U'}
                   </AvatarFallback>
                 </Avatar>
@@ -166,9 +166,9 @@ export function DashboardHeader() {
             }
           />
           
-          <DropdownMenuContent align="end" className="w-64 p-2 rounded-2xl border-border/50 bg-background/95 backdrop-blur-xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)] dark:shadow-[0_10px_40px_-10px_rgba(0,0,0,0.5)]">
+          <DropdownMenuContent align="end" className="w-64 p-2 rounded-2xl border-border/50 bg-background/95 backdrop-blur-xl shadow-card">
             <div className="px-3 py-2 mb-2 bg-muted/30 rounded-xl">
-              <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Signed in as</p>
+              <p className="text-caption font-bold text-muted-foreground uppercase tracking-wider">Signed in as</p>
               <p className="text-sm font-bold text-foreground mt-0.5 line-clamp-1">{user?.email}</p>
             </div>
             

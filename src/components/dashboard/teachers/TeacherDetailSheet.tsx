@@ -157,7 +157,7 @@ export function TeacherDetailSheet({
                   </p>
                   {teacher.salary_type === 'DAILY' && teacher.hourly_rate && (
                     <div className="mt-1.5 rounded-lg bg-success-muted dark:bg-success/10 px-2.5 py-1.5">
-                      <p className="text-[11px] text-muted-foreground">
+                      <p className="text-caption text-muted-foreground">
                         {format(now, 'MMMM yyyy')} — {t('worked_days')}:{' '}
                         <span className="font-bold text-foreground">{workedDays}</span>
                       </p>
@@ -168,7 +168,7 @@ export function TeacherDetailSheet({
                   )}
                   {teacher.salary_type === 'MONTHLY' && teacher.hourly_rate && (
                     <div className="mt-1.5 rounded-lg bg-success-muted dark:bg-success/10 px-2.5 py-1.5">
-                      <p className="text-[11px] text-muted-foreground">{format(now, 'MMMM yyyy')} — {t('monthly_label')}</p>
+                      <p className="text-caption text-muted-foreground">{format(now, 'MMMM yyyy')} — {t('monthly_label')}</p>
                       <p className="text-xs font-bold text-success-emphasis mt-0.5">
                         {formatKGS(teacher.hourly_rate)}
                       </p>

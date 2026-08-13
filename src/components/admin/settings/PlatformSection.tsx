@@ -45,7 +45,7 @@ export function PlatformSection({
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         <Card className="lg:col-span-2 rounded-2xl border-border shadow-sm overflow-hidden">
           <CardHeader className="pb-4 border-b border-border/60 bg-muted/40">
-            <CardTitle className="text-base font-black">{t('settings.core_config')}</CardTitle>
+            <CardTitle className="text-base font-semibold">{t('settings.core_config')}</CardTitle>
             <CardDescription>{t('settings.core_config_desc')}</CardDescription>
           </CardHeader>
           <CardContent className="pt-6 space-y-6">
@@ -94,21 +94,20 @@ export function PlatformSection({
         </Card>
 
         <div className="space-y-4">
-          <Card className="rounded-2xl border-0 bg-gradient-to-br from-[#0B1437] to-[#0d2046] text-white shadow-lg overflow-hidden relative">
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_10%,rgba(3,203,231,0.12),transparent_10rem)] pointer-events-none" />
+          <Card className="relative overflow-hidden bg-primary text-primary-foreground">
             <CardHeader className="pb-3 relative">
               <div className="flex items-center gap-2.5">
-                <div className="size-8 rounded-lg bg-white/10 flex items-center justify-center">
+                <div className="size-8 rounded-lg bg-card flex items-center justify-center">
                   <Activity className="size-4 text-primary-emphasis" />
                 </div>
-                <CardTitle className="text-sm text-white">{t('settings.system_health')}</CardTitle>
+                <CardTitle className="text-sm text-background">{t('settings.system_health')}</CardTitle>
               </div>
             </CardHeader>
             <CardContent className="space-y-2.5 relative">
               {systemMetrics.map((m) => (
                 <div key={m.label} className="flex items-center justify-between text-xs">
                   <span className="text-muted-foreground">{m.label}</span>
-                  <span className="font-bold text-primary-emphasis font-mono">{m.value}</span>
+                  <span className="font-bold text-primary-emphasis tabular-nums">{m.value}</span>
                 </div>
               ))}
             </CardContent>

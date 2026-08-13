@@ -15,7 +15,6 @@ import {
   Search,
   Trash2,
   Users2,
-  UsersRound,
   LayoutGrid,
   List,
   X,
@@ -25,7 +24,6 @@ import { usePermissions } from '@/hooks/usePermissions';
 import { useGroups, GROUPS_KEYS } from '@/hooks/useGroups';
 import { useCourses } from '@/hooks/useCourses';
 import { groupService } from '@/services/groups';
-import type { Group } from '@/types/group';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -173,13 +171,16 @@ export function GroupsWorkspace() {
                   className={cn('pl-9', search && 'pr-9')}
                 />
                 {search && (
-                  <button
+                  <Button
                     type="button"
+                    variant="ghost"
+                    size="icon-xs"
+                    aria-label={tCommon('clear')}
                     onClick={clearSearch}
-                    className="absolute right-2.5 top-1/2 -translate-y-1/2 rounded-full p-0.5 text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+                    className="absolute right-2 top-1/2 -translate-y-1/2"
                   >
                     <X className="size-3.5" />
-                  </button>
+                  </Button>
                 )}
               </div>
               <select

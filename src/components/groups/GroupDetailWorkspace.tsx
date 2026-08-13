@@ -19,6 +19,8 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
+import { TONE_SURFACE, type Tone } from '@/components/ui/tone';
+import { cn } from '@/lib/utils';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { EnrollStudentModal } from './EnrollStudentModal';
 
@@ -85,7 +87,7 @@ export function GroupDetailWorkspace({ groupId }: GroupDetailWorkspaceProps) {
         <div className="mx-auto mb-5 flex size-16 items-center justify-center rounded-2xl bg-muted text-muted-foreground">
           <AlertCircle className="size-8" />
         </div>
-        <h1 className="text-2xl font-black">{t('group_not_found')}</h1>
+        <h1 className="text-2xl font-semibold">{t('group_not_found')}</h1>
         <p className="mt-2 text-sm text-muted-foreground">{t('group_not_found_desc')}</p>
         <Link href="/groups">
           <Button variant="outline" className="mt-6">
@@ -115,7 +117,7 @@ export function GroupDetailWorkspace({ groupId }: GroupDetailWorkspaceProps) {
       </div>
 
       {/* Header */}
-      <section className="overflow-hidden rounded-[1.75rem] border border-white/70 bg-white/82 shadow-[0_18px_70px_rgba(15,23,42,0.08)] backdrop-blur dark:border-white/10 dark:bg-white/5">
+      <section className="overflow-hidden rounded-card border border-border bg-card shadow-card backdrop-blur">
         <div className="relative p-6 sm:p-8">
           <div className="absolute inset-y-0 right-0 hidden w-1/2 bg-[radial-gradient(circle_at_70%_35%,rgba(139,92,246,0.22),transparent_18rem),radial-gradient(circle_at_90%_80%,rgba(59,130,246,0.18),transparent_14rem)] lg:block" />
           <div className="relative flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
@@ -130,7 +132,7 @@ export function GroupDetailWorkspace({ groupId }: GroupDetailWorkspaceProps) {
                   </Badge>
                 )}
               </div>
-              <h1 className="text-3xl font-black tracking-tight text-foreground sm:text-4xl">{group.name}</h1>
+              <h1 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">{group.name}</h1>
               <p className="mt-3 flex items-center gap-2 text-sm text-muted-foreground">
                 <Calendar className="size-4" />
                 {formatDate(group.start_date)} — {formatDate(group.end_date)}
@@ -147,24 +149,24 @@ export function GroupDetailWorkspace({ groupId }: GroupDetailWorkspaceProps) {
           icon={GraduationCap}
           label={t('th_course')}
           value={group.course?.title ?? '—'}
-          tone="blue"
+          tone="neutral"
         />
         <InfoCard
           icon={Users2}
           label={t('th_teacher')}
           value={group.teacher?.full_name ?? t('unassigned')}
-          tone="violet"
+          tone="primary"
         />
         <InfoCard
           icon={Users2}
           label={t('th_students')}
           value={enrollmentsQuery.isLoading ? '…' : String(enrollments.length)}
-          tone="amber"
+          tone="warning"
         />
       </section>
 
       {/* Schedule */}
-      <Card className="border-white/70 bg-white/82 shadow-[0_16px_60px_rgba(15,23,42,0.08)] backdrop-blur dark:border-white/10 dark:bg-white/5">
+      <Card className="border-border bg-card shadow-card backdrop-blur">
         <CardHeader className="px-5 pt-5 sm:px-6 sm:pt-6">
           <div className="flex items-center justify-between">
             <CardTitle className="flex items-center gap-2 text-lg font-bold">
@@ -214,7 +216,7 @@ export function GroupDetailWorkspace({ groupId }: GroupDetailWorkspaceProps) {
       </Card>
 
       {/* Enrolled Students */}
-      <Card className="border-white/70 bg-white/82 shadow-[0_16px_60px_rgba(15,23,42,0.08)] backdrop-blur dark:border-white/10 dark:bg-white/5">
+      <Card className="border-border bg-card shadow-card backdrop-blur">
         <CardHeader className="px-5 pt-5 sm:px-6 sm:pt-6">
           <div className="flex items-center justify-between">
             <CardTitle className="flex items-center gap-2 text-lg font-bold">
@@ -287,24 +289,18 @@ function InfoCard({
   icon: typeof Users2;
   label: string;
   value: string;
-  tone: 'violet' | 'blue' | 'amber';
+  tone: Tone;
 }) {
-  const tones = {
-    violet: 'from-primary to-primary',
-    blue: 'from-primary to-primary',
-    amber: 'from-warning to-warning',
-  };
-
   return (
-    <Card className="border-white/70 bg-white/80 shadow-[0_14px_50px_rgba(15,23,42,0.07)] backdrop-blur dark:border-white/10 dark:bg-white/5">
+    <Card>
       <CardContent className="flex items-center justify-between p-5">
         <div className="min-w-0">
-          <p className="text-sm font-medium text-muted-foreground">{label}</p>
-          <p className="mt-1 truncate text-xl font-black text-foreground">{value}</p>
+          <p className="text-body-sm text-muted-foreground">{label}</p>
+          <p className="mt-1 truncate text-h2 text-foreground">{value}</p>
         </div>
-        <div className={`flex size-11 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br text-white shadow-lg ${tones[tone]}`}>
+        <span className={cn('flex size-11 shrink-0 items-center justify-center rounded-control', TONE_SURFACE[tone])}>
           <Icon className="size-5" />
-        </div>
+        </span>
       </CardContent>
     </Card>
   );

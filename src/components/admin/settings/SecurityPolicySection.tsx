@@ -42,7 +42,7 @@ export function SecurityPolicySection({
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         <Card className="lg:col-span-2 rounded-2xl border-border shadow-sm overflow-hidden">
           <CardHeader className="pb-4 border-b border-border/60 bg-muted/40">
-            <CardTitle className="text-base font-black">{t('settings.global_policy')}</CardTitle>
+            <CardTitle className="text-base font-semibold">{t('settings.global_policy')}</CardTitle>
             <CardDescription>{t('settings.global_policy_desc')}</CardDescription>
           </CardHeader>
           <CardContent className="pt-6 space-y-3">
@@ -63,12 +63,12 @@ export function SecurityPolicySection({
             />
             {ipWhitelisting && (
               <div className="space-y-1.5 pt-1 pl-1">
-                <Label className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">{t('settings.allowed_ip')}</Label>
+                <Label className="text-caption font-bold uppercase tracking-wider text-muted-foreground">{t('settings.allowed_ip')}</Label>
                 <Textarea
                   value={ipAllowlist}
                   onChange={(e) => setIpAllowlist(e.target.value)}
                   placeholder={'192.168.1.0/24\n10.0.0.0/8'}
-                  className="bg-muted/50 border-border rounded-xl font-mono text-sm min-h-[90px]"
+                  className="bg-muted/50 border-border rounded-xl tabular-nums text-sm min-h-[90px]"
                 />
               </div>
             )}

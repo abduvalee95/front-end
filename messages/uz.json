@@ -106,7 +106,10 @@
     "more": "Yana",
     "menu": "Menyu",
     "logout": "Chiqish",
-    "print_receipt": "Kvitansiya chop etish"
+    "print_receipt": "Kvitansiya chop etish",
+    "clear": "Tozalash",
+    "decrease": "Kamaytirish",
+    "increase": "Ko'paytirish"
   },
   "nav": {
     "dashboard": "Boshqaruv paneli",
@@ -745,7 +748,10 @@
     "todo_done": "Bajarilgan",
     "todo_empty": "Vazifalar yo'q",
     "todo_empty_hint": "Yuqoridan yangi vazifa qo'shing",
-    "clear_done": "Bajarilganlarni o'chirish"
+    "clear_done": "Bajarilganlarni o'chirish",
+    "subtitle": "Guruhlaringiz boʻyicha haftalik dars jadvali",
+    "todo_subtitle": "Shaxsiy vazifalar roʻyxati",
+    "todo_due": "Muddat"
   },
   "attendance_page": {
     "title": "Davomat",
@@ -879,7 +885,8 @@
     "update_password": "Parolni yangilash",
     "password_updated": "Parol yangilandi. Qayta kiring.",
     "profile_updated": "Profil yangilandi",
-    "invite_user": "Foydalanuvchi taklif qilish"
+    "invite_user": "Foydalanuvchi taklif qilish",
+    "toggle_password": "Parolni ko'rsatish/yashirish"
   },
   "header": {
     "search_placeholder": "O'quvchi, o'qituvchi, sinflarni qidiring...",

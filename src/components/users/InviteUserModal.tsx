@@ -87,7 +87,7 @@ export function InviteUserModal({ open, onOpenChange }: InviteUserModalProps) {
               <KeyRound className="size-8 text-success-emphasis mx-auto mb-2" />
               <p className="text-sm font-medium text-success-emphasis">{t('invited_success')}</p>
               <p className="text-xs text-muted-foreground">{t('temp_password_desc')}</p>
-              <div className="bg-background p-3 rounded-lg font-mono text-lg font-bold tracking-wider select-all mt-4 border border-input">
+              <div className="bg-background p-3 rounded-lg tabular-nums text-lg font-bold tracking-wider select-all mt-4 border border-input">
                 {tempPassword}
               </div>
             </div>
@@ -107,7 +107,7 @@ export function InviteUserModal({ open, onOpenChange }: InviteUserModalProps) {
                   {...register('full_name', { required: t('full_name_required'), minLength: { value: 2, message: t('min_2_chars') } })}
                   placeholder="e.g. John Doe"
                 />
-                {errors.full_name && <p className="text-[10px] text-destructive">{errors.full_name.message}</p>}
+                {errors.full_name && <p className="text-caption text-destructive">{errors.full_name.message}</p>}
               </div>
 
               <div className="space-y-1.5">
@@ -122,7 +122,7 @@ export function InviteUserModal({ open, onOpenChange }: InviteUserModalProps) {
                   })}
                   placeholder="+996XXXXXXXXX"
                 />
-                {errors.phone && <p className="text-[10px] text-destructive">{errors.phone.message}</p>}
+                {errors.phone && <p className="text-caption text-destructive">{errors.phone.message}</p>}
               </div>
 
               <div className="space-y-1.5">
@@ -138,7 +138,7 @@ export function InviteUserModal({ open, onOpenChange }: InviteUserModalProps) {
                   })}
                   placeholder="user@example.com"
                 />
-                {errors.email && <p className="text-[10px] text-destructive">{errors.email.message}</p>}
+                {errors.email && <p className="text-caption text-destructive">{errors.email.message}</p>}
               </div>
 
               <Separator />
@@ -158,7 +158,7 @@ export function InviteUserModal({ open, onOpenChange }: InviteUserModalProps) {
                     <option value="MANAGER" className="bg-background text-foreground">{t('role_manager')}</option>
                     <option value="ADMIN" className="bg-background text-foreground">{t('role_admin')}</option>
                   </select>
-                  {errors.role && <p className="text-[10px] text-destructive">{errors.role.message}</p>}
+                  {errors.role && <p className="text-caption text-destructive">{errors.role.message}</p>}
                 </div>
 
                 <div className="space-y-1.5">
@@ -174,7 +174,7 @@ export function InviteUserModal({ open, onOpenChange }: InviteUserModalProps) {
                     })}
                     placeholder="••••••"
                   />
-                  {errors.password && <p className="text-[10px] text-destructive">{errors.password.message}</p>}
+                  {errors.password && <p className="text-caption text-destructive">{errors.password.message}</p>}
                 </div>
               </div>
 

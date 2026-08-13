@@ -105,13 +105,14 @@ export function ProfileTab({ user, profileData, handleProfileChange }: ProfileTa
                   {profileData.full_name?.charAt(0).toUpperCase() || 'U'}
                 </AvatarFallback>
               </Avatar>
-              <button 
+              <Button
+                size="icon-sm"
                 onClick={() => fileInputRef.current?.click()}
                 aria-label={t('change_photo')}
-                className="absolute -bottom-2 -right-2 flex size-8 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-card transition-transform hover:scale-110"
+                className="absolute -bottom-2 -right-2 rounded-full"
               >
                 <Upload className="size-4" />
-              </button>
+              </Button>
               <input ref={fileInputRef} type="file" accept="image/*" className="hidden" />
             </div>
             <div className="flex-1">
@@ -207,12 +208,17 @@ export function ProfileTab({ user, profileData, handleProfileChange }: ProfileTa
                   onChange={(e) => setPasswordData(prev => ({ ...prev, current: e.target.value }))}
                   className="h-11 pr-10"
                 />
-                <button 
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon-sm"
+                  aria-label={t('toggle_password')}
+                  aria-pressed={showPassword.current}
                   onClick={() => setShowPassword(prev => ({ ...prev, current: !prev.current }))}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground transition-colors hover:text-foreground"
+                  className="absolute right-1.5 top-1/2 -translate-y-1/2"
                 >
                   {showPassword.current ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
-                </button>
+                </Button>
               </div>
             </div>
             
@@ -225,12 +231,17 @@ export function ProfileTab({ user, profileData, handleProfileChange }: ProfileTa
                   onChange={(e) => setPasswordData(prev => ({ ...prev, new: e.target.value }))}
                   className="h-11 pr-10"
                 />
-                <button 
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon-sm"
+                  aria-label={t('toggle_password')}
+                  aria-pressed={showPassword.new}
                   onClick={() => setShowPassword(prev => ({ ...prev, new: !prev.new }))}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground transition-colors hover:text-foreground"
+                  className="absolute right-1.5 top-1/2 -translate-y-1/2"
                 >
                   {showPassword.new ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
-                </button>
+                </Button>
               </div>
               {passwordData.new && (
                 <div className="space-y-2">
@@ -258,12 +269,17 @@ export function ProfileTab({ user, profileData, handleProfileChange }: ProfileTa
                   onChange={(e) => setPasswordData(prev => ({ ...prev, confirm: e.target.value }))}
                   className="h-11 pr-10"
                 />
-                <button 
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon-sm"
+                  aria-label={t('toggle_password')}
+                  aria-pressed={showPassword.confirm}
                   onClick={() => setShowPassword(prev => ({ ...prev, confirm: !prev.confirm }))}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground transition-colors hover:text-foreground"
+                  className="absolute right-1.5 top-1/2 -translate-y-1/2"
                 >
                   {showPassword.confirm ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
-                </button>
+                </Button>
               </div>
             </div>
           </div>

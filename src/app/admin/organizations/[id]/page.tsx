@@ -59,8 +59,8 @@ export default function OrganizationDetailPage() {
     return (
       <div className="flex flex-col items-center justify-center py-32 gap-4">
         <AlertCircle className="h-10 w-10 text-danger-emphasis" />
-        <p className="text-white/50 text-sm">Ошибка при загрузке данных</p>
-        <Button variant="outline" size="sm" onClick={() => refetch()} className="border-white/10 text-white">
+        <p className="text-background/50 text-sm">Ошибка при загрузке данных</p>
+        <Button variant="outline" size="sm" onClick={() => refetch()} className="border-border text-background">
           <RefreshCw className="mr-2 h-4 w-4" /> Повторить
         </Button>
       </div>
@@ -71,8 +71,8 @@ export default function OrganizationDetailPage() {
   if (!org) {
     return (
       <div className="flex flex-col items-center justify-center py-32 gap-4">
-        <Building2 className="h-10 w-10 text-white/10" />
-        <p className="text-white/40 font-bold">Tashkilot topilmadi</p>
+        <Building2 className="h-10 w-10 text-background/10" />
+        <p className="text-background/40 font-bold">Tashkilot topilmadi</p>
         <Link href="/admin/organizations" className="text-primary hover:underline text-sm">
           Ro&apos;yxatga qaytish
         </Link>
@@ -94,7 +94,7 @@ export default function OrganizationDetailPage() {
       <div className="flex flex-col gap-4">
         <Link
           href="/admin/organizations"
-          className="flex items-center gap-2 text-white/40 hover:text-white transition-colors text-sm font-medium w-fit"
+          className="flex items-center gap-2 text-background/40 hover:text-background transition-colors text-sm font-medium w-fit"
         >
           <ArrowLeft size={16} /> Orqaga qaytish
         </Link>
@@ -105,7 +105,7 @@ export default function OrganizationDetailPage() {
               {org.name.charAt(0).toUpperCase()}
             </div>
             <div>
-              <h1 className="text-2xl font-extrabold text-white tracking-tight">{org.name}</h1>
+              <h1 className="text-2xl font-semibold text-background tracking-tight">{org.name}</h1>
               <OrganizationStatusBadge status={org.status} />
             </div>
           </div>
@@ -115,7 +115,7 @@ export default function OrganizationDetailPage() {
               variant="outline"
               size="sm"
               onClick={() => setEditTarget(org)}
-              className="border-white/10 text-white/70"
+              className="border-border text-background/70"
             >
               <Pencil className="mr-2 h-4 w-4" /> Tahrirlash
             </Button>
@@ -137,14 +137,14 @@ export default function OrganizationDetailPage() {
       {/* Detail Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {details.map((d) => (
-          <Card key={d.label} className="bg-white/[0.03] border-white/10 backdrop-blur-sm">
+          <Card key={d.label} className="bg-white/[0.03] border-border backdrop-blur-sm">
             <CardContent className="p-5 flex items-start gap-4">
-              <div className="h-10 w-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center shrink-0">
-                <d.icon className="h-5 w-5 text-white/40" />
+              <div className="h-10 w-10 rounded-xl bg-card border border-border flex items-center justify-center shrink-0">
+                <d.icon className="h-5 w-5 text-background/40" />
               </div>
               <div className="min-w-0">
-                <p className="text-xs font-medium text-white/40 uppercase tracking-wider">{d.label}</p>
-                <p className="text-sm font-semibold text-white mt-1 truncate">{d.value}</p>
+                <p className="text-xs font-medium text-background/40 uppercase tracking-wider">{d.label}</p>
+                <p className="text-sm font-semibold text-background mt-1 truncate">{d.value}</p>
               </div>
             </CardContent>
           </Card>

@@ -37,16 +37,16 @@ export default function AdminDashboardPage() {
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-3 duration-700">
       {/* ── Hero ── */}
-      <div className="relative overflow-hidden rounded-[28px] border border-white/10 bg-[linear-gradient(160deg,#07111f_0%,#0c2733_55%,#081726_100%)] p-7 text-white shadow-2xl sm:p-9">
+      <div className="relative overflow-hidden rounded-card border border-border bg-[linear-gradient(160deg,#07111f_0%,#0c2733_55%,#081726_100%)] p-7 text-background shadow-2xl sm:p-9">
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_85%_15%,rgba(3,203,231,0.22),transparent_22rem),radial-gradient(circle_at_10%_90%,rgba(0,236,129,0.12),transparent_18rem)]" />
         <div className="pointer-events-none absolute inset-0 opacity-[0.05] [background-image:linear-gradient(rgba(255,255,255,0.6)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.6)_1px,transparent_1px)] [background-size:36px_36px]" />
 
         <div className="relative flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
           <div>
-            <p className="mb-3 flex items-center gap-2 font-mono text-[10px] font-bold uppercase tracking-[0.28em] text-primary-emphasis/80">
+            <p className="mb-3 flex items-center gap-2 tabular-nums text-caption font-bold uppercase tracking-normal text-primary-emphasis/80">
               <Activity className="size-3.5" /> {t('console_tag')}
             </p>
-            <h1 className="text-3xl font-black leading-tight tracking-tight sm:text-4xl">
+            <h1 className="text-3xl font-semibold leading-tight tracking-tight sm:text-4xl">
               {t('dashboard.title')}
             </h1>
             <p className="mt-2 max-w-md text-sm text-muted-foreground">
@@ -55,7 +55,7 @@ export default function AdminDashboardPage() {
           </div>
 
           <div className="flex shrink-0 items-center gap-2.5">
-            <span className="flex items-center gap-2 rounded-full border border-success/20 bg-success/10 px-3.5 py-2 font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-success-emphasis/90">
+            <span className="flex items-center gap-2 rounded-full border border-success/20 bg-success/10 px-3.5 py-2 tabular-nums text-caption font-bold uppercase tracking-normal text-success-emphasis/90">
               <span className="relative flex size-1.5">
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-success/70" />
                 <span className="relative inline-flex size-1.5 rounded-full bg-success" />
@@ -64,7 +64,7 @@ export default function AdminDashboardPage() {
             </span>
             <Link
               href="/admin/organizations"
-              className="group flex items-center gap-1.5 rounded-full border border-white/15 bg-white/5 px-4 py-2 text-xs font-bold text-white backdrop-blur-sm transition-colors hover:bg-white/10"
+              className="group flex items-center gap-1.5 rounded-full border border-border bg-card px-4 py-2 text-xs font-bold text-background backdrop-blur-sm transition-colors hover:bg-card"
             >
               {tNav('organizations')}
               <ArrowUpRight className="size-3.5 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
@@ -77,12 +77,12 @@ export default function AdminDashboardPage() {
           {stats.map((stat, i) => (
             <div
               key={stat.name}
-              className="group relative overflow-hidden rounded-2xl border border-white/10 bg-white/[0.04] p-4 backdrop-blur-sm transition-all duration-300 hover:border-white/20 hover:bg-white/[0.07] animate-in fade-in slide-in-from-bottom-2 fill-mode-both"
+              className="group relative overflow-hidden rounded-2xl border border-border bg-white/[0.04] p-4 backdrop-blur-sm transition-all duration-300 hover:border-border hover:bg-white/[0.07] animate-in fade-in slide-in-from-bottom-2 fill-mode-both"
               style={{ animationDelay: `${i * 90}ms`, animationDuration: '600ms' }}
             >
               <div className={`pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r ${stat.bar} to-transparent`} />
               <div className="flex items-start justify-between">
-                <p className="font-mono text-[9px] font-bold uppercase tracking-[0.18em] text-muted-foreground">
+                <p className="tabular-nums text-caption font-bold uppercase tracking-normal text-muted-foreground">
                   {stat.name}
                 </p>
                 <div className={`flex size-7 items-center justify-center rounded-lg border ${stat.chip}`}>
@@ -90,9 +90,9 @@ export default function AdminDashboardPage() {
                 </div>
               </div>
               {stat.loading ? (
-                <Skeleton className="mt-2 h-9 w-16 bg-white/10" />
+                <Skeleton className="mt-2 h-9 w-16 bg-card" />
               ) : (
-                <p className="mt-1 text-3xl font-black tabular-nums tracking-tight text-white">
+                <p className="mt-1 text-3xl font-semibold tabular-nums tracking-tight text-background">
                   {stat.value.toLocaleString()}
                 </p>
               )}
@@ -103,9 +103,9 @@ export default function AdminDashboardPage() {
 
       {/* ── Lists ── */}
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-        <Card className="rounded-[24px] border-border/70 bg-card/80 backdrop-blur-md">
+        <Card className="rounded-card border-border/70 bg-card/80 backdrop-blur-md">
           <CardHeader className="flex flex-row items-center justify-between pb-4">
-            <CardTitle className="text-base font-extrabold tracking-tight text-foreground">
+            <CardTitle className="text-base font-semibold tracking-tight text-foreground">
               {t('dashboard.latest_orgs')}
             </CardTitle>
             <Link
@@ -128,12 +128,12 @@ export default function AdminDashboardPage() {
                   style={{ animationDelay: `${i * 70}ms`, animationDuration: '500ms' }}
                 >
                   <div className="flex min-w-0 items-center gap-3">
-                    <div className="flex size-9 shrink-0 items-center justify-center rounded-lg border border-primary/15 bg-primary/10 text-sm font-black text-primary">
+                    <div className="flex size-9 shrink-0 items-center justify-center rounded-lg border border-primary/15 bg-primary/10 text-sm font-semibold text-primary">
                       {org.name.charAt(0).toUpperCase()}
                     </div>
                     <div className="min-w-0">
                       <p className="truncate text-sm font-bold text-foreground">{org.name}</p>
-                      <p className="font-mono text-[11px] text-muted-foreground">
+                      <p className="tabular-nums text-caption text-muted-foreground">
                         {new Date(org.created_at).toLocaleDateString(locale)} · {t('users_count', { count: org.usersCount })}
                       </p>
                     </div>
@@ -153,9 +153,9 @@ export default function AdminDashboardPage() {
           </CardContent>
         </Card>
 
-        <Card className="rounded-[24px] border-border/70 bg-card/80 backdrop-blur-md">
+        <Card className="rounded-card border-border/70 bg-card/80 backdrop-blur-md">
           <CardHeader className="flex flex-row items-center justify-between pb-4">
-            <CardTitle className="text-base font-extrabold tracking-tight text-foreground">
+            <CardTitle className="text-base font-semibold tracking-tight text-foreground">
               {t('dashboard.latest_users')}
             </CardTitle>
             <Link
@@ -178,15 +178,15 @@ export default function AdminDashboardPage() {
                   style={{ animationDelay: `${i * 70}ms`, animationDuration: '500ms' }}
                 >
                   <div className="flex min-w-0 items-center gap-3">
-                    <div className="flex size-9 shrink-0 items-center justify-center rounded-lg border border-primary/15 bg-primary/10 text-sm font-black text-primary-emphasis">
+                    <div className="flex size-9 shrink-0 items-center justify-center rounded-lg border border-primary/15 bg-primary/10 text-sm font-semibold text-primary-emphasis">
                       {u.full_name.charAt(0).toUpperCase()}
                     </div>
                     <div className="min-w-0">
                       <p className="truncate text-sm font-bold text-foreground">{u.full_name}</p>
-                      <p className="truncate font-mono text-[11px] text-muted-foreground">{u.email}</p>
+                      <p className="truncate tabular-nums text-caption text-muted-foreground">{u.email}</p>
                     </div>
                   </div>
-                  <Badge variant="secondary" className="shrink-0 rounded-md font-mono text-[10px] uppercase tracking-wider">
+                  <Badge variant="secondary" className="shrink-0 rounded-md tabular-nums text-caption uppercase tracking-wider">
                     {u.role}
                   </Badge>
                 </div>

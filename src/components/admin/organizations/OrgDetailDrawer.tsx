@@ -114,7 +114,7 @@ function DetailRow({
         <Icon className="size-4 text-muted-foreground" />
       </div>
       <div className="min-w-0 flex-1">
-        <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">{label}</p>
+        <p className="text-caption font-medium text-muted-foreground uppercase tracking-wider">{label}</p>
         <p className="text-sm font-medium truncate mt-0.5">{value}</p>
       </div>
     </div>

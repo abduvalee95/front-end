@@ -78,11 +78,11 @@ function LoginForm() {
       <div className="relative mx-auto grid min-h-[calc(100vh-3rem)] w-full max-w-6xl items-center gap-8 lg:grid-cols-[1.08fr_0.92fr]">
         <section className="hidden lg:block">
           <div className="max-w-xl">
-            <div className="mb-8 inline-flex items-center gap-3 rounded-full border border-primary/20 bg-white/70 px-4 py-2 text-xs font-semibold uppercase tracking-[0.22em] text-primary shadow-sm backdrop-blur dark:bg-white/5">
+            <div className="mb-8 inline-flex items-center gap-3 rounded-full border border-primary/20 bg-card px-4 py-2 text-xs font-semibold uppercase tracking-normal text-primary shadow-sm backdrop-blur">
               <ShieldCheck className="size-4" />
               Organization access
             </div>
-            <h1 className="max-w-[12ch] text-6xl font-black leading-[0.92] tracking-tight text-foreground">
+            <h1 className="max-w-[12ch] text-6xl font-semibold leading-[0.92] tracking-tight text-foreground">
               Learning operations, tightened.
             </h1>
             <p className="mt-6 max-w-lg text-base leading-7 text-muted-foreground">
@@ -99,10 +99,10 @@ function LoginForm() {
             ].map((item) => (
               <div
                 key={item.label}
-                className="rounded-2xl border border-white/70 bg-white/68 p-4 shadow-[0_18px_60px_rgba(15,23,42,0.08)] backdrop-blur dark:border-white/10 dark:bg-white/5"
+                className="rounded-2xl border border-border bg-card p-4 shadow-card backdrop-blur"
               >
                 <item.icon className="mb-5 size-5 text-primary" />
-                <div className="text-2xl font-black tabular-nums text-foreground">{item.value}</div>
+                <div className="text-2xl font-semibold tabular-nums text-foreground">{item.value}</div>
                 <div className="mt-1 text-xs font-medium text-muted-foreground">{item.label}</div>
               </div>
             ))}
@@ -111,7 +111,7 @@ function LoginForm() {
 
         <section className="mx-auto w-full max-w-[28rem]">
           <div className="flex flex-col items-center">
-            <div className="flex size-24 items-center justify-center overflow-hidden rounded-3xl border border-white/80 bg-white/10 shadow-[0_24px_60px_rgba(14,110,234,0.2)] backdrop-blur-xl dark:border-white/10 dark:bg-white/5 transition-transform hover:scale-105 duration-500">
+            <div className="flex size-24 items-center justify-center overflow-hidden rounded-3xl border border-border bg-card shadow-card backdrop-blur-xl transition-transform hover:scale-105 duration-500">
               <Image
                 src="/logo.svg"
                 alt="Bilim Nuru"
@@ -121,13 +121,13 @@ function LoginForm() {
                 onError={(e) => {
                   (e.target as HTMLImageElement).style.display = 'none';
                   (e.target as HTMLImageElement).parentElement!.innerHTML =
-                    '<span class="text-3xl font-black">BN</span>';
+                    '<span class="text-3xl font-semibold">BN</span>';
                 }}
               />
             </div>
           </div>
 
-          <div className="rounded-[1.5rem] border border-white/80 bg-card/88 p-7 shadow-[0_24px_80px_rgba(15,23,42,0.12)] backdrop-blur-xl dark:border-white/10 dark:bg-card/78">
+          <div className="rounded-card border border-border bg-card/88 p-7 shadow-card backdrop-blur-xl dark:bg-card/78">
             <div className="mb-6">
               <h3 className="text-xl font-bold text-foreground">{t('welcome_back_title')}</h3>
               <p className="mt-1 text-sm text-muted-foreground">
@@ -201,7 +201,7 @@ function LoginForm() {
 
               <Button
                 type="submit"
-                className="h-11 w-full bg-card text-white shadow-[0_16px_35px_rgba(15,23,42,0.22)] hover:bg-card dark:bg-primary dark:text-primary-foreground dark:hover:bg-primary/90"
+                className="h-11 w-full bg-card text-primary-foreground shadow-card hover:bg-card dark:bg-primary dark:text-primary-foreground dark:hover:bg-primary/90"
                 size="lg"
                 disabled={isLoading}
               >

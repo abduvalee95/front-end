@@ -135,13 +135,16 @@ export function LeadsWorkspace() {
             onChange={(e) => setSearch(e.target.value)}
           />
           {search && (
-            <button
+            <Button
               type="button"
+              variant="ghost"
+              size="icon-xs"
+              aria-label={tCommon('clear')}
               onClick={clearSearch}
-              className="absolute right-2.5 top-1/2 -translate-y-1/2 rounded-full p-0.5 text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+              className="absolute right-2 top-1/2 -translate-y-1/2"
             >
               <X className="size-3.5" />
-            </button>
+            </Button>
           )}
         </div>
         <div className="flex gap-2">

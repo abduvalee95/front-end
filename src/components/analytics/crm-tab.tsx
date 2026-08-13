@@ -7,8 +7,10 @@ import type { Lead } from '@/types/analytics';
 import { MetricCard, InsightCard, SectionHeader } from './shared';
 import { BarChartWrapper, ChartFrame, FunnelChart, LineChartWrapper } from '@/components/charts/chart-primitives';
 import { Skeleton } from '@/components/ui/skeleton';
+import { seriesColor, useChartTheme } from '@/lib/chart-theme';
 
 export function CRMTab() {
+  const chart = useChartTheme();
   const { summary, leadsByStatus, leads } = useCRMAnalytics();
   const { data: insights, isLoading: insightsLoading } = useCRMAI();
 
@@ -113,10 +115,10 @@ export function CRMTab() {
           ) : (
             <FunnelChart
               stages={[
-                { label: 'New', value: statusMap.get('NEW') ?? 0, color: '#3B82F6' },
-                { label: 'Contacted', value: statusMap.get('CONTACTED') ?? 0, color: '#8B5CF6' },
-                { label: 'Converted', value: statusMap.get('CONVERTED') ?? 0, color: '#10B981' },
-                { label: 'Lost', value: statusMap.get('LOST') ?? 0, color: '#EF4444' },
+                { label: 'New', value: statusMap.get('NEW') ?? 0, color: seriesColor(chart, 0) },
+                { label: 'Contacted', value: statusMap.get('CONTACTED') ?? 0, color: seriesColor(chart, 4) },
+                { label: 'Converted', value: statusMap.get('CONVERTED') ?? 0, color: seriesColor(chart, 1) },
+                { label: 'Lost', value: statusMap.get('LOST') ?? 0, color: seriesColor(chart, 3) },
               ]}
             />
           )}
@@ -131,7 +133,7 @@ export function CRMTab() {
         >
           <LineChartWrapper
             data={lineData}
-            lines={[{ key: 'leads', label: 'Leads', color: '#8B5CF6' }]}
+            lines={[{ key: 'leads', label: 'Leads', color: seriesColor(chart, 0) }]}
           />
         </ChartFrame>
       </div>
@@ -145,7 +147,7 @@ export function CRMTab() {
           isEmpty={sourceData.length === 0}
           height={320}
         >
-          <BarChartWrapper data={sourceData} color="#06B6D4" horizontal />
+          <BarChartWrapper data={sourceData} color={seriesColor(chart, 0)} horizontal />
         </ChartFrame>
 
         <div>

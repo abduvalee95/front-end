@@ -1,6 +1,7 @@
 'use client';
 
 import { Loader2, Rows3, Search, UsersRound, X } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useTranslations } from '@/i18n/index';
@@ -74,19 +75,21 @@ export function StudentsFilters({
             className={cn('h-9 pl-8 text-sm rounded-xl', search && 'pr-8')}
           />
           {search && (
-            <button
+            <Button
+              variant="ghost"
+              size="icon-sm"
               type="button"
               onClick={onClearSearch}
-              aria-label={tCommon('clear') ?? 'Clear'}
-              className="absolute right-1 top-1/2 -translate-y-1/2 inline-flex size-7 items-center justify-center rounded-full text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              aria-label={tCommon('clear')}
+              className="absolute right-1 top-1/2 -translate-y-1/2"
             >
               <X aria-hidden="true" className="size-3.5" />
-            </button>
+            </Button>
           )}
         </div>
 
         {/* Status pills */}
-        <div className="flex rounded-xl border border-border/60 bg-muted/40 p-0.5">
+        <div className="flex items-center rounded-control border border-border bg-muted p-0.5">
           {(
             [
               ['', t('all')],
@@ -94,49 +97,39 @@ export function StudentsFilters({
               ['INACTIVE', t('status_inactive')],
             ] as [string, string][]
           ).map(([val, label]) => (
-            <button
+            <Button
               key={val}
               type="button"
+              size="sm"
+              variant={statusFilter === val ? 'primary' : 'ghost'}
+              aria-pressed={statusFilter === val}
               onClick={() => onStatusChange(val as StudentStatus | '')}
-              className={cn(
-                'h-7 rounded-lg px-3 text-xs font-semibold transition-all',
-                statusFilter === val
-                  ? val === 'ACTIVE'
-                    ? 'bg-success text-white shadow-sm'
-                    : val === 'INACTIVE'
-                      ? 'bg-muted text-white shadow-sm'
-                      : 'bg-background text-foreground shadow-sm'
-                  : 'text-muted-foreground hover:text-foreground',
-              )}
             >
               {label}
-            </button>
+            </Button>
           ))}
         </div>
 
         {/* Payment filter pills */}
-        <div className="flex rounded-xl border border-border/60 bg-muted/40 p-0.5">
+        <div className="flex items-center rounded-control border border-border bg-muted p-0.5">
           {(
             [
-              { val: '', label: t('pay_filter_all'), activeClass: 'bg-background text-foreground shadow-sm' },
-              { val: 'paid', label: t('pay_paid'), activeClass: 'bg-success text-white shadow-sm' },
-              { val: 'partial', label: t('pay_partial'), activeClass: 'bg-warning text-white shadow-sm' },
-              { val: 'unpaid', label: t('pay_unpaid'), activeClass: 'bg-danger text-white shadow-sm' },
+              { val: '', label: t('pay_filter_all') },
+              { val: 'paid', label: t('pay_paid') },
+              { val: 'partial', label: t('pay_partial') },
+              { val: 'unpaid', label: t('pay_unpaid') },
             ]
-          ).map(({ val, label, activeClass }) => (
-            <button
+          ).map(({ val, label }) => (
+            <Button
               key={val}
               type="button"
+              size="sm"
+              variant={paymentFilter === val ? 'primary' : 'ghost'}
+              aria-pressed={paymentFilter === val}
               onClick={() => onPaymentFilterChange(val as PaymentStatus | '')}
-              className={cn(
-                'h-7 rounded-lg px-3 text-xs font-semibold transition-all',
-                paymentFilter === val
-                  ? activeClass
-                  : 'text-muted-foreground hover:text-foreground',
-              )}
             >
               {label}
-            </button>
+            </Button>
           ))}
         </div>
       </div>
@@ -148,7 +141,7 @@ export function StudentsFilters({
           onValueChange={(v) => onPageSizeChange(Number(v) as PageSizeOption)}
         >
           <SelectTrigger
-            className="h-9 w-auto min-w-[110px] rounded-xl text-xs font-medium cursor-pointer gap-1.5"
+            className="h-9 w-auto min-w-[110px] cursor-pointer gap-1.5 text-caption"
             aria-label={tCommon('rows_per_page') ?? 'Rows per page'}
           >
             <Rows3 className="size-3.5 shrink-0 text-muted-foreground" aria-hidden="true" />
@@ -169,7 +162,7 @@ export function StudentsFilters({
             value={selectedTeacherId || '_all_'}
             onValueChange={(v) => onTeacherChange(v === '_all_' ? '' : (v ?? ''))}
           >
-            <SelectTrigger className="h-9 w-auto min-w-[160px] rounded-xl text-xs font-medium">
+            <SelectTrigger className="h-9 w-auto min-w-[160px] text-caption">
               <span className="flex items-center gap-2 mr-1">
                 <UsersRound className="size-3.5 shrink-0 text-muted-foreground" />
                 <SelectValue placeholder={t('all_teachers')} />
@@ -188,26 +181,23 @@ export function StudentsFilters({
 
         {/* View mode toggle */}
         {canManageScope && (
-          <div className="flex rounded-xl border border-border/60 bg-muted/40 p-0.5">
+          <div className="flex items-center rounded-control border border-border bg-muted p-0.5">
             {(
               [
                 ['all', t('all')],
                 ['teacher', t('by_teacher')],
               ] as [ViewMode, string][]
             ).map(([val, label]) => (
-              <button
+              <Button
                 key={val}
                 type="button"
+                size="sm"
+                variant={viewMode === val ? 'primary' : 'ghost'}
+                aria-pressed={viewMode === val}
                 onClick={() => onViewModeChange(val)}
-                className={cn(
-                  'h-7 rounded-lg px-3 text-xs font-semibold transition-all',
-                  viewMode === val
-                    ? 'bg-card text-white shadow-sm dark:bg-primary'
-                    : 'text-muted-foreground hover:text-foreground',
-                )}
               >
                 {label}
-              </button>
+              </Button>
             ))}
           </div>
         )}

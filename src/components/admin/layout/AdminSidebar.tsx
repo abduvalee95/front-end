@@ -55,7 +55,7 @@ export function SidebarNav({ onNavClick, isMobile }: SidebarNavProps) {
 
   return (
     <aside className={cn(
-      "relative z-20 flex h-full flex-col border-r border-white/10 shadow-2xl transition-all duration-500 ease-in-out",
+      "relative z-20 flex h-full flex-col border-r border-border shadow-2xl transition-all duration-500 ease-in-out",
       "bg-[linear-gradient(165deg,#07111f_0%,#0c2733_48%,#07111f_100%)] text-foreground",
       collapsed ? "w-[80px]" : "w-[280px]"
     )}>
@@ -67,7 +67,7 @@ export function SidebarNav({ onNavClick, isMobile }: SidebarNavProps) {
         <div className={cn(
           'group relative flex items-center justify-center overflow-hidden rounded-2xl transition-all duration-500',
           'bg-gradient-to-br from-primary/15 to-success/5',
-          'border border-white/10 shadow-2xl backdrop-blur-md',
+          'border border-border shadow-2xl backdrop-blur-md',
           'size-12 shrink-0'
         )}>
           <div className="absolute inset-0 bg-gradient-to-tr from-primary/20 to-transparent opacity-0 transition-opacity duration-700 group-hover:opacity-100" />
@@ -82,8 +82,8 @@ export function SidebarNav({ onNavClick, isMobile }: SidebarNavProps) {
         </div>
         {!collapsed && (
           <div className="min-w-0 animate-in fade-in slide-in-from-left-2 duration-500">
-            <p className="truncate text-[15px] font-black leading-none tracking-tight text-white">Bilim Nuru</p>
-            <p className="mt-1.5 truncate font-mono text-[9px] font-bold uppercase tracking-[0.28em] text-primary-emphasis/70">
+            <p className="truncate text-h3 font-semibold leading-none tracking-tight text-background">Bilim Nuru</p>
+            <p className="mt-1.5 truncate tabular-nums text-caption font-bold uppercase tracking-normal text-primary-emphasis/70">
               {tAdmin('console_tag')}
             </p>
           </div>
@@ -94,7 +94,7 @@ export function SidebarNav({ onNavClick, isMobile }: SidebarNavProps) {
         {navItems.map((group) => (
           <div key={group.group}>
             {!collapsed && (
-              <h3 className="mb-4 px-4 text-[10px] font-bold uppercase tracking-[0.2em] text-primary-emphasis/55 animate-in fade-in duration-500">
+              <h3 className="mb-4 px-4 text-caption font-bold uppercase tracking-normal text-primary-emphasis/55 animate-in fade-in duration-500">
                 {group.group === tCommon('main') ? tCommon('main') : group.group === tCommon('system') ? tCommon('system') : group.group}
               </h3>
             )}
@@ -110,14 +110,14 @@ export function SidebarNav({ onNavClick, isMobile }: SidebarNavProps) {
                     className={cn(
                       "flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 group relative",
                       isActive 
-                        ? "border border-primary/20 bg-white/12 text-white shadow-[0_18px_46px_rgba(3,203,231,0.12)] backdrop-blur-md before:absolute before:left-2 before:top-1/2 before:size-1.5 before:-translate-y-1/2 before:rounded-full before:bg-primary"
-                        : "border border-transparent text-muted-foreground hover:border-white/10 hover:bg-white/5 hover:text-white hover:backdrop-blur-sm"
+                        ? "border border-primary/20 bg-card text-white shadow-card backdrop-blur-md before:absolute before:left-2 before:top-1/2 before:size-1.5 before:-translate-y-1/2 before:rounded-full before:bg-primary"
+                        : "border border-transparent text-muted-foreground hover:border-border hover:bg-card hover:text-white hover:backdrop-blur-sm"
                     )}
                     aria-label={label}
                   >
                     <item.icon className={cn(
                       "size-5 shrink-0 transition-transform duration-300 group-hover:scale-110",
-                      isActive ? "text-primary-emphasis drop-shadow-[0_0_8px_rgba(103,216,232,0.5)]" : "text-muted-foreground group-hover:text-white"
+                      isActive ? "text-primary-emphasis drop-shadow-card" : "text-muted-foreground group-hover:text-white"
                     )} />
                     {!collapsed && <span className="font-medium text-sm">{label}</span>}
                   </Link>
@@ -128,30 +128,30 @@ export function SidebarNav({ onNavClick, isMobile }: SidebarNavProps) {
         ))}
       </div>
 
-      <div className="relative border-t border-white/10 bg-black/22 p-4 backdrop-blur-md">
+      <div className="relative border-t border-border bg-card/60 p-4 backdrop-blur-md">
         {!collapsed && (
           <div className="mb-3 flex items-center justify-between rounded-xl border border-success/15 bg-success/5 px-3 py-2">
-            <span className="flex items-center gap-2 font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-success-emphasis/80">
+            <span className="flex items-center gap-2 tabular-nums text-caption font-bold uppercase tracking-normal text-success-emphasis/80">
               <span className="relative flex size-1.5">
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-success/70" />
                 <span className="relative inline-flex size-1.5 rounded-full bg-success" />
               </span>
               {tAdmin('system_online')}
             </span>
-            <span className="font-mono text-[10px] font-bold text-success-emphasis/60">99.9%</span>
+            <span className="tabular-nums text-caption font-bold text-success-emphasis/60">99.9%</span>
           </div>
         )}
         <div className="mb-2 flex items-center gap-3 px-3 py-3">
-          <Avatar className="size-10 shrink-0 rounded-xl border border-white/20 bg-gradient-to-tr from-primary to-success font-bold text-white shadow-inner" size="lg">
+          <Avatar className="size-10 shrink-0 rounded-xl border border-border bg-gradient-to-tr from-primary to-success font-bold text-background shadow-inner" size="lg">
             {user?.avatar_url && <AvatarImage src={user.avatar_url} alt="Profile" />}
-            <AvatarFallback className="rounded-xl bg-transparent font-bold text-white">
+            <AvatarFallback className="rounded-xl bg-transparent font-bold text-background">
               {user?.full_name?.charAt(0) || 'S'}
             </AvatarFallback>
           </Avatar>
           {!collapsed && (
             <div className="min-w-0 animate-in fade-in duration-500">
-              <p className="truncate text-sm font-bold text-white">{user?.full_name || 'Super Admin'}</p>
-              <p className="truncate text-[10px] uppercase tracking-wider text-primary-emphasis/70">{user?.email || 'admin@platform.com'}</p>
+              <p className="truncate text-sm font-bold text-background">{user?.full_name || 'Super Admin'}</p>
+              <p className="truncate text-caption uppercase tracking-wider text-primary-emphasis/70">{user?.email || 'admin@platform.com'}</p>
             </div>
           )}
         </div>
@@ -160,7 +160,7 @@ export function SidebarNav({ onNavClick, isMobile }: SidebarNavProps) {
           {!isMobile && (
             <button 
               onClick={() => setIsCollapsed(!isCollapsed)}
-              className="flex items-center justify-center h-10 rounded-xl hover:bg-white/10 transition-colors border border-white/10 text-muted-foreground hover:text-white backdrop-blur-sm"
+              className="flex items-center justify-center h-10 rounded-xl hover:bg-card transition-colors border border-border text-muted-foreground hover:text-background backdrop-blur-sm"
               title={tCommon('toggle_sidebar')}
               aria-label={tCommon('toggle_sidebar')}
             >

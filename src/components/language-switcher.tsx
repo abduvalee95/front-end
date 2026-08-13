@@ -61,7 +61,7 @@ export function LanguageSwitcher({ className, variant = 'header' }: LanguageSwit
           <span className="text-base">{opt.flag}</span>
           <span>{opt.label}</span>
           {opt.value === locale && (
-            <span className="ml-auto text-[10px] bg-primary-muted text-primary-emphasis px-1.5 py-0.5 rounded-md font-bold">
+            <span className="ml-auto text-caption bg-primary-muted text-primary-emphasis px-1.5 py-0.5 rounded-md font-bold">
               ✓
             </span>
           )}
@@ -75,7 +75,7 @@ export function LanguageSwitcher({ className, variant = 'header' }: LanguageSwit
       <DropdownMenu>
         <DropdownMenuTrigger
           className={cn(
-            'flex items-center gap-2 px-3 py-2 rounded-xl text-primary-emphasis/60 hover:bg-white/5 hover:text-white transition-all text-[13px] font-semibold w-full',
+            'flex items-center gap-2 px-3 py-2 rounded-xl text-primary-emphasis/60 hover:bg-card hover:text-white transition-all text-body-sm font-semibold w-full',
             isPending && 'opacity-60 pointer-events-none',
             className
           )}

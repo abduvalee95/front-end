@@ -88,10 +88,10 @@ export default function AdminSettingsPage() {
       {/* Header */}
       <div className="flex items-start justify-between gap-4">
         <div>
-          <p className="mb-1 flex items-center gap-1.5 font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-primary/70">
+          <p className="mb-1 flex items-center gap-1.5 tabular-nums text-caption font-bold uppercase tracking-normal text-primary/70">
             <Settings className="size-3" /> {t('system_administration')}
           </p>
-          <h1 className="text-2xl font-black tracking-tight text-foreground">{t('settings.title')}</h1>
+          <h1 className="text-2xl font-semibold tracking-tight text-foreground">{t('settings.title')}</h1>
           <p className="mt-0.5 text-sm text-muted-foreground">{t('settings.subtitle')}</p>
         </div>
         <div className="mt-1 flex shrink-0 items-center gap-2 rounded-full border border-success/25 bg-success/10 px-3.5 py-2">
@@ -117,7 +117,7 @@ export default function AdminSettingsPage() {
                   onClick={() => setActiveSection(item.id)}
                   className={`group flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left transition-all duration-150 ${
                     active
-                      ? 'border border-primary/25 bg-primary/10 shadow-[0_0_24px_-8px_hsl(var(--primary)/0.45)]'
+                      ? 'border border-primary/25 bg-primary/10 shadow-card'
                       : 'border border-transparent hover:bg-muted/60'
                   }`}
                 >
@@ -140,7 +140,7 @@ export default function AdminSettingsPage() {
                     >
                       {t(item.labelKey)}
                     </p>
-                    <p className="mt-0.5 truncate text-[10px] leading-tight text-muted-foreground">
+                    <p className="mt-0.5 truncate text-caption leading-tight text-muted-foreground">
                       {t(item.descKey)}
                     </p>
                   </div>
@@ -150,16 +150,16 @@ export default function AdminSettingsPage() {
           </div>
 
           {/* Live Status Panel */}
-          <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-[linear-gradient(165deg,#07111f_0%,#0c2733_70%)] p-4">
+          <div className="relative overflow-hidden rounded-2xl border border-border bg-[linear-gradient(165deg,#07111f_0%,#0c2733_70%)] p-4">
             <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_80%_0%,rgba(3,203,231,0.16),transparent_8rem)]" />
-            <p className="relative mb-3 font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-primary-emphasis/60">
+            <p className="relative mb-3 tabular-nums text-caption font-bold uppercase tracking-normal text-primary-emphasis/60">
               {t('live_status')}
             </p>
             <div className="relative space-y-2.5">
               {SYSTEM_METRICS.map((m) => (
                 <div key={m.labelKey} className="flex items-center justify-between">
-                  <span className="text-[11px] text-muted-foreground">{t(m.labelKey)}</span>
-                  <span className="font-mono text-[11px] font-bold text-primary-emphasis">{m.value}</span>
+                  <span className="text-caption text-muted-foreground">{t(m.labelKey)}</span>
+                  <span className="tabular-nums text-caption font-bold text-primary-emphasis">{m.value}</span>
                 </div>
               ))}
             </div>

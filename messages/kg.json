@@ -105,7 +105,10 @@
     "more": "Дагы",
     "menu": "Меню",
     "logout": "Чыгуу",
-    "print_receipt": "Kvitansiya chop etish"
+    "print_receipt": "Kvitansiya chop etish",
+    "clear": "Тазалоо",
+    "decrease": "Азайтуу",
+    "increase": "Көбөйтүү"
   },
   "nav": {
     "dashboard": "Башкаруу панели",
@@ -665,7 +668,10 @@
     "todo_done": "Аткарылган",
     "todo_empty": "Тапшырмалар жок",
     "todo_empty_hint": "Жогорудан тапшырма кошуңуз",
-    "clear_done": "Аткарылгандарды тазалоо"
+    "clear_done": "Аткарылгандарды тазалоо",
+    "subtitle": "Топторуңуз боюнча жумалык сабак тору",
+    "todo_subtitle": "Жеке тапшырмалар тизмеси",
+    "todo_due": "Мөөнөтү"
   },
   "attendance_page": {
     "title": "Катышуу",
@@ -799,7 +805,8 @@
     "update_password": "Сырсөздү жаңылоо",
     "password_updated": "Сырсөз жаңыланды. Кайра кириңиз.",
     "profile_updated": "Профиль жаңыланды",
-    "invite_user": "Колдонуучу чакыруу"
+    "invite_user": "Колдонуучу чакыруу",
+    "toggle_password": "Сырсөздү көрсөтүү/жашыруу"
   },
   "header": {
     "search_placeholder": "Окуучу, мугалим, класстарды издөө...",

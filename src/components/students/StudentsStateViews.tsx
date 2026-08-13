@@ -67,7 +67,7 @@ export function AccessDenied({ role }: { role?: string }) {
         <div className="mx-auto mb-5 flex size-16 items-center justify-center rounded-2xl bg-muted">
           <ShieldAlert className="size-8 text-muted-foreground" />
         </div>
-        <h1 className="text-xl font-black">Access Denied</h1>
+        <h1 className="text-xl font-semibold">Access Denied</h1>
         <p className="mt-2 text-sm text-muted-foreground">
           Your role{role ? ` (${role})` : ''} cannot access the student roster.
         </p>

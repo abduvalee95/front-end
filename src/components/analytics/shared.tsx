@@ -145,7 +145,7 @@ export function InsightCard({ insight }: { insight: Insight }) {
       <div className={cn('absolute left-0 top-0 bottom-0 w-1', style.bar)} />
       <div className="flex items-center gap-2">
         <Sparkles className={cn('h-4 w-4', style.icon)} />
-        <span className="text-[10px] uppercase tracking-wider font-bold text-muted-foreground">
+        <span className="text-caption uppercase tracking-wider font-bold text-muted-foreground">
           {style.label}
         </span>
       </div>
@@ -168,26 +168,26 @@ export function AIBanner({
   isLoading?: boolean;
 }) {
   return (
-    <div className="relative overflow-hidden rounded-2xl p-6 bg-gradient-to-br from-primary via-primary to-primary text-white shadow-xl">
+    <div className="relative overflow-hidden rounded-2xl p-6 bg-gradient-to-br from-primary via-primary to-primary text-background shadow-xl">
       <div className="absolute inset-0 opacity-20 pointer-events-none">
-        <div className="absolute -top-10 -right-10 h-40 w-40 rounded-full bg-white blur-3xl" />
+        <div className="absolute -top-10 -right-10 h-40 w-40 rounded-full bg-card blur-3xl" />
         <div className="absolute -bottom-10 -left-10 h-40 w-40 rounded-full bg-primary blur-3xl" />
       </div>
       <div className="relative flex items-start gap-4">
-        <div className="h-12 w-12 rounded-2xl bg-white/15 backdrop-blur flex items-center justify-center shrink-0 border border-white/20">
+        <div className="h-12 w-12 rounded-2xl bg-card backdrop-blur flex items-center justify-center shrink-0 border border-border">
           <Sparkles className="h-6 w-6 animate-pulse" />
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-1">
-            <span className="text-[10px] font-bold uppercase tracking-[0.2em] bg-white/15 px-2 py-0.5 rounded-full">
+            <span className="text-caption font-bold uppercase tracking-normal bg-card px-2 py-0.5 rounded-full">
               AI Summary
             </span>
           </div>
           <h2 className="text-xl font-bold mb-2">{headline}</h2>
           {isLoading ? (
             <div className="space-y-2">
-              <div className="h-3 w-3/4 bg-white/20 rounded animate-pulse" />
-              <div className="h-3 w-1/2 bg-white/20 rounded animate-pulse" />
+              <div className="h-3 w-3/4 bg-card rounded animate-pulse" />
+              <div className="h-3 w-1/2 bg-card rounded animate-pulse" />
             </div>
           ) : (
             <p className="text-sm opacity-90 leading-relaxed">{body}</p>
@@ -196,7 +196,7 @@ export function AIBanner({
         {onRefresh && (
           <button
             onClick={onRefresh}
-            className="px-3 py-1.5 rounded-lg bg-white/15 backdrop-blur hover:bg-white/25 transition-colors text-xs font-medium border border-white/20"
+            className="px-3 py-1.5 rounded-lg bg-card backdrop-blur hover:bg-card transition-colors text-xs font-medium border border-border"
           >
             Refresh
           </button>

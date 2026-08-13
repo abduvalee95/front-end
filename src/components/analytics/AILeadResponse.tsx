@@ -65,7 +65,7 @@ Matn juda uzun bo'lmasin, samimiy va professional bo'lsin. O'zbek tilida yoz.`;
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="sm:max-w-[500px] border-white/20 bg-background/95 backdrop-blur-xl">
+      <DialogContent className="sm:max-w-[500px] border-border bg-background/95 backdrop-blur-xl">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-xl">
             <Sparkles className="size-5 text-primary-emphasis" />
@@ -87,7 +87,7 @@ Matn juda uzun bo'lmasin, samimiy va professional bo'lsin. O'zbek tilida yoz.`;
               </p>
               <Button 
                 onClick={handleGenerate} 
-                className="edu-gradient-primary text-white"
+                className="edu-gradient-primary text-background"
               >
                 <Sparkles className="mr-2 size-4" />
                 Generate Message
@@ -95,7 +95,7 @@ Matn juda uzun bo'lmasin, samimiy va professional bo'lsin. O'zbek tilida yoz.`;
             </div>
           ) : (
             <div className="space-y-4">
-              <div className="relative min-h-[150px] rounded-xl border border-white/10 bg-muted/30 p-4 text-sm leading-relaxed whitespace-pre-wrap">
+              <div className="relative min-h-[150px] rounded-xl border border-border bg-muted/30 p-4 text-sm leading-relaxed whitespace-pre-wrap">
                 {isLoading && !responseText ? (
                   <div className="flex items-center justify-center h-full gap-2 text-muted-foreground">
                     <Loader2 className="size-4 animate-spin" />
