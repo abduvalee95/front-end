@@ -125,7 +125,22 @@ export default async function middleware(request: NextRequest) {
         return NextResponse.redirect(new URL('/admin/dashboard', request.url));
       }
 
-      if (!canAccess(pathname, role) && !pathname.startsWith('/dashboard')) {
+      // Page navigations redirect; API calls must not. A 307 to /dashboard in
+      // answer to `fetch('/api/…')` is worse than useless: the redirect is
+      // followed, the client sees a 2xx from a page it never asked for, and a
+      // write that was actually refused can read as success. Route handlers
+      // return their own JSON 401/403 instead. (The SUPER_ADMIN branch above
+      // already carved out /api; this branch had not.)
+      //
+      // No role gate is lost here: every ROUTE_ROLES key is a page path, so
+      // canAccess() is already true for /api/* whenever the role is non-null.
+      // The only requests this releases are the ones carrying an unverifiable
+      // token, which each handler rejects on its own.
+      if (
+        !canAccess(pathname, role) &&
+        !pathname.startsWith('/dashboard') &&
+        !pathname.startsWith('/api')
+      ) {
         return NextResponse.redirect(new URL('/dashboard', request.url));
       }
     }

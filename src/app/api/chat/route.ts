@@ -4,6 +4,7 @@ import { z } from 'zod';
 import { cookies } from 'next/headers';
 import { serverLogger } from '@/lib/logger';
 import { normalizeMessages } from '@/lib/ai/normalize-messages';
+import { AI_ACTIONS, type AiActionName, type AiProposal } from '@/lib/ai/actions';
 
 // Allow streaming responses up to 30 seconds
 export const maxDuration = 30;
@@ -26,6 +27,53 @@ RULES:
 8. Keep answers short and precise.
 
 Today: ${new Date().toLocaleDateString('uz-UZ')}`;
+
+// ── Proposal helpers ─────────────────────────────────────────────────
+
+/**
+ * Builds the proposal object the UI turns into a confirm button.
+ *
+ * Note what is NOT here: a URL or an HTTP method. The tool names an action and
+ * the server-side allowlist in `@/lib/ai/actions` decides where that action
+ * goes, so nothing the model produces can steer the request. The payload is
+ * validated against the same schema the confirm endpoint will re-check, which
+ * means a malformed proposal shows up as "I can't do that" in conversation
+ * rather than as a button that fails after the user presses it.
+ */
+function buildProposal(
+  action: AiActionName,
+  summary: string,
+  payload: Record<string, unknown>,
+): AiProposal | { error: string } {
+  const schema: z.ZodType = AI_ACTIONS[action].schema;
+  const parsed = schema.safeParse(payload);
+
+  if (!parsed.success) {
+    return {
+      error: `Cannot propose ${action}: ${parsed.error.issues[0]?.message ?? 'invalid data'}`,
+    };
+  }
+
+  return { kind: 'proposal', action, summary, payload: parsed.data as Record<string, unknown> };
+}
+
+/**
+ * Stops a proposal when the student query matched more than one person.
+ *
+ * The propose_* tools used to take `students[0]` unconditionally. The id and the
+ * name in the summary did come from the same record, so they always agreed —
+ * but with three students called "Ali" it was an arbitrary one of the three, and
+ * a confirm card reading "Ali — 500,000 KGS" gives the user no way to tell
+ * which. The system prompt already asks for clarification here; this enforces it
+ * in code instead of hoping the model complies.
+ */
+function ambiguousStudents(students: Record<string, unknown>[]) {
+  if (students.length <= 1) return null;
+  return {
+    needsClarification: true,
+    candidates: students.map((s) => ({ id: s.id, name: s.name, phone: s.phone })),
+  };
+}
 
 // ── POST handler ─────────────────────────────────────────────────────
 export async function POST(req: Request) {
@@ -278,20 +326,32 @@ export async function POST(req: Request) {
       const students: Record<string, unknown>[] = (studentData as Record<string, unknown>)?.items as Record<string, unknown>[] ?? [];
       const groups: Record<string, unknown>[] = (groupData as Record<string, unknown>)?.items as Record<string, unknown>[] ?? [];
 
+      const ambiguous = ambiguousStudents(students);
+      if (ambiguous) return ambiguous;
+
       const student = students[0];
       const q = group_query.toLowerCase();
-      const group = groups.find((g) => String(g.name ?? '').toLowerCase().includes(q));
+      const matches = groups.filter((g) => String(g.name ?? '').toLowerCase().includes(q));
 
-      if (!student || !group) return { error: 'Student or group not found' };
+      if (!student) return { error: 'Student not found: ' + student_query };
+      if (matches.length === 0) return { error: 'Group not found: ' + group_query };
+      if (matches.length > 1) {
+        return {
+          needsClarification: true,
+          candidates: matches.map((g) => ({ id: g.id, name: g.name })),
+        };
+      }
 
-      return {
-        kind: 'proposal',
-        action: 'enroll_student',
-        summary: `${student.name} → "${group.name}"${monthly_fee ? ' — ' + monthly_fee + ' KGS/month' : ''}`,
-        confirmUrl: '/api/proxy/enrollment',
-        confirmMethod: 'POST',
-        confirmBody: { student_id: student.id, group_id: group.id },
-      };
+      const group = matches[0];
+
+      return buildProposal(
+        'enroll_student',
+        // The fee is part of what the user is being asked to approve, so it has
+        // to be part of what gets sent. The summary used to advertise a monthly
+        // fee that the confirm body then dropped on the floor.
+        `${student.name} → "${group.name}"${monthly_fee ? ' — ' + monthly_fee + ' KGS/month' : ''}`,
+        { student_id: student.id, group_id: group.id, ...(monthly_fee ? { monthly_fee } : {}) },
+      );
     },
   });
 
@@ -309,18 +369,23 @@ export async function POST(req: Request) {
       if (studentData?._error) return { error: studentData._error };
 
       const students: Record<string, unknown>[] = (studentData as Record<string, unknown>)?.items as Record<string, unknown>[] ?? [];
-      const student = students[0];
 
+      const ambiguous = ambiguousStudents(students);
+      if (ambiguous) return ambiguous;
+
+      const student = students[0];
       if (!student) return { error: 'Student not found: ' + student_query };
 
-      return {
-        kind: 'proposal',
-        action: 'record_payment',
-        summary: `${student.name} — ${amount.toLocaleString()} KGS (${method ?? 'CASH'})`,
-        confirmUrl: '/api/proxy/payment',
-        confirmMethod: 'POST',
-        confirmBody: { student_id: student.id, amount, method: method ?? 'CASH', description },
-      };
+      return buildProposal(
+        'record_payment',
+        `${student.name} — ${amount.toLocaleString()} KGS (${method ?? 'CASH'})`,
+        {
+          student_id: student.id,
+          amount,
+          method: method ?? 'CASH',
+          ...(description ? { description } : {}),
+        },
+      );
     },
   });
 

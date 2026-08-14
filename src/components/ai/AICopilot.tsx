@@ -12,13 +12,21 @@ import { logger } from '@/lib/logger';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
+/**
+ * A confirmable write proposed by the copilot.
+ *
+ * It names an action; it does not name a URL or an HTTP method. Those used to
+ * ride along in `confirmUrl` / `confirmMethod` and this component called
+ * whatever it was handed, guarded only by an array compared here in the
+ * browser. Resolving the action now happens server-side in
+ * `@/lib/ai/actions`, where the payload is re-validated before anything is
+ * sent to the backend.
+ */
 type ProposalResult = {
   kind: 'proposal';
   action: string;
   summary: string;
-  confirmUrl: string;
-  confirmMethod: string;
-  confirmBody: Record<string, unknown>;
+  payload: Record<string, unknown>;
 };
 
 type StudentResult = {
@@ -258,18 +266,19 @@ export function AICopilot() {
     }
   };
 
-  const ALLOWED_CONFIRM_PATHS = ['/api/proxy/enrollment', '/api/proxy/payment'];
-
+  // One endpoint for every confirmed proposal. It resolves the action name
+  // against the server-side allowlist and re-validates the payload, so this
+  // call site has no allowlist of its own to drift out of date.
   const handleConfirm = async (proposal: ProposalResult): Promise<void> => {
-    if (!ALLOWED_CONFIRM_PATHS.includes(proposal.confirmUrl)) {
-      throw new Error('Invalid confirm URL');
-    }
-    const res = await fetch(proposal.confirmUrl, {
-      method: proposal.confirmMethod,
+    const res = await fetch('/api/ai/actions', {
+      method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(proposal.confirmBody),
+      body: JSON.stringify({ action: proposal.action, payload: proposal.payload }),
     });
-    if (!res.ok) throw new Error('Failed');
+    if (!res.ok) {
+      logger.error(`[AICopilot] ${proposal.action} rejected with ${res.status}`);
+      throw new Error(`Action failed (${res.status})`);
+    }
     // notify model of success
     await sendMessage({
       role: 'user',
