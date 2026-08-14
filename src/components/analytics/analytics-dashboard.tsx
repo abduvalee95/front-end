@@ -17,6 +17,18 @@ const TABS: { key: TabKey; label: string; icon: React.ComponentType<{ className?
   { key: 'lms', label: 'LMS', icon: GraduationCap },
 ];
 
+/**
+ * The date range lives here, not in the dashboard layout.
+ *
+ * It used to be mounted in both places. Nested providers do not merge — the
+ * inner one shadows the outer — so the copy in `(dashboard)/layout.tsx` held
+ * state that nothing ever read, while every consumer (the filter and all three
+ * tabs) sat under this one. Two mounts that look like one shared range is a
+ * trap: the first `useDateRange()` added anywhere outside this subtree would
+ * have silently bound to the other provider and quietly ignored the filter.
+ *
+ * With a single mount, that mistake throws immediately instead.
+ */
 export function AnalyticsDashboard() {
   const [active, setActive] = useState<TabKey>('overview');
 
