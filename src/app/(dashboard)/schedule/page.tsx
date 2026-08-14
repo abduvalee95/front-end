@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useQueries } from '@tanstack/react-query';
 import { useAuthStore } from '@/store/auth.store';
 import { usePermissions } from '@/hooks/usePermissions';
@@ -20,6 +20,7 @@ import {
 import { format, addDays, startOfWeek, isSameDay } from 'date-fns';
 import { cn } from '@/lib/utils';
 import { useGroups, GROUPS_KEYS } from '@/hooks/useGroups';
+import { useLocalStorageState, useIsHydrated } from '@/hooks/useLocalStorageState';
 import { groupService } from '@/services/groups';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Badge } from '@/components/ui/badge';
@@ -46,6 +47,8 @@ interface TodoItem {
 }
 
 const TODO_KEY = 'bilim_nuru_todos_v1';
+/** Module-level so the fallback identity is stable across renders. */
+const NO_TODOS: TodoItem[] = [];
 
 export default function SchedulePage() {
   const t = useTranslations('schedule_page');
@@ -131,27 +134,14 @@ export default function SchedulePage() {
   );
 
   // ─── Todo state (localStorage) ────────────────────────
-  const [todos, setTodos] = useState<TodoItem[]>([]);
-  const [hydrated, setHydrated] = useState(false);
+  // Backed by useSyncExternalStore, so there is no read-then-setState effect
+  // and no `hydrated` boolean to keep in sync — see useLocalStorageState.
+  const [todos, setTodos] = useLocalStorageState<TodoItem[]>(TODO_KEY, NO_TODOS);
+  const hydrated = useIsHydrated();
   const [newText, setNewText] = useState('');
   const [newPriority, setNewPriority] = useState<Priority>('med');
   const [newDue, setNewDue] = useState('');
   const [todoFilter, setTodoFilter] = useState<TodoFilter>('all');
-
-  useEffect(() => {
-    try {
-      const raw = localStorage.getItem(TODO_KEY);
-      if (raw) setTodos(JSON.parse(raw));
-    } catch {
-      /* ignore */
-    }
-    setHydrated(true);
-  }, []);
-
-  useEffect(() => {
-    if (!hydrated) return;
-    localStorage.setItem(TODO_KEY, JSON.stringify(todos));
-  }, [todos, hydrated]);
 
   const addTodo = () => {
     const text = newText.trim();

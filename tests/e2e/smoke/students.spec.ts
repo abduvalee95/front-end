@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { login } from './_helpers/login';
+import { login } from '../_helpers/login';
 
 test.describe('Students page', () => {
   test('renders student list or empty state (no Access Denied)', async ({ page }) => {

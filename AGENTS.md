@@ -14,7 +14,9 @@ npm run dev            # turbopack
 npm run build          # tsc + next build — PR oldidan majburiy
 npm run lint
 npm run design:audit   # dizayn token qoidalari (pastga qarang)
-npm run test:e2e       # playwright
+npm run test:unit      # vitest — tez, serversiz
+npm run test:e2e:local # playwright, backendsiz — CI'da bloklaydi
+npm run test:e2e:smoke # tirik backend kerak
 ```
 
 ---
@@ -119,13 +121,26 @@ cron → `POST /api/workflows/payment-reminder`.
 
 ## Testlar
 
-`tests/e2e/` — Playwright. `request` fixture'idan foydalanadiganlari brauzersiz
-va backendsiz ishlaydi; `page` ishlatadiganlari uchun tirik backend kerak.
+Ikki qatlam, nimaga muhtojligiga qarab ajratilgan. To'liq hujjat:
+`docs/E2E_TESTS.md`.
 
-- `auth-route-protection.spec.ts` — bypass regressiyasi
-- `ai-actions.spec.ts` — action allowlist
-- `ai-rate-limit.spec.ts` — auth + rate limit
-- `design-tokens.spec.ts` — hisoblangan kontrast (ikkala mavzuda)
+- **`tests/unit/`** (vitest) — sof mantiq, serversiz, brauzersiz: `rbac`,
+  `verifyAccessToken`, `normalizeMessages`, AI action allowlist,
+  `isValidAdminSecret`, rate limit, `useLocalStorageState`. Sukut muhit —
+  `node`; jsdom kerak bo'lsa fayl boshiga `// @vitest-environment jsdom`
+  yoziladi (jsdom'ning `TextEncoder` i boshqa realm'dan qaytaradi, `jose` uni
+  rad etadi).
+- **`tests/e2e/local/`** (Playwright) — lokal build, **backendsiz**. CI'da
+  **bloklaydi**. `JWT_ACCESS_SECRET` server bilan bir xil bo'lishi shart, aks
+  holda imzolangan token testlari yiqilmaydi, **skip bo'ladi**.
+- **`tests/e2e/smoke/`** — tirik backend va haqiqiy login talab qiladi. CI'da
+  `continue-on-error`, chunki u commit'ga aloqasiz sabablarga ko'ra yiqiladi.
+
+```bash
+npm run test:unit        # tez
+npm run test:e2e:local   # bloklaydigan to'plam
+npm run test:e2e:smoke   # deploy qilingan URL'ga qarshi
+```
 
 Ikki odat:
 
@@ -136,7 +151,15 @@ Ikki odat:
    process'ida yashaydi. Testlar har safar yangi `sub` generatsiya qiladi, aks
    holda spec bir marta o'tib, ikkinchi run'da yiqiladi.
 
----
+## CI
+
+`.github/workflows/ci.yml`. `verify` job **boshdan-oxir bloklaydi**: typecheck,
+lint, `design:audit`, unit testlar, build, so'ng `tests/e2e/local`. Faqat
+`smoke` job'ida `continue-on-error` bor.
+
+Ilgari lint ham, butun e2e job ham bloklamas edi. Hisobot berib, yelka qisadigan
+qorovul hammani uni e'tiborsiz qoldirishga o'rgatadi — bu qorovul yo'qligidan
+yomonroq.
 
 ## Ma'lum kamchiliklar
 
