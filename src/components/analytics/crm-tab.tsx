@@ -159,7 +159,7 @@ export function CRMTab() {
               ))}
             </div>
           ) : insights.length === 0 ? (
-            <div className="bg-card border border-border rounded-2xl p-6 text-sm text-muted-foreground">
+            <div className="bg-card border border-border rounded-2xl p-6 text-body text-muted-foreground">
               No insights yet — add more leads to see patterns.
             </div>
           ) : (
@@ -176,8 +176,8 @@ export function CRMTab() {
       <div>
         <SectionHeader title="Top Admins" subtitle="Lead handlers ranked by volume" />
         <div className="bg-card border border-border rounded-2xl overflow-hidden">
-          <table className="w-full text-sm">
-            <thead className="bg-muted/50 text-xs uppercase tracking-wider text-muted-foreground">
+          <table className="w-full text-body">
+            <thead className="bg-muted/50 text-caption uppercase tracking-wider text-muted-foreground">
               <tr>
                 <th className="text-left font-semibold px-4 py-3">Admin</th>
                 <th className="text-right font-semibold px-4 py-3">Leads</th>

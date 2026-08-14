@@ -99,8 +99,8 @@ export default function OrganizationsTable({
           <AlertCircle className="size-5 text-destructive" />
         </div>
         <div className="text-center">
-          <p className="font-medium text-sm">{t('orgs.load_failed')}</p>
-          <p className="text-muted-foreground text-xs mt-1">{t('check_connection')}</p>
+          <p className="text-h4">{t('orgs.load_failed')}</p>
+          <p className="text-muted-foreground text-caption mt-1">{t('check_connection')}</p>
         </div>
         <Button variant="outline" size="sm" onClick={() => refetch()}>
           <RefreshCw className="mr-2 size-3.5" />
@@ -141,7 +141,7 @@ export default function OrganizationsTable({
           <select
             value={statusFilter}
             onChange={(e) => { setStatusFilter(e.target.value as OrganizationStatus | ''); setPage(1); }}
-            className="h-8 rounded-lg border border-input bg-background px-3 text-sm text-foreground outline-none focus:ring-2 focus:ring-ring transition-colors"
+            className="h-8 rounded-lg border border-input bg-background px-3 text-body text-foreground outline-none focus:ring-2 focus:ring-ring transition-colors"
           >
             <option value="">{t('orgs.all_statuses')}</option>
             <option value="ACTIVE">{t('active')}</option>
@@ -212,13 +212,13 @@ export default function OrganizationsTable({
                     <TableCell className="pl-4">
                       <div className="flex items-center gap-3">
                         <Avatar className="size-8">
-                          <AvatarFallback className="text-xs font-semibold edu-gradient-avatar">
+                          <AvatarFallback className="text-caption edu-gradient-avatar">
                             {org.name.charAt(0).toUpperCase()}
                           </AvatarFallback>
                         </Avatar>
                         <div className="min-w-0">
                           <p className="font-medium truncate">{org.name}</p>
-                          <p className="text-xs text-muted-foreground truncate">{org.email}</p>
+                          <p className="text-caption text-muted-foreground truncate">{org.email}</p>
                         </div>
                       </div>
                     </TableCell>
@@ -281,7 +281,7 @@ export default function OrganizationsTable({
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3 min-w-0">
                       <Avatar className="size-10 shrink-0">
-                        <AvatarFallback className="text-sm font-semibold edu-gradient-avatar">
+                        <AvatarFallback className="text-h4 edu-gradient-avatar">
                           {org.name.charAt(0).toUpperCase()}
                         </AvatarFallback>
                       </Avatar>
@@ -299,7 +299,7 @@ export default function OrganizationsTable({
                       />
                     </div>
                   </div>
-                  <p className="mt-3 text-xs text-muted-foreground">
+                  <p className="mt-3 text-caption text-muted-foreground">
                     {t('orgs_created_line', { date: new Date(org.created_at).toLocaleDateString(locale, { year: 'numeric', month: 'short', day: 'numeric' }), count: org.usersCount })}
                   </p>
                 </CardContent>
@@ -310,7 +310,7 @@ export default function OrganizationsTable({
 
         {/* Pagination */}
         {meta && meta.pages > 1 && (
-          <div className="flex items-center justify-between text-sm">
+          <div className="flex items-center justify-between text-body">
             <p className="text-muted-foreground">
               {t('showing_page', { page, pages: meta.pages, total: meta.total })}
             </p>
@@ -407,10 +407,10 @@ function EmptyState({
         <Building2 className="h-8 w-8 text-background" />
       </div>
       <div className="text-center">
-        <h3 className="text-lg font-semibold">
+        <h3 className="text-h3">
           {hasFilters ? t('orgs.none_found') : t('orgs_none_yet')}
         </h3>
-        <p className="text-muted-foreground text-sm mt-1 text-center max-w-sm">
+        <p className="text-muted-foreground text-body mt-1 text-center max-w-sm">
           {hasFilters ? t('adjust_filters') : t('orgs_create_first')}
         </p>
       </div>

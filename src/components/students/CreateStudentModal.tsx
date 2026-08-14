@@ -245,7 +245,7 @@ export function CreateStudentModal({ open: externalOpen, onClose }: CreateStuden
                 </p>
               </div>
               {coursePrice > 0 && (
-                <div className="flex flex-col gap-1 text-xs">
+                <div className="flex flex-col gap-1 text-caption">
                   <div className="flex items-center justify-between text-muted-foreground">
                     <span>{t('course_price')}</span>
                     <span className="tabular-nums">{coursePrice.toLocaleString()} сом</span>

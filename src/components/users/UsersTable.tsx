@@ -90,7 +90,7 @@ export function UsersTable() {
           <AlertCircle className="size-5 text-destructive" />
         </div>
         <div className="text-center">
-          <p className="font-medium text-sm">{t('users.load_failed')}</p>
+          <p className="text-h4">{t('users.load_failed')}</p>
           <Button variant="outline" size="sm" onClick={() => refetch()} className="mt-4">
             <RefreshCw className="mr-2 size-3.5" />
             {t('retry')}
@@ -133,7 +133,7 @@ export function UsersTable() {
             setRoleFilter(e.target.value as UserRole | '');
             setPage(1);
           }}
-          className="h-9 rounded-lg border border-input bg-background px-3 text-sm text-foreground focus:ring-2 focus:ring-ring transition-colors outline-none"
+          className="h-9 rounded-lg border border-input bg-background px-3 text-body text-foreground focus:ring-2 focus:ring-ring transition-colors outline-none"
         >
           <option value="">{t('users.all_roles')}</option>
           <option value="ADMIN">Admin</option>
@@ -189,8 +189,8 @@ export function UsersTable() {
                 <TableCell colSpan={5} className="py-24 text-center">
                   <div className="flex flex-col items-center gap-2">
                     <Shield className="size-8 text-muted-foreground/50" />
-                    <p className="text-sm font-medium">{t('users.none_found')}</p>
-                    <p className="text-xs text-muted-foreground">
+                    <p className="text-h4">{t('users.none_found')}</p>
+                    <p className="text-caption text-muted-foreground">
                       {search || roleFilter ? t('adjust_filters') : t('invite_first')}
                     </p>
                     {(search || roleFilter) && (
@@ -207,19 +207,19 @@ export function UsersTable() {
                   <TableCell className="pl-4">
                     <div className="flex items-center gap-3">
                       <Avatar className="size-8">
-                        <AvatarFallback className="text-xs font-semibold bg-primary/10 text-primary">
+                        <AvatarFallback className="text-caption bg-primary/10 text-primary">
                           {user.full_name.charAt(0).toUpperCase()}
                         </AvatarFallback>
                       </Avatar>
                       <div className="min-w-0">
-                        <p className="font-medium text-sm truncate">{user.full_name}</p>
+                        <p className="text-h4 truncate">{user.full_name}</p>
                         <p className="text-caption text-muted-foreground truncate">{user.email}</p>
                       </div>
                     </div>
                   </TableCell>
                   <TableCell>{getRoleBadge(user.role)}</TableCell>
                   <TableCell>
-                    <div className="flex flex-col gap-1 text-xs text-muted-foreground">
+                    <div className="flex flex-col gap-1 text-caption text-muted-foreground">
                       <span className="flex items-center gap-1">
                         <Mail className="size-3" /> {user.email}
                       </span>
@@ -230,7 +230,7 @@ export function UsersTable() {
                       )}
                     </div>
                   </TableCell>
-                  <TableCell className="text-xs text-muted-foreground">
+                  <TableCell className="text-caption text-muted-foreground">
                     {format(new Date(user.created_at), 'MMM d, yyyy')}
                   </TableCell>
                   <TableCell className="text-right pr-4">
@@ -267,7 +267,7 @@ export function UsersTable() {
                   </AvatarFallback>
                 </Avatar>
                 <div>
-                  <p className="font-medium text-sm">{user.full_name}</p>
+                  <p className="text-h4">{user.full_name}</p>
                   <div className="mt-1">{getRoleBadge(user.role)}</div>
                 </div>
               </div>
@@ -282,7 +282,7 @@ export function UsersTable() {
       {/* ── Pagination ── */}
       {meta && meta.pages > 1 && (
         <div className="flex items-center justify-between pt-4 border-t border-border/50">
-          <p className="text-xs text-muted-foreground">
+          <p className="text-caption text-muted-foreground">
             {t('page_of', { page, pages: meta.pages })}
           </p>
           <div className="flex items-center gap-2">

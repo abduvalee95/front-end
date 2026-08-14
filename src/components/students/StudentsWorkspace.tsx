@@ -334,8 +334,8 @@ export function StudentsWorkspace() {
       <div className="overflow-hidden rounded-2xl border border-border/60 bg-background shadow-sm">
         <div className="flex items-center justify-between border-b border-border/60 px-5 py-3.5">
           <div>
-            <p className="text-sm font-bold text-foreground">{t('student_roster')}</p>
-            <p className="text-xs text-muted-foreground mt-0.5">
+            <p className="text-h4 text-foreground">{t('student_roster')}</p>
+            <p className="text-caption text-muted-foreground mt-0.5">
               {effectiveViewMode === 'all'
                 ? `${studentsQuery.data?.meta.total ?? rows.length} ${t('students_total')}`
                 : `${rows.length} ${t('students_from_teacher')}`}
@@ -414,7 +414,7 @@ export function StudentsWorkspace() {
         {/* Pagination */}
         {effectiveViewMode === 'all' && studentsQuery.data?.meta && studentsQuery.data.meta.pages > 1 && (
           <div className="flex items-center justify-between border-t border-border/50 px-5 py-3">
-            <p className="text-xs text-muted-foreground">
+            <p className="text-caption text-muted-foreground">
               Page <span className="font-bold text-foreground">{page}</span> {t('page_of')}{' '}
               <span className="font-bold text-foreground">{studentsQuery.data.meta.pages}</span>
               <span className="mx-2 text-border">·</span>

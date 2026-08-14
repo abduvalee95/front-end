@@ -91,15 +91,15 @@ export default function AdminSettingsPage() {
           <p className="mb-1 flex items-center gap-1.5 tabular-nums text-caption font-bold uppercase tracking-normal text-primary/70">
             <Settings className="size-3" /> {t('system_administration')}
           </p>
-          <h1 className="text-2xl font-semibold tracking-tight text-foreground">{t('settings.title')}</h1>
-          <p className="mt-0.5 text-sm text-muted-foreground">{t('settings.subtitle')}</p>
+          <h1 className="text-h1 tracking-tight text-foreground">{t('settings.title')}</h1>
+          <p className="mt-0.5 text-body text-muted-foreground">{t('settings.subtitle')}</p>
         </div>
         <div className="mt-1 flex shrink-0 items-center gap-2 rounded-full border border-success/25 bg-success/10 px-3.5 py-2">
           <span className="relative flex size-2">
             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-success opacity-75" />
             <span className="relative inline-flex size-2 rounded-full bg-success" />
           </span>
-          <span className="text-xs font-semibold text-success-emphasis">{t('all_operational')}</span>
+          <span className="text-caption text-success-emphasis">{t('all_operational')}</span>
         </div>
       </div>
 
@@ -134,9 +134,9 @@ export default function AdminSettingsPage() {
                   </div>
                   <div className="min-w-0">
                     <p
-                      className={`truncate text-xs font-bold leading-tight ${
-                        active ? 'text-foreground' : 'text-foreground/80'
-                      }`}
+                      className={`truncate text-caption leading-tight ${
+ active ? 'text-foreground' : 'text-foreground/80'
+ }`}
                     >
                       {t(item.labelKey)}
                     </p>

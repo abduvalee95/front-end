@@ -58,7 +58,7 @@ export function ChartFrame({
       <div className="flex items-start justify-between mb-4">
         <div>
           <h3 className="font-semibold text-foreground">{title}</h3>
-          {subtitle && <p className="text-xs text-muted-foreground mt-1">{subtitle}</p>}
+          {subtitle && <p className="text-caption text-muted-foreground mt-1">{subtitle}</p>}
         </div>
         {action}
       </div>
@@ -66,7 +66,7 @@ export function ChartFrame({
         {isLoading ? (
           <Skeleton className="h-full w-full rounded-xl" />
         ) : isEmpty ? (
-          <div className="h-full w-full flex items-center justify-center text-sm text-muted-foreground">
+          <div className="h-full w-full flex items-center justify-center text-body text-muted-foreground">
             {emptyText}
           </div>
         ) : (
@@ -314,10 +314,10 @@ export function FunnelChart({ stages }: { stages: FunnelStage[] }) {
         return (
           <div key={s.label}>
             <div className="flex items-baseline justify-between mb-1">
-              <span className="text-sm font-medium">{s.label}</span>
-              <span className="text-sm tabular-nums text-muted-foreground">
+              <span className="text-h4">{s.label}</span>
+              <span className="text-body tabular-nums text-muted-foreground">
                 {s.value.toLocaleString()}
-                {i > 0 && <span className="ml-2 text-xs">({drop}%)</span>}
+                {i > 0 && <span className="ml-2 text-caption">({drop}%)</span>}
               </span>
             </div>
             <div className="h-10 rounded-lg bg-muted/50 overflow-hidden">

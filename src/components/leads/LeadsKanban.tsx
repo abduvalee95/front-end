@@ -115,7 +115,7 @@ export function LeadsKanban({ leads, isLoading, onAIAction }: LeadsKanbanProps) 
             <div className="flex items-center justify-between px-2">
               <div className="flex items-center gap-2">
                 <div className={cn("size-2 rounded-full", col.color)} />
-                <h3 className="font-bold text-sm uppercase tracking-wider text-muted-foreground">
+                <h3 className="text-h4 uppercase tracking-wider text-muted-foreground">
                   {col.label}
                 </h3>
               </div>
@@ -137,7 +137,7 @@ export function LeadsKanban({ leads, isLoading, onAIAction }: LeadsKanbanProps) 
                   )}
                 >
                   <div className="flex justify-between items-start mb-2">
-                    <h4 className="font-bold text-sm leading-tight group-hover:text-primary-emphasis transition-colors">
+                    <h4 className="text-h4 leading-tight group-hover:text-primary-emphasis transition-colors">
                       {lead.full_name}
                     </h4>
                     <DropdownMenu>
@@ -184,11 +184,11 @@ export function LeadsKanban({ leads, isLoading, onAIAction }: LeadsKanbanProps) 
                   </div>
 
                   <div className="space-y-2">
-                    <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                    <div className="flex items-center gap-2 text-caption text-muted-foreground">
                       <Phone className="size-3" />
                       {lead.phone}
                     </div>
-                    <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                    <div className="flex items-center gap-2 text-caption text-muted-foreground">
                       <Clock className="size-3" />
                       {format(parseISO(lead.created_at), 'MMM d, yyyy')}
                     </div>
@@ -226,7 +226,7 @@ export function LeadsKanban({ leads, isLoading, onAIAction }: LeadsKanbanProps) 
               ))}
               
               {columnLeads.length === 0 && (
-                <div className="flex-1 flex items-center justify-center text-xs text-muted-foreground italic text-center p-8">
+                <div className="flex-1 flex items-center justify-center text-caption text-muted-foreground italic text-center p-8">
                   {t('drop_leads')}
                 </div>
               )}

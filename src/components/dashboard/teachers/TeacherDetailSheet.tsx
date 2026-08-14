@@ -86,7 +86,7 @@ export function TeacherDetailSheet({
         <SheetHeader className="px-6 py-5 border-b">
           <div className="flex items-center gap-3">
             <Avatar className="size-12 shrink-0">
-              <AvatarFallback className="text-lg font-semibold edu-gradient-avatar">
+              <AvatarFallback className="text-h3 edu-gradient-avatar">
                 {teacher.full_name?.charAt(0).toUpperCase() || 'T'}
               </AvatarFallback>
             </Avatar>
@@ -108,7 +108,7 @@ export function TeacherDetailSheet({
           <TabsContent value="info" className="flex-1 overflow-y-auto px-6 py-5 space-y-6 mt-0">
             {/* Contact Info */}
             <div className="space-y-3">
-              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">
+              <p className="text-caption text-muted-foreground uppercase tracking-widest">
                 {t('contact_info')}
               </p>
               <InfoRow icon={<Mail className="size-4" />} label={t('email')} value={teacher.email} />
@@ -124,24 +124,24 @@ export function TeacherDetailSheet({
 
             {/* Professional Info */}
             <div className="space-y-3">
-              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">
+              <p className="text-caption text-muted-foreground uppercase tracking-widest">
                 {t('professional_details')}
               </p>
               <div className="space-y-2">
                 <div className="flex items-start gap-3">
                   <BookOpen className="size-4 text-muted-foreground mt-0.5 shrink-0" />
                   <div>
-                    <p className="text-xs text-muted-foreground">{t('subjects')}</p>
+                    <p className="text-caption text-muted-foreground">{t('subjects')}</p>
                     {teacher.subjects?.length > 0 ? (
                       <div className="flex flex-wrap gap-1.5 mt-1">
                         {teacher.subjects.map((s) => (
-                          <Badge key={s} variant="secondary" className="text-xs">
+                          <Badge key={s} variant="secondary" className="text-caption">
                             {s.replace(/_/g, ' ')}
                           </Badge>
                         ))}
                       </div>
                     ) : (
-                      <p className="text-sm">—</p>
+                      <p className="text-body">—</p>
                     )}
                   </div>
                 </div>
@@ -149,10 +149,10 @@ export function TeacherDetailSheet({
               <div className="flex items-start gap-3">
                 <DollarSign className="size-4 text-muted-foreground shrink-0 mt-0.5" />
                 <div className="min-w-0 flex-1">
-                  <p className="text-xs text-muted-foreground">
+                  <p className="text-caption text-muted-foreground">
                     {teacher.salary_type === 'DAILY' ? t('daily_rate_label') : t('monthly_salary_label')}
                   </p>
-                  <p className="text-sm font-medium">
+                  <p className="text-h4">
                     {teacher.hourly_rate ? formatKGS(teacher.hourly_rate) : '—'}
                   </p>
                   {teacher.salary_type === 'DAILY' && teacher.hourly_rate && (
@@ -161,7 +161,7 @@ export function TeacherDetailSheet({
                         {format(now, 'MMMM yyyy')} — {t('worked_days')}:{' '}
                         <span className="font-bold text-foreground">{workedDays}</span>
                       </p>
-                      <p className="text-xs font-bold text-success-emphasis mt-0.5">
+                      <p className="text-caption text-success-emphasis mt-0.5">
                         {t('calculated')}: {formatKGS(calculatedSalary ?? 0)}
                       </p>
                     </div>
@@ -169,7 +169,7 @@ export function TeacherDetailSheet({
                   {teacher.salary_type === 'MONTHLY' && teacher.hourly_rate && (
                     <div className="mt-1.5 rounded-lg bg-success-muted dark:bg-success/10 px-2.5 py-1.5">
                       <p className="text-caption text-muted-foreground">{format(now, 'MMMM yyyy')} — {t('monthly_label')}</p>
-                      <p className="text-xs font-bold text-success-emphasis mt-0.5">
+                      <p className="text-caption text-success-emphasis mt-0.5">
                         {formatKGS(teacher.hourly_rate)}
                       </p>
                     </div>
@@ -185,8 +185,8 @@ export function TeacherDetailSheet({
                 <div className="flex items-start gap-3">
                   <GraduationCap className="size-4 text-muted-foreground mt-0.5 shrink-0" />
                   <div>
-                    <p className="text-xs text-muted-foreground">{t('bio')}</p>
-                    <p className="text-sm mt-0.5">{teacher.bio}</p>
+                    <p className="text-caption text-muted-foreground">{t('bio')}</p>
+                    <p className="text-body mt-0.5">{teacher.bio}</p>
                   </div>
                 </div>
               )}
@@ -246,8 +246,8 @@ function InfoRow({
     <div className="flex items-center gap-3">
       <span className="text-muted-foreground shrink-0">{icon}</span>
       <div className="min-w-0">
-        <p className="text-xs text-muted-foreground">{label}</p>
-        <p className="text-sm truncate">{value}</p>
+        <p className="text-caption text-muted-foreground">{label}</p>
+        <p className="text-body truncate">{value}</p>
       </div>
     </div>
   );

@@ -59,7 +59,7 @@ export default function OrganizationDetailPage() {
     return (
       <div className="flex flex-col items-center justify-center py-32 gap-4">
         <AlertCircle className="h-10 w-10 text-danger-emphasis" />
-        <p className="text-background/50 text-sm">Ошибка при загрузке данных</p>
+        <p className="text-background/50 text-body">Ошибка при загрузке данных</p>
         <Button variant="outline" size="sm" onClick={() => refetch()} className="border-border text-background">
           <RefreshCw className="mr-2 h-4 w-4" /> Повторить
         </Button>
@@ -73,7 +73,7 @@ export default function OrganizationDetailPage() {
       <div className="flex flex-col items-center justify-center py-32 gap-4">
         <Building2 className="h-10 w-10 text-background/10" />
         <p className="text-background/40 font-bold">Tashkilot topilmadi</p>
-        <Link href="/admin/organizations" className="text-primary hover:underline text-sm">
+        <Link href="/admin/organizations" className="text-primary hover:underline text-body">
           Ro&apos;yxatga qaytish
         </Link>
       </div>
@@ -94,18 +94,18 @@ export default function OrganizationDetailPage() {
       <div className="flex flex-col gap-4">
         <Link
           href="/admin/organizations"
-          className="flex items-center gap-2 text-background/40 hover:text-background transition-colors text-sm font-medium w-fit"
+          className="flex items-center gap-2 text-background/40 hover:text-background transition-colors text-h4 w-fit"
         >
           <ArrowLeft size={16} /> Orqaga qaytish
         </Link>
 
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="flex items-center gap-4">
-            <div className="h-14 w-14 rounded-2xl bg-primary/20 border border-primary/30 flex items-center justify-center text-primary font-bold text-xl shrink-0">
+            <div className="h-14 w-14 rounded-2xl bg-primary/20 border border-primary/30 flex items-center justify-center text-primary text-h2 shrink-0">
               {org.name.charAt(0).toUpperCase()}
             </div>
             <div>
-              <h1 className="text-2xl font-semibold text-background tracking-tight">{org.name}</h1>
+              <h1 className="text-h1 text-background tracking-tight">{org.name}</h1>
               <OrganizationStatusBadge status={org.status} />
             </div>
           </div>
@@ -143,8 +143,8 @@ export default function OrganizationDetailPage() {
                 <d.icon className="h-5 w-5 text-background/40" />
               </div>
               <div className="min-w-0">
-                <p className="text-xs font-medium text-background/40 uppercase tracking-wider">{d.label}</p>
-                <p className="text-sm font-semibold text-background mt-1 truncate">{d.value}</p>
+                <p className="text-caption text-background/40 uppercase tracking-wider">{d.label}</p>
+                <p className="text-h4 text-background mt-1 truncate">{d.value}</p>
               </div>
             </CardContent>
           </Card>

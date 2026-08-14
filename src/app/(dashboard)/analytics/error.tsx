@@ -15,8 +15,8 @@ export default function AnalyticsError({
       <div className="inline-flex h-16 w-16 rounded-2xl bg-danger/10 text-danger-emphasis items-center justify-center">
         <AlertTriangle className="h-8 w-8" />
       </div>
-      <h1 className="text-2xl font-bold">Analytics failed to load</h1>
-      <p className="text-sm text-muted-foreground">{error.message || 'Unexpected error.'}</p>
+      <h1 className="text-h1">Analytics failed to load</h1>
+      <p className="text-body text-muted-foreground">{error.message || 'Unexpected error.'}</p>
       <Button onClick={reset}>Try again</Button>
     </div>
   );

@@ -39,7 +39,7 @@ export function NotificationsSection({
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         <Card className="lg:col-span-2 rounded-2xl border-border shadow-sm overflow-hidden">
           <CardHeader className="pb-4 border-b border-border/60 bg-muted/40">
-            <CardTitle className="text-base font-semibold">{t('settings.notif_prefs')}</CardTitle>
+            <CardTitle className="text-h3">{t('settings.notif_prefs')}</CardTitle>
             <CardDescription>{t('settings.notif_prefs_desc')}</CardDescription>
           </CardHeader>
           <CardContent className="pt-6 space-y-3">
@@ -75,7 +75,7 @@ export function NotificationsSection({
                 value={webhookUrl}
                 onChange={(e) => setWebhookUrl(e.target.value)}
                 placeholder="https://hooks.slack.com/services/..."
-                className="rounded-xl bg-muted/50 border-border tabular-nums text-sm h-9"
+                className="rounded-xl bg-muted/50 border-border tabular-nums text-body h-9"
               />
               <p className="text-caption text-muted-foreground mt-1">{t('settings.webhook_desc')}</p>
             </FormField>
@@ -87,7 +87,7 @@ export function NotificationsSection({
 
         <Card className="rounded-2xl border-border shadow-sm h-fit">
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-semibold">{t('settings.channel_summary')}</CardTitle>
+            <CardTitle className="text-h4">{t('settings.channel_summary')}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-2.5">
             {[
@@ -98,7 +98,7 @@ export function NotificationsSection({
               { ch: 'Webhook', active: !!webhookUrl },
             ].map((c) => (
               <div key={c.ch} className="flex items-center justify-between py-0.5">
-                <span className="text-xs font-medium text-muted-foreground">{c.ch}</span>
+                <span className="text-caption text-muted-foreground">{c.ch}</span>
                 {c.active ? (
                   <Badge className="bg-success/15 text-success-emphasis border-success/25 rounded-lg text-caption gap-1 h-5">
                     <CheckCircle2 className="size-2.5" /> {t('active')}

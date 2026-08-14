@@ -101,7 +101,7 @@ export function ProfileTab({ user, profileData, handleProfileChange }: ProfileTa
             <div className="relative">
               <Avatar className="size-24 border-4 border-card shadow-card">
                 <AvatarImage src={profileData.avatar_url} />
-                <AvatarFallback className="bg-primary text-2xl font-bold text-primary-foreground">
+                <AvatarFallback className="bg-primary text-h1 text-primary-foreground">
                   {profileData.full_name?.charAt(0).toUpperCase() || 'U'}
                 </AvatarFallback>
               </Avatar>
@@ -245,7 +245,7 @@ export function ProfileTab({ user, profileData, handleProfileChange }: ProfileTa
               </div>
               {passwordData.new && (
                 <div className="space-y-2">
-                  <div className="flex justify-between text-xs">
+                  <div className="flex justify-between text-caption">
                     <span className="text-muted-foreground">{t('password_strength')}</span>
                     <span className={
                       getPasswordStrength(passwordData.new) >= 75 ? 'font-medium text-success-emphasis' :

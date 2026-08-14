@@ -90,7 +90,7 @@ export function EditOrganizationModal({ org, onClose }: EditOrganizationModalPro
         <div className="flex-1 overflow-y-auto px-6 py-5">
           <form id="edit-org-form" onSubmit={handleSubmit(onSubmit)} className="space-y-5">
             <div className="space-y-3">
-              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest flex items-center gap-1.5">
+              <p className="text-caption text-muted-foreground uppercase tracking-widest flex items-center gap-1.5">
                 <Building2 className="size-3" /> {t('basic_info')}
               </p>
               <Field label={`${t('name')} *`} error={errors.name?.message}>
@@ -107,7 +107,7 @@ export function EditOrganizationModal({ org, onClose }: EditOrganizationModalPro
             <Separator />
 
             <div className="space-y-3">
-              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest flex items-center gap-1.5">
+              <p className="text-caption text-muted-foreground uppercase tracking-widest flex items-center gap-1.5">
                 <MessageSquare className="size-3" /> {tSettings('integrations')}
               </p>
               <Field label={tSettings('chat_id')}>
@@ -145,9 +145,9 @@ function Field({
 }) {
   return (
     <div className="space-y-1.5">
-      <Label className="text-xs">{label}</Label>
+      <Label className="text-caption">{label}</Label>
       {children}
-      {error && <p className="text-xs text-destructive">{error}</p>}
+      {error && <p className="text-caption text-destructive">{error}</p>}
     </div>
   );
 }

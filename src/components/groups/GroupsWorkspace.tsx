@@ -186,7 +186,7 @@ export function GroupsWorkspace() {
               <select
                 value={courseFilter}
                 onChange={(e) => setCourseFilter(e.target.value)}
-                className="h-9 rounded-lg border border-input bg-background px-3 text-sm text-foreground outline-none transition-colors focus:ring-2 focus:ring-ring"
+                className="h-9 rounded-lg border border-input bg-background px-3 text-body text-foreground outline-none transition-colors focus:ring-2 focus:ring-ring"
               >
                 <option value="">{t('all_courses')}</option>
                 {courses.map((c) => (
@@ -232,7 +232,7 @@ export function GroupsWorkspace() {
               <div className="mb-4 flex size-14 items-center justify-center rounded-2xl bg-destructive/10 text-destructive">
                 <AlertCircle className="size-7" />
               </div>
-              <h3 className="text-lg font-bold">{t('failed_load')}</h3>
+              <h3 className="text-h3">{t('failed_load')}</h3>
               <Button variant="outline" size="sm" onClick={refresh} className="mt-4">
                 <RefreshCw className="mr-2 size-3.5" /> {tCommon('try_again')}
               </Button>
@@ -242,8 +242,8 @@ export function GroupsWorkspace() {
               <div className="mb-4 flex size-14 items-center justify-center rounded-2xl bg-muted text-muted-foreground">
                 <Users2 className="size-7" />
               </div>
-              <h3 className="text-lg font-bold">{search || courseFilter ? t('no_matching') : t('no_groups_yet')}</h3>
-              <p className="mt-2 max-w-sm text-sm text-muted-foreground">
+              <h3 className="text-h3">{search || courseFilter ? t('no_matching') : t('no_groups_yet')}</h3>
+              <p className="mt-2 max-w-sm text-body text-muted-foreground">
                 {canManage ? t('empty_admin') : t('empty_viewer')}
               </p>
               {(search || courseFilter) && (
@@ -276,7 +276,7 @@ export function GroupsWorkspace() {
                           </Avatar>
                           <Link
                             href={`/groups/${group.id}`}
-                            className="text-sm font-bold text-foreground hover:underline hover:text-primary transition-colors"
+                            className="text-h4 text-foreground hover:underline hover:text-primary transition-colors"
                           >
                             {group.name}
                           </Link>
@@ -287,10 +287,10 @@ export function GroupsWorkspace() {
                           {group.course?.title ?? '—'}
                         </Badge>
                       </TableCell>
-                      <TableCell className="text-sm text-muted-foreground">
+                      <TableCell className="text-body text-muted-foreground">
                         {group.teacher?.full_name ?? '—'}
                       </TableCell>
-                      <TableCell className="text-sm text-muted-foreground">
+                      <TableCell className="text-body text-muted-foreground">
                         <div className="flex items-center gap-1.5">
                           <Calendar className="size-3.5" />
                           <span>{formatDate(group.start_date)} — {formatDate(group.end_date)}</span>

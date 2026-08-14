@@ -14,7 +14,7 @@ export function SecurityTab() {
     <div className="space-y-6 transition-all duration-300 animate-in fade-in slide-in-from-bottom-4">
       <Card className="border-border shadow-sm">
         <CardHeader className="border-b border-border">
-          <CardTitle className="text-lg font-semibold flex items-center gap-2">
+          <CardTitle className="text-h3 flex items-center gap-2">
             <ShieldCheck className="size-5 text-primary" />
             {t('security_settings')}
           </CardTitle>
@@ -27,8 +27,8 @@ export function SecurityTab() {
                 <Smartphone className="size-5 text-primary-emphasis" />
               </div>
               <div>
-                <p className="font-semibold text-sm">{t('two_factor_auth')}</p>
-                <p className="text-xs text-muted-foreground">{t('two_factor_auth_desc')}</p>
+                <p className="text-h4">{t('two_factor_auth')}</p>
+                <p className="text-caption text-muted-foreground">{t('two_factor_auth_desc')}</p>
               </div>
             </div>
             <Badge variant="secondary">{t('coming_soon')}</Badge>
@@ -40,8 +40,8 @@ export function SecurityTab() {
                 <Clock className="size-5 text-primary-emphasis" />
               </div>
               <div>
-                <p className="font-semibold text-sm">{t('session_timeout')}</p>
-                <p className="text-xs text-muted-foreground">{t('session_timeout_desc')}</p>
+                <p className="text-h4">{t('session_timeout')}</p>
+                <p className="text-caption text-muted-foreground">{t('session_timeout_desc')}</p>
               </div>
             </div>
             <Switch defaultChecked />
@@ -53,8 +53,8 @@ export function SecurityTab() {
                 <Mail className="size-5 text-warning-emphasis" />
               </div>
               <div>
-                <p className="font-semibold text-sm">{t('login_notifications')}</p>
-                <p className="text-xs text-muted-foreground">{t('login_notifications_desc')}</p>
+                <p className="text-h4">{t('login_notifications')}</p>
+                <p className="text-caption text-muted-foreground">{t('login_notifications_desc')}</p>
               </div>
             </div>
             <Switch />
@@ -64,7 +64,7 @@ export function SecurityTab() {
 
       <Alert className="border-warning/50 bg-warning-muted/20">
         <AlertCircle className="size-4 text-warning-emphasis" />
-        <AlertDescription className="text-sm text-warning-emphasis">
+        <AlertDescription className="text-body text-warning-emphasis">
           {t('security_features_coming')}
         </AlertDescription>
       </Alert>

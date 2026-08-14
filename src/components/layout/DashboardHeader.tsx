@@ -133,7 +133,7 @@ export function DashboardHeader() {
                     <Bell className="size-4" />
                   </div>
                   <div className="space-y-0.5 flex-1 min-w-0">
-                    <p className="text-xs font-semibold text-foreground line-clamp-1">New student enrollment</p>
+                    <p className="text-caption text-foreground line-clamp-1">New student enrollment</p>
                     <p className="text-caption text-muted-foreground font-medium">2 minutes ago</p>
                   </div>
                 </DropdownMenuItem>
@@ -141,7 +141,7 @@ export function DashboardHeader() {
             </DropdownMenuGroup>
             
             <div className="mt-3 px-1">
-              <Button variant="ghost" className="w-full h-9 rounded-xl text-xs font-bold text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors">
+              <Button variant="ghost" className="w-full h-9 rounded-xl text-caption text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors">
                 {t('mark_all_read')}
               </Button>
             </div>
@@ -168,23 +168,23 @@ export function DashboardHeader() {
             <DropdownMenuGroup>
               <DropdownMenuItem onClick={() => setIsStudentModalOpen(true)} className="flex items-center gap-3 px-3 py-2.5 rounded-xl cursor-pointer focus:bg-muted/50 transition-colors">
                 <div className="p-1.5 rounded-lg bg-primary/10 text-primary-emphasis"><GraduationCap className="size-4" /></div>
-                <span className="font-medium text-sm">{t('add_student')}</span>
+                <span className="text-h4">{t('add_student')}</span>
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => setIsLeadModalOpen(true)} className="flex items-center gap-3 px-3 py-2.5 rounded-xl cursor-pointer focus:bg-muted/50 transition-colors">
                 <div className="p-1.5 rounded-lg bg-success/10 text-success-emphasis"><Users className="size-4" /></div>
-                <span className="font-medium text-sm">{t('add_lead')}</span>
+                <span className="text-h4">{t('add_lead')}</span>
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => setIsTeacherModalOpen(true)} className="flex items-center gap-3 px-3 py-2.5 rounded-xl cursor-pointer focus:bg-muted/50 transition-colors">
                 <div className="p-1.5 rounded-lg bg-primary/10 text-primary-emphasis"><UserPlus className="size-4" /></div>
-                <span className="font-medium text-sm">{t('add_teacher')}</span>
+                <span className="text-h4">{t('add_teacher')}</span>
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => setIsCourseModalOpen(true)} className="flex items-center gap-3 px-3 py-2.5 rounded-xl cursor-pointer focus:bg-muted/50 transition-colors">
                 <div className="p-1.5 rounded-lg bg-warning/10 text-warning-emphasis"><BookOpen className="size-4" /></div>
-                <span className="font-medium text-sm">{t('add_course')}</span>
+                <span className="text-h4">{t('add_course')}</span>
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => setIsGroupModalOpen(true)} className="flex items-center gap-3 px-3 py-2.5 rounded-xl cursor-pointer focus:bg-muted/50 transition-colors">
                 <div className="p-1.5 rounded-lg bg-danger/10 text-danger-emphasis"><Users2 className="size-4" /></div>
-                <span className="font-medium text-sm">{t('add_group')}</span>
+                <span className="text-h4">{t('add_group')}</span>
               </DropdownMenuItem>
             </DropdownMenuGroup>
           </DropdownMenuContent>
@@ -203,7 +203,7 @@ export function DashboardHeader() {
               >
                 <Avatar className="size-8 sm:size-9 border-2 border-background shadow-sm">
                   <AvatarImage src={user?.avatar_url} alt={user?.full_name} />
-                  <AvatarFallback className="bg-primary text-primary-foreground font-bold text-sm">
+                  <AvatarFallback className="bg-primary text-primary-foreground text-h4">
                     {user?.full_name?.split(' ').map(n => n[0]).join('').toUpperCase() || 'U'}
                   </AvatarFallback>
                 </Avatar>
@@ -214,7 +214,7 @@ export function DashboardHeader() {
           <DropdownMenuContent align="end" className="w-64 p-2 rounded-2xl border-border/50 bg-background/95 backdrop-blur-xl shadow-card">
             <div className="px-3 py-2 mb-2 bg-muted/30 rounded-xl">
               <p className="text-caption font-bold text-muted-foreground uppercase tracking-wider">Signed in as</p>
-              <p className="text-sm font-bold text-foreground mt-0.5 line-clamp-1">{user?.email}</p>
+              <p className="text-h4 text-foreground mt-0.5 line-clamp-1">{user?.email}</p>
             </div>
             
             <DropdownMenuGroup>

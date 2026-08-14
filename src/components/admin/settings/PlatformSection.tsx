@@ -45,7 +45,7 @@ export function PlatformSection({
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         <Card className="lg:col-span-2 rounded-2xl border-border shadow-sm overflow-hidden">
           <CardHeader className="pb-4 border-b border-border/60 bg-muted/40">
-            <CardTitle className="text-base font-semibold">{t('settings.core_config')}</CardTitle>
+            <CardTitle className="text-h3">{t('settings.core_config')}</CardTitle>
             <CardDescription>{t('settings.core_config_desc')}</CardDescription>
           </CardHeader>
           <CardContent className="pt-6 space-y-6">
@@ -84,7 +84,7 @@ export function PlatformSection({
             {maintenanceMode ? (
               <Alert className="rounded-xl border-warning/30 bg-warning-muted py-2 px-3 flex-1">
                 <AlertTriangle className="size-3.5 text-warning-emphasis" />
-                <AlertDescription className="text-warning-emphasis text-xs">{t('settings.maintenance_warning')}</AlertDescription>
+                <AlertDescription className="text-warning-emphasis text-caption">{t('settings.maintenance_warning')}</AlertDescription>
               </Alert>
             ) : (
               <div />
@@ -100,12 +100,12 @@ export function PlatformSection({
                 <div className="size-8 rounded-lg bg-card flex items-center justify-center">
                   <Activity className="size-4 text-primary-emphasis" />
                 </div>
-                <CardTitle className="text-sm text-background">{t('settings.system_health')}</CardTitle>
+                <CardTitle className="text-body text-background">{t('settings.system_health')}</CardTitle>
               </div>
             </CardHeader>
             <CardContent className="space-y-2.5 relative">
               {systemMetrics.map((m) => (
-                <div key={m.label} className="flex items-center justify-between text-xs">
+                <div key={m.label} className="flex items-center justify-between text-caption">
                   <span className="text-muted-foreground">{m.label}</span>
                   <span className="font-bold text-primary-emphasis tabular-nums">{m.value}</span>
                 </div>
@@ -116,14 +116,14 @@ export function PlatformSection({
           {maintenanceMode ? (
             <Alert className="rounded-2xl border-warning/30 bg-warning-muted">
               <AlertTriangle className="size-4 text-warning-emphasis" />
-              <AlertTitle className="text-warning-emphasis font-bold text-sm">{t('settings.maintenance_active')}</AlertTitle>
-              <AlertDescription className="text-warning-emphasis text-xs">{t('settings.maintenance_active_desc')}</AlertDescription>
+              <AlertTitle className="text-warning-emphasis text-h4">{t('settings.maintenance_active')}</AlertTitle>
+              <AlertDescription className="text-warning-emphasis text-caption">{t('settings.maintenance_active_desc')}</AlertDescription>
             </Alert>
           ) : (
             <Alert className="rounded-2xl border-success/30 bg-success-muted">
               <Zap className="size-4 text-success-emphasis" />
-              <AlertTitle className="text-success-emphasis font-bold text-sm">{t('settings.platform_live')}</AlertTitle>
-              <AlertDescription className="text-success-emphasis text-xs">{t('settings.platform_live_desc')}</AlertDescription>
+              <AlertTitle className="text-success-emphasis text-h4">{t('settings.platform_live')}</AlertTitle>
+              <AlertDescription className="text-success-emphasis text-caption">{t('settings.platform_live_desc')}</AlertDescription>
             </Alert>
           )}
         </div>

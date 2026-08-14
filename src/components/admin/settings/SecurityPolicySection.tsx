@@ -42,7 +42,7 @@ export function SecurityPolicySection({
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         <Card className="lg:col-span-2 rounded-2xl border-border shadow-sm overflow-hidden">
           <CardHeader className="pb-4 border-b border-border/60 bg-muted/40">
-            <CardTitle className="text-base font-semibold">{t('settings.global_policy')}</CardTitle>
+            <CardTitle className="text-h3">{t('settings.global_policy')}</CardTitle>
             <CardDescription>{t('settings.global_policy_desc')}</CardDescription>
           </CardHeader>
           <CardContent className="pt-6 space-y-3">
@@ -68,7 +68,7 @@ export function SecurityPolicySection({
                   value={ipAllowlist}
                   onChange={(e) => setIpAllowlist(e.target.value)}
                   placeholder={'192.168.1.0/24\n10.0.0.0/8'}
-                  className="bg-muted/50 border-border rounded-xl tabular-nums text-sm min-h-[90px]"
+                  className="bg-muted/50 border-border rounded-xl tabular-nums text-body min-h-[90px]"
                 />
               </div>
             )}
@@ -83,7 +83,7 @@ export function SecurityPolicySection({
             </div>
           </CardContent>
           <CardFooter className="border-t border-border/60 bg-muted/40 p-4 flex justify-between">
-            <Button variant="outline" onClick={() => toast.info(t('settings.security_logs_soon'))} className="rounded-xl border-border gap-2 text-sm">
+            <Button variant="outline" onClick={() => toast.info(t('settings.security_logs_soon'))} className="rounded-xl border-border gap-2 text-body">
               <History className="size-4" /> {t('settings.view_security_logs')}
             </Button>
             <SaveButton isSaving={savingSection === 'security'} onClick={() => handleSave('security')} label={t('settings.update_policy')} />

@@ -30,14 +30,14 @@ export default function ErrorPage({ error, reset }: ErrorProps) {
 
         {/* Message */}
         <div className="space-y-2">
-          <h2 className="text-2xl font-bold tracking-tight text-foreground">
+          <h2 className="text-h1 tracking-tight text-foreground">
             {t('something_went_wrong')}
           </h2>
-          <p className="text-sm text-muted-foreground max-w-sm mx-auto leading-relaxed">
+          <p className="text-body text-muted-foreground max-w-sm mx-auto leading-relaxed">
             {t('try_again')}
           </p>
           {process.env.NODE_ENV === 'development' && error.message && (
-            <pre className="mt-4 rounded-xl border border-danger/30 bg-danger-muted p-3 text-left text-xs text-danger-emphasis dark:border-danger/30 dark:bg-danger-muted/30 dark:text-danger-emphasis overflow-auto max-h-32">
+            <pre className="mt-4 rounded-xl border border-danger/30 bg-danger-muted p-3 text-left text-caption text-danger-emphasis dark:border-danger/30 dark:bg-danger-muted/30 dark:text-danger-emphasis overflow-auto max-h-32">
               {error.message}
             </pre>
           )}
@@ -47,14 +47,14 @@ export default function ErrorPage({ error, reset }: ErrorProps) {
         <div className="flex items-center justify-center gap-3">
           <button
             onClick={reset}
-            className="inline-flex items-center gap-2 rounded-xl border border-border bg-background px-5 py-2.5 text-sm font-semibold text-foreground shadow-sm transition-colors hover:bg-muted"
+            className="inline-flex items-center gap-2 rounded-xl border border-border bg-background px-5 py-2.5 text-h4 text-foreground shadow-sm transition-colors hover:bg-muted"
           >
             <RefreshCw className="size-4" />
             {t('try_again')}
           </button>
           <Link
             href="/"
-            className="inline-flex items-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-sm transition-colors hover:bg-primary/90"
+            className="inline-flex items-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-h4 text-primary-foreground shadow-sm transition-colors hover:bg-primary/90"
           >
             <Home className="size-4" />
             {t('back_home')}

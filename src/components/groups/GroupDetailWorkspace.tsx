@@ -87,8 +87,8 @@ export function GroupDetailWorkspace({ groupId }: GroupDetailWorkspaceProps) {
         <div className="mx-auto mb-5 flex size-16 items-center justify-center rounded-2xl bg-muted text-muted-foreground">
           <AlertCircle className="size-8" />
         </div>
-        <h1 className="text-2xl font-semibold">{t('group_not_found')}</h1>
-        <p className="mt-2 text-sm text-muted-foreground">{t('group_not_found_desc')}</p>
+        <h1 className="text-h1">{t('group_not_found')}</h1>
+        <p className="mt-2 text-body text-muted-foreground">{t('group_not_found_desc')}</p>
         <Link href="/groups">
           <Button variant="outline" className="mt-6">
             <ArrowLeft className="mr-2 size-4" /> {t('back_to_groups')}
@@ -113,7 +113,7 @@ export function GroupDetailWorkspace({ groupId }: GroupDetailWorkspaceProps) {
           </Button>
         </Link>
         <span className="text-muted-foreground">/</span>
-        <span className="text-sm font-semibold text-foreground">{group.name}</span>
+        <span className="text-h4 text-foreground">{group.name}</span>
       </div>
 
       {/* Header */}
@@ -132,8 +132,8 @@ export function GroupDetailWorkspace({ groupId }: GroupDetailWorkspaceProps) {
                   </Badge>
                 )}
               </div>
-              <h1 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">{group.name}</h1>
-              <p className="mt-3 flex items-center gap-2 text-sm text-muted-foreground">
+              <h1 className="text-h1 tracking-tight text-foreground sm:text-h1">{group.name}</h1>
+              <p className="mt-3 flex items-center gap-2 text-body text-muted-foreground">
                 <Calendar className="size-4" />
                 {formatDate(group.start_date)} — {formatDate(group.end_date)}
               </p>
@@ -169,7 +169,7 @@ export function GroupDetailWorkspace({ groupId }: GroupDetailWorkspaceProps) {
       <Card className="border-border bg-card shadow-card backdrop-blur">
         <CardHeader className="px-5 pt-5 sm:px-6 sm:pt-6">
           <div className="flex items-center justify-between">
-            <CardTitle className="flex items-center gap-2 text-lg font-bold">
+            <CardTitle className="flex items-center gap-2 text-h3">
               <Clock className="size-5 text-muted-foreground" />
               {t('weekly_schedule')}
             </CardTitle>
@@ -192,7 +192,7 @@ export function GroupDetailWorkspace({ groupId }: GroupDetailWorkspaceProps) {
           ) : schedule.length === 0 ? (
             <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-border px-6 py-10 text-center">
               <Clock className="mb-3 size-8 text-muted-foreground/50" />
-              <p className="text-sm font-medium text-muted-foreground">{t('no_schedule')}</p>
+              <p className="text-h4 text-muted-foreground">{t('no_schedule')}</p>
             </div>
           ) : (
             <div className="space-y-2">
@@ -202,12 +202,12 @@ export function GroupDetailWorkspace({ groupId }: GroupDetailWorkspaceProps) {
                   className="flex items-center justify-between rounded-xl border border-border/70 bg-muted/30 px-4 py-3"
                 >
                   <div className="flex items-center gap-3">
-                    <span className="w-10 rounded-lg bg-primary/10 px-2 py-0.5 text-center text-xs font-bold text-primary">
+                    <span className="w-10 rounded-lg bg-primary/10 px-2 py-0.5 text-center text-caption text-primary">
                       {DAYS[item.day_of_week]}
                     </span>
-                    <span className="text-sm font-semibold text-foreground">{item.start_time}</span>
+                    <span className="text-h4 text-foreground">{item.start_time}</span>
                   </div>
-                  <span className="text-xs text-muted-foreground">{item.duration_minutes} {t('min')}</span>
+                  <span className="text-caption text-muted-foreground">{item.duration_minutes} {t('min')}</span>
                 </div>
               ))}
             </div>
@@ -219,7 +219,7 @@ export function GroupDetailWorkspace({ groupId }: GroupDetailWorkspaceProps) {
       <Card className="border-border bg-card shadow-card backdrop-blur">
         <CardHeader className="px-5 pt-5 sm:px-6 sm:pt-6">
           <div className="flex items-center justify-between">
-            <CardTitle className="flex items-center gap-2 text-lg font-bold">
+            <CardTitle className="flex items-center gap-2 text-h3">
               <Users2 className="size-5 text-muted-foreground" />
               {t('enrolled_students')}
               <Badge variant="secondary" className="ml-1 rounded-full">
@@ -245,7 +245,7 @@ export function GroupDetailWorkspace({ groupId }: GroupDetailWorkspaceProps) {
           ) : enrollments.length === 0 ? (
             <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-border px-6 py-10 text-center">
               <Users2 className="mb-3 size-8 text-muted-foreground/50" />
-              <p className="text-sm font-medium text-muted-foreground">{t('no_enrolled')}</p>
+              <p className="text-h4 text-muted-foreground">{t('no_enrolled')}</p>
             </div>
           ) : (
             <div className="space-y-2">
@@ -255,19 +255,19 @@ export function GroupDetailWorkspace({ groupId }: GroupDetailWorkspaceProps) {
                   className="flex items-center gap-3 rounded-xl border border-border/70 bg-muted/30 px-4 py-3 transition-colors hover:bg-muted/50"
                 >
                   <Avatar className="size-9 rounded-xl">
-                    <AvatarFallback className="rounded-xl bg-primary/10 text-xs font-bold text-primary-emphasis">
+                    <AvatarFallback className="rounded-xl bg-primary/10 text-caption text-primary-emphasis">
                       {enrollment.student?.name?.charAt(0)?.toUpperCase() ?? 'S'}
                     </AvatarFallback>
                   </Avatar>
                   <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm font-semibold text-foreground">
+                    <p className="truncate text-h4 text-foreground">
                       {enrollment.student?.name ?? t('unknown_student')}
                     </p>
-                    <p className="truncate text-xs text-muted-foreground">
+                    <p className="truncate text-caption text-muted-foreground">
                       {enrollment.student?.phone ?? '—'}
                     </p>
                   </div>
-                  <Badge variant="outline" className="rounded-full text-xs">
+                  <Badge variant="outline" className="rounded-full text-caption">
                     {enrollment.student?.status ?? 'N/A'}
                   </Badge>
                 </div>

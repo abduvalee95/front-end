@@ -72,7 +72,7 @@ export function StudentsFilters({
             onChange={(e) => onSearchChange(e.target.value)}
             placeholder={`${tCommon('search')} ${t('full_name')} ${tCommon('or')} ${t('phone')}…`}
             aria-label={`${tCommon('search')} ${t('full_name')} ${tCommon('or')} ${t('phone')}`}
-            className={cn('h-9 pl-8 text-sm rounded-xl', search && 'pr-8')}
+            className={cn('h-9 pl-8 text-body rounded-xl', search && 'pr-8')}
           />
           {search && (
             <Button
@@ -149,7 +149,7 @@ export function StudentsFilters({
           </SelectTrigger>
           <SelectContent>
             {PAGE_SIZE_OPTIONS.map((size) => (
-              <SelectItem key={size} value={String(size)} className="text-xs cursor-pointer">
+              <SelectItem key={size} value={String(size)} className="text-caption cursor-pointer">
                 {size} {tCommon('per_page')}
               </SelectItem>
             ))}

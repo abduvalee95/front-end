@@ -100,12 +100,12 @@ export function MetricCard({
         {trend !== undefined && <TrendBadge delta={trend} />}
       </div>
       <div>
-        <div className="text-2xl font-bold tabular-nums">
+        <div className="text-h1 tabular-nums">
           <AnimatedNumber value={value} format={format} />
         </div>
-        <div className="text-xs text-muted-foreground uppercase tracking-wider mt-1">{title}</div>
+        <div className="text-caption text-muted-foreground uppercase tracking-wider mt-1">{title}</div>
       </div>
-      {hint && <p className="text-xs text-muted-foreground line-clamp-2">{hint}</p>}
+      {hint && <p className="text-caption text-muted-foreground line-clamp-2">{hint}</p>}
     </div>
   );
 }
@@ -122,7 +122,7 @@ export function TrendBadge({ delta }: { delta: number }) {
     ? 'text-danger-emphasis bg-danger/10'
     : 'text-muted-foreground bg-muted';
   return (
-    <div className={cn('flex items-center gap-1 px-2 py-1 rounded-full text-xs font-semibold', color)}>
+    <div className={cn('flex items-center gap-1 px-2 py-1 rounded-full text-caption', color)}>
       <Icon className="h-3 w-3" />
       <span>{Math.abs(delta).toFixed(1)}%</span>
     </div>
@@ -150,7 +150,7 @@ export function InsightCard({ insight }: { insight: Insight }) {
         </span>
       </div>
       <h4 className="font-semibold text-foreground">{insight.title}</h4>
-      <p className="text-sm text-muted-foreground leading-relaxed">{insight.body}</p>
+      <p className="text-body text-muted-foreground leading-relaxed">{insight.body}</p>
     </div>
   );
 }
@@ -183,20 +183,20 @@ export function AIBanner({
               AI Summary
             </span>
           </div>
-          <h2 className="text-xl font-bold mb-2">{headline}</h2>
+          <h2 className="text-h2 mb-2">{headline}</h2>
           {isLoading ? (
             <div className="space-y-2">
               <div className="h-3 w-3/4 bg-card rounded animate-pulse" />
               <div className="h-3 w-1/2 bg-card rounded animate-pulse" />
             </div>
           ) : (
-            <p className="text-sm opacity-90 leading-relaxed">{body}</p>
+            <p className="text-body opacity-90 leading-relaxed">{body}</p>
           )}
         </div>
         {onRefresh && (
           <button
             onClick={onRefresh}
-            className="px-3 py-1.5 rounded-lg bg-card backdrop-blur hover:bg-card transition-colors text-xs font-medium border border-border"
+            className="px-3 py-1.5 rounded-lg bg-card backdrop-blur hover:bg-card transition-colors text-caption border border-border"
           >
             Refresh
           </button>
@@ -210,8 +210,8 @@ export function AIBanner({
 export function SectionHeader({ title, subtitle }: { title: string; subtitle?: string }) {
   return (
     <div className="mb-4">
-      <h2 className="text-lg font-bold text-foreground">{title}</h2>
-      {subtitle && <p className="text-sm text-muted-foreground mt-0.5">{subtitle}</p>}
+      <h2 className="text-h3 text-foreground">{title}</h2>
+      {subtitle && <p className="text-body text-muted-foreground mt-0.5">{subtitle}</p>}
     </div>
   );
 }

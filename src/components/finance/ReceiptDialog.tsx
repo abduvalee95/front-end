@@ -89,7 +89,7 @@ export function ReceiptDialog({ payment, open, onClose }: ReceiptDialogProps) {
         {/* Receipt previews — both rendered but only one visible at a time via overflow */}
         <div className="space-y-3">
           {/* Format toggle label */}
-          <p className="text-xs text-muted-foreground font-medium">
+          <p className="text-caption text-muted-foreground">
             {t('preview_label')}
           </p>
 

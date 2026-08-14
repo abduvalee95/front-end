@@ -233,7 +233,7 @@ export default function JournalPage() {
                   variant="outline"
                   size="sm"
                   onClick={() => setCurrentDate(new Date())}
-                  className="h-9 rounded-xl gap-1.5 text-xs font-bold"
+                  className="h-9 rounded-xl gap-1.5 text-caption"
                   aria-label={t('today_btn')}
                 >
                   <CalendarCheck className="size-3.5" aria-hidden="true" />
@@ -245,7 +245,7 @@ export default function JournalPage() {
             <div className="flex items-center gap-3">
               {selectedGroup && (
                 <div className="text-right">
-                  <p className="text-base font-bold leading-tight">{selectedGroup.name}</p>
+                  <p className="text-h3 leading-tight">{selectedGroup.name}</p>
                   {enrollments.length > 0 && (
                     <p className="text-caption text-muted-foreground mt-0.5">
                       {enrollments.length} {t('n_students')}
@@ -256,7 +256,7 @@ export default function JournalPage() {
               <Button
                 onClick={handleSave}
                 disabled={upsert.isPending || !selectedGroupId || !enrollments.length}
-                className="relative h-11 rounded-xl px-5 gap-2 font-bold tracking-wide uppercase text-xs"
+                className="relative h-11 rounded-xl px-5 gap-2 tracking-wide uppercase text-caption"
               >
                 <Save className="size-4" aria-hidden="true" />
                 {upsert.isPending ? tCommon('loading') : t('save_attendance')}
@@ -317,7 +317,7 @@ export default function JournalPage() {
               ))}
             </div>
           ) : visibleGroups.length === 0 ? (
-            <p className="text-xs text-muted-foreground px-2">{tCommon('no_data')}</p>
+            <p className="text-caption text-muted-foreground px-2">{tCommon('no_data')}</p>
           ) : (
             <div className="space-y-1 max-h-[520px] overflow-y-auto pr-1">
               {visibleGroups.map((group) => {
@@ -341,7 +341,7 @@ export default function JournalPage() {
                         className={cn('size-3.5 shrink-0', active ? 'opacity-90' : 'opacity-50')}
                         aria-hidden="true"
                       />
-                      <span className="truncate text-sm font-semibold">{group.name}</span>
+                      <span className="truncate text-h4">{group.name}</span>
                     </div>
                     {group.teacher && !active && !isTeacher && (
                       <p className="text-caption text-muted-foreground mt-0.5 ml-[22px] truncate">
@@ -421,7 +421,7 @@ export default function JournalPage() {
                         >
                           {String(idx + 1).padStart(2, '0')}
                         </span>
-                        <span className="truncate text-sm font-semibold">{name}</span>
+                        <span className="truncate text-h4">{name}</span>
                       </div>
 
                       {/* Status — circular pill buttons */}
@@ -479,7 +479,7 @@ export default function JournalPage() {
         {selectedGroupId && enrollments.length > 0 && (
           <Card className="col-span-12 p-4 rounded-2xl border-border/60 shadow-sm">
             <div className="flex items-center justify-between flex-wrap gap-2">
-              <p className="text-xs text-muted-foreground tabular-nums">
+              <p className="text-caption text-muted-foreground tabular-nums">
                 {enrollments.length} {t('n_students')} · {format(currentDate, 'dd.MM.yyyy')}
               </p>
               <p className="text-caption font-semibold uppercase tracking-wider text-muted-foreground">
@@ -653,8 +653,8 @@ function EmptyBlock({ icon, title, hint }: EmptyBlockProps) {
         {icon}
       </div>
       <div>
-        <p className="text-base font-bold">{title}</p>
-        <p className="text-xs text-muted-foreground mt-1">{hint}</p>
+        <p className="text-h3">{title}</p>
+        <p className="text-caption text-muted-foreground mt-1">{hint}</p>
       </div>
     </div>
   );

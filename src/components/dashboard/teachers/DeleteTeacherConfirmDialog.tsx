@@ -44,7 +44,7 @@ export function DeleteTeacherConfirmDialog({
           </DialogDescription>
         </DialogHeader>
 
-        <div className="bg-destructive/10 text-destructive text-sm p-3 rounded-lg border border-destructive/20 mt-2">
+        <div className="bg-destructive/10 text-destructive text-body p-3 rounded-lg border border-destructive/20 mt-2">
           <p className="font-medium mb-1">{t('delete_warning_title')}</p>
           <ul className="list-disc list-inside space-y-1 ml-1">
             <li>{t('delete_warning_1')}</li>

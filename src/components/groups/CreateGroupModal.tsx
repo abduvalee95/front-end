@@ -127,7 +127,7 @@ export function CreateGroupModal({ open: externalOpen, onClose }: CreateGroupMod
               value={formData.course_id}
               onChange={(e) => setFormData((p) => ({ ...p, course_id: e.target.value }))}
               disabled={isLoading}
-              className="flex h-9 w-full rounded-xl border border-input bg-background px-3 text-sm text-foreground outline-none transition-colors focus:ring-2 focus:ring-ring"
+              className="flex h-9 w-full rounded-xl border border-input bg-background px-3 text-body text-foreground outline-none transition-colors focus:ring-2 focus:ring-ring"
             >
               <option value="">{t('select_course')}</option>
               {courses.map((c) => (
@@ -143,7 +143,7 @@ export function CreateGroupModal({ open: externalOpen, onClose }: CreateGroupMod
               value={formData.teacher_id}
               onChange={(e) => setFormData((p) => ({ ...p, teacher_id: e.target.value }))}
               disabled={isLoading}
-              className="flex h-9 w-full rounded-xl border border-input bg-background px-3 text-sm text-foreground outline-none transition-colors focus:ring-2 focus:ring-ring"
+              className="flex h-9 w-full rounded-xl border border-input bg-background px-3 text-body text-foreground outline-none transition-colors focus:ring-2 focus:ring-ring"
             >
               <option value="">{t('select_teacher')}</option>
               {teachers.map((t) => (

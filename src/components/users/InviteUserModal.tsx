@@ -85,9 +85,9 @@ export function InviteUserModal({ open, onOpenChange }: InviteUserModalProps) {
           <div className="py-6 space-y-4">
             <div className="p-4 bg-success/10 border border-success/20 rounded-xl text-center space-y-2">
               <KeyRound className="size-8 text-success-emphasis mx-auto mb-2" />
-              <p className="text-sm font-medium text-success-emphasis">{t('invited_success')}</p>
-              <p className="text-xs text-muted-foreground">{t('temp_password_desc')}</p>
-              <div className="bg-background p-3 rounded-lg tabular-nums text-lg font-bold tracking-wider select-all mt-4 border border-input">
+              <p className="text-h4 text-success-emphasis">{t('invited_success')}</p>
+              <p className="text-caption text-muted-foreground">{t('temp_password_desc')}</p>
+              <div className="bg-background p-3 rounded-lg tabular-nums text-h3 tracking-wider select-all mt-4 border border-input">
                 {tempPassword}
               </div>
             </div>
@@ -99,7 +99,7 @@ export function InviteUserModal({ open, onOpenChange }: InviteUserModalProps) {
           <form id="invite-user-form" onSubmit={handleSubmit(onSubmit)} className="space-y-5">
             <div className="space-y-4">
               <div className="space-y-1.5">
-                <Label className="text-xs flex items-center gap-2">
+                <Label className="text-caption flex items-center gap-2">
                   <User className="size-3 text-muted-foreground" />
                   {tSettings('full_name')} <span className="text-destructive">*</span>
                 </Label>
@@ -111,7 +111,7 @@ export function InviteUserModal({ open, onOpenChange }: InviteUserModalProps) {
               </div>
 
               <div className="space-y-1.5">
-                <Label className="text-xs flex items-center gap-2">
+                <Label className="text-caption flex items-center gap-2">
                   <Phone className="size-3 text-muted-foreground" />
                   {tSettings('phone')} <span className="text-destructive">*</span>
                 </Label>
@@ -126,7 +126,7 @@ export function InviteUserModal({ open, onOpenChange }: InviteUserModalProps) {
               </div>
 
               <div className="space-y-1.5">
-                <Label className="text-xs flex items-center gap-2">
+                <Label className="text-caption flex items-center gap-2">
                   <Mail className="size-3 text-muted-foreground" />
                   {tSettings('email')} <span className="text-destructive">*</span>
                 </Label>
@@ -145,13 +145,13 @@ export function InviteUserModal({ open, onOpenChange }: InviteUserModalProps) {
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1.5">
-                  <Label className="text-xs flex items-center gap-2">
+                  <Label className="text-caption flex items-center gap-2">
                     <Shield className="size-3 text-muted-foreground" />
                     {tCommon('role')} <span className="text-destructive">*</span>
                   </Label>
                   <select
                     {...register('role', { required: t('role_required') })}
-                    className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+                    className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-body shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
                   >
                     <option value="STUDENT" className="bg-background text-foreground">{t('role_student')}</option>
                     <option value="TEACHER" className="bg-background text-foreground">{t('role_teacher')}</option>
@@ -162,7 +162,7 @@ export function InviteUserModal({ open, onOpenChange }: InviteUserModalProps) {
                 </div>
 
                 <div className="space-y-1.5">
-                  <Label className="text-xs flex items-center gap-2">
+                  <Label className="text-caption flex items-center gap-2">
                     <KeyRound className="size-3 text-muted-foreground" />
                     {tAuth('password')} <span className="text-destructive">*</span>
                   </Label>
@@ -179,7 +179,7 @@ export function InviteUserModal({ open, onOpenChange }: InviteUserModalProps) {
               </div>
 
               <div className="space-y-1.5">
-                <Label className="text-xs flex items-center gap-2">
+                <Label className="text-caption flex items-center gap-2">
                   <Briefcase className="size-3 text-muted-foreground" />
                   {t('title_optional')}
                 </Label>

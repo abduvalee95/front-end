@@ -130,7 +130,7 @@ export default function StudentDetailPage() {
         </Button>
         <div className="flex-1">
           <div className="flex flex-wrap items-center gap-3">
-            <h1 className="text-3xl font-semibold tracking-tight">{student.name}</h1>
+            <h1 className="text-h1 tracking-tight">{student.name}</h1>
             {!paymentsQuery.isLoading && (
               <PaymentStatusBadge
                 status={currentMonthData?.status ?? 'none'}
@@ -140,7 +140,7 @@ export default function StudentDetailPage() {
               />
             )}
           </div>
-          <p className="text-sm text-muted-foreground">{t('profile_subtitle')}</p>
+          <p className="text-body text-muted-foreground">{t('profile_subtitle')}</p>
         </div>
       </div>
 
@@ -155,7 +155,7 @@ export default function StudentDetailPage() {
           </CardHeader>
           <CardContent className="space-y-4">
             <div>
-              <p className="text-xs font-medium text-muted-foreground">{t('status_label')}</p>
+              <p className="text-caption text-muted-foreground">{t('status_label')}</p>
               <Badge
                 variant="outline"
                 className={cn(
@@ -170,7 +170,7 @@ export default function StudentDetailPage() {
             </div>
 
             <div>
-              <p className="text-xs font-medium text-muted-foreground">{t('current_month_payment')}</p>
+              <p className="text-caption text-muted-foreground">{t('current_month_payment')}</p>
               <div className="mt-2">
                 {paymentsQuery.isLoading ? (
                   <div className="size-10 rounded-full bg-muted animate-pulse" />
@@ -190,40 +190,40 @@ export default function StudentDetailPage() {
             </div>
 
             <div>
-              <p className="text-xs font-medium text-muted-foreground">
+              <p className="text-caption text-muted-foreground">
                 <Phone className="mr-1 inline size-3.5" />
                 {t('phone')}
               </p>
-              <p className="mt-1 text-sm font-medium">{student.phone}</p>
+              <p className="mt-1 text-h4">{student.phone}</p>
             </div>
 
             {student.address && (
               <div>
-                <p className="text-xs font-medium text-muted-foreground">
+                <p className="text-caption text-muted-foreground">
                   <MapPin className="mr-1 inline size-3.5" />
                   {t('address_label')}
                 </p>
-                <p className="mt-1 text-sm">{student.address}</p>
+                <p className="mt-1 text-body">{student.address}</p>
               </div>
             )}
 
             {student.parent && (
               <div>
-                <p className="text-xs font-medium text-muted-foreground">
+                <p className="text-caption text-muted-foreground">
                   <Users className="mr-1 inline size-3.5" />
                   {t('parent_guardian')}
                 </p>
-                <p className="mt-1 text-sm">{student.parent}</p>
+                <p className="mt-1 text-body">{student.parent}</p>
               </div>
             )}
 
             {student.parent_phone && (
               <div>
-                <p className="text-xs font-medium text-muted-foreground">
+                <p className="text-caption text-muted-foreground">
                   <Phone className="mr-1 inline size-3.5" />
                   {t('parent_phone')}
                 </p>
-                <p className="mt-1 text-sm font-medium">{student.parent_phone}</p>
+                <p className="mt-1 text-h4">{student.parent_phone}</p>
               </div>
             )}
           </CardContent>
@@ -242,8 +242,8 @@ export default function StudentDetailPage() {
             {student.enrollments.length === 0 ? (
               <div className="flex flex-col items-center justify-center rounded-xl border border-dashed py-12 text-center">
                 <BookOpen className="mb-3 size-10 text-muted-foreground" />
-                <p className="text-sm font-medium">{t('no_enrollments')}</p>
-                <p className="text-xs text-muted-foreground">{t('no_enrollments_desc')}</p>
+                <p className="text-h4">{t('no_enrollments')}</p>
+                <p className="text-caption text-muted-foreground">{t('no_enrollments_desc')}</p>
               </div>
             ) : (
               <div className="space-y-3">
@@ -261,18 +261,18 @@ export default function StudentDetailPage() {
                           <div className="flex-1 min-w-0">
                             <h4 className="font-bold text-foreground">{enrollment.group?.name ?? '-'}</h4>
                             {enrollment.group?.course && (
-                              <p className="mt-1 text-sm text-muted-foreground">
+                              <p className="mt-1 text-body text-muted-foreground">
                                 <BookOpen className="mr-1 inline size-3.5" />
                                 {enrollment.group.course.title}
                               </p>
                             )}
                             {enrollment.group?.teacher && (
-                              <p className="mt-1 text-sm text-muted-foreground">
+                              <p className="mt-1 text-body text-muted-foreground">
                                 <User className="mr-1 inline size-3.5" />
                                 {enrollment.group.teacher.full_name}
                               </p>
                             )}
-                            <p className="mt-2 text-xs text-muted-foreground">
+                            <p className="mt-2 text-caption text-muted-foreground">
                               <Calendar className="mr-1 inline size-3" />
                               {format(new Date(enrollment.enrolled_at), 'MMM dd, yyyy')}
                             </p>
@@ -284,7 +284,7 @@ export default function StudentDetailPage() {
                                   type="number"
                                   min="0"
                                   step="1"
-                                  className="h-8 w-32 rounded-lg text-sm"
+                                  className="h-8 w-32 rounded-lg text-body"
                                   placeholder="0 сом"
                                   value={discountInput}
                                   onChange={(e) => setDiscountInput(e.target.value)}
@@ -334,7 +334,7 @@ export default function StudentDetailPage() {
                                   <p className="text-caption text-muted-foreground line-through tabular-nums">
                                     {formatAmount(baseFee)}
                                   </p>
-                                  <p className="text-sm font-semibold tabular-nums text-success-emphasis">
+                                  <p className="text-h4 tabular-nums text-success-emphasis">
                                     {formatAmount(netFee)}
                                   </p>
                                   <Badge variant="outline" className="mt-1 rounded-full border-warning/70 bg-warning-muted text-caption font-bold text-warning-emphasis dark:border-warning/30 dark:bg-warning/10 dark:text-warning-emphasis">
@@ -342,7 +342,7 @@ export default function StudentDetailPage() {
                                   </Badge>
                                 </>
                               ) : (
-                                <p className="text-sm font-semibold tabular-nums text-foreground">
+                                <p className="text-h4 tabular-nums text-foreground">
                                   {formatAmount(baseFee)}
                                 </p>
                               )}
@@ -419,8 +419,8 @@ export default function StudentDetailPage() {
           ) : payments.length === 0 ? (
             <div className="flex flex-col items-center justify-center rounded-xl border border-dashed py-12 text-center">
               <CreditCard className="mb-3 size-10 text-muted-foreground" />
-              <p className="text-sm font-medium">{t('no_payments_title')}</p>
-              <p className="text-xs text-muted-foreground">{t('no_payments_desc')}</p>
+              <p className="text-h4">{t('no_payments_title')}</p>
+              <p className="text-caption text-muted-foreground">{t('no_payments_desc')}</p>
             </div>
           ) : (
             <div className="space-y-2">
@@ -434,8 +434,8 @@ export default function StudentDetailPage() {
                       <CreditCard className="size-4 text-success-emphasis" />
                     </div>
                     <div>
-                      <p className="text-sm font-bold text-success-emphasis">+{formatAmount(payment.amount)}</p>
-                      <p className="text-xs text-muted-foreground">
+                      <p className="text-h4 text-success-emphasis">+{formatAmount(payment.amount)}</p>
+                      <p className="text-caption text-muted-foreground">
                         {format(new Date(payment.paid_at), 'dd MMM yyyy')}
                         {payment.description && <span> · {payment.description}</span>}
                       </p>
@@ -627,7 +627,7 @@ function PaymentStatusBadge({
   const cfg = configs[status];
 
   return (
-    <span className={cn('inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold border', cfg.bg)}>
+    <span className={cn('inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-caption border', cfg.bg)}>
       {status === 'partial' ? (
         <span
           className="size-4 rounded-full flex-shrink-0"
@@ -678,7 +678,7 @@ function PaymentStatusCircle({
     <div className="flex items-center gap-2.5">
       <MonthCircle status={status} ratio={ratio} />
       <div>
-        <p className={cn('text-sm font-bold', textColor)}>{label}</p>
+        <p className={cn('text-h4', textColor)}>{label}</p>
         <p className="text-caption text-muted-foreground capitalize">{monthName}</p>
         {expected !== undefined && expected > 0 && status !== 'future' && (
           <p className="text-caption font-semibold tabular-nums text-muted-foreground/80 mt-0.5">

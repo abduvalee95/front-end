@@ -22,7 +22,7 @@ export function DateRangeFilter() {
             key={p.key}
             onClick={() => setPreset(p.key)}
             className={cn(
-              'px-3 py-1.5 text-xs font-semibold rounded-md transition-colors',
+              'px-3 py-1.5 text-caption rounded-md transition-colors',
               preset === p.key
                 ? 'bg-background text-foreground shadow-sm'
                 : 'text-muted-foreground hover:text-foreground',
@@ -32,7 +32,7 @@ export function DateRangeFilter() {
           </button>
         ))}
       </div>
-      <div className="flex items-center gap-2 text-xs text-muted-foreground">
+      <div className="flex items-center gap-2 text-caption text-muted-foreground">
         <Calendar className="h-3.5 w-3.5" />
         <span>
           {range.from ? format(range.from, 'MMM d') : '—'} &rarr;{' '}

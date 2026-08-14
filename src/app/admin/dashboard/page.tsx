@@ -46,10 +46,10 @@ export default function AdminDashboardPage() {
             <p className="mb-3 flex items-center gap-2 tabular-nums text-caption font-bold uppercase tracking-normal text-primary-emphasis/80">
               <Activity className="size-3.5" /> {t('console_tag')}
             </p>
-            <h1 className="text-3xl font-semibold leading-tight tracking-tight sm:text-4xl">
+            <h1 className="text-h1 leading-tight tracking-tight sm:text-h1">
               {t('dashboard.title')}
             </h1>
-            <p className="mt-2 max-w-md text-sm text-muted-foreground">
+            <p className="mt-2 max-w-md text-body text-muted-foreground">
               {t('dashboard.subtitle')}
             </p>
           </div>
@@ -92,7 +92,7 @@ export default function AdminDashboardPage() {
               {stat.loading ? (
                 <Skeleton className="mt-2 h-9 w-16 bg-card" />
               ) : (
-                <p className="mt-1 text-3xl font-semibold tabular-nums tracking-tight text-background">
+                <p className="mt-1 text-h1 tabular-nums tracking-tight text-background">
                   {stat.value.toLocaleString()}
                 </p>
               )}
@@ -105,12 +105,12 @@ export default function AdminDashboardPage() {
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         <Card className="rounded-card border-border/70 bg-card/80 backdrop-blur-md">
           <CardHeader className="flex flex-row items-center justify-between pb-4">
-            <CardTitle className="text-base font-semibold tracking-tight text-foreground">
+            <CardTitle className="text-h3 tracking-tight text-foreground">
               {t('dashboard.latest_orgs')}
             </CardTitle>
             <Link
               href="/admin/organizations"
-              className="flex items-center gap-1 text-xs font-bold text-primary transition-opacity hover:opacity-70"
+              className="flex items-center gap-1 text-caption text-primary transition-opacity hover:opacity-70"
             >
               {t('view_all')} <ArrowUpRight className="size-3" />
             </Link>
@@ -119,7 +119,7 @@ export default function AdminDashboardPage() {
             {orgsQuery.isLoading ? (
               [...Array(3)].map((_, i) => <Skeleton key={i} className="h-14 w-full rounded-xl" />)
             ) : latestOrgs.length === 0 ? (
-              <p className="py-8 text-center text-sm italic text-muted-foreground/50">{t('no_data')}</p>
+              <p className="py-8 text-center text-body italic text-muted-foreground/50">{t('no_data')}</p>
             ) : (
               latestOrgs.map((org, i) => (
                 <div
@@ -128,11 +128,11 @@ export default function AdminDashboardPage() {
                   style={{ animationDelay: `${i * 70}ms`, animationDuration: '500ms' }}
                 >
                   <div className="flex min-w-0 items-center gap-3">
-                    <div className="flex size-9 shrink-0 items-center justify-center rounded-lg border border-primary/15 bg-primary/10 text-sm font-semibold text-primary">
+                    <div className="flex size-9 shrink-0 items-center justify-center rounded-lg border border-primary/15 bg-primary/10 text-h4 text-primary">
                       {org.name.charAt(0).toUpperCase()}
                     </div>
                     <div className="min-w-0">
-                      <p className="truncate text-sm font-bold text-foreground">{org.name}</p>
+                      <p className="truncate text-h4 text-foreground">{org.name}</p>
                       <p className="tabular-nums text-caption text-muted-foreground">
                         {new Date(org.created_at).toLocaleDateString(locale)} · {t('users_count', { count: org.usersCount })}
                       </p>
@@ -155,12 +155,12 @@ export default function AdminDashboardPage() {
 
         <Card className="rounded-card border-border/70 bg-card/80 backdrop-blur-md">
           <CardHeader className="flex flex-row items-center justify-between pb-4">
-            <CardTitle className="text-base font-semibold tracking-tight text-foreground">
+            <CardTitle className="text-h3 tracking-tight text-foreground">
               {t('dashboard.latest_users')}
             </CardTitle>
             <Link
               href="/admin/users"
-              className="flex items-center gap-1 text-xs font-bold text-primary transition-opacity hover:opacity-70"
+              className="flex items-center gap-1 text-caption text-primary transition-opacity hover:opacity-70"
             >
               {t('view_all')} <ArrowUpRight className="size-3" />
             </Link>
@@ -169,7 +169,7 @@ export default function AdminDashboardPage() {
             {usersQuery.isLoading ? (
               [...Array(3)].map((_, i) => <Skeleton key={i} className="h-14 w-full rounded-xl" />)
             ) : latestUsers.length === 0 ? (
-              <p className="py-8 text-center text-sm italic text-muted-foreground/50">{t('no_data')}</p>
+              <p className="py-8 text-center text-body italic text-muted-foreground/50">{t('no_data')}</p>
             ) : (
               latestUsers.map((u, i) => (
                 <div
@@ -178,11 +178,11 @@ export default function AdminDashboardPage() {
                   style={{ animationDelay: `${i * 70}ms`, animationDuration: '500ms' }}
                 >
                   <div className="flex min-w-0 items-center gap-3">
-                    <div className="flex size-9 shrink-0 items-center justify-center rounded-lg border border-primary/15 bg-primary/10 text-sm font-semibold text-primary-emphasis">
+                    <div className="flex size-9 shrink-0 items-center justify-center rounded-lg border border-primary/15 bg-primary/10 text-h4 text-primary-emphasis">
                       {u.full_name.charAt(0).toUpperCase()}
                     </div>
                     <div className="min-w-0">
-                      <p className="truncate text-sm font-bold text-foreground">{u.full_name}</p>
+                      <p className="truncate text-h4 text-foreground">{u.full_name}</p>
                       <p className="truncate tabular-nums text-caption text-muted-foreground">{u.email}</p>
                     </div>
                   </div>

@@ -138,7 +138,7 @@ export function CreateTeacherModal({ open, onClose }: CreateTeacherModalProps) {
         <form id="create-teacher-form" onSubmit={handleSubmit(onSubmit)} className="space-y-4 py-2">
           {/* User Info */}
           <div className="space-y-3">
-            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest flex items-center gap-1.5">
+            <p className="text-caption text-muted-foreground uppercase tracking-widest flex items-center gap-1.5">
               <UserCircle2 className="size-3" /> {t('account_info')}
             </p>
             <Field label={`${t('full_name')} *`} error={errors.full_name?.message}>
@@ -169,14 +169,14 @@ export function CreateTeacherModal({ open, onClose }: CreateTeacherModalProps) {
 
           {/* Teacher Profile */}
           <div className="space-y-3">
-            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest flex items-center gap-1.5">
+            <p className="text-caption text-muted-foreground uppercase tracking-widest flex items-center gap-1.5">
               <GraduationCap className="size-3" /> {t('professional_info')}
             </p>
             <Field label={`${tCommon('subjects')} *`} error={subjectError}>
               <SubjectCombobox value={selectedSubjects} onChange={setSelectedSubjects} />
             </Field>
             <div className="space-y-1.5">
-              <Label className="text-xs">{t('salary_type_label')}</Label>
+              <Label className="text-caption">{t('salary_type_label')}</Label>
               <Select value={salaryType} onValueChange={(v) => setSalaryType(v as SalaryType)}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
@@ -241,9 +241,9 @@ export function CreateTeacherModal({ open, onClose }: CreateTeacherModalProps) {
 function Field({ label, error, children }: { label: string; error?: string; children: React.ReactNode }) {
   return (
     <div className="space-y-1.5">
-      <Label className="text-xs">{label}</Label>
+      <Label className="text-caption">{label}</Label>
       {children}
-      {error && <p className="text-xs text-destructive">{error}</p>}
+      {error && <p className="text-caption text-destructive">{error}</p>}
     </div>
   );
 }

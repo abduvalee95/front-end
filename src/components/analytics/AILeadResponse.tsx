@@ -67,7 +67,7 @@ Matn juda uzun bo'lmasin, samimiy va professional bo'lsin. O'zbek tilida yoz.`;
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="sm:max-w-[500px] border-border bg-background/95 backdrop-blur-xl">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2 text-xl">
+          <DialogTitle className="flex items-center gap-2 text-h2">
             <Sparkles className="size-5 text-primary-emphasis" />
             AI Lead Assistant
           </DialogTitle>
@@ -82,7 +82,7 @@ Matn juda uzun bo'lmasin, samimiy va professional bo'lsin. O'zbek tilida yoz.`;
               <div className="size-16 rounded-full bg-primary/10 flex items-center justify-center">
                 <Send className="size-8 text-primary-emphasis" />
               </div>
-              <p className="text-sm text-muted-foreground max-w-[300px]">
+              <p className="text-body text-muted-foreground max-w-[300px]">
                 Click the button below to generate a professional marketing message for this lead.
               </p>
               <Button 
@@ -95,7 +95,7 @@ Matn juda uzun bo'lmasin, samimiy va professional bo'lsin. O'zbek tilida yoz.`;
             </div>
           ) : (
             <div className="space-y-4">
-              <div className="relative min-h-[150px] rounded-xl border border-border bg-muted/30 p-4 text-sm leading-relaxed whitespace-pre-wrap">
+              <div className="relative min-h-[150px] rounded-xl border border-border bg-muted/30 p-4 text-body leading-relaxed whitespace-pre-wrap">
                 {isLoading && !responseText ? (
                   <div className="flex items-center justify-center h-full gap-2 text-muted-foreground">
                     <Loader2 className="size-4 animate-spin" />

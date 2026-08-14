@@ -89,8 +89,8 @@ export function TeachersTable({
                     <GraduationCap className="h-8 w-8 text-background" />
                   </div>
                   <div className="text-center">
-                    <h3 className="text-lg font-semibold">No teachers found</h3>
-                    <p className="text-muted-foreground text-sm mt-1">
+                    <h3 className="text-h3">No teachers found</h3>
+                    <p className="text-muted-foreground text-body mt-1">
                       Teachers will appear here when organizations add them to the platform.
                     </p>
                   </div>
@@ -107,19 +107,19 @@ export function TeachersTable({
                 <TableCell className="pl-4">
                   <div className="flex items-center gap-3">
                     <Avatar className="h-10 w-10">
-                      <AvatarFallback className="edu-gradient-avatar text-sm font-semibold">
+                      <AvatarFallback className="edu-gradient-avatar text-h4">
                         {getInitials(teacher.full_name)}
                       </AvatarFallback>
                     </Avatar>
                     <div className="min-w-0">
                       <p className="font-medium truncate">{teacher.full_name}</p>
-                      <p className="text-sm text-muted-foreground truncate">{teacher.email}</p>
+                      <p className="text-body text-muted-foreground truncate">{teacher.email}</p>
                     </div>
                   </div>
                 </TableCell>
 
                 <TableCell>
-                  <span className="text-sm text-muted-foreground tabular-nums">
+                  <span className="text-body text-muted-foreground tabular-nums">
                     {teacher.organization_id ? `${teacher.organization_id.substring(0,8)}...` : '—'}
                   </span>
                 </TableCell>
@@ -133,7 +133,7 @@ export function TeachersTable({
                 </TableCell>
 
                 <TableCell>
-                  <span className="text-sm text-muted-foreground">
+                  <span className="text-body text-muted-foreground">
                     {formatDate(teacher.created_at)}
                   </span>
                 </TableCell>

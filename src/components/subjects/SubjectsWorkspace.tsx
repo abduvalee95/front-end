@@ -85,11 +85,11 @@ export function SubjectsWorkspace() {
         </div>
       ) : filtered.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-20 text-center">
-          <p className="text-muted-foreground text-sm">{t('no_subjects')}</p>
+          <p className="text-muted-foreground text-body">{t('no_subjects')}</p>
         </div>
       ) : (
         <div className="rounded-xl border border-border overflow-hidden">
-          <table className="w-full text-sm">
+          <table className="w-full text-body">
             <thead className="bg-muted/50">
               <tr>
                 <th className="text-left px-4 py-3 font-semibold text-muted-foreground">{t('subject_name')}</th>

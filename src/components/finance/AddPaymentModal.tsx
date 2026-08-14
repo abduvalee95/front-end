@@ -126,9 +126,9 @@ export function AddPaymentModal({ open, onClose, studentId, studentName }: AddPa
 
         <form id="add-payment-form" onSubmit={handleSubmit(onSubmit)} className="space-y-4 pt-2">
           <div className="space-y-1.5">
-            <Label className="text-xs">{tCommon('student')} *</Label>
+            <Label className="text-caption">{tCommon('student')} *</Label>
             {studentId ? (
-              <div className="flex h-9 items-center rounded-xl border border-border/60 bg-muted/40 px-3 text-sm font-medium">
+              <div className="flex h-9 items-center rounded-xl border border-border/60 bg-muted/40 px-3 text-h4">
                 {studentName ?? studentId}
               </div>
             ) : (
@@ -155,14 +155,14 @@ export function AddPaymentModal({ open, onClose, studentId, studentName }: AddPa
                     ))}
                   </SelectContent>
                 </Select>
-                {errors.student_id && <p className="text-xs text-destructive">{tCommon('required')}</p>}
+                {errors.student_id && <p className="text-caption text-destructive">{tCommon('required')}</p>}
               </>
             )}
           </div>
 
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1.5">
-              <Label className="text-xs">{t('amount')} (KGS) *</Label>
+              <Label className="text-caption">{t('amount')} (KGS) *</Label>
               <Input
                 type="number"
                 min="0"
@@ -172,11 +172,11 @@ export function AddPaymentModal({ open, onClose, studentId, studentName }: AddPa
                 {...register('amount', { required: true, min: 1 })}
                 disabled={createPayment.isPending}
               />
-              {errors.amount && <p className="text-xs text-destructive">{tCommon('required')}</p>}
+              {errors.amount && <p className="text-caption text-destructive">{tCommon('required')}</p>}
             </div>
 
             <div className="space-y-1.5">
-              <Label className="text-xs">{t('payment_type')} *</Label>
+              <Label className="text-caption">{t('payment_type')} *</Label>
               <Select
                 value={methodValue}
                 onValueChange={(v) => setValue('method', (v ?? 'CASH') as PaymentMethod)}
@@ -195,7 +195,7 @@ export function AddPaymentModal({ open, onClose, studentId, studentName }: AddPa
           </div>
 
           <div className="space-y-1.5">
-            <Label className="text-xs">{tCommon('description')} ({tCommon('optional')})</Label>
+            <Label className="text-caption">{tCommon('description')} ({tCommon('optional')})</Label>
             <Input
               placeholder={t('description_placeholder')}
               className="rounded-xl"

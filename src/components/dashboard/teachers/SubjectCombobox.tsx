@@ -81,7 +81,7 @@ export function SubjectCombobox({ value, onChange, onPendingChange }: SubjectCom
             type="button"
             role="combobox"
             aria-expanded={open}
-            className="flex h-9 w-full items-center justify-between rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm ring-offset-background focus:outline-none focus:ring-1 focus:ring-ring"
+            className="flex h-9 w-full items-center justify-between rounded-md border border-input bg-transparent px-3 py-2 text-body shadow-sm ring-offset-background focus:outline-none focus:ring-1 focus:ring-ring"
           >
             <span className="text-muted-foreground">
               {t('placeholder')}
@@ -143,7 +143,7 @@ export function SubjectCombobox({ value, onChange, onPendingChange }: SubjectCom
               <Badge
                 key={name}
                 variant={isNew ? 'default' : 'secondary'}
-                className="gap-1 text-xs"
+                className="gap-1 text-caption"
               >
                 {isNew && <Plus className="size-2.5" />}
                 {name}

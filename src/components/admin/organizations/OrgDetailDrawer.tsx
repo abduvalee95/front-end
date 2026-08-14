@@ -34,12 +34,12 @@ export function OrgDetailDrawer({ org, onClose, onEdit, onToggleStatus }: OrgDet
           {org && (
             <div className="flex items-center gap-4">
               <Avatar className="size-14 rounded-2xl shrink-0">
-                <AvatarFallback className="rounded-2xl text-2xl font-bold edu-gradient-avatar">
+                <AvatarFallback className="rounded-2xl text-h1 edu-gradient-avatar">
                   {org.name.charAt(0).toUpperCase()}
                 </AvatarFallback>
               </Avatar>
               <div className="min-w-0">
-                <p className="text-lg font-bold truncate">{org.name}</p>
+                <p className="text-h3 truncate">{org.name}</p>
                 <div className="mt-1">
                   <OrganizationStatusBadge status={org.status} />
                 </div>
@@ -115,7 +115,7 @@ function DetailRow({
       </div>
       <div className="min-w-0 flex-1">
         <p className="text-caption font-medium text-muted-foreground uppercase tracking-wider">{label}</p>
-        <p className="text-sm font-medium truncate mt-0.5">{value}</p>
+        <p className="text-h4 truncate mt-0.5">{value}</p>
       </div>
     </div>
   );

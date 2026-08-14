@@ -26,7 +26,7 @@ export function RecentActivity({ summary, isLoading }: RecentActivityProps) {
   return (
     <div className="bg-card rounded-2xl p-6 h-full shadow-sm">
       <div className="flex items-center justify-between mb-5">
-        <h3 className="text-sm font-bold text-foreground tracking-tight">{t('recent_activity')}</h3>
+        <h3 className="text-h4 text-foreground tracking-tight">{t('recent_activity')}</h3>
         <Button variant="ghost" size="sm">
           {t('view_all')} <ChevronRight className="size-3" />
         </Button>
@@ -73,8 +73,8 @@ export function RecentActivity({ summary, isLoading }: RecentActivityProps) {
             <Skeleton className="h-8 w-20 mb-3" />
           ) : (
             <div className="flex items-baseline gap-1.5 mb-3">
-              <span className="text-2xl font-semibold text-foreground tabular-nums">{attendanceRate}</span>
-              <span className="text-xs font-bold text-muted-foreground">%</span>
+              <span className="text-h1 text-foreground tabular-nums">{attendanceRate}</span>
+              <span className="text-caption text-muted-foreground">%</span>
               <span className="text-caption font-medium text-muted-foreground ml-1">
                 {summary?.attendancePresent || 0} {t('present')}
               </span>

@@ -188,7 +188,7 @@ export function EnrollStudentModal({ groupId, groupName }: EnrollStudentModalPro
         {/* Add students section */}
         <div className="space-y-2">
           <div className="flex items-center justify-between">
-            <Label className="text-xs font-medium">
+            <Label className="text-caption">
               {t('available_students')}
               {availableStudents.length > 0 && (
                 <span className="ml-1.5 text-muted-foreground">({availableStudents.length})</span>
@@ -220,7 +220,7 @@ export function EnrollStudentModal({ groupId, groupName }: EnrollStudentModalPro
             </div>
           ) : availableStudents.length === 0 ? (
             <div className="rounded-xl border border-dashed border-border/60 px-4 py-5 text-center">
-              <p className="text-sm text-muted-foreground">
+              <p className="text-body text-muted-foreground">
                 {search ? t('no_match') : t('all_enrolled')}
               </p>
             </div>
@@ -240,8 +240,8 @@ export function EnrollStudentModal({ groupId, groupName }: EnrollStudentModalPro
                       : <Square className="size-4 shrink-0 text-muted-foreground/50" />
                     }
                     <div className="min-w-0 flex-1">
-                      <p className="truncate text-sm font-medium">{s.name}</p>
-                      <p className="truncate text-xs text-muted-foreground">{s.phone}</p>
+                      <p className="truncate text-h4">{s.name}</p>
+                      <p className="truncate text-caption text-muted-foreground">{s.phone}</p>
                     </div>
                   </button>
                 );
@@ -270,7 +270,7 @@ export function EnrollStudentModal({ groupId, groupName }: EnrollStudentModalPro
 
         {/* Current enrollments */}
         <div className="space-y-2">
-          <Label className="text-xs font-medium">
+          <Label className="text-caption">
             {t('enrolled_students')}
             <span className="ml-1.5 text-muted-foreground">({enrollments.length})</span>
           </Label>
@@ -280,7 +280,7 @@ export function EnrollStudentModal({ groupId, groupName }: EnrollStudentModalPro
             </div>
           ) : enrollments.length === 0 ? (
             <div className="rounded-xl border border-dashed border-border/60 px-4 py-5 text-center">
-              <p className="text-sm text-muted-foreground">{t('no_enrolled')}</p>
+              <p className="text-body text-muted-foreground">{t('no_enrolled')}</p>
             </div>
           ) : (
             <div className="max-h-[180px] space-y-1.5 overflow-y-auto pr-1">
@@ -296,10 +296,10 @@ export function EnrollStudentModal({ groupId, groupName }: EnrollStudentModalPro
                   >
                     <div className="flex items-center justify-between px-3 py-2.5">
                       <div className="min-w-0">
-                        <p className="truncate text-sm font-medium text-foreground">
+                        <p className="truncate text-h4 text-foreground">
                           {enrollment.student?.name ?? 'Unknown'}
                         </p>
-                        <p className="truncate text-xs text-muted-foreground">
+                        <p className="truncate text-caption text-muted-foreground">
                           {enrollment.student?.phone ?? '—'}
                         </p>
                         {(fee > 0 || discount > 0) && !isEditing && (
@@ -351,7 +351,7 @@ export function EnrollStudentModal({ groupId, groupName }: EnrollStudentModalPro
                               step={100}
                               value={editFee}
                               onChange={(e) => setEditFee(e.target.value)}
-                              className="mt-1 h-8 text-sm rounded-lg"
+                              className="mt-1 h-8 text-body rounded-lg"
                               placeholder="3000"
                             />
                           </div>
@@ -365,7 +365,7 @@ export function EnrollStudentModal({ groupId, groupName }: EnrollStudentModalPro
                               step={100}
                               value={editDiscount}
                               onChange={(e) => setEditDiscount(e.target.value)}
-                              className="mt-1 h-8 text-sm rounded-lg"
+                              className="mt-1 h-8 text-body rounded-lg"
                               placeholder="0"
                             />
                           </div>

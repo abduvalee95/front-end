@@ -161,14 +161,14 @@ export default function ReportsPage() {
           {/* Revenue chart */}
           <Card>
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-semibold">{t('revenue_by_day')}</CardTitle>
-              <CardDescription className="text-xs">{t('daily_payments_desc')}</CardDescription>
+              <CardTitle className="text-h4">{t('revenue_by_day')}</CardTitle>
+              <CardDescription className="text-caption">{t('daily_payments_desc')}</CardDescription>
             </CardHeader>
             <CardContent>
               {payByDayQ.isLoading ? (
                 <Skeleton className="h-56 w-full rounded-xl" />
               ) : revenueChartData.length === 0 ? (
-                <div className="flex h-56 items-center justify-center text-sm text-muted-foreground">{t('no_data')}</div>
+                <div className="flex h-56 items-center justify-center text-body text-muted-foreground">{t('no_data')}</div>
               ) : (
                 <ResponsiveContainer width="100%" height={220}>
                   <AreaChart data={revenueChartData} margin={{ left: 0, right: 8, top: 4, bottom: 0 }}>
@@ -196,7 +196,7 @@ export default function ReportsPage() {
             {/* Payment method breakdown */}
             <Card>
               <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-semibold flex items-center gap-2">
+                <CardTitle className="text-h4 flex items-center gap-2">
                   <PieChart className="size-4" />{t('income_by_method')}
                 </CardTitle>
               </CardHeader>
@@ -215,7 +215,7 @@ export default function ReportsPage() {
                     </ResponsiveContainer>
                     <div className="mt-2 space-y-1.5">
                       {methodChartData.map((m, i) => (
-                        <div key={m.name} className="flex items-center justify-between text-xs">
+                        <div key={m.name} className="flex items-center justify-between text-caption">
                           <span className="flex items-center gap-1.5">
                             <span className="inline-block size-2 rounded-full" style={{ background: seriesColor(chart, i) }} />
                             {m.name}
@@ -232,14 +232,14 @@ export default function ReportsPage() {
             {/* Expense by category */}
             <Card>
               <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-semibold flex items-center gap-2">
+                <CardTitle className="text-h4 flex items-center gap-2">
                   <BarChart3 className="size-4" />{t('expenses_by_category')}
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 {financeQ.isLoading ? <Skeleton className="h-44 w-full rounded-xl" /> :
                   expenseChartData.length === 0 ? (
-                    <div className="flex h-44 items-center justify-center text-sm text-muted-foreground">{t('no_data')}</div>
+                    <div className="flex h-44 items-center justify-center text-body text-muted-foreground">{t('no_data')}</div>
                   ) : (
                     <ResponsiveContainer width="100%" height={180}>
                       <BarChart data={expenseChartData} margin={{ left: 0, right: 8, top: 4, bottom: 0 }}>
@@ -261,19 +261,19 @@ export default function ReportsPage() {
               <Card className="border-success/60 dark:border-success/20">
                 <CardContent className="p-4 text-center">
                   <p className="text-caption font-semibold uppercase tracking-wider text-success-emphasis/70">{t('total_income')}</p>
-                  <p className="mt-1 text-xl font-semibold tabular-nums text-success-emphasis">{fmtMoney(fin.summary.totalIncome)}</p>
+                  <p className="mt-1 text-h2 tabular-nums text-success-emphasis">{fmtMoney(fin.summary.totalIncome)}</p>
                 </CardContent>
               </Card>
               <Card className="border-danger/60 dark:border-danger/20">
                 <CardContent className="p-4 text-center">
                   <p className="text-caption font-semibold uppercase tracking-wider text-danger-emphasis/70">{t('total_expenses')}</p>
-                  <p className="mt-1 text-xl font-semibold tabular-nums text-danger-emphasis">{fmtMoney(fin.summary.totalExpenses)}</p>
+                  <p className="mt-1 text-h2 tabular-nums text-danger-emphasis">{fmtMoney(fin.summary.totalExpenses)}</p>
                 </CardContent>
               </Card>
               <Card className={cn('col-span-2 sm:col-span-1', fin.summary.profit >= 0 ? 'border-primary/60 dark:border-primary/20' : 'border-danger/60 dark:border-danger/20')}>
                 <CardContent className="p-4 text-center">
                   <p className={cn('text-caption font-semibold uppercase tracking-wider', fin.summary.profit >= 0 ? 'text-primary-emphasis/70' : 'text-danger-emphasis/70')}>{t('profit')}</p>
-                  <p className={cn('mt-1 text-xl font-semibold tabular-nums', fin.summary.profit >= 0 ? 'text-primary-emphasis' : 'text-danger-emphasis')}>{fmtMoney(fin.summary.profit)}</p>
+                  <p className={cn('mt-1 text-h2 tabular-nums', fin.summary.profit >= 0 ? 'text-primary-emphasis' : 'text-danger-emphasis')}>{fmtMoney(fin.summary.profit)}</p>
                 </CardContent>
               </Card>
             </div>
@@ -294,12 +294,12 @@ export default function ReportsPage() {
           {/* Attendance breakdown */}
           <Card>
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-semibold">{t('attendance_breakdown')}</CardTitle>
+              <CardTitle className="text-h4">{t('attendance_breakdown')}</CardTitle>
             </CardHeader>
             <CardContent>
               {summaryQ.isLoading ? <Skeleton className="h-32 w-full rounded-xl" /> : s ? (
                 <div className="space-y-3">
-                  <div className="flex items-center justify-between text-sm">
+                  <div className="flex items-center justify-between text-body">
                     <span className="flex items-center gap-2">
                       <span className="size-3 rounded-full bg-success" />
                       {t('attendance_present')}
@@ -312,14 +312,14 @@ export default function ReportsPage() {
                       style={{ width: `${s.attendancePresent + s.attendanceAbsent > 0 ? (s.attendancePresent / (s.attendancePresent + s.attendanceAbsent)) * 100 : 0}%` }}
                     />
                   </div>
-                  <div className="flex items-center justify-between text-sm">
+                  <div className="flex items-center justify-between text-body">
                     <span className="flex items-center gap-2">
                       <span className="size-3 rounded-full bg-danger" />
                       {t('attendance_absent')}
                     </span>
                     <span className="font-bold tabular-nums">{s.attendanceAbsent}</span>
                   </div>
-                  <div className="flex items-center gap-4 pt-2 text-xs text-muted-foreground">
+                  <div className="flex items-center gap-4 pt-2 text-caption text-muted-foreground">
                     <span>{t('total_records')}: {s.attendancePresent + s.attendanceAbsent}</span>
                     <Badge variant="outline" className={cn('rounded-full font-bold', s.attendanceRate >= 80 ? 'border-success/70 bg-success-muted text-success-emphasis dark:bg-success/10 dark:text-success-emphasis' : 'border-warning/70 bg-warning-muted text-warning-emphasis dark:bg-warning/10 dark:text-warning-emphasis')}>
                       {s.attendanceRate}% {t('attendance_rate')}
@@ -327,7 +327,7 @@ export default function ReportsPage() {
                   </div>
                 </div>
               ) : (
-                <div className="flex h-32 items-center justify-center text-sm text-muted-foreground">{t('no_data')}</div>
+                <div className="flex h-32 items-center justify-center text-body text-muted-foreground">{t('no_data')}</div>
               )}
             </CardContent>
           </Card>
@@ -340,9 +340,9 @@ export default function ReportsPage() {
                   <BarChart3 className="size-6" />
                 </div>
                 <div>
-                  <p className="text-xs font-medium text-muted-foreground">{t('groups_total')}</p>
+                  <p className="text-caption text-muted-foreground">{t('groups_total')}</p>
                   {summaryQ.isLoading ? <Skeleton className="mt-1 h-7 w-16" /> : (
-                    <p className="mt-0.5 text-3xl font-semibold text-foreground">{s?.groupsTotal ?? '—'}</p>
+                    <p className="mt-0.5 text-h1 text-foreground">{s?.groupsTotal ?? '—'}</p>
                   )}
                 </div>
               </CardContent>
@@ -353,9 +353,9 @@ export default function ReportsPage() {
                   <Calendar className="size-6" />
                 </div>
                 <div>
-                  <p className="text-xs font-medium text-muted-foreground">{t('courses_total')}</p>
+                  <p className="text-caption text-muted-foreground">{t('courses_total')}</p>
                   {summaryQ.isLoading ? <Skeleton className="mt-1 h-7 w-16" /> : (
-                    <p className="mt-0.5 text-3xl font-semibold text-foreground">{s?.coursesTotal ?? '—'}</p>
+                    <p className="mt-0.5 text-h1 text-foreground">{s?.coursesTotal ?? '—'}</p>
                   )}
                 </div>
               </CardContent>
@@ -388,11 +388,11 @@ export default function ReportsPage() {
           {/* Leads bar chart */}
           <Card>
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-semibold">{t('leads_by_status')}</CardTitle>
+              <CardTitle className="text-h4">{t('leads_by_status')}</CardTitle>
             </CardHeader>
             <CardContent>
               {leadsQ.isLoading ? <Skeleton className="h-52 w-full rounded-xl" /> : leadChartData.length === 0 ? (
-                <div className="flex h-52 items-center justify-center text-sm text-muted-foreground">{t('no_data')}</div>
+                <div className="flex h-52 items-center justify-center text-body text-muted-foreground">{t('no_data')}</div>
               ) : (
                 <ResponsiveContainer width="100%" height={200}>
                   <BarChart data={leadChartData} margin={{ left: 0, right: 8, top: 4, bottom: 0 }}>
@@ -416,7 +416,7 @@ export default function ReportsPage() {
           {leadsQ.data && leadsQ.data.length > 0 && (
             <Card>
               <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-semibold">{t('conversion_summary')}</CardTitle>
+                <CardTitle className="text-h4">{t('conversion_summary')}</CardTitle>
               </CardHeader>
               <CardContent className="space-y-2">
                 {(() => {
@@ -425,11 +425,11 @@ export default function ReportsPage() {
                   const convRate = total > 0 ? Math.round((converted / total) * 100) : 0;
                   return (
                     <div className="flex flex-col gap-3">
-                      <div className="flex items-center justify-between text-sm">
+                      <div className="flex items-center justify-between text-body">
                         <span className="text-muted-foreground">{t('total_leads')}</span>
                         <span className="font-bold">{total}</span>
                       </div>
-                      <div className="flex items-center justify-between text-sm">
+                      <div className="flex items-center justify-between text-body">
                         <span className="text-muted-foreground">{t('conversion_rate')}</span>
                         <Badge variant="outline" className={cn('rounded-full font-bold', convRate >= 30 ? 'border-success/70 bg-success-muted text-success-emphasis dark:bg-success/10 dark:text-success-emphasis' : 'border-warning/70 bg-warning-muted text-warning-emphasis dark:bg-warning/10 dark:text-warning-emphasis')}>
                           {convRate}%

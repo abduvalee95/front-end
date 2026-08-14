@@ -119,7 +119,7 @@ export function SidebarNav({ onNavClick, isMobile }: SidebarNavProps) {
                       "size-5 shrink-0 transition-transform duration-300 group-hover:scale-110",
                       isActive ? "text-primary-emphasis drop-shadow-card" : "text-muted-foreground group-hover:text-white"
                     )} />
-                    {!collapsed && <span className="font-medium text-sm">{label}</span>}
+                    {!collapsed && <span className="text-h4">{label}</span>}
                   </Link>
                 );
               })}
@@ -150,7 +150,7 @@ export function SidebarNav({ onNavClick, isMobile }: SidebarNavProps) {
           </Avatar>
           {!collapsed && (
             <div className="min-w-0 animate-in fade-in duration-500">
-              <p className="truncate text-sm font-bold text-background">{user?.full_name || 'Super Admin'}</p>
+              <p className="truncate text-h4 text-background">{user?.full_name || 'Super Admin'}</p>
               <p className="truncate text-caption uppercase tracking-wider text-primary-emphasis/70">{user?.email || 'admin@platform.com'}</p>
             </div>
           )}

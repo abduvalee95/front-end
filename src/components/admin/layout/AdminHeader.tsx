@@ -75,7 +75,7 @@ export function AdminHeader({ onMobileMenuToggle }: AdminHeaderProps) {
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary/60" />
               <span className="relative inline-flex size-2 rounded-full bg-primary" />
             </span>
-            <h2 className="truncate text-base font-semibold tracking-tight text-foreground sm:text-lg">
+            <h2 className="truncate text-h3 tracking-tight text-foreground sm:text-h3">
               {currentLabel}
             </h2>
           </div>
@@ -97,7 +97,7 @@ export function AdminHeader({ onMobileMenuToggle }: AdminHeaderProps) {
         <div className="mx-1 hidden h-8 w-px bg-border sm:block" />
         <div className="flex items-center gap-3 pl-1">
           <div className="hidden text-right sm:block">
-            <p className="text-xs font-bold leading-none text-foreground">{user?.full_name ?? 'Super Admin'}</p>
+            <p className="text-caption leading-none text-foreground">{user?.full_name ?? 'Super Admin'}</p>
             <p className="mt-1 tabular-nums text-caption uppercase tracking-normal text-primary/80">
               {user?.role ?? 'PLATFORM'}
             </p>
@@ -125,8 +125,8 @@ export function AdminHeader({ onMobileMenuToggle }: AdminHeaderProps) {
               className="w-52 rounded-xl border-border/60 bg-card/95 shadow-xl backdrop-blur-xl"
             >
               <div className="px-3 py-2.5">
-                <p className="truncate text-sm font-bold">{user?.full_name ?? 'Super Admin'}</p>
-                <p className="mt-0.5 truncate text-xs font-medium text-muted-foreground">{user?.email ?? ''}</p>
+                <p className="truncate text-h4">{user?.full_name ?? 'Super Admin'}</p>
+                <p className="mt-0.5 truncate text-caption text-muted-foreground">{user?.email ?? ''}</p>
               </div>
               <DropdownMenuSeparator className="bg-border/60" />
               <DropdownMenuItem className="mx-1 cursor-pointer rounded-lg focus:bg-primary/10 focus:text-primary">

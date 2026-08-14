@@ -72,23 +72,23 @@ function ProposalCard({
   return (
     <div className="rounded-xl border border-primary/30 bg-primary-muted/60 p-3 my-1 space-y-2">
       <p className="text-caption font-bold uppercase tracking-wider text-primary-emphasis">{t('needs_confirm')}</p>
-      <p className="text-xs font-semibold text-foreground">{proposal.summary}</p>
+      <p className="text-caption text-foreground">{proposal.summary}</p>
       {state === 'done' ? (
-        <p className="text-xs text-success-emphasis font-bold">✓ {t('done')}</p>
+        <p className="text-caption text-success-emphasis">✓ {t('done')}</p>
       ) : state === 'error' ? (
-        <p className="text-xs text-danger-emphasis">{t('action_error')}</p>
+        <p className="text-caption text-danger-emphasis">{t('action_error')}</p>
       ) : (
         <div className="flex gap-2">
           <button
             onClick={handleConfirmClick}
             disabled={state === 'loading'}
-            className="flex-1 rounded-lg bg-primary py-1.5 text-xs font-bold text-primary-foreground hover:bg-primary-emphasis disabled:opacity-50 transition-colors"
+            className="flex-1 rounded-lg bg-primary py-1.5 text-caption text-primary-foreground hover:bg-primary-emphasis disabled:opacity-50 transition-colors"
           >
             {state === 'loading' ? t('typing') : t('confirm')}
           </button>
           <button
             onClick={() => setState('idle')}
-            className="rounded-lg border border-border px-3 py-1.5 text-xs font-medium text-muted-foreground hover:bg-muted transition-colors"
+            className="rounded-lg border border-border px-3 py-1.5 text-caption text-muted-foreground hover:bg-muted transition-colors"
           >
             {t('cancel')}
           </button>
@@ -121,13 +121,13 @@ function ToolResultCard({
   if (toolName === 'find_student' && result?.found === true) {
     const s = result.student as StudentResult;
     return (
-      <div className="rounded-xl border border-primary/30 bg-primary-muted/60 p-3 text-xs space-y-1.5 my-1">
+      <div className="rounded-xl border border-primary/30 bg-primary-muted/60 p-3 text-caption space-y-1.5 my-1">
         <div className="flex items-center gap-2">
-          <span className="size-7 rounded-lg bg-primary-muted flex items-center justify-center font-bold text-primary-emphasis text-sm">
+          <span className="size-7 rounded-lg bg-primary-muted flex items-center justify-center text-primary-emphasis text-h4">
             {s?.name?.charAt(0) ?? '?'}
           </span>
           <div>
-            <p className="font-bold text-foreground text-sm">{s?.name}</p>
+            <p className="text-foreground text-h4">{s?.name}</p>
             <p className="text-muted-foreground">{s?.phone}</p>
           </div>
           <span
@@ -155,7 +155,7 @@ function ToolResultCard({
       (result?.students as Array<{ name: string; phone: string; debt: string | number }>) ?? [];
     if (!students.length)
       return (
-        <div className="text-xs text-muted-foreground italic my-1">{t('no_debtors')}</div>
+        <div className="text-caption text-muted-foreground italic my-1">{t('no_debtors')}</div>
       );
     return (
       <div className="rounded-xl border border-warning/30 bg-warning-muted/60 p-3 my-1 space-y-1">
@@ -163,7 +163,7 @@ function ToolResultCard({
           {t('debtors')} ({students.length})
         </p>
         {students.slice(0, 8).map((s, i) => (
-          <div key={i} className="flex items-center justify-between text-xs">
+          <div key={i} className="flex items-center justify-between text-caption">
             <span className="font-medium text-foreground">{s.name}</span>
             <span className="text-danger-emphasis font-bold">{Number(s.debt).toLocaleString()} KGS</span>
           </div>
@@ -182,13 +182,13 @@ function ToolResultCard({
           {t('today_lessons')}
         </p>
         {groups.slice(0, 6).map((g, i) => (
-          <div key={i} className="flex items-center gap-2 text-xs">
+          <div key={i} className="flex items-center gap-2 text-caption">
             <span className="size-1.5 rounded-full bg-primary shrink-0" />
             <span className="font-medium text-foreground">{g.name}</span>
             {g.teacher && <span className="text-muted-foreground ml-auto">{g.teacher}</span>}
           </div>
         ))}
-        {!groups.length && <p className="text-xs text-muted-foreground">{t('no_lessons')}</p>}
+        {!groups.length && <p className="text-caption text-muted-foreground">{t('no_lessons')}</p>}
       </div>
     );
   }
@@ -200,21 +200,21 @@ function ToolResultCard({
       <div className="rounded-xl border border-success/30 bg-success-muted/60 p-3 my-1 grid grid-cols-2 gap-2">
         <div>
           <p className="text-caption text-muted-foreground">{t('revenue')}</p>
-          <p className="font-bold text-success-emphasis text-sm">
+          <p className="text-success-emphasis text-h4">
             {Number(result?.revenue || 0).toLocaleString()} KGS
           </p>
         </div>
         <div>
           <p className="text-caption text-muted-foreground">{t('payments')}</p>
-          <p className="font-bold text-foreground text-sm">{String(result?.paymentsCount || 0)}</p>
+          <p className="text-foreground text-h4">{String(result?.paymentsCount || 0)}</p>
         </div>
         <div>
           <p className="text-caption text-muted-foreground">{t('students')}</p>
-          <p className="font-bold text-foreground text-sm">{String(result?.studentsTotal || 0)}</p>
+          <p className="text-foreground text-h4">{String(result?.studentsTotal || 0)}</p>
         </div>
         <div>
           <p className="text-caption text-muted-foreground">{t('attendance')}</p>
-          <p className="font-bold text-foreground text-sm">
+          <p className="text-foreground text-h4">
             {String(result?.attendanceRate || 0)}%
           </p>
         </div>
@@ -378,10 +378,10 @@ export function AICopilot() {
                 <Sparkles className="size-8" />
               </div>
               <div>
-                <p className="text-sm font-bold">
+                <p className="text-h4">
                   {t('greeting')} {authUser?.full_name?.split(' ')[0] || 'User'}! 👋
                 </p>
-                <p className="text-xs text-muted-foreground max-w-[250px] mx-auto mt-1">
+                <p className="text-caption text-muted-foreground max-w-[250px] mx-auto mt-1">
                   {t('intro')}
                 </p>
               </div>
@@ -410,7 +410,7 @@ export function AICopilot() {
                   {text && (
                     <div
                       className={cn(
-                        'flex w-max max-w-[85%] flex-col gap-1 rounded-2xl px-4 py-2.5 text-sm',
+                        'flex w-max max-w-[85%] flex-col gap-1 rounded-2xl px-4 py-2.5 text-body',
                         m.role === 'user'
                           ? 'ml-auto bg-primary text-primary-foreground rounded-br-none'
                           : 'bg-muted text-foreground rounded-bl-none',
@@ -435,15 +435,15 @@ export function AICopilot() {
 
           {/* Loading indicator */}
           {isLoading && (
-            <div className="flex w-max max-w-[85%] items-center gap-2 rounded-2xl px-4 py-2.5 text-sm bg-muted text-foreground rounded-bl-none">
+            <div className="flex w-max max-w-[85%] items-center gap-2 rounded-2xl px-4 py-2.5 text-body bg-muted text-foreground rounded-bl-none">
               <Loader2 className="size-4 animate-spin text-muted-foreground" />
-              <span className="text-xs text-muted-foreground">{t('typing')}</span>
+              <span className="text-caption text-muted-foreground">{t('typing')}</span>
             </div>
           )}
 
           {/* Error display */}
           {error && (
-            <div className="flex items-center gap-2 rounded-xl border border-danger/30 bg-danger-muted px-3 py-2 text-xs text-danger-emphasis dark:border-danger/30 dark:bg-danger-muted/30 dark:text-danger-emphasis">
+            <div className="flex items-center gap-2 rounded-xl border border-danger/30 bg-danger-muted px-3 py-2 text-caption text-danger-emphasis dark:border-danger/30 dark:bg-danger-muted/30 dark:text-danger-emphasis">
               <AlertCircle className="size-4 shrink-0" />
               <span>{t('error_prefix')} {error.message}</span>
             </div>

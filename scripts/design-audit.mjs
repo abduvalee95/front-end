@@ -53,6 +53,16 @@ const RULES = [
     re: /\btext-\[\d+(?:\.\d+)?(?:px|rem)\]/g,
   },
   {
+    // The rule above only ever caught text-[13px]. Tailwind's own scale is the
+    // far more common way to drift: text-sm and text-xs alone accounted for
+    // 433 of the 521 sites this rule was written to clear. Stock sizes carry
+    // no weight and no line-height opinion, so every use re-decides the
+    // product's typography in a slightly different way.
+    id: 'stock-type-scale',
+    label: "Tailwind's own font size (use the text-h1..caption scale)",
+    re: /(?<![\w-])(?:[a-z0-9][\w-]*:|\*\*:|\[[^\]]*\]:)*text-(?:xs|sm|base|lg|xl|2xl|3xl|4xl|5xl|6xl|7xl|8xl|9xl)(?![\w-])/g,
+  },
+  {
     id: 'weight-override',
     label: 'Weight override (the type scale carries its own weight)',
     re: /\bfont-(?:black|extrabold)\b/g,

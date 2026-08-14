@@ -139,7 +139,7 @@ export function CoursesWorkspace() {
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="h-9 rounded-lg border border-input bg-card backdrop-blur-sm px-3 text-sm text-foreground outline-none transition-colors focus:ring-2 focus:ring-ring"
+            className="h-9 rounded-lg border border-input bg-card backdrop-blur-sm px-3 text-body text-foreground outline-none transition-colors focus:ring-2 focus:ring-ring"
           >
             <option value="">{t('all_statuses')}</option>
             <option value="ACTIVE">{t('status_active')}</option>
@@ -163,7 +163,7 @@ export function CoursesWorkspace() {
           <div className="mb-4 flex size-14 items-center justify-center rounded-2xl bg-destructive/10 text-destructive">
             <AlertCircle className="size-7" />
           </div>
-          <h3 className="text-lg font-bold">{t('failed_to_load')}</h3>
+          <h3 className="text-h3">{t('failed_to_load')}</h3>
           <Button variant="outline" size="sm" onClick={refresh} className="mt-4">
             <RefreshCw className="mr-2 size-3.5" /> {t('try_again')}
           </Button>
@@ -173,8 +173,8 @@ export function CoursesWorkspace() {
           <div className="mb-4 flex size-16 items-center justify-center rounded-2xl bg-muted text-muted-foreground">
             <BookOpen className="size-8" />
           </div>
-          <h3 className="text-xl font-bold">{search || statusFilter ? t('no_matching_courses') : t('no_courses_yet')}</h3>
-          <p className="mt-2 max-w-sm text-sm text-muted-foreground">
+          <h3 className="text-h2">{search || statusFilter ? t('no_matching_courses') : t('no_courses_yet')}</h3>
+          <p className="mt-2 max-w-sm text-body text-muted-foreground">
             {canManage ? t('start_building') : t('courses_will_appear')}
           </p>
           {(search || statusFilter) && (
@@ -220,19 +220,19 @@ export function CoursesWorkspace() {
 
               <CardContent className="flex flex-1 flex-col px-5 pb-5 pt-8">
                 <div className="flex items-start justify-between gap-2">
-                  <h3 className="line-clamp-2 text-lg font-bold leading-tight tracking-tight text-foreground">
+                  <h3 className="line-clamp-2 text-h3 leading-tight tracking-tight text-foreground">
                     {course.title}
                   </h3>
                 </div>
                 
-                <p className="mt-2 line-clamp-2 text-sm text-muted-foreground flex-1">
+                <p className="mt-2 line-clamp-2 text-body text-muted-foreground flex-1">
                   {course.description || t('no_description')}
                 </p>
 
                 <div className="mt-5 flex items-end justify-between border-t border-border/50 pt-4">
                   <div>
                     <p className="text-caption font-bold uppercase tracking-widest text-muted-foreground mb-1">{t('price')}</p>
-                    <p className="text-xl font-semibold text-foreground">{course.price}</p>
+                    <p className="text-h2 text-foreground">{course.price}</p>
                   </div>
                   <Badge 
                     variant="outline" 

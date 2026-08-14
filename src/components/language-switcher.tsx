@@ -45,7 +45,7 @@ export function LanguageSwitcher({ className, variant = 'header' }: LanguageSwit
 
   const menuItems = (
     <>
-      <div className="px-2 py-1.5 text-xs font-medium text-muted-foreground">
+      <div className="px-2 py-1.5 text-caption text-muted-foreground">
         {t('label')}
       </div>
       <DropdownMenuSeparator />
@@ -54,11 +54,11 @@ export function LanguageSwitcher({ className, variant = 'header' }: LanguageSwit
           key={opt.value}
           onClick={() => handleLocaleChange(opt.value)}
           className={cn(
-            'flex items-center gap-2.5 cursor-pointer text-sm',
+            'flex items-center gap-2.5 cursor-pointer text-body',
             opt.value === locale && 'font-bold text-primary-emphasis bg-primary-muted'
           )}
         >
-          <span className="text-base">{opt.flag}</span>
+          <span className="text-body">{opt.flag}</span>
           <span>{opt.label}</span>
           {opt.value === locale && (
             <span className="ml-auto text-caption bg-primary-muted text-primary-emphasis px-1.5 py-0.5 rounded-md font-bold">
@@ -98,14 +98,14 @@ export function LanguageSwitcher({ className, variant = 'header' }: LanguageSwit
         aria-label={t('label')}
         title={t('label')}
         className={cn(
-          'flex items-center gap-1.5 rounded-xl font-semibold text-sm px-2.5 py-1.5 hover:bg-muted transition-colors text-foreground',
+          'flex items-center gap-1.5 rounded-xl text-h4 px-2.5 py-1.5 hover:bg-muted transition-colors text-foreground',
           isPending && 'opacity-60 pointer-events-none',
           className
         )}
         disabled={isPending}
       >
         {/* <Globe className="size-4 shrink-0" /> */}
-        <span className="text-base leading-none">{current.flag}</span>
+        <span className="text-body leading-none">{current.flag}</span>
         {/* <span className="hidden sm:inline">{current.nativeLabel}</span> */}
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="min-w-[170px]">

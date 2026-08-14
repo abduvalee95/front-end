@@ -69,7 +69,7 @@ export function TeacherSalaryTab({ teacherId, teacherName: _teacherName }: Props
         <Button variant="ghost" size="icon" onClick={() => setMonth(m => shiftMonth(m, -1))}>
           <ChevronLeft className="h-4 w-4" />
         </Button>
-        <span className="font-semibold text-base capitalize">{formatPeriod(month)}</span>
+        <span className="text-h3 capitalize">{formatPeriod(month)}</span>
         <Button variant="ghost" size="icon" onClick={() => setMonth(m => shiftMonth(m, 1))}>
           <ChevronRight className="h-4 w-4" />
         </Button>
@@ -82,7 +82,7 @@ export function TeacherSalaryTab({ teacherId, teacherName: _teacherName }: Props
         <div className="rounded-xl border bg-muted/30 p-5 space-y-4">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-muted-foreground">{t('salary_type')}</p>
+              <p className="text-body text-muted-foreground">{t('salary_type')}</p>
               <p className="font-medium">{salaryTypeLabel[preview.salary_type] ?? preview.salary_type}</p>
             </div>
             {isPaid ? (
@@ -96,12 +96,12 @@ export function TeacherSalaryTab({ teacherId, teacherName: _teacherName }: Props
             )}
           </div>
           <div>
-            <p className="text-sm text-muted-foreground">{t('total_salary')}</p>
-            <p className="text-2xl font-bold">{formatMoney(preview.amount)}</p>
+            <p className="text-body text-muted-foreground">{t('total_salary')}</p>
+            <p className="text-h1">{formatMoney(preview.amount)}</p>
           </div>
 
           {/* Breakdown */}
-          <div className="text-sm text-muted-foreground space-y-1 border-t pt-3">
+          <div className="text-body text-muted-foreground space-y-1 border-t pt-3">
             {preview.salary_type === 'HOURLY' && (
               <>
                 <p>{t('lessons_count')} <span className="text-foreground font-medium">{String(preview.breakdown.lesson_count)}</span></p>
@@ -132,17 +132,17 @@ export function TeacherSalaryTab({ teacherId, teacherName: _teacherName }: Props
       {/* History */}
       {history && history.length > 0 && (
         <div>
-          <h3 className="text-sm font-semibold text-muted-foreground mb-3">{t('history')}</h3>
+          <h3 className="text-h4 text-muted-foreground mb-3">{t('history')}</h3>
           <div className="space-y-2">
             {history.map(record => (
               <div key={record.id} className="flex items-center justify-between py-2 border-b last:border-0">
                 <div>
-                  <p className="text-sm font-medium capitalize">{formatPeriod(record.period)}</p>
-                  <p className="text-xs text-muted-foreground">{salaryTypeLabel[record.salary_type]}</p>
+                  <p className="text-h4 capitalize">{formatPeriod(record.period)}</p>
+                  <p className="text-caption text-muted-foreground">{salaryTypeLabel[record.salary_type]}</p>
                 </div>
                 <div className="text-right">
-                  <p className="text-sm font-semibold">{formatMoney(record.amount)}</p>
-                  <Badge variant={record.status === 'PAID' ? 'default' : 'outline'} className="text-xs">
+                  <p className="text-h4">{formatMoney(record.amount)}</p>
+                  <Badge variant={record.status === 'PAID' ? 'default' : 'outline'} className="text-caption">
                     {record.status === 'PAID' ? t('paid') : t('pending')}
                   </Badge>
                 </div>

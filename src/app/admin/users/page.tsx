@@ -21,7 +21,7 @@ export default function AdminUsersPage() {
             <p className="flex items-center gap-2 tabular-nums text-caption font-bold uppercase tracking-normal text-primary-emphasis/80">
               <ShieldCheck className="size-3.5" /> {t('console_tag')}
             </p>
-            <h1 className="text-3xl font-semibold tracking-tight md:text-4xl">
+            <h1 className="text-h1 tracking-tight md:text-h1">
               {t('users.title')}
             </h1>
             <p className="max-w-xl font-medium text-muted-foreground">
@@ -35,7 +35,7 @@ export default function AdminUsersPage() {
               </div>
               <div>
                 <p className="tabular-nums text-caption font-bold uppercase tracking-normal text-primary-emphasis/60">{t('users.total_platform')}</p>
-                <p className="text-2xl font-semibold tabular-nums text-background">{totalUsers ?? '—'}</p>
+                <p className="text-h1 tabular-nums text-background">{totalUsers ?? '—'}</p>
               </div>
             </div>
           </div>
@@ -47,8 +47,8 @@ export default function AdminUsersPage() {
         <div className="rounded-card border border-border/70 bg-card/80 p-6 shadow-sm backdrop-blur-md transition-shadow hover:shadow-xl sm:p-8">
           <div className="mb-8 flex items-center justify-between">
             <div>
-              <h3 className="text-xl font-semibold text-foreground">{t('users.directory')}</h3>
-              <p className="text-sm font-medium text-muted-foreground">{t('users.directory_sub')}</p>
+              <h3 className="text-h2 text-foreground">{t('users.directory')}</h3>
+              <p className="text-h4 text-muted-foreground">{t('users.directory_sub')}</p>
             </div>
             <div className="rounded-2xl bg-muted p-3">
               <Sparkles className="size-5 text-muted-foreground" />

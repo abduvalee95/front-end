@@ -78,14 +78,14 @@ function LoginForm() {
       <div className="relative mx-auto grid min-h-[calc(100vh-3rem)] w-full max-w-6xl items-center gap-8 lg:grid-cols-[1.08fr_0.92fr]">
         <section className="hidden lg:block">
           <div className="max-w-xl">
-            <div className="mb-8 inline-flex items-center gap-3 rounded-full border border-primary/20 bg-card px-4 py-2 text-xs font-semibold uppercase tracking-normal text-primary shadow-sm backdrop-blur">
+            <div className="mb-8 inline-flex items-center gap-3 rounded-full border border-primary/20 bg-card px-4 py-2 text-caption uppercase tracking-normal text-primary shadow-sm backdrop-blur">
               <ShieldCheck className="size-4" />
               Organization access
             </div>
-            <h1 className="max-w-[12ch] text-6xl font-semibold leading-[0.92] tracking-tight text-foreground">
+            <h1 className="max-w-[12ch] text-display text-foreground">
               Learning operations, tightened.
             </h1>
-            <p className="mt-6 max-w-lg text-base leading-7 text-muted-foreground">
+            <p className="mt-6 max-w-lg text-body leading-7 text-muted-foreground">
               A quiet control room for Билим Нуру teams to monitor students, teachers,
               CRM activity, and revenue without losing the thread of the school day.
             </p>
@@ -102,8 +102,8 @@ function LoginForm() {
                 className="rounded-2xl border border-border bg-card p-4 shadow-card backdrop-blur"
               >
                 <item.icon className="mb-5 size-5 text-primary" />
-                <div className="text-2xl font-semibold tabular-nums text-foreground">{item.value}</div>
-                <div className="mt-1 text-xs font-medium text-muted-foreground">{item.label}</div>
+                <div className="text-h1 tabular-nums text-foreground">{item.value}</div>
+                <div className="mt-1 text-caption text-muted-foreground">{item.label}</div>
               </div>
             ))}
           </div>
@@ -121,7 +121,7 @@ function LoginForm() {
                 onError={(e) => {
                   (e.target as HTMLImageElement).style.display = 'none';
                   (e.target as HTMLImageElement).parentElement!.innerHTML =
-                    '<span class="text-3xl font-semibold">BN</span>';
+                    '<span class="text-h1 font-semibold">BN</span>';
                 }}
               />
             </div>
@@ -129,15 +129,15 @@ function LoginForm() {
 
           <div className="rounded-card border border-border bg-card/88 p-7 shadow-card backdrop-blur-xl dark:bg-card/78">
             <div className="mb-6">
-              <h3 className="text-xl font-bold text-foreground">{t('welcome_back_title')}</h3>
-              <p className="mt-1 text-sm text-muted-foreground">
+              <h3 className="text-h2 text-foreground">{t('welcome_back_title')}</h3>
+              <p className="mt-1 text-body text-muted-foreground">
                 {t('sign_in_subtitle')}
               </p>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-5">
               <div className="space-y-2">
-                <label htmlFor="phone" className="text-sm font-medium text-foreground">
+                <label htmlFor="phone" className="text-h4 text-foreground">
                   {t('phone_number')}
                 </label>
                 <div className="relative">
@@ -156,7 +156,7 @@ function LoginForm() {
               </div>
 
               <div className="space-y-2">
-                <label htmlFor="password" className="text-sm font-medium text-foreground">
+                <label htmlFor="password" className="text-h4 text-foreground">
                   {t('password')}
                 </label>
                 <div className="relative">
@@ -192,9 +192,9 @@ function LoginForm() {
                     className="size-4 rounded border-border text-primary focus:ring-primary"
                     disabled={isLoading}
                   />
-                  <span className="text-sm text-muted-foreground">{t('remember_me')}</span>
+                  <span className="text-body text-muted-foreground">{t('remember_me')}</span>
                 </label>
-                <a href="#" className="text-sm font-medium text-primary transition-colors hover:text-primary/80">
+                <a href="#" className="text-h4 text-primary transition-colors hover:text-primary/80">
                   {t('forgot_password')}
                 </a>
               </div>
@@ -216,12 +216,12 @@ function LoginForm() {
               </Button>
             </form>
 
-            <div className="mt-6 rounded-2xl border border-primary/12 bg-primary/5 p-4 text-xs leading-5 text-muted-foreground">
+            <div className="mt-6 rounded-2xl border border-primary/12 bg-primary/5 p-4 text-caption leading-5 text-muted-foreground">
               {t('phone_info')}
             </div>
           </div>
 
-          <p className="mt-7 text-center text-sm text-muted-foreground">
+          <p className="mt-7 text-center text-body text-muted-foreground">
             {t('no_account')}{' '}
             <a href="#" className="font-semibold text-primary transition-colors hover:text-primary/80">
               {t('contact_admin')}
@@ -240,7 +240,7 @@ export default function LoginPage() {
         <div className="flex min-h-screen items-center justify-center bg-background p-4">
           <div className="flex flex-col items-center gap-4">
             <Loader2 className="size-8 animate-spin text-primary" />
-            <p className="text-sm text-muted-foreground">Loading...</p>
+            <p className="text-body text-muted-foreground">Loading...</p>
           </div>
         </div>
       }

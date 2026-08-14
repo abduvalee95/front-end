@@ -129,7 +129,7 @@ export function EditCourseModal({ course }: EditCourseModalProps) {
                 value={formData.status}
                 onChange={(e) => setFormData((p) => ({ ...p, status: e.target.value as CourseStatus }))}
                 disabled={isLoading}
-                className="flex h-9 w-full rounded-xl border border-input bg-background px-3 text-sm text-foreground outline-none transition-colors focus:ring-2 focus:ring-ring"
+                className="flex h-9 w-full rounded-xl border border-input bg-background px-3 text-body text-foreground outline-none transition-colors focus:ring-2 focus:ring-ring"
               >
                 <option value="ACTIVE">Active</option>
                 <option value="INACTIVE">Inactive</option>

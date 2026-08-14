@@ -116,7 +116,7 @@ export function LMSTab() {
               ))}
             </div>
           ) : (s?.upcomingLessons?.length ?? 0) === 0 ? (
-            <div className="text-sm text-muted-foreground py-8 text-center">
+            <div className="text-body text-muted-foreground py-8 text-center">
               No upcoming lessons scheduled.
             </div>
           ) : (
@@ -130,10 +130,10 @@ export function LMSTab() {
                     <CalendarDays className="h-5 w-5" />
                   </div>
                   <div className="min-w-0 flex-1">
-                    <p className="font-medium text-sm truncate">{l.title}</p>
-                    <p className="text-xs text-muted-foreground truncate">{l.course_title}</p>
+                    <p className="text-h4 truncate">{l.title}</p>
+                    <p className="text-caption text-muted-foreground truncate">{l.course_title}</p>
                   </div>
-                  <div className="text-xs text-muted-foreground whitespace-nowrap">
+                  <div className="text-caption text-muted-foreground whitespace-nowrap">
                     {format(parseISO(l.start_date), 'MMM d')}
                   </div>
                 </li>
@@ -153,7 +153,7 @@ export function LMSTab() {
             ))}
           </div>
         ) : insights.length === 0 ? (
-          <div className="bg-card border border-border rounded-2xl p-6 text-sm text-muted-foreground">
+          <div className="bg-card border border-border rounded-2xl p-6 text-body text-muted-foreground">
             No insights yet — more data will enable pattern detection.
           </div>
         ) : (

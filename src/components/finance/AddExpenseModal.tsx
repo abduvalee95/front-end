@@ -91,7 +91,7 @@ export function AddExpenseModal({ open, onClose }: AddExpenseModalProps) {
         <form id="add-expense-form" onSubmit={handleSubmit(onSubmit)} className="space-y-4 pt-2">
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1.5">
-              <Label className="text-xs">{t('amount')} (KGS) *</Label>
+              <Label className="text-caption">{t('amount')} (KGS) *</Label>
               <Input
                 type="number"
                 min="0"
@@ -101,11 +101,11 @@ export function AddExpenseModal({ open, onClose }: AddExpenseModalProps) {
                 {...register('amount', { required: true, min: 1 })}
                 disabled={createExpense.isPending}
               />
-              {errors.amount && <p className="text-xs text-destructive">{tCommon('required')}</p>}
+              {errors.amount && <p className="text-caption text-destructive">{tCommon('required')}</p>}
             </div>
 
             <div className="space-y-1.5">
-              <Label className="text-xs">{t('category')} *</Label>
+              <Label className="text-caption">{t('category')} *</Label>
               <Select
                 value={categoryValue}
                 onValueChange={(v) => setValue('category', (v ?? 'OTHER') as ExpenseCategory)}
@@ -128,7 +128,7 @@ export function AddExpenseModal({ open, onClose }: AddExpenseModalProps) {
           </div>
 
           <div className="space-y-1.5">
-            <Label className="text-xs">{tCommon('description')} ({tCommon('optional')})</Label>
+            <Label className="text-caption">{tCommon('description')} ({tCommon('optional')})</Label>
             <Input
               placeholder={t('expense_description_placeholder')}
               className="rounded-xl"

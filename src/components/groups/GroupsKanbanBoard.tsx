@@ -103,7 +103,7 @@ export function GroupsKanbanBoard({ groups, canManage, isDeleting, onDelete }: G
           <div className="flex flex-col gap-4 rounded-3xl bg-muted/30 p-2 min-h-[500px]">
             {column.items.length === 0 ? (
               <div className="flex h-32 flex-col items-center justify-center rounded-2xl border border-dashed border-border/60 text-center">
-                <p className="text-sm font-medium text-muted-foreground">{t('no_groups_column')}</p>
+                <p className="text-h4 text-muted-foreground">{t('no_groups_column')}</p>
               </div>
             ) : (
               column.items.map((group) => (
@@ -142,7 +142,7 @@ export function GroupsKanbanBoard({ groups, canManage, isDeleting, onDelete }: G
 
                     {/* Group Name */}
                     <Link href={`/groups/${group.id}`}>
-                      <h4 className="mb-4 text-lg font-bold leading-tight tracking-tight text-foreground hover:text-primary hover:underline transition-colors cursor-pointer">
+                      <h4 className="mb-4 text-h3 leading-tight tracking-tight text-foreground hover:text-primary hover:underline transition-colors cursor-pointer">
                         {group.name}
                       </h4>
                     </Link>
@@ -155,12 +155,12 @@ export function GroupsKanbanBoard({ groups, canManage, isDeleting, onDelete }: G
                             {group.teacher?.full_name?.charAt(0) ?? 'T'}
                           </AvatarFallback>
                         </Avatar>
-                        <span className="text-sm font-medium text-muted-foreground">
+                        <span className="text-h4 text-muted-foreground">
                           {group.teacher?.full_name ?? t('unassigned')}
                         </span>
                       </div>
                       
-                      <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground">
+                      <div className="flex items-center gap-2 text-caption text-muted-foreground">
                         <Calendar className="size-3.5" />
                         <span>{formatDate(group.start_date)} — {formatDate(group.end_date)}</span>
                       </div>

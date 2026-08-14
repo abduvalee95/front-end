@@ -180,8 +180,8 @@ export function LeadsWorkspace() {
       {view === 'table' &&
       <div className="bg-card border border-border rounded-2xl overflow-hidden shadow-sm">
         <div className="overflow-x-auto">
-          <table className="w-full text-sm text-left">
-            <thead className="bg-muted/50 text-xs uppercase tracking-wider text-muted-foreground">
+          <table className="w-full text-body text-left">
+            <thead className="bg-muted/50 text-caption uppercase tracking-wider text-muted-foreground">
               <tr>
                 <th className="px-6 py-4 font-semibold">{t('full_name')}</th>
                 <th className="px-6 py-4 font-semibold">{tCommon('status')}</th>
@@ -215,7 +215,7 @@ export function LeadsWorkspace() {
                         <span className="font-bold text-foreground group-hover:text-primary-emphasis transition-colors">
                           {lead.full_name}
                         </span>
-                        <div className="flex items-center gap-1.5 text-xs text-muted-foreground mt-1">
+                        <div className="flex items-center gap-1.5 text-caption text-muted-foreground mt-1">
                           <Phone className="size-3" />
                           {lead.phone}
                         </div>
@@ -225,13 +225,13 @@ export function LeadsWorkspace() {
                       {getStatusBadge(lead.status)}
                     </td>
                     <td className="px-6 py-4">
-                      <div className="flex items-center gap-1.5 text-xs">
+                      <div className="flex items-center gap-1.5 text-caption">
                         <Badge variant="outline" className="font-normal capitalize">
                           {lead.source.replace(/_/g, ' ')}
                         </Badge>
                       </div>
                     </td>
-                    <td className="px-6 py-4 text-xs text-muted-foreground" suppressHydrationWarning>
+                    <td className="px-6 py-4 text-caption text-muted-foreground" suppressHydrationWarning>
                       <div className="flex items-center gap-1.5">
                         <Clock className="size-3" />
                         {format(parseISO(lead.created_at), 'MMM d, yyyy')}

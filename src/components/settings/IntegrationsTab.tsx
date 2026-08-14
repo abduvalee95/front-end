@@ -86,7 +86,7 @@ export function IntegrationsTab({
                 <Send className="size-6" />
               </div>
               <div>
-                <CardTitle className="text-lg font-semibold">{t('telegram_bot')}</CardTitle>
+                <CardTitle className="text-h3">{t('telegram_bot')}</CardTitle>
                 <CardDescription>{t('telegram_bot_desc')}</CardDescription>
               </div>
             </div>
@@ -99,25 +99,25 @@ export function IntegrationsTab({
         <CardContent className={`p-6 space-y-4 transition-opacity ${formData.telegram_enabled ? 'opacity-100' : 'opacity-50 pointer-events-none'}`}>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label className="text-sm font-medium">{t('bot_token')}</Label>
+              <Label className="text-h4">{t('bot_token')}</Label>
               <Input 
                 type="password"
                 value={formData.telegram_bot_token || ''} 
                 onChange={(e) => handleOrgInputChange('telegram_bot_token', e.target.value)}
                 placeholder="123456789:ABCdefGHIjklMNOpqrSTUvwxyz"
-                className="h-11 tabular-nums text-sm"
+                className="h-11 tabular-nums text-body"
               />
-              <p className="text-xs text-muted-foreground">{t('bot_token_help')}</p>
+              <p className="text-caption text-muted-foreground">{t('bot_token_help')}</p>
             </div>
             <div className="space-y-2">
-              <Label className="text-sm font-medium">{t('chat_id')}</Label>
+              <Label className="text-h4">{t('chat_id')}</Label>
               <Input 
                 value={formData.telegram_chat_id || ''} 
                 onChange={(e) => handleOrgInputChange('telegram_chat_id', e.target.value)}
                 placeholder="-1001234567890"
-                className="h-11 tabular-nums text-sm"
+                className="h-11 tabular-nums text-body"
               />
-              <p className="text-xs text-muted-foreground">{t('chat_id_help')}</p>
+              <p className="text-caption text-muted-foreground">{t('chat_id_help')}</p>
             </div>
           </div>
           
@@ -125,7 +125,7 @@ export function IntegrationsTab({
             <Alert className={`${ telegramStatus === 'success' ? 'border-success/50 bg-success-muted/20' : telegramStatus === 'error' ? 'border-danger/50 bg-danger-muted/20' : 'border-primary/50 bg-primary-muted/20' }`}>
               <Info className="size-4" />
               <AlertDescription className="flex items-center justify-between">
-                <span className="text-sm">
+                <span className="text-body">
                   {telegramStatus === 'success' ? t('connection_verified') :
                    telegramStatus === 'error' ? t('connection_failed') :
                    t('ready_to_test')}
@@ -157,7 +157,7 @@ export function IntegrationsTab({
                 <MessageSquare className="size-6" />
               </div>
               <div>
-                <CardTitle className="text-lg font-semibold">{t('whatsapp_api')}</CardTitle>
+                <CardTitle className="text-h3">{t('whatsapp_api')}</CardTitle>
                 <CardDescription>{t('whatsapp_api_desc')}</CardDescription>
               </div>
             </div>
@@ -170,29 +170,29 @@ export function IntegrationsTab({
         <CardContent className={`p-6 space-y-4 transition-opacity ${formData.whatsapp_enabled ? 'opacity-100' : 'opacity-50 pointer-events-none'}`}>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label className="text-sm font-medium">{t('cloud_api_token')}</Label>
+              <Label className="text-h4">{t('cloud_api_token')}</Label>
               <Input 
                 type="password"
                 value={formData.whatsapp_cloud_token || ''} 
                 onChange={(e) => handleOrgInputChange('whatsapp_cloud_token', e.target.value)}
-                className="h-11 tabular-nums text-sm"
+                className="h-11 tabular-nums text-body"
               />
             </div>
             <div className="space-y-2">
-              <Label className="text-sm font-medium">{t('phone_number_id')}</Label>
+              <Label className="text-h4">{t('phone_number_id')}</Label>
               <Input 
                 value={formData.whatsapp_phone_number_id || ''} 
                 onChange={(e) => handleOrgInputChange('whatsapp_phone_number_id', e.target.value)}
-                className="h-11 tabular-nums text-sm"
+                className="h-11 tabular-nums text-body"
               />
             </div>
             <div className="space-y-2 md:col-span-2">
-              <Label className="text-sm font-medium">{t('default_target_number')}</Label>
+              <Label className="text-h4">{t('default_target_number')}</Label>
               <Input 
                 value={formData.whatsapp_target || ''} 
                 onChange={(e) => handleOrgInputChange('whatsapp_target', e.target.value)}
                 placeholder="996901234567"
-                className="h-11 tabular-nums text-sm"
+                className="h-11 tabular-nums text-body"
               />
             </div>
           </div>
@@ -201,7 +201,7 @@ export function IntegrationsTab({
             <Alert className={`${ whatsappStatus === 'success' ? 'border-success/50 bg-success-muted/20' : whatsappStatus === 'error' ? 'border-danger/50 bg-danger-muted/20' : 'border-success/50 bg-success-muted/20' }`}>
               <Info className="size-4" />
               <AlertDescription className="flex items-center justify-between">
-                <span className="text-sm">
+                <span className="text-body">
                   {whatsappStatus === 'success' ? t('connection_verified') :
                    whatsappStatus === 'error' ? t('connection_failed') :
                    t('ready_to_test')}

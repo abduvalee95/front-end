@@ -39,7 +39,7 @@ export function InfrastructureSection({ recentBackups, resourceMetrics }: Infras
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <Card className="rounded-2xl border-border shadow-sm overflow-hidden">
           <CardHeader className="pb-4 border-b border-border/60 bg-muted/40">
-            <CardTitle className="text-base font-semibold flex items-center gap-2">
+            <CardTitle className="text-h3 flex items-center gap-2">
               <Database className="size-4 text-primary-emphasis" /> {t('settings.db_backups')}
             </CardTitle>
             <CardDescription>{t('settings.db_backups_desc')}</CardDescription>
@@ -47,12 +47,12 @@ export function InfrastructureSection({ recentBackups, resourceMetrics }: Infras
           <CardContent className="pt-5 space-y-4">
             <div className="flex items-center justify-between p-3.5 rounded-xl bg-primary/100/10 border border-primary/20">
               <div>
-                <p className="text-sm font-semibold text-foreground">{t('settings.next_backup')}</p>
-                <p className="text-xs text-primary-emphasis font-medium">{t('settings.tonight_at')}</p>
+                <p className="text-h4 text-foreground">{t('settings.next_backup')}</p>
+                <p className="text-caption text-primary-emphasis">{t('settings.tonight_at')}</p>
               </div>
               <Button
                 onClick={() => toast.success(t('settings.backup_triggered'))}
-                className="bg-card hover:bg-muted/60 text-foreground border border-border rounded-xl shadow-sm gap-1.5 text-xs h-8"
+                className="bg-card hover:bg-muted/60 text-foreground border border-border rounded-xl shadow-sm gap-1.5 text-caption h-8"
               >
                 <Upload className="size-3.5" /> {t('settings.backup_now')}
               </Button>
@@ -63,7 +63,7 @@ export function InfrastructureSection({ recentBackups, resourceMetrics }: Infras
                   <div className="flex items-center gap-2.5">
                     <CheckCircle2 className="size-4 text-success-emphasis shrink-0" />
                     <div>
-                      <p className="text-xs font-bold text-foreground/90 truncate max-w-[160px]">{b.name}</p>
+                      <p className="text-caption text-foreground/90 truncate max-w-[160px]">{b.name}</p>
                       <p className="text-caption text-muted-foreground">{b.date}</p>
                     </div>
                   </div>
@@ -87,14 +87,14 @@ export function InfrastructureSection({ recentBackups, resourceMetrics }: Infras
         <div className="space-y-4">
           <Card className="rounded-2xl border-border shadow-sm overflow-hidden">
             <CardHeader className="pb-4 border-b border-border/60 bg-muted/40">
-              <CardTitle className="text-base font-semibold flex items-center gap-2">
+              <CardTitle className="text-h3 flex items-center gap-2">
                 <Cpu className="size-4 text-primary-emphasis" /> {t('settings.resource_monitor')}
               </CardTitle>
             </CardHeader>
             <CardContent className="pt-5 space-y-4">
               {resourceMetrics.map((r) => (
                 <div key={r.label} className="space-y-1.5">
-                  <div className="flex justify-between text-xs font-bold">
+                  <div className="flex justify-between text-caption">
                     <span className="text-muted-foreground">{r.label}</span>
                     <span className="text-foreground tabular-nums">{r.value}%</span>
                   </div>
@@ -108,7 +108,7 @@ export function InfrastructureSection({ recentBackups, resourceMetrics }: Infras
 
           <Card className="rounded-2xl border-danger/20 shadow-sm overflow-hidden">
             <CardHeader className="pb-3 border-b border-danger/20 bg-danger/100/10">
-              <CardTitle className="text-sm font-semibold text-danger-emphasis flex items-center gap-2">
+              <CardTitle className="text-h4 text-danger-emphasis flex items-center gap-2">
                 <AlertTriangle className="size-4" /> {t('settings.danger_zone')}
               </CardTitle>
             </CardHeader>
@@ -117,7 +117,7 @@ export function InfrastructureSection({ recentBackups, resourceMetrics }: Infras
                 <Button
                   variant="outline"
                   onClick={() => setResetCacheOpen(true)}
-                  className="w-full rounded-xl border-danger/30 text-danger-emphasis hover:bg-danger/100/10 gap-2 justify-start text-sm h-9"
+                  className="w-full rounded-xl border-danger/30 text-danger-emphasis hover:bg-danger/100/10 gap-2 justify-start text-body h-9"
                 >
                   <RefreshCw className="size-4" /> {t('settings.reset_caches')}
                 </Button>
@@ -144,7 +144,7 @@ export function InfrastructureSection({ recentBackups, resourceMetrics }: Infras
                 <Button
                   variant="outline"
                   onClick={() => setPurgeOpen(true)}
-                  className="w-full rounded-xl border-danger/30 text-danger-emphasis hover:bg-danger/100/10 gap-2 justify-start text-sm h-9"
+                  className="w-full rounded-xl border-danger/30 text-danger-emphasis hover:bg-danger/100/10 gap-2 justify-start text-body h-9"
                 >
                   <Trash2 className="size-4" /> {t('settings.purge_records')}
                 </Button>

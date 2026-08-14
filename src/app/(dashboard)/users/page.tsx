@@ -18,8 +18,8 @@ export default function UsersPage() {
             <Users className="size-5 text-primary" />
           </div>
           <div>
-            <h1 className="text-xl font-bold tracking-tight">Users Management</h1>
-            <p className="text-xs text-muted-foreground mt-0.5">
+            <h1 className="text-h2 tracking-tight">Users Management</h1>
+            <p className="text-caption text-muted-foreground mt-0.5">
               Manage your organization&apos;s staff and students
             </p>
           </div>

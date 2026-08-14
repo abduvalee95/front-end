@@ -26,7 +26,9 @@ qiymat yozilmaydi**:
 
 - Shrift bitta: Inter. Sahifaga xos shrift yo'q.
 - O'lcham `text-h1…text-h4`, `text-body`, `text-body-sm`, `text-caption` dan
-  olinadi. Shkala o'z `font-weight` ini olib keladi — ustiga qo'shmang.
+  olinadi (`text-display` — faqat hero, mahsulot ichida ishlatilmaydi).
+  Tailwind'ning o'z shkalasi (`text-sm`, `text-xs`, `text-2xl`…) ham taqiqlangan —
+  `design:audit` ularni ushlaydi. Shkala o'z `font-weight` ini olib keladi — ustiga qo'shmang.
   `text-[13px]` kabi ixtiyoriy o'lchamlar yo'q.
 - Rang faqat semantik tokenlardan: `bg-card`, `text-foreground`,
   `text-muted-foreground`, `border-border`, `bg-primary`, `text-success-emphasis`

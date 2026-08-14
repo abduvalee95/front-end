@@ -105,7 +105,7 @@ export function OrgStatsCards({ data, isLoading }: OrgStatsCardsProps) {
             <div className={`h-1 ${cfg.gradientClass}`} />
             
             <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
+              <CardTitle className="text-h4 text-muted-foreground">
                 {t(cfg.labelKey)}
               </CardTitle>
               <div className={`h-9 w-9 rounded-lg ${cfg.iconBgClass} flex items-center justify-center`}>
@@ -113,10 +113,10 @@ export function OrgStatsCards({ data, isLoading }: OrgStatsCardsProps) {
               </div>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold tabular-nums">
+              <div className="text-h1 tabular-nums">
                 {value.toLocaleString()}
               </div>
-              <p className="text-xs text-muted-foreground mt-1">{sub}</p>
+              <p className="text-caption text-muted-foreground mt-1">{sub}</p>
             </CardContent>
           </Card>
         );

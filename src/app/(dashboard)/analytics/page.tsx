@@ -14,8 +14,8 @@ export default function AnalyticsPage() {
         <div className="inline-flex h-16 w-16 rounded-2xl bg-muted items-center justify-center">
           <Lock className="h-8 w-8 text-muted-foreground" />
         </div>
-        <h1 className="text-2xl font-bold">Analytics not available</h1>
-        <p className="text-sm text-muted-foreground">
+        <h1 className="text-h1">Analytics not available</h1>
+        <p className="text-body text-muted-foreground">
           The analytics endpoints are scoped per organization and require an ADMIN, MANAGER, or
           TEACHER role. Sign in with an organization account to access this dashboard.
         </p>

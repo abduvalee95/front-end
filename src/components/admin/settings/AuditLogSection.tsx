@@ -28,13 +28,13 @@ export function AuditLogSection({ auditLogs }: AuditLogSectionProps) {
       <Card className="rounded-2xl border-border shadow-sm overflow-hidden">
         <CardHeader className="pb-4 border-b border-border/60 bg-muted/40 flex flex-row items-center justify-between">
           <div>
-            <CardTitle className="text-base font-semibold">{t('settings.activity_log')}</CardTitle>
+            <CardTitle className="text-h3">{t('settings.activity_log')}</CardTitle>
             <CardDescription>{t('settings.activity_log_desc')}</CardDescription>
           </div>
           <Button
             variant="outline"
             onClick={() => toast.success(t('settings.csv_started'))}
-            className="rounded-xl border-border gap-2 text-sm"
+            className="rounded-xl border-border gap-2 text-body"
           >
             <Download className="size-4" /> {t('settings.export_csv')}
           </Button>
@@ -47,8 +47,8 @@ export function AuditLogSection({ auditLogs }: AuditLogSectionProps) {
                   <History className="size-3.5 text-muted-foreground" />
                 </div>
                 <div>
-                  <p className="text-sm font-semibold text-foreground">{log.action}</p>
-                  <p className="text-xs text-muted-foreground mt-0.5">{log.user}</p>
+                  <p className="text-h4 text-foreground">{log.action}</p>
+                  <p className="text-caption text-muted-foreground mt-0.5">{log.user}</p>
                 </div>
               </div>
               <Badge variant="outline" className="rounded-lg text-caption shrink-0 ml-4">{log.time}</Badge>
@@ -56,7 +56,7 @@ export function AuditLogSection({ auditLogs }: AuditLogSectionProps) {
           ))}
         </CardContent>
         <CardFooter className="border-t border-border/60 bg-muted/40 p-4 flex justify-center">
-          <Button variant="outline" onClick={() => toast.info(t('settings.loading_logs'))} className="rounded-xl border-border text-sm">
+          <Button variant="outline" onClick={() => toast.info(t('settings.loading_logs'))} className="rounded-xl border-border text-body">
             {t('settings.load_more')}
           </Button>
         </CardFooter>

@@ -94,7 +94,7 @@ export function OrganizationTab({
               <Badge variant={formData.status === 'ACTIVE' ? 'default' : 'secondary'} className="mt-1">
                 {formData.status}
               </Badge>
-              <p className="text-xs text-muted-foreground mt-1.5">{t('click_to_upload_logo')}</p>
+              <p className="text-caption text-muted-foreground mt-1.5">{t('click_to_upload_logo')}</p>
             </div>
           </div>
         </CardContent>
@@ -102,13 +102,13 @@ export function OrganizationTab({
 
       <Card className="border-border shadow-sm">
         <CardHeader className="border-b border-border">
-          <CardTitle className="text-lg font-semibold">{t('organization_details')}</CardTitle>
+          <CardTitle className="text-h3">{t('organization_details')}</CardTitle>
           <CardDescription>{t('organization_details_desc')}</CardDescription>
         </CardHeader>
         <CardContent className="p-6 space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label className="text-sm font-medium">{t('organization_name')}</Label>
+              <Label className="text-h4">{t('organization_name')}</Label>
               <Input 
                 value={formData.name || ''} 
                 onChange={(e) => handleOrgInputChange('name', e.target.value)}
@@ -116,7 +116,7 @@ export function OrganizationTab({
               />
             </div>
             <div className="space-y-2">
-              <Label className="text-sm font-medium">{t('business_email')}</Label>
+              <Label className="text-h4">{t('business_email')}</Label>
               <Input 
                 type="email" 
                 value={formData.email || ''} 
@@ -125,7 +125,7 @@ export function OrganizationTab({
               />
             </div>
             <div className="space-y-2">
-              <Label className="text-sm font-medium">{t('contact_phone')}</Label>
+              <Label className="text-h4">{t('contact_phone')}</Label>
               <Input 
                 value={formData.phone || ''} 
                 onChange={(e) => handleOrgInputChange('phone', e.target.value)}
@@ -134,9 +134,9 @@ export function OrganizationTab({
               />
             </div>
             <div className="space-y-2">
-              <Label className="text-sm font-medium">{t('organization_id')}</Label>
+              <Label className="text-h4">{t('organization_id')}</Label>
               <div className="flex gap-2">
-                <div className="flex-1 h-11 flex items-center px-3 rounded-md border bg-muted dark:bg-card text-sm tabular-nums text-foreground">
+                <div className="flex-1 h-11 flex items-center px-3 rounded-md border bg-muted dark:bg-card text-body tabular-nums text-foreground">
                   {settings?.id}
                 </div>
                 <Button 

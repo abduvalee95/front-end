@@ -59,14 +59,14 @@ export default function OrganizationsPage() {
             <p className="mb-2 flex items-center gap-2 tabular-nums text-caption font-bold uppercase tracking-normal text-primary-emphasis/80">
               <Building2 className="size-3.5" /> {t('console_tag')}
             </p>
-            <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">{tNav('organizations')}</h1>
-            <p className="mt-1 text-sm text-muted-foreground">
+            <h1 className="text-h1 tracking-tight sm:text-h1">{tNav('organizations')}</h1>
+            <p className="mt-1 text-body text-muted-foreground">
               {t('orgs.subtitle')}
             </p>
           </div>
           <button
             onClick={() => setCreateOpen(true)}
-            className="group flex h-10 shrink-0 items-center gap-2 rounded-xl border border-primary/25 bg-primary/10 px-4 text-sm font-bold text-primary-emphasis backdrop-blur-sm transition-all hover:border-primary/40 hover:bg-primary/20"
+            className="group flex h-10 shrink-0 items-center gap-2 rounded-xl border border-primary/25 bg-primary/10 px-4 text-h4 text-primary-emphasis backdrop-blur-sm transition-all hover:border-primary/40 hover:bg-primary/20"
           >
             <Building2 className="size-4 transition-transform group-hover:scale-110" />
             {t('orgs.create')}

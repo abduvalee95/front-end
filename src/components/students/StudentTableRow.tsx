@@ -47,16 +47,16 @@ export function StudentTableRow({ student, index, teacherScoped, canManageScope,
 
   return (
     <TableRow className="group border-b border-border/40 transition-colors hover:bg-muted/30">
-      <TableCell className="pl-5 text-xs tabular-nums text-muted-foreground/50 w-8">{index}</TableCell>
+      <TableCell className="pl-5 text-caption tabular-nums text-muted-foreground/50 w-8">{index}</TableCell>
       <TableCell className="py-3">
         <Link href={`/students/${student.id}`} className="flex items-center gap-3">
           <Avatar className="size-9 rounded-xl shrink-0">
-            <AvatarFallback className={cn('rounded-xl text-sm font-semibold', avatarColor)}>
+            <AvatarFallback className={cn('rounded-xl text-h4', avatarColor)}>
               {(student.name || '?').charAt(0).toUpperCase()}
             </AvatarFallback>
           </Avatar>
           <div className="min-w-0">
-            <p className="truncate text-sm font-semibold text-foreground group-hover:text-primary-emphasis dark:group-hover:text-primary-emphasis transition-colors">
+            <p className="truncate text-h4 text-foreground group-hover:text-primary-emphasis dark:group-hover:text-primary-emphasis transition-colors">
               {student.name}
             </p>
             <p className="truncate text-caption tabular-nums text-muted-foreground">{student.phone}</p>
@@ -105,10 +105,10 @@ export function StudentTableRow({ student, index, teacherScoped, canManageScope,
           </span>
         )}
         {student.paymentStatus === 'unknown' && (
-          <span aria-label="Unknown" className="text-muted-foreground/40 text-xs">—</span>
+          <span aria-label="Unknown" className="text-muted-foreground/40 text-caption">—</span>
         )}
       </TableCell>
-      <TableCell className="max-w-[200px] text-xs text-muted-foreground">
+      <TableCell className="max-w-[200px] text-caption text-muted-foreground">
         <div>
           <p className="truncate font-medium text-foreground/80">
             {student.groups.join(', ') || <span className="text-border">—</span>}
@@ -116,7 +116,7 @@ export function StudentTableRow({ student, index, teacherScoped, canManageScope,
           <p className="truncate text-caption text-muted-foreground/70">{student.courses.join(', ') || t('no_course')}</p>
         </div>
       </TableCell>
-      <TableCell className="text-xs tabular-nums text-muted-foreground max-w-[160px]">
+      <TableCell className="text-caption tabular-nums text-muted-foreground max-w-[160px]">
         <span className="truncate block">{teacherScoped ? student.teachers.join(', ') || '—' : student.phone}</span>
       </TableCell>
       <TableCell>
