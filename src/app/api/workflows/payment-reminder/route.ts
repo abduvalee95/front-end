@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { start, getRun } from 'workflow/api';
 import { paymentReminderWorkflow, type ReminderRunSummary } from '@/workflows/payment-reminder';
+import { isValidAdminSecret } from '@/lib/auth/admin-secret';
 
 /**
  * POST — run today's reminder pass.
@@ -15,8 +16,7 @@ import { paymentReminderWorkflow, type ReminderRunSummary } from '@/workflows/pa
  * records "invoice X was reminded on date Y" across runs yet.
  */
 export async function POST(request: Request) {
-  const secret = request.headers.get('x-admin-secret');
-  if (secret !== process.env.ADMIN_SECRET) {
+  if (!isValidAdminSecret(request.headers.get('x-admin-secret'))) {
     return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
   }
 
@@ -26,8 +26,7 @@ export async function POST(request: Request) {
 
 // GET — check status of a run
 export async function GET(request: Request) {
-  const secret = request.headers.get('x-admin-secret');
-  if (secret !== process.env.ADMIN_SECRET) {
+  if (!isValidAdminSecret(request.headers.get('x-admin-secret'))) {
     return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
   }
 

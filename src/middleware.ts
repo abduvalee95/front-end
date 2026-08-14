@@ -86,6 +86,12 @@ export default async function middleware(request: NextRequest) {
     // Workflow runtime endpoints carry their own signed tokens (see
     // src/app/.well-known/workflow/**) and are called without a session.
     pathname.startsWith('/.well-known/') ||
+    // Workflow trigger/status endpoints authenticate with x-admin-secret, not
+    // a cookie — they are called by cron, which has no session. Gating them on
+    // a cookie here made them unreachable by the only caller they have: the
+    // daily reminder pass could not be triggered at all. The handler enforces
+    // the secret in constant time (src/lib/auth/admin-secret.ts).
+    pathname.startsWith('/api/workflows/') ||
     ROOT_STATIC_ASSET.test(pathname);
 
   const isAuthRoute = authRoutes.some((route) => pathname.startsWith(route));
