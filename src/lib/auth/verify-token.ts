@@ -15,6 +15,8 @@ import type { UserRole } from '@/types/auth';
 const secret = new TextEncoder().encode(JWT_ACCESS_SECRET);
 
 export interface AccessClaims {
+  /** JWT subject — the user id. Null only if the backend omitted it. */
+  sub: string | null;
   role: UserRole | null;
   organization_id: string | null;
 }
@@ -26,6 +28,7 @@ export type VerifyResult =
 
 function toClaims(payload: Record<string, unknown>): AccessClaims {
   return {
+    sub: typeof payload.sub === 'string' ? payload.sub : null,
     role: (payload.role as UserRole) ?? null,
     organization_id: (payload.organization_id as string) ?? null,
   };

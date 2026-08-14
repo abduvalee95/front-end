@@ -1,9 +1,12 @@
 import { NextResponse } from 'next/server';
-import { cookies } from 'next/headers';
 import { AI_ACTIONS, isAiActionName } from '@/lib/ai/actions';
-import { verifyAccessToken } from '@/lib/auth/verify-token';
+import { getServerSession, rateLimitKey } from '@/lib/auth/server-session';
+import { rateLimit, rateLimitHeaders } from '@/lib/rate-limit';
 import { BACKEND_URL } from '@/lib/server-env';
 import { serverLogger } from '@/lib/logger';
+
+/** Confirmations are hand-driven; this only exists to bound a scripted caller. */
+const ACTIONS_RATE_LIMIT = { limit: 20, windowMs: 5 * 60 * 1000 };
 
 /**
  * Executes a copilot proposal the user confirmed.
@@ -21,19 +24,20 @@ import { serverLogger } from '@/lib/logger';
  * cannot record a payment by hand still gets the backend's 403 here.
  */
 export async function POST(request: Request) {
-  const cookieStore = await cookies();
-  const accessToken = cookieStore.get('access_token')?.value;
-
-  if (!accessToken) {
-    return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
-  }
-
   // Only a currently-valid signature may drive a write. An expired token is
   // authentic but stale: 401 lets the client refresh and retry, which is the
   // same answer the backend would give.
-  const verified = await verifyAccessToken(accessToken);
-  if (verified.status !== 'valid') {
+  const session = await getServerSession();
+  if (!session) {
     return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+  }
+
+  const limit = rateLimit('ai-actions', rateLimitKey(session), ACTIONS_RATE_LIMIT);
+  if (!limit.allowed) {
+    return NextResponse.json(
+      { message: 'Too many requests. Please wait a moment.' },
+      { status: 429, headers: rateLimitHeaders(ACTIONS_RATE_LIMIT.limit, limit) },
+    );
   }
 
   let body: unknown;
@@ -71,7 +75,7 @@ export async function POST(request: Request) {
       method: definition.method,
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${accessToken}`,
+        Authorization: `Bearer ${session.token}`,
       },
       // parsed.data, not the raw payload: anything the schema did not declare
       // is dropped rather than forwarded.

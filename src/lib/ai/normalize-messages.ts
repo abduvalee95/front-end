@@ -5,9 +5,21 @@ type RawMessage = {
 };
 
 export type NormalizedMessage = {
-  role: 'user' | 'assistant' | 'system';
+  role: 'user' | 'assistant';
   content: string;
 };
+
+/**
+ * Roles a CLIENT is allowed to claim.
+ *
+ * 'system' is deliberately absent. The message array arrives from the browser,
+ * so accepting a system role let a caller prepend their own system message and
+ * argue with the real instructions that this route passes separately via
+ * `system:`. Anything unrecognised — including 'system' and 'tool' — is
+ * demoted to 'user', where it reads as something the user said rather than as
+ * an instruction the assistant should obey.
+ */
+const CLIENT_ROLES = ['user', 'assistant'] as const;
 
 export function normalizeMessages(messages: RawMessage[]): NormalizedMessage[] {
   return messages.map((m) => {
@@ -20,8 +32,7 @@ export function normalizeMessages(messages: RawMessage[]): NormalizedMessage[] {
         .map((p) => p.text ?? '')
         .join('');
     }
-    const VALID_ROLES = ['user', 'assistant', 'system'] as const;
-    const role = VALID_ROLES.includes(m.role as NormalizedMessage['role'])
+    const role = CLIENT_ROLES.includes(m.role as NormalizedMessage['role'])
       ? (m.role as NormalizedMessage['role'])
       : 'user';
     return { role, content: content || ' ' };

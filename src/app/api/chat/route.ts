@@ -2,12 +2,31 @@ import { createGroq } from '@ai-sdk/groq';
 import { tool, streamText, stepCountIs } from 'ai';
 import { z } from 'zod';
 import { cookies } from 'next/headers';
+import { NextResponse } from 'next/server';
 import { serverLogger } from '@/lib/logger';
 import { normalizeMessages } from '@/lib/ai/normalize-messages';
 import { AI_ACTIONS, type AiActionName, type AiProposal } from '@/lib/ai/actions';
+import { getServerSession, rateLimitKey } from '@/lib/auth/server-session';
+import { rateLimit, rateLimitHeaders } from '@/lib/rate-limit';
 
 // Allow streaming responses up to 30 seconds
 export const maxDuration = 30;
+
+/**
+ * 30 turns per 5 minutes is one message every ten seconds, sustained — far
+ * above conversational pace and far below what a loop can do. Each request may
+ * fan out to three model calls (`stepCountIs(3)`), so this is really a ceiling
+ * of ~90 completions per user per five minutes.
+ */
+const CHAT_RATE_LIMIT = { limit: 30, windowMs: 5 * 60 * 1000 };
+
+/**
+ * The whole history is re-sent on every turn and every token is billed, so the
+ * transcript is the cost driver rather than the newest message. These caps are
+ * generous for a real conversation and refuse a padded one outright.
+ */
+const MAX_MESSAGES = 40;
+const MAX_TOTAL_CHARS = 24_000;
 
 const groq = createGroq({
   apiKey: process.env.GROQ_API_KEY || '',
@@ -77,8 +96,47 @@ function ambiguousStudents(students: Record<string, unknown>[]) {
 
 // ── POST handler ─────────────────────────────────────────────────────
 export async function POST(req: Request) {
-  const { messages } = await req.json();
+  // This endpoint spends money on every call. It used to answer anyone who
+  // could reach the URL, with no session and no ceiling, so a single loop
+  // could drain the Groq quota and take the copilot down for everybody.
+  const session = await getServerSession();
+  if (!session) {
+    return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+  }
+
+  const limit = rateLimit('chat', rateLimitKey(session), CHAT_RATE_LIMIT);
+  if (!limit.allowed) {
+    return NextResponse.json(
+      { message: 'Too many requests. Please wait a moment.' },
+      { status: 429, headers: rateLimitHeaders(CHAT_RATE_LIMIT.limit, limit) },
+    );
+  }
+
+  let body: unknown;
+  try {
+    body = await req.json();
+  } catch {
+    return NextResponse.json({ message: 'Invalid JSON body' }, { status: 400 });
+  }
+
+  const { messages } = (body ?? {}) as { messages?: unknown };
+
+  // normalizeMessages calls .map, so a non-array here used to throw out of the
+  // handler and surface as a 500.
+  if (!Array.isArray(messages)) {
+    return NextResponse.json({ message: 'messages must be an array' }, { status: 400 });
+  }
+
+  if (messages.length > MAX_MESSAGES) {
+    return NextResponse.json({ message: 'Conversation too long' }, { status: 413 });
+  }
+
   const formattedMessages = normalizeMessages(messages);
+
+  const totalChars = formattedMessages.reduce((sum, m) => sum + m.content.length, 0);
+  if (totalChars > MAX_TOTAL_CHARS) {
+    return NextResponse.json({ message: 'Conversation too long' }, { status: 413 });
+  }
 
   // Derive internal proxy base from the incoming request URL.
   // This makes tools work on any deployment (local, Vercel, Railway)

@@ -98,8 +98,19 @@ export default async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // Redirect unauthenticated users from protected routes
+  // Block unauthenticated access to protected routes. A page navigation is sent
+  // to the login form; an API call gets a JSON 401, because fetch() follows a
+  // 307 and would otherwise read the login page's own 200 as a successful
+  // response to a request that was in fact refused.
+  //
+  // Every /api route this can reach re-checks auth for itself — the AI routes
+  // verify the token signature, the workflow route checks its admin secret, and
+  // /api/proxy/* returned earlier — so answering 401 here is a clearer form of
+  // the same refusal, not a weaker one.
   if (isProtectedRoute && !isAuth) {
+    if (pathname.startsWith('/api')) {
+      return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+    }
     const loginUrl = new URL('/login', request.url);
     loginUrl.searchParams.set('redirect', pathname);
     return NextResponse.redirect(loginUrl);
