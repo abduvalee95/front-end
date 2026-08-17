@@ -10,6 +10,7 @@ import { useAuthStore } from '@/store/auth.store';
 import { useAuth } from '@/hooks/useAuth';
 import { useOrganizationSettings } from '@/hooks/useOrganization';
 import { usePointerGlow } from '@/hooks/usePointerGlow';
+import { SidebarParticles } from './SidebarParticles';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import type { LucideIcon } from 'lucide-react';
 import {
@@ -109,6 +110,10 @@ export function DashboardSidebar() {
 
       {/* Subtle glow to keep it premium — teal-family, ties into the glass sheen in globals.css */}
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_10%,hsl(var(--sidebar-active)/0.12),transparent_15rem)]" />
+
+      {/* Drifting motes, pushed aside by the cursor. Sits above the static
+          glow and below every nav item by DOM order. */}
+      <SidebarParticles />
       
       {/* Brand Section */}
       <div className={cn(
