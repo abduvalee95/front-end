@@ -1,7 +1,11 @@
 /**
  * Rule-based AI insight generator.
  * Produces natural-language summaries + actionable insights from real metrics.
- * No external API required. Optional OpenAI path lives in /api/ai/insights.
+ *
+ * This is the only path. There was once an optional OpenAI route at
+ * /api/ai/insights, but nothing ever called it — the analytics tabs have always
+ * used these functions directly — so it was an unused endpoint spending real
+ * credits for anyone who found the URL. Deleted rather than kept warm.
  */
 
 import type {

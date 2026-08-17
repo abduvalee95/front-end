@@ -3,17 +3,21 @@ import { SignJWT } from 'jose';
 import { randomUUID } from 'node:crypto';
 
 /**
- * Auth and rate limiting on the endpoints that spend money.
+ * Auth and rate limiting on the routes a caller can spend money through.
  *
- * /api/chat and /api/ai/insights each call a paid model provider and used to
- * answer anyone who could reach the URL, with no session and no ceiling — one
- * loop was enough to drain the quota and take the copilot down for every user.
+ * /api/chat calls a paid model provider and used to answer anyone who could
+ * reach the URL, with no session and no ceiling — one loop was enough to drain
+ * the quota and take the copilot down for every user. (/api/ai/insights had the
+ * same hole; it has since been deleted, since nothing ever called it.)
  *
  * The rate limiter is per-process, so each test signs a token with its OWN
  * subject; counters are keyed by user id and cannot bleed between tests.
  */
 
 const SECRET = process.env.JWT_ACCESS_SECRET;
+
+/** Mirrors ACTIONS_RATE_LIMIT in the route; a burst has to exceed it to matter. */
+const ACTIONS_LIMIT = 20;
 
 /**
  * A subject nobody has spent quota under.
@@ -36,10 +40,10 @@ async function signedToken(sub: string): Promise<string> {
     .sign(key);
 }
 
-const PAID_ENDPOINTS = ['/api/chat', '/api/ai/insights'];
+const GUARDED_ENDPOINTS = ['/api/chat', '/api/ai/actions'];
 
 test.describe('AI endpoint protection', () => {
-  for (const path of PAID_ENDPOINTS) {
+  for (const path of GUARDED_ENDPOINTS) {
     test(`${path} refuses an anonymous caller with JSON, not a redirect`, async ({ request }) => {
       const response = await request.post(path, { data: {}, maxRedirects: 0 });
 
@@ -63,34 +67,39 @@ test.describe('AI endpoint protection', () => {
     test.skip(!SECRET, 'JWT_ACCESS_SECRET is not set for this run');
 
     test('a burst past the limit is answered with 429 and Retry-After', async ({ request }) => {
-      // insights has the smallest window budget (10), and its rate check runs
-      // before the "is a key configured" branch, so this never calls OpenAI.
+      // Bursts against /api/ai/actions: its rate check runs before the body is
+      // even parsed, so a refused request costs nothing and never reaches the
+      // backend. Every call below carries a deliberately invalid payload, so a
+      // request that gets past the limiter answers 400 rather than writing.
       const cookie = `access_token=${await signedToken(freshSubject('burst'))}`;
       const statuses: number[] = [];
 
-      for (let i = 0; i < 12; i += 1) {
-        const response = await request.post('/api/ai/insights', {
+      for (let i = 0; i < ACTIONS_LIMIT + 2; i += 1) {
+        const response = await request.post('/api/ai/actions', {
           headers: { Cookie: cookie },
-          data: { metrics: {} },
+          data: { action: 'record_payment', payload: {} },
           maxRedirects: 0,
         });
         statuses.push(response.status());
 
         if (response.status() === 429) {
           expect(response.headers()['retry-after'], 'a 429 must say when to retry').toBeTruthy();
-          expect(response.headers()['x-ratelimit-limit']).toBe('10');
+          expect(response.headers()['x-ratelimit-limit']).toBe(String(ACTIONS_LIMIT));
           expect(response.headers()['x-ratelimit-remaining']).toBe('0');
         }
       }
 
       expect(statuses.filter((s) => s === 429).length, 'the burst must be throttled').toBeGreaterThan(0);
-      expect(statuses.slice(0, 10), 'the first 10 are within budget').not.toContain(429);
+      expect(
+        statuses.slice(0, ACTIONS_LIMIT),
+        `the first ${ACTIONS_LIMIT} are within budget`,
+      ).not.toContain(429);
     });
 
     test('a separate user is not throttled by someone else’s burst', async ({ request }) => {
-      const response = await request.post('/api/ai/insights', {
+      const response = await request.post('/api/ai/actions', {
         headers: { Cookie: `access_token=${await signedToken(freshSubject('quiet'))}` },
-        data: { metrics: {} },
+        data: { action: 'record_payment', payload: {} },
         maxRedirects: 0,
       });
 

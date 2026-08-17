@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { SignJWT } from 'jose';
+import { randomUUID } from 'node:crypto';
 
 /**
  * Guard for the copilot's confirm endpoint.
@@ -17,10 +18,17 @@ import { SignJWT } from 'jose';
 
 const SECRET = process.env.JWT_ACCESS_SECRET;
 
-/** A correctly signed token, so the tests reach the allowlist rather than auth. */
+/**
+ * A correctly signed token, so the tests reach the allowlist rather than auth.
+ *
+ * Each call gets a fresh subject. This endpoint is rate limited and its
+ * counters live in the server process, so a shared identity would accumulate
+ * across `playwright test` invocations until these cases started answering 429
+ * instead of the 400 they assert.
+ */
 async function signedToken(role = 'ADMIN'): Promise<string> {
   const key = new TextEncoder().encode(SECRET);
-  return new SignJWT({ role, organization_id: 'org_test' })
+  return new SignJWT({ sub: `sub_action_${randomUUID()}`, role, organization_id: 'org_test' })
     .setProtectedHeader({ alg: 'HS256' })
     .setIssuedAt()
     .setExpirationTime('5m')

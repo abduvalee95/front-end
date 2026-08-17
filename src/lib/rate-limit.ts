@@ -37,7 +37,7 @@ interface Counter {
 }
 
 /**
- * Buckets are namespaced per endpoint so a chat limit and an insights limit
+ * Buckets are namespaced per endpoint so a chat limit and an action limit
  * never share a counter for the same user.
  */
 const buckets = new Map<string, Map<string, Counter>>();
