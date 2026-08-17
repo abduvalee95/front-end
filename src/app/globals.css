@@ -629,6 +629,134 @@
   50% { transform: translateY(-8px); }
 }
 .landing-float-y { animation: landing-float-y 5s ease-in-out infinite; }
+
+/* --- Aurora ---------------------------------------------------------------
+   Three slow colour fields drifting behind the hero. Everything animated here
+   is a transform, so it composites on the GPU and never triggers layout — the
+   effect costs nothing in the bundle and no JavaScript runs for it. Colours
+   come from the same tokens as the rest of the page, so it follows the theme
+   instead of pinning the hero to one palette. */
+.landing-aurora {
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 640px;
+  overflow: hidden;
+  pointer-events: none;
+  /* Fade the field out before the section ends: without this the blurred
+     blobs draw a visible horizontal edge where the container stops. */
+  -webkit-mask-image: linear-gradient(180deg, #000 45%, transparent 100%);
+  mask-image: linear-gradient(180deg, #000 45%, transparent 100%);
+}
+.landing-aurora span {
+  position: absolute;
+  display: block;
+  border-radius: 50%;
+  filter: blur(72px);
+  will-change: transform;
+}
+.landing-aurora span:nth-child(1) {
+  top: -170px;
+  left: -90px;
+  width: 520px;
+  height: 420px;
+  background: hsl(var(--primary) / 0.30);
+  animation: landing-aurora-a 26s ease-in-out infinite;
+}
+.landing-aurora span:nth-child(2) {
+  top: -130px;
+  right: -70px;
+  width: 620px;
+  height: 470px;
+  background: hsl(var(--primary-emphasis) / 0.26);
+  animation: landing-aurora-b 32s ease-in-out infinite;
+}
+.landing-aurora span:nth-child(3) {
+  top: 150px;
+  left: 36%;
+  width: 480px;
+  height: 380px;
+  background: hsl(var(--success) / 0.16);
+  animation: landing-aurora-c 38s ease-in-out infinite;
+}
+/* The dark palette is far more saturated than the light one — the same
+   alphas there read as a bruise rather than a glow. */
+.dark .landing-aurora { opacity: 0.55; }
+
+/* Durations are deliberately not multiples of each other (26/32/38s), so the
+   three never resync into a single visible pulse. */
+@keyframes landing-aurora-a {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  33%      { transform: translate3d(90px, 50px, 0) scale(1.14); }
+  66%      { transform: translate3d(-50px, 80px, 0) scale(0.92); }
+}
+@keyframes landing-aurora-b {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  40%      { transform: translate3d(-80px, 60px, 0) scale(0.9); }
+  70%      { transform: translate3d(40px, 20px, 0) scale(1.1); }
+}
+@keyframes landing-aurora-c {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(0.95); }
+  50%      { transform: translate3d(-60px, -40px, 0) scale(1.15); }
+}
+
+/* --- Tilt -----------------------------------------------------------------
+   The hero mockup rests at a slight angle and levels out on hover. The depth
+   is real: `perspective` on the wrapper plus `preserve-3d` on the inner layer
+   means the floating cards can be pushed toward the viewer on the Z axis, so
+   they parallax against the window as the angle changes — for free, with no
+   mouse tracking and no script. */
+.landing-tilt-inner {
+  transform-style: preserve-3d;
+  transition: transform 700ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+@keyframes landing-float-lift {
+  0%, 100% { transform: translate3d(0, 0, var(--landing-lift, 60px)); }
+  50%      { transform: translate3d(0, -8px, var(--landing-lift, 60px)); }
+}
+.landing-float-lift { animation: landing-float-lift 5s ease-in-out infinite; }
+
+@media (min-width: 1024px) {
+  /* Only from the breakpoint where the mockup sits beside the copy. Below it
+     the mockup is the full width of the screen, where a rotation reads as a
+     rendering fault rather than depth — and with no `perspective` in effect,
+     the Z offsets above resolve to nothing. */
+  .landing-tilt {
+    perspective: 1600px;
+    perspective-origin: 60% 40%;
+  }
+  .landing-tilt-inner {
+    transform: rotateY(-11deg) rotateX(5deg) translateZ(-20px);
+  }
+  .landing-tilt:hover .landing-tilt-inner {
+    transform: rotateY(0deg) rotateX(0deg) translateZ(0);
+  }
+  /* Pushed away from the viewer so the glow reads as behind the window
+     rather than as a border around it. */
+  .landing-tilt-back { transform: translateZ(-70px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* The nth-child selectors above set `animation` as a shorthand, so this has
+     to match their specificity — `.landing-aurora span` alone loses to them
+     no matter where it sits in the file, and the blobs keep drifting. */
+  .landing-aurora span:nth-child(1),
+  .landing-aurora span:nth-child(2),
+  .landing-aurora span:nth-child(3),
+  .landing-float-y,
+  .landing-float-lift,
+  .landing-marquee-track {
+    animation: none;
+  }
+  /* Flatten the tilt entirely rather than leaving a transform that snaps
+     between two states on hover. */
+  .landing-tilt-inner,
+  .landing-tilt:hover .landing-tilt-inner,
+  .landing-tilt-back {
+    transform: none;
+    transition: none;
+  }
+}
+
 .landing-check {
   background-color: hsl(var(--success-muted));
   color: hsl(var(--success-emphasis));

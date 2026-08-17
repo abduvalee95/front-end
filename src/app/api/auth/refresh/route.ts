@@ -13,6 +13,7 @@ import {
 } from '@/lib/auth/token-config';
 import { serverLogger } from '@/lib/logger';
 import { BACKEND_URL } from '@/lib/server-env';
+import { readJsonBody, isUsableToken } from '@/lib/auth/backend-response';
 
 export async function POST(request: NextRequest) {
   try {
@@ -25,11 +26,22 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const response = await fetch(`${BACKEND_URL}/api/auth/refresh`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ refreshToken }),
-    });
+    // An unreachable backend is 502, not 500. Reporting it as our own failure
+    // sends the next person reading the logs to the wrong service.
+    let response: Response;
+    try {
+      response = await fetch(`${BACKEND_URL}/api/auth/refresh`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ refreshToken }),
+      });
+    } catch (error) {
+      serverLogger.error(`Refresh: backend unreachable at ${BACKEND_URL}`, error);
+      return NextResponse.json(
+        { message: 'Authentication service is unavailable' },
+        { status: 502 }
+      );
+    }
 
     if (!response.ok) {
       // Refresh failed - clear cookies and return 401
@@ -52,10 +64,27 @@ export async function POST(request: NextRequest) {
       return res;
     }
 
-    const data = await response.json();
-    const newAccessToken = data.accessToken;
+    const data = (await readJsonBody(response)) as {
+      accessToken?: unknown;
+      refreshToken?: unknown;
+    } | null;
+
+    const newAccessToken = data?.accessToken;
     // Backend may or may not return a new refresh token
-    const newRefreshToken = data.refreshToken || refreshToken;
+    const newRefreshToken = isUsableToken(data?.refreshToken)
+      ? data.refreshToken
+      : refreshToken;
+
+    // Without a usable access token there is nothing to refresh. Writing the
+    // cookie anyway stores the string "undefined" — a session that looks valid
+    // to every `cookies.has()` check and fails every signature check.
+    if (!isUsableToken(newAccessToken)) {
+      serverLogger.error('Refresh: backend returned 200 without an access token');
+      return NextResponse.json(
+        { message: 'Authentication service returned an unexpected response' },
+        { status: 502 }
+      );
+    }
 
     const res = NextResponse.json({ success: true });
 
