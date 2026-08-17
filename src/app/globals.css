@@ -497,9 +497,38 @@
   50% { background-position: 100% 100%; }
 }
 
+/* Cursor glow. Position comes from --glow-x / --glow-y, written by
+   usePointerGlow() on the <aside> itself; only the custom properties change,
+   so moving the cursor repaints this one layer and nothing re-renders.
+
+   Sits at the same z-index as the sheen and after it in the cascade, so it
+   layers over the sheen but still behind every nav item. Opacity is driven
+   from the same hook rather than :hover, so the glow fades rather than
+   snapping on at whatever position the cursor entered. */
+.dashboard-sidebar::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: var(--glow-opacity, 0);
+  transition: opacity 400ms ease;
+  background: radial-gradient(
+    16rem circle at var(--glow-x, 50%) var(--glow-y, 0%),
+    hsl(var(--sidebar-active) / 0.18),
+    transparent 70%
+  );
+}
+
 @media (prefers-reduced-motion: reduce) {
   .dashboard-sidebar::before {
     animation: none;
+  }
+  /* The hook already declines to attach its listeners here, so the glow never
+     moves — this makes sure it is never painted either, including if a custom
+     property survives a preference change mid-session. */
+  .dashboard-sidebar::after {
+    display: none;
   }
 }
 

@@ -9,6 +9,7 @@ import { useState } from 'react';
 import { useAuthStore } from '@/store/auth.store';
 import { useAuth } from '@/hooks/useAuth';
 import { useOrganizationSettings } from '@/hooks/useOrganization';
+import { usePointerGlow } from '@/hooks/usePointerGlow';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import type { LucideIcon } from 'lucide-react';
 import {
@@ -58,6 +59,7 @@ type RenderItem = NavItemConfig & { icon: LucideIcon };
 
 export function DashboardSidebar() {
   const pathname = usePathname();
+  const glowRef = usePointerGlow<HTMLElement>();
   const [isCollapsed, setIsCollapsed] = useState(() => {
     if (typeof window === 'undefined') return false;
     if (window.innerWidth < 768) return true;
@@ -90,6 +92,7 @@ export function DashboardSidebar() {
 
   return (
     <aside
+      ref={glowRef}
       className={cn(
         "dashboard-sidebar relative z-20 flex h-screen flex-col border-r shadow-2xl transition-all duration-500 ease-in-out",
         "text-sidebar-foreground backdrop-blur-md",
