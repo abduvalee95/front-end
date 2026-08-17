@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, useSyncExternalStore } from 'react';
 import { useQueries } from '@tanstack/react-query';
 import { useAuthStore } from '@/store/auth.store';
 import { usePermissions } from '@/hooks/usePermissions';
@@ -44,6 +44,13 @@ const GROUP_COLORS = [
 ];
 
 const TODO_KEY = 'bilim_nuru_todos_v1';
+
+/**
+ * Subscribe callback for the `hydrated` store below. The value it reports never
+ * changes after mount, so there is nothing to listen to — but the reference has
+ * to be stable, or useSyncExternalStore re-subscribes on every render.
+ */
+const subscribeToNothing = () => () => {};
 
 export default function SchedulePage() {
   const t = useTranslations('schedule_page');
@@ -128,22 +135,34 @@ export default function SchedulePage() {
   );
 
   // ─── Todo state (localStorage) ────────────────────────
-  const [todos, setTodos] = useState<TodoItem[]>([]);
-  const [hydrated, setHydrated] = useState(false);
+  // Read straight from localStorage in the initialiser rather than in an
+  // effect. Loading via setState made the first paint cascade into a second
+  // render, which React 19 flags (react-hooks/set-state-in-effect). There is no
+  // hydration mismatch to fear: the list below renders a Skeleton while
+  // `hydrated` is false, so the server pass and the client's first pass emit
+  // the same markup regardless of what is in storage.
+  const [todos, setTodos] = useState<TodoItem[]>(() => {
+    if (typeof window === 'undefined') return [];
+    try {
+      const raw = localStorage.getItem(TODO_KEY);
+      return raw ? (JSON.parse(raw) as TodoItem[]) : [];
+    } catch {
+      return [];
+    }
+  });
   const [newText, setNewText] = useState('');
   const [newPriority, setNewPriority] = useState<Priority>('med');
   const [newDue, setNewDue] = useState('');
   const [todoFilter, setTodoFilter] = useState<TodoFilter>('all');
 
-  useEffect(() => {
-    try {
-      const raw = localStorage.getItem(TODO_KEY);
-      if (raw) setTodos(JSON.parse(raw));
-    } catch {
-      /* ignore */
-    }
-    setHydrated(true);
-  }, []);
+  // "Has the client taken over?" — false on the server, true once mounted.
+  // useSyncExternalStore gives React the two snapshots directly, so the flag
+  // flips without an effect writing state.
+  const hydrated = useSyncExternalStore(
+    subscribeToNothing,
+    () => true,
+    () => false,
+  );
 
   useEffect(() => {
     if (!hydrated) return;

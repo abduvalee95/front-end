@@ -28,13 +28,24 @@ jobs:
 
       - name: Lint
         run: npm run lint
-        continue-on-error: true
 
       - name: Build
         run: npm run build
         env:
           NEXT_TELEMETRY_DISABLED: 1
 
+  # Smoke tests against the DEPLOYED site, not against this commit: the specs
+  # need a live backend with real data and login credentials, so Playwright is
+  # pointed at the Vercel URL instead of a locally built app.
+  #
+  # That makes the job unfit to gate a commit — it stays green when a PR breaks
+  # something (prod is unaffected until merge) and goes red when prod is merely
+  # slow or the credentials rotate. Blocking on it would put master back to
+  # failing for reasons unrelated to the code, so it stays advisory.
+  #
+  # To make this a real gate: drop PLAYWRIGHT_SKIP_WEBSERVER/E2E_BASE_URL so the
+  # webServer builds this commit, and point the app at a seeded test backend.
+  # Then remove continue-on-error.
   e2e:
     runs-on: ubuntu-latest
     timeout-minutes: 10
