@@ -23,7 +23,7 @@ export function LandingHero() {
         <div className="grid lg:grid-cols-[1.1fr_0.9fr] gap-8 lg:gap-12 items-center">
 
           {/* Copy */}
-          <div className="relative z-10">
+          <div className="relative z-10 min-w-0">
             <div className="inline-flex items-center gap-2 pl-1.5 pr-3 py-1 rounded-full bg-white border border-slate-200 text-[11px] font-bold ring-soft">
               <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-white text-[10px] brand-grad">{t('badge_new')}</span>
               <span className="text-slate-700">{t('badge_v2')}</span>
@@ -82,7 +82,7 @@ export function LandingHero() {
           </div>
 
           {/* MOCKUP */}
-          <div className="relative landing-tilt">
+          <div className="relative landing-tilt min-w-0">
             <div className="landing-tilt-inner">
               {/* Floating cards — lifted toward the viewer so they parallax
                   against the window as the tilt levels out. */}
@@ -177,7 +177,7 @@ export function LandingHero() {
 
                     <div className="rounded-xl border border-slate-200 overflow-hidden bg-white">
                       {/* Header row */}
-                      <div className="grid text-[9px] font-bold text-slate-500 uppercase tracking-wider bg-slate-50 border-b border-slate-200" style={{ gridTemplateColumns: '80px repeat(12, 1fr)' }}>
+                      <div className="grid text-[9px] font-bold text-slate-500 uppercase tracking-wider bg-slate-50 border-b border-slate-200" style={{ gridTemplateColumns: '80px repeat(12, minmax(0, 1fr))' }}>
                         <div className="px-2 py-2">{t('mockup_student')}</div>
                         {DAYS.map((d, i) => (
                           <div key={i} className={`px-1 py-2 text-center ${i === 11 ? 'text-slate-400' : ''}`}>{d}</div>
@@ -185,7 +185,7 @@ export function LandingHero() {
                       </div>
                       {/* Data rows */}
                       {STUDENTS.slice(0, 4).map((s) => (
-                        <div key={s.init} className="grid border-b border-slate-100 last:border-0 hover:bg-slate-50 transition-colors" style={{ gridTemplateColumns: '80px repeat(12, 1fr)' }}>
+                        <div key={s.init} className="grid border-b border-slate-100 last:border-0 hover:bg-slate-50 transition-colors" style={{ gridTemplateColumns: '80px repeat(12, minmax(0, 1fr))' }}>
                           <div className="px-2 py-2 flex items-center gap-1.5">
                             <div className="size-5 rounded-full brand-grad text-white text-[8px] font-black flex items-center justify-center shrink-0">{s.init[0]}</div>
                             <span className="text-[10px] font-semibold text-slate-800 truncate">{s.name}</span>

@@ -16,9 +16,9 @@ export function LandingPricing() {
           <p className="mt-4 text-[15px] text-slate-600">{t('pricing_desc')}</p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-5 max-w-[1080px] mx-auto">
+        <div className="grid lg:grid-cols-3 gap-5 max-w-[1080px] mx-auto">
           {/* Start */}
-          <div className="rounded-3xl bg-white border border-slate-200 p-7 ring-soft">
+          <div className="rounded-3xl bg-white border border-slate-200 p-7 ring-soft min-w-0">
             <p className="text-[12px] font-black uppercase tracking-wider text-slate-500">{t('plan_start_name')}</p>
             <p className="mt-3 text-[13px] text-slate-500">{t('plan_start_limit')}</p>
             <div className="mt-5 flex items-baseline gap-2">
@@ -43,7 +43,7 @@ export function LandingPricing() {
           </div>
 
           {/* Pro (featured) */}
-          <div className="relative rounded-3xl p-7 text-white" style={{ background: 'linear-gradient(180deg,#0B1437,#1e3a8a)', boxShadow: '0 30px 80px -40px rgba(14,110,234,0.55)' }}>
+          <div className="relative rounded-3xl p-7 text-white min-w-0" style={{ background: 'linear-gradient(180deg,#0B1437,#1e3a8a)', boxShadow: '0 30px 80px -40px rgba(14,110,234,0.55)' }}>
             <span className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full brand-grad text-white text-[10.5px] font-black uppercase tracking-wider">{t('plan_pro_badge')}</span>
             <p className="text-[12px] font-black uppercase tracking-wider" style={{ color: '#03CBE7' }}>{t('plan_pro_name')}</p>
             <p className="mt-3 text-[13px] opacity-80">{t('plan_pro_limit')}</p>
@@ -63,11 +63,11 @@ export function LandingPricing() {
           </div>
 
           {/* Enterprise */}
-          <div className="rounded-3xl bg-white border border-slate-200 p-7 ring-soft">
+          <div className="rounded-3xl bg-white border border-slate-200 p-7 ring-soft min-w-0">
             <p className="text-[12px] font-black uppercase tracking-wider text-slate-500">{t('plan_net_name')}</p>
             <p className="mt-3 text-[13px] text-slate-500">{t('plan_net_limit')}</p>
             <div className="mt-5 flex items-baseline gap-2">
-              <span className="text-[48px] font-black tracking-tight text-slate-900">{t('plan_net_price')}</span>
+              <span className="text-[26px] font-black tracking-tight text-slate-900 break-words">{t('plan_net_price')}</span>
             </div>
             <Link href="/login" className="mt-6 block text-center px-4 py-3 rounded-xl border border-slate-200 text-[13px] font-bold text-slate-800 hover:bg-slate-50">{t('plan_net_cta')}</Link>
             <ul className="mt-6 space-y-2.5 text-[13px] text-slate-700">
