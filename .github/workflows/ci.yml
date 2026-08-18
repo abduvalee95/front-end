@@ -1,10 +1,15 @@
 name: CI
 
+# `master` is the production branch — it is what Vercel deploys and what the
+# production domains alias to. It was missing here while `main`, which does not
+# exist in this repository, was listed instead, so every push to production ran
+# with no CI at all: the one branch where a gate matters most was the only one
+# not covered.
 on:
   push:
-    branches: [main, develop]
+    branches: [master, develop]
   pull_request:
-    branches: [main, develop]
+    branches: [master, develop]
 
 jobs:
   # Everything here is blocking. A gate that reports and shrugs teaches people
