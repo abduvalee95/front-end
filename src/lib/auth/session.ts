@@ -30,7 +30,14 @@ export async function restoreSession(): Promise<SessionResult> {
   try {
     store.setLoading(true);
     
-    // Bizning api klientimiz /api/proxy bazasini o'zi qo'shadi
+    // The api client's baseURL is '/api/', NOT '/api/proxy/', so this resolves
+    // to /api/auth/me — the front-end's own route, which reads the HttpOnly
+    // cookie and talks to the backend server-side. It does not go through the
+    // proxy rewrite, and a test or mock that intercepts /api/proxy/auth/me
+    // will silently miss it: session restore then fails, SessionProvider
+    // redirects to /login, and middleware bounces the still-valid cookie
+    // straight back to /dashboard. Every route looks like it "redirects to the
+    // dashboard" when the real failure is one unmatched request.
     const response = await api.get<MeResponse>('/auth/me');
 
     const user = response.data.user;
