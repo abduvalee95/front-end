@@ -53,8 +53,11 @@ export function EnrollStudentModal({ groupId, groupName }: EnrollStudentModalPro
     enabled: open && !!groupId,
   });
 
-  const enrolledStudentIds = new Set(
-    (enrollmentsQuery.data ?? []).map((e: Enrollment) => e.student_id)
+  // A fresh Set on every render is a dependency that never compares equal, so
+  // the memo below re-filtered the whole student list each time.
+  const enrolledStudentIds = useMemo(
+    () => new Set((enrollmentsQuery.data ?? []).map((e: Enrollment) => e.student_id)),
+    [enrollmentsQuery.data],
   );
 
   const availableStudents = useMemo(() => {

@@ -12,7 +12,7 @@ Backend alohida NestJS xizmati, bu repoda emas.
 ```bash
 npm run dev            # turbopack
 npm run build          # tsc + next build — PR oldidan majburiy
-npm run lint
+npm run lint         # --max-warnings 0: bitta warning ham bloklaydi
 npm run design:audit   # dizayn token qoidalari (pastga qarang)
 npm run test:unit      # vitest — tez, serversiz
 npm run test:e2e:local # playwright, backendsiz — CI'da bloklaydi

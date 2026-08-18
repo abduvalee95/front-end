@@ -38,6 +38,9 @@ interface MonthData {
   isCurrent: boolean;
 }
 
+/** Stable identity for the loading state; see `payments` below. */
+const NO_PAYMENTS: Payment[] = [];
+
 export default function StudentDetailPage() {
   const params = useParams();
   const router = useRouter();
@@ -69,7 +72,9 @@ export default function StudentDetailPage() {
   const paymentsQuery = usePayments({ student_id: studentId, limit: 100 }, !!studentId);
   const deletePayment = useDeletePayment();
 
-  const payments = paymentsQuery.data?.items ?? [];
+  // Stable while loading: a fresh `[]` each render would retrigger the
+  // monthlyData memo below on every render.
+  const payments = paymentsQuery.data?.items ?? NO_PAYMENTS;
   const now = new Date();
   const currentYear = now.getFullYear();
   const currentMonth = now.getMonth();
@@ -101,7 +106,6 @@ export default function StudentDetailPage() {
   }, [payments, currentYear, currentMonth, expectedMonthlyFee]);
 
   const currentMonthData = monthlyData[currentMonth];
-  const hasPaidThisMonth = currentMonthData?.status === 'full' || currentMonthData?.status === 'partial';
 
   if (isLoading) return <LoadingSkeleton />;
 

@@ -20,9 +20,6 @@ export function computeRange(
   selectedMonth: string,   // 'YYYY-MM'
   selectedWeek: string,    // 'YYYY-MM-DD' (Monday of that week)
 ): DateRange {
-  const now = new Date();
-  const to = endOfMonth(now); // generous upper bound
-
   if (mode === 'month' && selectedMonth) {
     const d = new Date(selectedMonth + '-01');
     return { from: startOfMonth(d), to: endOfMonth(d) };

@@ -3,7 +3,7 @@
 import type { CSSProperties } from 'react';
 import Link from 'next/link';
 import { useTranslations } from '@/i18n/index';
-import { ArrowIcon, STUDENTS, DAYS, MARQUEE_NAMES, dotColor } from './shared';
+import { STUDENTS, DAYS, MARQUEE_NAMES, dotColor } from './shared';
 
 export function LandingHero() {
   const t = useTranslations('landing');

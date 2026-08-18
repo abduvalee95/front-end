@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemo } from 'react';
-import { RefreshCw, Trash2, Calendar, Clock } from 'lucide-react';
+import { RefreshCw, Trash2, Calendar } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
