@@ -29,7 +29,6 @@ function LoginForm() {
   const searchParams = useSearchParams();
   const { login, isLoading } = useAuth();
   const t = useTranslations('auth');
-  const tCommon = useTranslations('common');
 
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');

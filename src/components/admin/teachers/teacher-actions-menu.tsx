@@ -15,7 +15,7 @@ interface TeacherActionsMenuProps {
   onView: () => void
 }
 
-export function TeacherActionsMenu({ teacher, onView }: TeacherActionsMenuProps) {
+export function TeacherActionsMenu({ onView }: TeacherActionsMenuProps) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger render={

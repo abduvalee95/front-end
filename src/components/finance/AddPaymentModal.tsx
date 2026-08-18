@@ -65,6 +65,9 @@ export function AddPaymentModal({ open, onClose, studentId, studentName }: AddPa
     },
   });
 
+  // See AddExpenseModal: react-hook-form's `watch` opts this component out of
+  // the React Compiler. An optimisation is skipped; behaviour is unaffected.
+  // eslint-disable-next-line react-hooks/incompatible-library
   const methodValue = watch('method');
   const studentValue = watch('student_id');
 

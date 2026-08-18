@@ -19,6 +19,7 @@ import {
 import { useAuthStore } from '@/store/auth.store';
 import { useCourses } from '@/hooks/useCourses';
 import { useTranslations } from '@/i18n/index';
+import type { Course } from '@/types/group';
 import { queryKeys } from '@/lib/api/query-keys';
 import { courseService } from '@/services/courses';
 import { Badge } from '@/components/ui/badge';
@@ -30,6 +31,9 @@ import { PageHeader } from '@/components/ui/page-header';
 import { cn } from '@/lib/utils';
 import { CreateCourseModal } from './CreateCourseModal';
 import { EditCourseModal } from './EditCourseModal';
+
+/** Stable identity for the loading state; see allCourses below. */
+const NO_COURSES: Course[] = [];
 
 export function CoursesWorkspace() {
   const user = useAuthStore((s) => s.user);
@@ -47,7 +51,10 @@ export function CoursesWorkspace() {
   const coursesQuery = useCourses(canRead);
   const queryClient = useQueryClient();
 
-  const allCourses = coursesQuery.data ?? [];
+  // `?? []` would mint a new array on every render while the query is still
+  // loading, and both memos below depend on it — so they would recompute every
+  // render and hand fresh arrays to whatever renders them.
+  const allCourses = coursesQuery.data ?? NO_COURSES;
 
   const rows = useMemo(() => {
     const normalizedSearch = debouncedSearch.trim().toLowerCase();

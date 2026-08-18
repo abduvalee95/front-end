@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useId, useState } from 'react';
 import { Check, ChevronsUpDown, Plus, X } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import {
@@ -33,6 +33,8 @@ export function SubjectCombobox({ value, onChange, onPendingChange }: SubjectCom
   const t = useTranslations('subjects');
   const { data: orgSubjects = [] } = useSubjects();
   const [open, setOpen] = useState(false);
+  /** Ties the trigger's aria-controls to the popup it actually opens. */
+  const listboxId = useId();
   const [query, setQuery] = useState('');
 
   const existingNames = orgSubjects.map((s: Subject) => s.name.toLowerCase());
@@ -77,10 +79,24 @@ export function SubjectCombobox({ value, onChange, onPendingChange }: SubjectCom
     <div className="space-y-2">
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger>
+          {/* role="combobox" promises a screen reader that this control owns a
+              popup and can report its state. It carried aria-expanded but no
+              aria-controls, so the popup it expanded was never identified.
+              The visible text is only ever the placeholder — selections render
+              as badges below — so the accessible name has to say what is
+              chosen, or the control announces "empty" with three subjects
+              picked. */}
           <button
             type="button"
             role="combobox"
             aria-expanded={open}
+            aria-controls={listboxId}
+            aria-haspopup="listbox"
+            aria-label={
+              value.length > 0
+                ? `${t('placeholder')}: ${value.join(', ')}`
+                : t('placeholder')
+            }
             className="flex h-9 w-full items-center justify-between rounded-md border border-input bg-transparent px-3 py-2 text-body shadow-sm ring-offset-background focus:outline-none focus:ring-1 focus:ring-ring"
           >
             <span className="text-muted-foreground">
@@ -89,7 +105,7 @@ export function SubjectCombobox({ value, onChange, onPendingChange }: SubjectCom
             <ChevronsUpDown className="ml-2 h-3.5 w-3.5 shrink-0 opacity-50" />
           </button>
         </PopoverTrigger>
-        <PopoverContent className="w-full p-0" align="start">
+        <PopoverContent id={listboxId} className="w-full p-0" align="start">
           <Command shouldFilter={false}>
             <CommandInput
               placeholder={t('search_placeholder')}

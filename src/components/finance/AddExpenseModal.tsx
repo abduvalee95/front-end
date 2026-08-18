@@ -58,6 +58,12 @@ export function AddExpenseModal({ open, onClose }: AddExpenseModalProps) {
     },
   });
 
+  // react-hook-form's `watch` subscribes through a mutable ref the React
+  // Compiler cannot reason about, so it skips compiling this component. That
+  // costs an optimisation, not correctness — the form works either way. Left
+  // as a documented exception rather than a standing warning, so the lint gate
+  // stays at zero and a NEW warning still means something.
+  // eslint-disable-next-line react-hooks/incompatible-library
   const categoryValue = watch('category');
 
   const onSubmit = (values: FormValues) => {

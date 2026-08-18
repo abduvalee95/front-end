@@ -61,6 +61,11 @@ export function OrganizationTab({
             <div className="relative group">
               <div className="size-24 rounded-2xl bg-card border-4 border-white dark:border-border shadow-lg flex items-center justify-center overflow-hidden">
                 {formData.logo_url ? (
+                  // next/image would need every possible logo host listed in
+                  // next.config remotePatterns. This URL is whatever an
+                  // organisation pasted in, so there is no host list to write —
+                  // and `unoptimized` would just be a heavier <img>.
+                  // eslint-disable-next-line @next/next/no-img-element
                   <img
                     src={formData.logo_url}
                     alt="Organization logo"
