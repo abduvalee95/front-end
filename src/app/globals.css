@@ -620,6 +620,35 @@
    Landing page (public marketing surface)
    ========================================================================== */
 
+/* --- Landing surface -------------------------------------------------------
+   The public landing page is a light marketing surface and says so in its own
+   markup: the wrapper hardcodes `bg-white text-[#0F1729]`. Its decorative
+   layers, though, are built from tokens — the mesh background, the dot grid,
+   the aurora, the two shadows — so under `.dark` those flipped to the dark
+   palette while the content stayed light ink on white. The result was dark
+   text on a dark field: unreadable, and the one part of the page nobody had
+   looked at in dark mode.
+
+   Rather than teach 300-odd hardcoded marketing colours about theming, pin
+   the handful of tokens the landing actually consumes to their light values.
+   Custom properties inherit, so declaring them here beats `.dark` on <html>
+   without any specificity contest, and the page becomes internally consistent
+   instead of half-themed.
+
+   If the landing should ever follow the user's theme for real, this block is
+   what to delete — after the markup has been migrated onto semantic tokens. */
+.landing-surface {
+  --background: 216 33% 97%;
+  --foreground: 222 46% 11%;
+  --primary: 193 84% 29%;
+  --primary-emphasis: 193 84% 24%;
+  --success: 142 72% 29%;
+  --shadow-hsl: 222 46% 11%;
+  /* The browser still needs telling, or form controls and scrollbars inside
+     the page render with dark-mode chrome against a white background. */
+  color-scheme: light;
+}
+
 .landing-dot-grid {
   background-image: radial-gradient(hsl(var(--foreground) / 0.08) 1px, transparent 1px);
   background-size: 22px 22px;

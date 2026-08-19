@@ -32,7 +32,7 @@ export function LandingPageClient() {
   ];
 
   return (
-    <div className="bg-white text-[#0F1729] antialiased" style={{ fontFamily: 'var(--font-sans)' }}>
+    <div className="landing-surface bg-white text-[#0F1729] antialiased" style={{ fontFamily: 'var(--font-sans)' }}>
       <LandingNav />
       <LandingHero />
       <LandingFeatures />
