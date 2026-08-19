@@ -17,7 +17,7 @@ export function AdminShell({ children }: AdminShellProps) {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
-    <div className="flex h-screen bg-background overflow-hidden">
+    <div className="admin-shell flex h-screen bg-background overflow-hidden">
       {/* Desktop sidebar — hidden on mobile */}
       <div className="hidden md:flex shrink-0">
         <SidebarNav />

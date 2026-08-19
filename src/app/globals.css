@@ -837,8 +837,23 @@ details[open] .faq-icon { transform: rotate(45deg); }
   --bottom-nav-h: 64px;
 }
 
-html, body {
+/* The scroll lock belongs to the app shell, not to every page.
+   /dashboard and /admin are fixed-height frames — `h-dvh overflow-hidden`
+   with an inner `overflow-y-auto` main — so locking the document under them
+   is what keeps them feeling native instead of rubber-banding.
+   Applied to `html, body` it also locked the public pages, and the landing
+   page is an ordinary long document with no inner scroller: it simply could
+   not be scrolled at all. Programmatic scrolling still worked, which is why
+   screenshots looked fine and a real wheel or swipe did nothing.
+   `:has()` keeps the lock exactly where it was meant to be. */
+html:has(.dashboard-shell),
+html:has(.dashboard-shell) body,
+html:has(.admin-shell),
+html:has(.admin-shell) body {
   overflow: hidden;
+}
+
+html, body {
   overscroll-behavior: none;
   -webkit-tap-highlight-color: transparent;
   -webkit-touch-callout: none;
