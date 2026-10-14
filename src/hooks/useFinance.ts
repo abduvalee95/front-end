@@ -4,6 +4,7 @@ import { paymentService, expenseService } from '@/services/finance';
 import { analyticsService } from '@/services/analytics';
 import { useAuthStore } from '@/store/auth.store';
 import { queryKeys } from '@/lib/api/query-keys';
+import { invalidatePaymentViews } from '@/lib/api/invalidate-payment-views';
 import type { CreatePaymentDto, CreateExpenseDto, ExpenseFilters, PaymentFilters } from '@/types/finance';
 
 export function usePayments(filters?: PaymentFilters, enabled = true) {
@@ -45,7 +46,7 @@ export function useCreatePayment() {
     mutationFn: (data: CreatePaymentDto) => paymentService.create(data),
     onSuccess: () => {
       toast.success('Payment added');
-      qc.invalidateQueries({ queryKey: queryKeys.finance.all(orgId) });
+      return invalidatePaymentViews(qc, orgId);
     },
   });
 }
@@ -57,7 +58,7 @@ export function useDeletePayment() {
     mutationFn: (id: string) => paymentService.remove(id),
     onSuccess: () => {
       toast.success('Payment deleted');
-      qc.invalidateQueries({ queryKey: queryKeys.finance.all(orgId) });
+      return invalidatePaymentViews(qc, orgId);
     },
   });
 }

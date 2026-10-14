@@ -1,5 +1,7 @@
 'use client';
 
+import { queryKeys } from '@/lib/api/query-keys';
+
 import { useEffect, useMemo, useState } from 'react';
 import { ChevronLeft, ChevronRight, X } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
@@ -73,7 +75,7 @@ export function StudentsWorkspace() {
   const monthStartIso = `${currentMonth}-01T00:00:00.000Z`;
 
   const paymentsQuery = useQuery({
-    queryKey: ['students', 'payments', currentMonth, user?.organization_id],
+    queryKey: queryKeys.finance.payments(user?.organization_id, { from: monthStartIso, limit: 1000 }),
     queryFn: () => paymentService.list({ from: monthStartIso, limit: 1000 }),
     staleTime: 1000 * 60 * 2,
     refetchOnWindowFocus: true,
