@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useTranslations } from '@/i18n/index';
 import { Lead, LeadStatus } from '@/types/analytics';
 import { Badge } from '@/components/ui/badge';
@@ -40,6 +40,9 @@ export function LeadsKanban({ leads, isLoading, onAIAction }: LeadsKanbanProps) 
   const [draggedId, setDraggedId] = useState<string | null>(null);
   const updateLead = useUpdateLead();
   const convertLead = useConvertLead();
+  // Mutation state updates on the next render; this also guards rapid repeated events.
+  const mutationInFlight = useRef(false);
+  const isPending = updateLead.isPending || convertLead.isPending;
 
   const COLUMNS: { status: LeadStatus; label: string; color: string }[] = [
     { status: 'NEW', label: t('status_new'), color: 'bg-primary' },
@@ -49,6 +52,7 @@ export function LeadsKanban({ leads, isLoading, onAIAction }: LeadsKanbanProps) 
   ];
 
   const handleDragStart = (e: React.DragEvent, id: string) => {
+    if (isPending || mutationInFlight.current) return;
     setDraggedId(id);
     e.dataTransfer.setData('leadId', id);
   };
@@ -57,32 +61,53 @@ export function LeadsKanban({ leads, isLoading, onAIAction }: LeadsKanbanProps) 
     e.preventDefault();
   };
 
+  const handleConvert = (lead: Lead) => {
+    if (lead.status === 'CONVERTED' || lead.status === 'LOST' || isPending || mutationInFlight.current) return;
+    mutationInFlight.current = true;
+    convertLead.mutate(lead.id, {
+      onSuccess: () => {
+        toast.success(`${lead.full_name} ${t('converted')}`);
+      },
+      onSettled: () => {
+        mutationInFlight.current = false;
+      },
+    });
+  };
+
   const handleDrop = (e: React.DragEvent, status: LeadStatus) => {
     e.preventDefault();
+    setDraggedId(null);
     const id = e.dataTransfer.getData('leadId');
-    if (!id) return;
+    const lead = leads.find((item) => item.id === id);
+    if (!lead || lead.status === status || lead.status === 'CONVERTED' || isPending || mutationInFlight.current) return;
 
+    if (status === 'CONVERTED') {
+      handleConvert(lead);
+      return;
+    }
+
+    mutationInFlight.current = true;
     updateLead.mutate(
       { id, data: { status } },
       {
         onSuccess: () => {
           toast.success(t('lead_moved_to').replace('{status}', t(`status_${status.toLowerCase()}`)));
         },
+        onSettled: () => {
+          mutationInFlight.current = false;
+        },
       }
     );
-    setDraggedId(null);
-  };
-
-  const handleConvert = (lead: Lead) => {
-    convertLead.mutate(lead.id, {
-      onSuccess: () => {
-        toast.success(`${lead.full_name} ${t('converted')}`);
-      },
-    });
   };
 
   const handleMarkLost = (lead: Lead) => {
-    updateLead.mutate({ id: lead.id, data: { status: 'LOST' } });
+    if (lead.status === 'CONVERTED' || lead.status === 'LOST' || isPending || mutationInFlight.current) return;
+    mutationInFlight.current = true;
+    updateLead.mutate({ id: lead.id, data: { status: 'LOST' } }, {
+      onSettled: () => {
+        mutationInFlight.current = false;
+      },
+    });
   };
 
   if (isLoading) {
@@ -129,8 +154,9 @@ export function LeadsKanban({ leads, isLoading, onAIAction }: LeadsKanbanProps) 
               {columnLeads.map((lead) => (
                 <div
                   key={lead.id}
-                  draggable
+                  draggable={lead.status !== 'CONVERTED' && !isPending}
                   onDragStart={(e) => handleDragStart(e, lead.id)}
+                  onDragEnd={() => setDraggedId(null)}
                   className={cn(
                     "bg-card border border-border rounded-xl p-4 shadow-sm cursor-grab active:cursor-grabbing hover:shadow-md hover:border-primary/50 transition-all group",
                     draggedId === lead.id && "opacity-50 scale-95"
@@ -165,7 +191,7 @@ export function LeadsKanban({ leads, isLoading, onAIAction }: LeadsKanbanProps) 
                           <DropdownMenuItem
                             className="text-success-emphasis"
                             onClick={() => handleConvert(lead)}
-                            disabled={lead.status === 'CONVERTED' || lead.status === 'LOST' || convertLead.isPending}
+                            disabled={lead.status === 'CONVERTED' || lead.status === 'LOST' || isPending}
                           >
                             <UserCheck className="mr-2 size-4" />
                             {convertLead.isPending ? tCommon('loading') : t('convert')}
@@ -173,7 +199,7 @@ export function LeadsKanban({ leads, isLoading, onAIAction }: LeadsKanbanProps) 
                           <DropdownMenuItem
                             className="text-danger-emphasis"
                             onClick={() => handleMarkLost(lead)}
-                            disabled={lead.status === 'LOST' || updateLead.isPending}
+                            disabled={lead.status === 'CONVERTED' || lead.status === 'LOST' || isPending}
                           >
                             <UserMinus className="mr-2 size-4" />
                             {t('status_lost')}
@@ -206,6 +232,7 @@ export function LeadsKanban({ leads, isLoading, onAIAction }: LeadsKanbanProps) 
                           variant="ghost" 
                           className="size-7 text-success-emphasis hover:text-success-emphasis hover:bg-success/10"
                           onClick={() => handleConvert(lead)}
+                          disabled={isPending}
                           title={t('convert')}
                         >
                           <UserCheck className="size-3.5" />

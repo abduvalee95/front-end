@@ -127,10 +127,14 @@ export function useConvertLead() {
 
   return useMutation({
     mutationFn: (id: string) => leadService.convertToStudent(id),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.leads.all(orgId) });
-      queryClient.invalidateQueries({ queryKey: queryKeys.students.all(orgId) });
-      queryClient.invalidateQueries({ queryKey: queryKeys.dashboard.all(orgId) });
+    onSuccess: async () => {
+      await Promise.all([
+        queryKeys.leads.all(orgId),
+        queryKeys.students.all(orgId),
+        queryKeys.dashboard.all(orgId),
+        ['analytics'],
+        ['reports'],
+      ].map((queryKey) => queryClient.invalidateQueries({ queryKey })));
       toast.success('Lead converted to student successfully');
     },
     onError: () => {
