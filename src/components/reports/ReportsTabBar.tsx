@@ -1,7 +1,7 @@
 'use client';
 
 import { BarChart3, Wallet, GraduationCap, Target, CalendarDays, CalendarRange } from 'lucide-react';
-import { format, startOfWeek, endOfWeek, subWeeks, subMonths, startOfMonth, endOfMonth } from 'date-fns';
+import { format, parseISO, startOfWeek, endOfWeek, subWeeks, subMonths, startOfMonth, endOfMonth } from 'date-fns';
 import { ru } from 'date-fns/locale';
 import { cn } from '@/lib/utils';
 import { useTranslations } from '@/i18n/index';
@@ -21,11 +21,11 @@ export function computeRange(
   selectedWeek: string,    // 'YYYY-MM-DD' (Monday of that week)
 ): DateRange {
   if (mode === 'month' && selectedMonth) {
-    const d = new Date(selectedMonth + '-01');
+    const d = parseISO(selectedMonth + '-01');
     return { from: startOfMonth(d), to: endOfMonth(d) };
   }
   if (mode === 'week' && selectedWeek) {
-    const d = new Date(selectedWeek);
+    const d = parseISO(selectedWeek);
     return {
       from: startOfWeek(d, { weekStartsOn: 1 }),
       to: endOfWeek(d, { weekStartsOn: 1 }),

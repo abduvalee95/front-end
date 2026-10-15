@@ -5,6 +5,7 @@
  */
 
 import { api } from '@/lib/api/client';
+import { formatCalendarDate } from '@/lib/calendar-date';
 import type {
   DashboardSummary,
   LeadStatusCount,
@@ -16,11 +17,6 @@ import type {
   PaginatedInvoices,
 } from '@/types/analytics';
 
-function formatDate(d: Date | null | undefined): string | undefined {
-  if (!d) return undefined;
-  return d.toISOString().slice(0, 10);
-}
-
 export interface RangeParams {
   from?: Date | null;
   to?: Date | null;
@@ -28,8 +24,8 @@ export interface RangeParams {
 
 function rangeQuery(params: RangeParams): Record<string, string> {
   const q: Record<string, string> = {};
-  const from = formatDate(params.from);
-  const to = formatDate(params.to);
+  const from = formatCalendarDate(params.from);
+  const to = formatCalendarDate(params.to);
   if (from) q.from = from;
   if (to) q.to = to;
   return q;

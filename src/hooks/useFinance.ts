@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
+import { parseISO } from 'date-fns';
 import { paymentService, expenseService } from '@/services/finance';
 import { analyticsService } from '@/services/analytics';
 import { useAuthStore } from '@/store/auth.store';
@@ -31,8 +32,8 @@ export function useFinanceSummary(from?: string, to?: string) {
     queryKey: queryKeys.finance.summary(orgId, from, to),
     queryFn: () =>
       analyticsService.getFinanceSummary({
-        from: from ? new Date(from) : null,
-        to: to ? new Date(to) : null,
+        from: from ? parseISO(from) : null,
+        to: to ? parseISO(to) : null,
       }),
     enabled: !!orgId,
     retry: false,

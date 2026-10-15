@@ -8,6 +8,7 @@ import { createContext, useContext, useMemo, useState, type ReactNode } from 're
 import { useQuery } from '@tanstack/react-query';
 import { subDays, startOfMonth, endOfDay } from 'date-fns';
 import { analyticsService } from '@/services/analytics';
+import { formatCalendarDate } from '@/lib/calendar-date';
 import { leadService } from '@/services/leads';
 import { generatePlatformSummary, generateCRMInsights, generateLMSInsights } from '@/lib/ai/rule-based-insights';
 import { STALE_TIME, QUERY_LIMITS } from '@/lib/constants';
@@ -140,8 +141,8 @@ export function useCRMAnalytics() {
   const leads = useQuery({
     queryKey: analyticsKeys.leads(key),
     queryFn: () => {
-      const from = range.from ? range.from.toISOString().slice(0, 10) : undefined;
-      const to = range.to ? range.to.toISOString().slice(0, 10) : undefined;
+      const from = formatCalendarDate(range.from);
+      const to = formatCalendarDate(range.to);
       return leadService.listLeads({ limit: 1000, from, to });
     },
     staleTime: STALE_TIME.MEDIUM,

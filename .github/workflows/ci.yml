@@ -43,6 +43,12 @@ jobs:
       - name: Unit tests
         run: npm run test:unit
 
+      - name: Calendar filters across timezones
+        run: |
+          for crm_timezone in UTC Asia/Bishkek America/Los_Angeles; do
+            TZ="$crm_timezone" npm run test:unit -- tests/unit/analytics-calendar-range.test.ts tests/unit/analytics-calendar-hooks.test.tsx
+          done
+
       - name: Build
         run: npm run build
         env:
