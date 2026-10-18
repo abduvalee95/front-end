@@ -23,7 +23,7 @@ const LOCALE_OPTIONS: { value: Locale; label: string; nativeLabel: string; flag:
 
 interface LanguageSwitcherProps {
   className?: string;
-  variant?: 'header' | 'sidebar';
+  variant?: 'header' | 'sidebar' | 'auth';
 }
 
 export function LanguageSwitcher({ className, variant = 'header' }: LanguageSwitcherProps) {
@@ -105,7 +105,7 @@ export function LanguageSwitcher({ className, variant = 'header' }: LanguageSwit
         disabled={isPending}
       >
         {/* <Globe className="size-4 shrink-0" /> */}
-        <span className="text-body leading-none">{current.flag}</span>
+        <span className="flex items-center gap-2 text-body leading-none">{variant === 'auth' ? <><Globe className="size-4" aria-hidden="true" />{locale.toUpperCase()}</> : current.flag}</span>
         {/* <span className="hidden sm:inline">{current.nativeLabel}</span> */}
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="min-w-[170px]">

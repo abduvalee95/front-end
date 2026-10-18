@@ -904,3 +904,31 @@ input, textarea, [contenteditable="true"] {
     overscroll-behavior: none;
   }
 }
+
+/* Auth presentation tokens; scoped so the CRM palette remains unchanged. */
+@theme {
+  --color-auth-panel: #102C3B;
+  --color-auth-panel-foreground: #FFFFFF;
+  --color-auth-panel-muted: #BBD4DE;
+  --color-auth-accent: #2DD4BF;
+}
+.auth-surface {
+  --color-primary: hsl(var(--primary));
+  --color-primary-emphasis: hsl(var(--primary-emphasis));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+  --color-ring: hsl(var(--ring));
+  --primary: 174 100% 24%;
+  --primary-emphasis: 174 100% 22%;
+  --primary-foreground: 0 0% 100%;
+  --ring: 174 100% 24%;
+}
+.dark .auth-surface {
+  --color-primary: hsl(var(--primary));
+  --color-primary-emphasis: hsl(var(--primary-emphasis));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+  --color-ring: hsl(var(--ring));
+  --primary: 173 80% 40%;
+  --primary-emphasis: 173 70% 52%;
+  --primary-foreground: 194 83% 9%;
+  --ring: 173 80% 40%;
+}
