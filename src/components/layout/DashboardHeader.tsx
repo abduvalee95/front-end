@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { Bell, Plus, HelpCircle, User, LogOut, Settings, GraduationCap, Users, BookOpen, UserPlus, Users2 } from 'lucide-react';
+import { Bell, Plus, HelpCircle, User, LogOut, Settings, GraduationCap, Users, BookOpen, UserPlus, Users2, Building2 } from 'lucide-react';
 import { useTranslations } from '@/i18n/index';
 import { useAuthStore } from '@/store/auth.store';
 import { useAuth } from '@/hooks/useAuth';
@@ -32,6 +32,7 @@ import { CreateGroupModal } from '@/components/groups/CreateGroupModal';
 
 export function DashboardHeader() {
   const t = useTranslations('header');
+  const auth = useTranslations('auth_live');
   const user = useAuthStore((state) => state.user);
   const { logout } = useAuth();
   const router = useRouter();
@@ -225,6 +226,13 @@ export function DashboardHeader() {
                 <User className="size-4 text-muted-foreground" />
                 <span className="font-medium">{t('my_profile')}</span>
               </DropdownMenuItem>
+              {user?.can_switch_center && <DropdownMenuItem
+                onClick={() => router.push('/onboarding')}
+                className="flex items-center gap-3 rounded-control px-3 py-2.5 text-body focus:bg-muted"
+              >
+                <Building2 className="size-4 text-muted-foreground" />
+                <span>{auth('select_title')}</span>
+              </DropdownMenuItem>}
               <DropdownMenuItem
                 onClick={() => router.push('/settings')}
                 className="flex items-center gap-3 px-3 py-2.5 rounded-xl cursor-pointer focus:bg-muted/50 transition-colors"

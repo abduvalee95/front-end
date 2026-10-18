@@ -4,7 +4,7 @@
 export type NavKey =
   | 'dashboard' | 'journal' | 'leads' | 'courses' | 'teachers'
   | 'students' | 'groups' | 'attendance' | 'schedule'
-  | 'reports' | 'finance' | 'settings' | 'analytics' | 'subjects';
+  | 'reports' | 'finance' | 'settings' | 'analytics' | 'subjects' | 'invitations';
 
 export interface NavItemConfig {
   key: NavKey;
@@ -28,6 +28,7 @@ export const NAV_ITEMS: NavItemConfig[] = [
   { key: 'settings',   href: '/settings',   roles: ['SUPER_ADMIN', 'ADMIN', 'MANAGER', 'TEACHER'] },
   { key: 'analytics',  href: '/analytics',  roles: ['ADMIN', 'MANAGER'] },
   { key: 'subjects',   href: '/subjects',   roles: ['SUPER_ADMIN', 'ADMIN', 'MANAGER'] },
+  { key: 'invitations', href: '/invitations', roles: ['ADMIN'] },
 ];
 
 export function navItemsForRole(role: string | undefined): NavItemConfig[] {

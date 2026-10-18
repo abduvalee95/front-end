@@ -21,6 +21,7 @@ import {
   Settings,
   X,
   LogOut,
+  MailPlus,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
@@ -41,10 +42,11 @@ const ICONS: Record<NavKey, LucideIcon> = {
   settings: Settings,
   analytics: BarChart3,
   subjects: BookMarked,
+  invitations: MailPlus,
 };
 
 const PRIMARY_KEYS: NavKey[] = ['dashboard', 'students', 'groups', 'finance'];
-const OVERFLOW_KEYS: NavKey[] = ['journal', 'leads', 'courses', 'teachers', 'attendance', 'schedule', 'reports', 'settings'];
+const OVERFLOW_KEYS: NavKey[] = ['journal', 'leads', 'courses', 'teachers', 'attendance', 'schedule', 'reports', 'invitations', 'settings'];
 
 type RenderItem = NavItemConfig & { icon: LucideIcon };
 

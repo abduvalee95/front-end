@@ -30,10 +30,18 @@ const PROTECTED_PATHS = [
   '/settings',
   '/finance',
   '/journal',
+  '/invitations',
+  '/onboarding',
+  '/onboarding/create-center',
+  '/onboarding/link-membership',
+  '/onboarding/abc.svg',
 ];
 
 /** Must stay reachable pre-login: the login page needs its own assets. */
-const PUBLIC_PATHS = ['/login', '/', '/logo.svg', '/manifest.webmanifest'];
+const PUBLIC_PATHS = [
+  '/login', '/', '/logo.svg', '/manifest.webmanifest',
+  '/register', '/verify-email', '/forgot-password', '/reset-password', '/accept-invitation',
+];
 
 test.describe('middleware route protection', () => {
   for (const path of PROTECTED_PATHS) {

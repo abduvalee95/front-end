@@ -27,7 +27,8 @@ import {
   CreditCard,
   LogOut,
   ChevronLeft,
-  Menu
+  Menu,
+  MailPlus,
 } from 'lucide-react';
 import { navItemsForRole, type NavKey, type NavItemConfig } from '@/lib/nav-config';
 
@@ -47,13 +48,14 @@ const ICONS: Record<NavKey, LucideIcon> = {
   settings: Settings,
   analytics: BarChart3,
   subjects: BookMarked,
+  invitations: MailPlus,
 };
 
 const SIDEBAR_GROUPS: { groupKey: string; keys: NavKey[] }[] = [
   { groupKey: 'group_main',       keys: ['dashboard'] },
   { groupKey: 'group_management', keys: ['journal', 'leads', 'courses', 'teachers', 'students', 'groups'] },
   { groupKey: 'group_academic',   keys: ['attendance', 'schedule'] },
-  { groupKey: 'group_system',     keys: ['reports', 'finance', 'settings'] },
+  { groupKey: 'group_system',     keys: ['reports', 'finance', 'invitations', 'settings'] },
 ];
 
 type RenderItem = NavItemConfig & { icon: LucideIcon };

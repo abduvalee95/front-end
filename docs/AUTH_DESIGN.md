@@ -1,5 +1,7 @@
 # Authentication design — phase 1
 
+This document records the approved design phase. Live account/email/Google integration with draft backend PR #2 is now implemented separately; see [frontend integration](auth-frontend-integration.md) for configuration, session boundaries, validation and rollout gates. The design sandbox remains isolated.
+
 Approved direction: navy editorial panel, teal actions, white forms, Inter and existing semantic design tokens. Responsive layouts and Uzbek, Russian, English and Kyrgyz copy.
 
 ## Delivered
@@ -18,7 +20,7 @@ AUTH_DESIGN_PREVIEW=true npm run dev
 
 Visit `/login` and `/auth-preview`. Change language using the header. Test widths 390 and 1440, light and dark themes.
 
-## Backend integration next
+## Backend integration requirements from phase 1
 
 Do not connect preview state transitions to production. Replace them with server-validated auth flows:
 
@@ -32,7 +34,7 @@ Do not connect preview state transitions to production. Replace them with server
 
 Acceptance gates: existing login works; new email signup and verified Google identity converge safely; duplicate identities cannot take over an account; inactive organizations are denied; foreign-organization invitations cannot escalate privileges; simultaneous refresh/reset/invite consumption is safe; OAuth cancel/expired state is recoverable; mobile/keyboard and all four locales remain usable.
 
-## Verification notes
+## Phase 1 verification notes
 
 - 125 unit tests passed; TypeScript, ESLint and design-token audit passed.
 - Production compilation passed with the Sentry build wrapper temporarily omitted locally and Sentry DSN/token unset. Automatic approval review rejected an outbound Sentry ingest request; no Sentry configuration change is included in this PR.
