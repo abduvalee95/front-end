@@ -1,12 +1,13 @@
 import axios, { AxiosError } from 'axios';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
-import { api } from '@/lib/api/client';
 import { useAuthStore } from '@/store/auth.store';
 import { toast } from 'sonner';
+import { useTranslations } from '@/i18n';
 import type { LoginCredentials } from '@/types/auth';
 
 export function useAuth() {
+  const t = useTranslations('auth_design');
   const router = useRouter();
   const queryClient = useQueryClient();
   const setAuth = useAuthStore((state) => state.setAuth);
@@ -14,7 +15,8 @@ export function useAuth() {
 
   const loginMutation = useMutation({
     mutationFn: async (credentials: LoginCredentials) => {
-      const { data } = await api.post('auth/login', credentials);
+      // Invalid credentials must not trigger the shared client's session-refresh loop.
+      const { data } = await axios.post('/api/auth/login', credentials, { timeout: 30_000 });
       return data;
     },
     onSuccess: (data) => {
@@ -29,7 +31,7 @@ export function useAuth() {
       }
     },
     onError: (error: AxiosError<{ message?: string }>) => {
-      const message = error.response?.data?.message || 'Ошибка при входе';
+      const message = error.response?.data?.message || t('login_error');
       toast.error(message);
     },
   });
@@ -66,6 +68,7 @@ export function useAuth() {
 
   return {
     login: loginMutation.mutate,
+    loginError: loginMutation.error?.response?.data?.message ?? (loginMutation.isError ? t('login_error') : null),
     logout: logoutMutation.mutate,
     isLoading: loginMutation.isPending || logoutMutation.isPending,
     user,

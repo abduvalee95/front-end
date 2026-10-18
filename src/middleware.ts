@@ -49,6 +49,14 @@ export default async function middleware(request: NextRequest) {
     });
   }
 
+  // Exact, opt-in design sandbox. It never issues sessions or calls the backend.
+  if (pathname === '/auth-preview') {
+    if (process.env.AUTH_DESIGN_PREVIEW !== 'true') {
+      return new NextResponse(null, { status: 404 });
+    }
+    return NextResponse.next();
+  }
+
   // 2. Auth Route Protection (Enterprise SaaS Grade)
   const hasAccessToken = request.cookies.has('access_token');
   const hasRefreshToken = request.cookies.has('refresh_token');
