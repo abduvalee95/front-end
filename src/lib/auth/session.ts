@@ -10,23 +10,25 @@ import { tt } from '@/lib/i18n/toast';
 import { User, MeResponse } from '@/types/auth';
 import { logger } from '@/lib/logger';
 import axios from 'axios';
+import { authRequest } from './account-client';
+import { isTenantRefreshPaused } from './tenant-refresh';
 
 interface SessionResult {
   success: boolean;
   user?: User;
   error?: string;
+  retryable?: boolean;
+  cancelled?: boolean;
 }
 
 /**
  * Restore session on app load
  */
-export async function restoreSession(): Promise<SessionResult> {
+export async function restoreSession(signal?: AbortSignal): Promise<SessionResult> {
   const store = useAuthStore.getState();
+  const cancelled = () => signal?.aborted || isTenantRefreshPaused();
+  if (cancelled()) return { success: false, cancelled: true };
   
-  if (store.isAuthenticated && store.user) {
-    return { success: true, user: store.user as unknown as MeResponse['user'] };
-  }
-
   try {
     store.setLoading(true);
     
@@ -38,23 +40,27 @@ export async function restoreSession(): Promise<SessionResult> {
     // redirects to /login, and middleware bounces the still-valid cookie
     // straight back to /dashboard. Every route looks like it "redirects to the
     // dashboard" when the real failure is one unmatched request.
-    const response = await api.get<MeResponse>('/auth/me');
+    const response = await api.get<MeResponse>('/auth/me', { signal });
 
-    const user = response.data.user;
+    // Navigating to account onboarding or logging out can finish while the
+    // profile request is still in flight. Its old tenant must stay cleared.
+    if (cancelled()) return { success: false, cancelled: true };
+
+    const user = { ...response.data.user, can_switch_center: response.data.canSelectOrganization === true };
     store.setAuth(user);
     
     return { success: true, user };
   } catch (error) {
+    if (cancelled() || axios.isCancel(error)) return { success: false, cancelled: true };
     // 401 yoki 404 (agar endpoint bo'lmasa) sessiya yo'qligini bildiradi
     if (axios.isAxiosError(error) && (error.response?.status === 401 || error.response?.status === 404)) {
       store.clearAuth();
       return { success: false, error: 'Not authenticated' };
     }
     
-    logger.error('Session restoration error:', error);
-    store.clearAuth();
+    logger.warn('Session restoration unavailable');
     
-    return { success: false, error: 'Failed to restore session' };
+    return { success: false, error: 'Failed to restore session', retryable: true };
   } finally {
     store.setLoading(false);
   }
@@ -68,7 +74,7 @@ export async function endSession(): Promise<void> {
   
   try {
     store.setLoading(true);
-    await api.post('/auth/logout');
+    await authRequest('/api/auth/logout', { method: 'POST', body: '{}' });
     store.clearAuth();
     toast.success(tt('toasts.logout_success'));
   } catch (error) {

@@ -10,6 +10,9 @@ const withBundleAnalyzer = withBundleAnalyzerFactory({
 const nextConfig: NextConfig = {
   // ─── Hardening ────────────────────────────────────────────────────────────
   poweredByHeader: false,
+  // OAuth code/state must never enter Next's incoming request logs. Hosting
+  // reverse proxies must apply the same query-redaction rule.
+  logging: { incomingRequests: { ignore: [/\/api\/auth\/google\/callback(?:\?|$)/] } },
 
   // ─── Standalone output (required for Docker; Vercel ignores it) ───────────
   output: 'standalone',
@@ -72,6 +75,14 @@ const nextConfig: NextConfig = {
           // TODO: Add CSP when ready; requires nonce setup for Next.js inline scripts.
           // See: https://nextjs.org/docs/app/guides/content-security-policy
         ],
+      },
+      {
+        source: '/:path(verify-email|reset-password|accept-invitation)',
+        headers: [{ key: 'Referrer-Policy', value: 'no-referrer' }],
+      },
+      {
+        source: '/api/auth/:path*',
+        headers: [{ key: 'Referrer-Policy', value: 'no-referrer' }],
       },
     ];
   },

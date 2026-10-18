@@ -16,6 +16,8 @@ export interface User {
   avatar_url?: string;
   phone?: string;
   is_active: boolean;
+  /** Navigation hint only; server sessions and memberships authorize access. */
+  can_switch_center?: boolean;
   created_at: string;
   updated_at: string;
 }
@@ -39,6 +41,7 @@ export interface RefreshResponse {
 
 export interface MeResponse {
   user: User;
+  canSelectOrganization?: boolean;
 }
 
 export interface AuthError {

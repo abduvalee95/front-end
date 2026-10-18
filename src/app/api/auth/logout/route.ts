@@ -1,71 +1,21 @@
-/**
- * Logout API Route
- * Clears cookies and optionally invalidates session on backend
- */
-
-import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
-import { TOKEN_CONFIG, CLEAR_COOKIE_OPTIONS } from '@/lib/auth/token-config';
-import { serverLogger } from '@/lib/logger';
+import { NextRequest } from 'next/server';
 import { BACKEND_URL } from '@/lib/server-env';
+import { TOKEN_CONFIG } from '@/lib/auth/token-config';
+import { clearAccountCookies, revokeAccountSession } from '@/lib/auth/account-bff';
+import { authJson, validateAuthMutation } from '@/lib/auth/auth-csrf';
 
 export async function POST(request: NextRequest) {
-  try {
-    const accessToken = request.cookies.get(TOKEN_CONFIG.access.cookieName)?.value;
-
-    // Optional: Tell backend to invalidate the session
-    if (accessToken) {
-      try {
-        await fetch(`${BACKEND_URL}/api/auth/logout`, {
-          method: 'POST',
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-            'Content-Type': 'application/json',
-          },
-        });
-      } catch {
-        // Ignore backend logout errors, we must clear cookies regardless
-      }
-    }
-
-    // Create success response
-    const res = NextResponse.json({ success: true });
-
-    // Clear access token cookie
-    res.cookies.set({
-      name: TOKEN_CONFIG.access.cookieName,
-      value: '',
-      ...CLEAR_COOKIE_OPTIONS,
-    });
-
-    // Clear refresh token cookie
-    res.cookies.set({
-      name: TOKEN_CONFIG.refresh.cookieName,
-      value: '',
-      ...CLEAR_COOKIE_OPTIONS,
-    });
-
-    return res;
-  } catch (error) {
-    serverLogger.error('Logout error:', error);
-    
-    // Even on error, try to clear cookies
-    const res = NextResponse.json(
-      { message: 'Error during logout' },
-      { status: 500 }
-    );
-    
-    res.cookies.set({
-      name: TOKEN_CONFIG.access.cookieName,
-      value: '',
-      ...CLEAR_COOKIE_OPTIONS,
-    });
-    res.cookies.set({
-      name: TOKEN_CONFIG.refresh.cookieName,
-      value: '',
-      ...CLEAR_COOKIE_OPTIONS,
-    });
-
-    return res;
-  }
+  const denied = validateAuthMutation(request);
+  if (denied) return denied;
+  const access = request.cookies.get(TOKEN_CONFIG.access.cookieName)?.value;
+  await Promise.allSettled([
+    revokeAccountSession(request),
+    access ? fetch(`${BACKEND_URL}/api/auth/logout`, {
+      method: 'POST', headers: { Authorization: `Bearer ${access}` },
+      cache: 'no-store', redirect: 'error', signal: AbortSignal.timeout(10_000),
+    }) : Promise.resolve(),
+  ]);
+  const response = authJson({ success: true });
+  clearAccountCookies(response);
+  return response;
 }

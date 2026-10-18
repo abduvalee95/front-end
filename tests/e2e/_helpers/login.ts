@@ -12,7 +12,7 @@ export async function login(
   phone = DEFAULT_PHONE,
   password = DEFAULT_PASSWORD,
 ): Promise<void> {
-  await page.goto('/login');
+  await page.goto('/login#phone');
   await page.locator('#phone').fill(phone);
   await page.locator('#password').fill(password);
   await page.locator('button[type="submit"]').click();

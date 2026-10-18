@@ -1,6 +1,9 @@
+import 'server-only';
+
 import { cookies } from 'next/headers';
 import { verifyAccessToken, type AccessClaims } from './verify-token';
 import { TOKEN_CONFIG } from './token-config';
+import { BACKEND_URL } from '@/lib/server-env';
 
 /**
  * The caller's verified session, for route handlers that must not run
@@ -32,6 +35,30 @@ export async function getServerSession(): Promise<ServerSession | null> {
   // stale, and the caller should refresh rather than be let through.
   const verified = await verifyAccessToken(token);
   if (verified.status !== 'valid') return null;
+
+  // Account logout/reset, revoked memberships and organization suspension take
+  // effect immediately in the backend session guard. Signature verification
+  // alone would keep an old account JWT usable by paid AI/server routes until exp.
+  if (verified.claims.session_id) {
+    if (!verified.claims.sub || !verified.claims.role || !verified.claims.organization_id) return null;
+    try {
+      const response = await fetch(`${BACKEND_URL}/api/auth/me`, {
+        headers: { Authorization: `Bearer ${token}`, Accept: 'application/json' },
+        cache: 'no-store', redirect: 'error', signal: AbortSignal.timeout(5_000),
+      });
+      if (!response.ok) return null;
+      const data: unknown = await response.json();
+      if (!data || typeof data !== 'object' || Array.isArray(data)) return null;
+      const body = data as Record<string, unknown>;
+      const user = 'user' in body ? body.user : body;
+      if (!user || typeof user !== 'object' || Array.isArray(user)) return null;
+      const current = user as Record<string, unknown>;
+      if (current.id !== verified.claims.sub || current.role !== verified.claims.role
+        || current.organization_id !== verified.claims.organization_id) return null;
+    } catch {
+      return null;
+    }
+  }
 
   return { token, claims: verified.claims };
 }

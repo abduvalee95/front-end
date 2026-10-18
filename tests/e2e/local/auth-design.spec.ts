@@ -11,20 +11,20 @@ test('phone login submits normalized credentials and keeps failures on the form'
     expect(route.request().postDataJSON()).toEqual({ phone: '+996555000000', password: 'example-password', remember_me: true });
     return route.fulfill({ status: 401, json: { message: 'Test: noto‘g‘ri parol' } });
   });
-  await page.goto('/login');
+  await page.goto('/login#phone');
   await page.getByLabel('Telefon', { exact: true }).fill('555000000');
   await page.getByLabel('Parol', { exact: true }).fill('example-password');
   await page.getByLabel('Meni eslab qolish').check();
   await page.getByRole('button', { name: 'Parolni ko‘rsatish' }).click();
   await expect(page.getByLabel('Parol', { exact: true })).toHaveAttribute('type', 'text');
   await page.getByRole('button', { name: 'Kirish', exact: true }).click();
-  await expect(page.locator('form [role="alert"]')).toHaveText('Test: noto‘g‘ri parol');
+  await expect(page.locator('form [role="alert"]')).toHaveText('Kirish amalga oshmadi. Qayta urinib ko‘ring.');
   expect(refreshCalls).toBe(0);
-  await expect(page).toHaveURL(/\/login$/);
+  await expect(page).toHaveURL(/\/login#phone$/);
 });
 
 test('phone errors and recovery help are accessible without submitting', async ({ page }) => {
-  await page.goto('/login');
+  await page.goto('/login#phone');
   await page.getByLabel('Telefon', { exact: true }).fill('abc');
   await page.getByLabel('Parol', { exact: true }).fill('example-password');
   await page.getByRole('button', { name: 'Kirish', exact: true }).click();

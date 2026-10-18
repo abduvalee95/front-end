@@ -19,6 +19,8 @@ export interface AccessClaims {
   sub: string | null;
   role: UserRole | null;
   organization_id: string | null;
+  /** Present only for account-backed tenant sessions that require live revocation checks. */
+  session_id?: string;
 }
 
 export type VerifyResult =
@@ -26,11 +28,14 @@ export type VerifyResult =
   | { status: 'expired'; claims: AccessClaims }
   | { status: 'invalid' };
 
-function toClaims(payload: Record<string, unknown>): AccessClaims {
+function toClaims(payload: Record<string, unknown>): AccessClaims | null {
+  if (Object.hasOwn(payload, 'session_id')
+    && (typeof payload.session_id !== 'string' || payload.session_id.length === 0 || payload.session_id.length > 128)) return null;
   return {
     sub: typeof payload.sub === 'string' ? payload.sub : null,
     role: (payload.role as UserRole) ?? null,
     organization_id: (payload.organization_id as string) ?? null,
+    ...(typeof payload.session_id === 'string' ? { session_id: payload.session_id } : {}),
   };
 }
 
@@ -45,16 +50,15 @@ export async function verifyAccessToken(token: string): Promise<VerifyResult> {
     const { payload } = await jwtVerify(token, secret, {
       algorithms: ['HS256'],
     });
-    return { status: 'valid', claims: toClaims(payload as Record<string, unknown>) };
+    const claims = toClaims(payload as Record<string, unknown>);
+    return claims ? { status: 'valid', claims } : { status: 'invalid' };
   } catch (err) {
     // An expired token still passed signature verification, so its claims are
     // authentic. Surface them separately so the caller can keep enforcing the
     // real role while the client silently refreshes the token.
     if (err instanceof errors.JWTExpired) {
-      return {
-        status: 'expired',
-        claims: toClaims(err.payload as Record<string, unknown>),
-      };
+      const claims = toClaims(err.payload as Record<string, unknown>);
+      return claims ? { status: 'expired', claims } : { status: 'invalid' };
     }
     // Bad signature / malformed / wrong algorithm → untrusted.
     return { status: 'invalid' };

@@ -8,6 +8,8 @@ import { toast } from 'sonner';
 import { useAuthStore } from '@/store/auth.store';
 import { tt } from '@/lib/i18n/toast';
 import { logger } from '@/lib/logger';
+import { isTenantRefreshPaused, pauseTenantRefresh, refreshTenantSession } from '@/lib/auth/tenant-refresh';
+import { authRequest, AuthApiError } from '@/lib/auth/account-client';
 
 // All API calls go through the Next.js proxy to handle cookies securely
 const API_URL = '/api/';
@@ -71,6 +73,9 @@ api.interceptors.response.use(
     return response;
   },
   async (error: AxiosError) => {
+    // An unmounted session provider aborts its request. Cancellation is not an
+    // authentication failure and must never refresh, log out or show a toast.
+    if (axios.isCancel(error)) return Promise.reject(error);
     const config = error.config as InternalAxiosRequestConfig & { _startTime?: number };
     if (config?._startTime) {
       const duration = Date.now() - config._startTime;
@@ -83,7 +88,9 @@ api.interceptors.response.use(
     }
 
     // Handle 401 Unauthorized
-    if (error.response?.status === 401 && !originalRequest._retry) {
+    const sessionRestore = originalRequest.url === '/auth/me' || originalRequest.url === '/api/auth/me';
+    const canRefresh = !isTenantRefreshPaused() && (useAuthStore.getState().isAuthenticated || sessionRestore);
+    if (error.response?.status === 401 && !originalRequest._retry && !originalRequest.url?.includes('/auth/accounts/') && canRefresh) {
       // Prevent infinite loops
       if (originalRequest.url?.includes('/auth/refresh')) {
         // Refresh failed, logout user
@@ -100,6 +107,7 @@ api.interceptors.response.use(
           failedQueue.push({ resolve, reject });
         })
           .then(() => {
+            if (isTenantRefreshPaused()) return Promise.reject(new Error('AUTH_TRANSITION'));
             return api(originalRequest);
           })
           .catch((err) => {
@@ -111,7 +119,14 @@ api.interceptors.response.use(
 
       try {
         // Attempt to refresh token
-        await axios.post('/api/auth/refresh', {}, { withCredentials: true });
+        await refreshTenantSession();
+
+        if (isTenantRefreshPaused()) {
+          const transition = new Error('AUTH_TRANSITION');
+          processQueue(transition);
+          isRefreshing = false;
+          return Promise.reject(transition);
+        }
         
         // Refresh successful, process queued requests
         processQueue(null, 'refreshed');
@@ -123,6 +138,21 @@ api.interceptors.response.use(
         // Refresh failed
         processQueue(refreshError as Error, null);
         isRefreshing = false;
+        if (isTenantRefreshPaused()) return Promise.reject(refreshError);
+
+        // Account and center sessions have independent lifetimes. Expiring one
+        // center must preserve the account so the user can choose a center again.
+        if (refreshError instanceof AuthApiError && refreshError.code === 'TENANT_SESSION_EXPIRED') {
+          pauseTenantRefresh();
+          useAuthStore.getState().clearAuth();
+          window.location.href = '/onboarding';
+          return Promise.reject(refreshError);
+        }
+
+        // Preserve credentials on transient network/provider failures.
+        if (!(refreshError instanceof AuthApiError) || ![401, 403].includes(refreshError.status)) {
+          return Promise.reject(refreshError);
+        }
 
         // Clear auth state
         useAuthStore.getState().clearAuth();
@@ -133,7 +163,7 @@ api.interceptors.response.use(
         // Clear HttpOnly cookies via server route BEFORE redirecting
         // Without this, middleware sees stale refresh_token and loops back to dashboard
         try {
-          await axios.post('/api/auth/logout');
+          await authRequest('/api/auth/logout', { method: 'POST', body: '{}' });
         } catch {
           // Ignore logout errors — redirect regardless
         }

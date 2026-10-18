@@ -3,20 +3,21 @@
  * Returns current authenticated user info
  */
 
-import { NextResponse } from 'next/server';
+import { authJson } from '@/lib/auth/auth-csrf';
 import type { NextRequest } from 'next/server';
 import { TOKEN_CONFIG } from '@/lib/auth/token-config';
 import { serverLogger } from '@/lib/logger';
 import { BACKEND_URL } from '@/lib/server-env';
+import { getAccountSessionRemaining } from '@/lib/auth/account-bff';
 
 export async function GET(request: NextRequest) {
   try {
     const accessToken = request.cookies.get(TOKEN_CONFIG.access.cookieName)?.value;
 
     if (!accessToken) {
-      return NextResponse.json(
+      return authJson(
         { message: 'Not authenticated' },
-        { status: 401 }
+        401
       );
     }
 
@@ -25,30 +26,33 @@ export async function GET(request: NextRequest) {
         Authorization: `Bearer ${accessToken}`,
         'Content-Type': 'application/json',
       },
-      cache: 'no-store', // Always get fresh data
+      cache: 'no-store',
+      redirect: 'error',
+      signal: AbortSignal.timeout(10_000),
     });
 
     if (!response.ok) {
       if (response.status === 401) {
-        return NextResponse.json(
+        return authJson(
           { message: 'Session expired' },
-          { status: 401 }
+          401
         );
       }
       
-      return NextResponse.json(
+      return authJson(
         { message: 'Failed to fetch user' },
-        { status: response.status }
+        response.status
       );
     }
 
     const data = await response.json();
-    return NextResponse.json({ user: data.user || data });
-  } catch (error) {
-    serverLogger.error('Me endpoint error:', error);
-    return NextResponse.json(
+    const remaining = getAccountSessionRemaining(request);
+    return authJson({ user: data.user || data, canSelectOrganization: remaining !== null && remaining > 0 });
+  } catch {
+    serverLogger.error('Me endpoint: backend unavailable');
+    return authJson(
       { message: 'Server error' },
-      { status: 500 }
+      502
     );
   }
 }

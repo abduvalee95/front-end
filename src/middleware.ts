@@ -9,6 +9,23 @@ export default async function middleware(request: NextRequest) {
 
   // 1. API Proxy for external backend
   if (pathname.startsWith('/api/proxy/')) {
+    // Authentication must go through the BFF, which removes credentials from
+    // browser responses. Never expose a second, raw-token auth path.
+    let proxyPath = pathname.slice('/api/proxy'.length);
+    try {
+      // Reject ambiguities rather than allowing another HTTP layer to decode
+      // an auth path after this boundary has already checked it.
+      proxyPath = decodeURIComponent(proxyPath);
+    } catch {
+      return NextResponse.json({ message: 'Invalid proxy path' }, { status: 400 });
+    }
+    if (proxyPath.includes('%') || proxyPath.includes('\\') || proxyPath.includes('//')
+      || proxyPath.split('/').some(segment => segment === '.' || segment === '..')) {
+      return NextResponse.json({ message: 'Invalid proxy path' }, { status: 400 });
+    }
+    if (/^\/auth(?:\/|$)/i.test(proxyPath)) {
+      return NextResponse.json({ message: 'Use the authentication BFF' }, { status: 404 });
+    }
     // CSRF defense-in-depth: state-changing requests must come from our own
     // origin. Browsers always send Origin on cross-site POST/PUT/PATCH/DELETE;
     // same-origin server-side fetches (e.g. AI tools) send none and pass.
@@ -32,6 +49,9 @@ export default async function middleware(request: NextRequest) {
 
     const accessToken = request.cookies.get('access_token')?.value;
     const requestHeaders = new Headers(request.headers);
+    requestHeaders.delete('Authorization');
+    requestHeaders.delete('X-Auth-BFF-Secret');
+    requestHeaders.delete('Cookie');
 
     if (accessToken) {
       requestHeaders.set('Authorization', `Bearer ${accessToken}`);
@@ -61,6 +81,14 @@ export default async function middleware(request: NextRequest) {
   const hasAccessToken = request.cookies.has('access_token');
   const hasRefreshToken = request.cookies.has('refresh_token');
   const isAuth = hasAccessToken || hasRefreshToken;
+  const hasAccount = request.cookies.has('account_session');
+
+  // An account session cannot authorize tenant data. These pages resolve the
+  // opaque session against the backend before displaying memberships.
+  if (pathname === '/onboarding' || pathname.startsWith('/onboarding/')) {
+    if (hasAccount) return NextResponse.next();
+    return NextResponse.redirect(new URL('/login?next=/onboarding', request.url));
+  }
   
   // Define route types by explicit public lists instead of hardcoded protected ones
   const publicRoutes = [
@@ -70,6 +98,11 @@ export default async function middleware(request: NextRequest) {
     '/opengraph-image',
     '/twitter-image',
     '/manifest.webmanifest',
+    '/register',
+    '/verify-email',
+    '/forgot-password',
+    '/reset-password',
+    '/accept-invitation',
   ];
   const authRoutes = ['/login']; // Routes that logged-in users shouldn't access (like login page)
 
@@ -102,7 +135,7 @@ export default async function middleware(request: NextRequest) {
     pathname.startsWith('/api/workflows/') ||
     ROOT_STATIC_ASSET.test(pathname);
 
-  const isAuthRoute = authRoutes.some((route) => pathname.startsWith(route));
+  const isAuthRoute = authRoutes.includes(pathname);
 
   // Any route that is not explicitly public or auth is considered protected
   const isProtectedRoute = !isPublicRoute && !isAuthRoute;
@@ -125,6 +158,7 @@ export default async function middleware(request: NextRequest) {
     if (pathname.startsWith('/api')) {
       return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
     }
+    if (hasAccount) return NextResponse.redirect(new URL('/onboarding', request.url));
     const loginUrl = new URL('/login', request.url);
     loginUrl.searchParams.set('redirect', pathname);
     return NextResponse.redirect(loginUrl);
@@ -172,7 +206,8 @@ export default async function middleware(request: NextRequest) {
   }
 
   // Redirect authenticated users away from auth pages
-  if (isAuthRoute && isAuth) {
+  const accountTransition = ['/accept-invitation', '/onboarding'].includes(request.nextUrl.searchParams.get('next') ?? '');
+  if (isAuthRoute && isAuth && !accountTransition && !request.nextUrl.searchParams.has('auth_error')) {
     return NextResponse.redirect(new URL('/dashboard', request.url));
   }
 

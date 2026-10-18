@@ -90,6 +90,16 @@ describe('verifyAccessToken', () => {
       expect(result.claims).toEqual({ sub: null, role: null, organization_id: null });
     }
   });
+
+  it('retains the session id so account-backed JWTs can be checked for live revocation', async () => {
+    const result = await verifyAccessToken(await sign({ sub: 'u1', role: 'ADMIN', organization_id: 'org1', session_id: 'tenant-session-1' }));
+    expect(result.status).toBe('valid');
+    if (result.status !== 'invalid') expect(result.claims.session_id).toBe('tenant-session-1');
+  });
+
+  it.each([null, '', 123, {}, 's'.repeat(129)])('rejects malformed session ids rather than treating them as legacy: %j', async session_id => {
+    expect((await verifyAccessToken(await sign({ sub: 'u1', role: 'ADMIN', session_id }))).status).toBe('invalid');
+  });
 });
 
 describe('verifyAccessToken with an unsigned algorithm', () => {

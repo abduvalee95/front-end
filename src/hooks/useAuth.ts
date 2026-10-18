@@ -1,10 +1,13 @@
-import axios, { AxiosError } from 'axios';
+import { authRequest } from '@/lib/auth/account-client';
+import type { User } from '@/types/auth';
+import { silentRefreshManager } from '@/lib/auth/silent-refresh';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/store/auth.store';
 import { toast } from 'sonner';
 import { useTranslations } from '@/i18n';
 import type { LoginCredentials } from '@/types/auth';
+import { pauseTenantRefresh, resumeTenantRefresh, waitForPendingTenantRefresh } from '@/lib/auth/tenant-refresh';
 
 export function useAuth() {
   const t = useTranslations('auth_design');
@@ -16,10 +19,13 @@ export function useAuth() {
   const loginMutation = useMutation({
     mutationFn: async (credentials: LoginCredentials) => {
       // Invalid credentials must not trigger the shared client's session-refresh loop.
-      const { data } = await axios.post('/api/auth/login', credentials, { timeout: 30_000 });
-      return data;
+      pauseTenantRefresh(); clearAuth(); silentRefreshManager.stop();
+      await waitForPendingTenantRefresh();
+      return authRequest<{ user: User }>('/api/auth/login', { method: 'POST', body: JSON.stringify(credentials) });
     },
     onSuccess: (data) => {
+      queryClient.clear();
+      resumeTenantRefresh();
       setAuth(data.user);
       toast.success(`Welcome, ${data.user.full_name}!`);
 
@@ -30,8 +36,8 @@ export function useAuth() {
         router.push('/dashboard');
       }
     },
-    onError: (error: AxiosError<{ message?: string }>) => {
-      const message = error.response?.data?.message || t('login_error');
+    onError: () => {
+      const message = t('login_error');
       toast.error(message);
     },
   });
@@ -40,7 +46,9 @@ export function useAuth() {
     mutationFn: async () => {
       // Use local Next.js API route instead of proxied backend
       // This ensures cookies are cleared even if backend logout fails
-      await axios.post('/api/auth/logout');
+      pauseTenantRefresh(); clearAuth(); silentRefreshManager.stop();
+      await waitForPendingTenantRefresh();
+      await authRequest('/api/auth/logout', { method: 'POST', body: '{}' });
     },
     onSuccess: () => {
       toast.success('Logged out successfully');
@@ -51,6 +59,7 @@ export function useAuth() {
     onSettled: () => {
       // SENIOR APPROACH: Perform a hard refresh to login page
       // 1. Clear sensitive auth store (Zustand)
+      silentRefreshManager.stop();
       clearAuth();
       
       // 2. Completely clear React Query cache to prevent data leakage
@@ -68,7 +77,7 @@ export function useAuth() {
 
   return {
     login: loginMutation.mutate,
-    loginError: loginMutation.error?.response?.data?.message ?? (loginMutation.isError ? t('login_error') : null),
+    loginError: loginMutation.isError ? t('login_error') : null,
     logout: logoutMutation.mutate,
     isLoading: loginMutation.isPending || logoutMutation.isPending,
     user,
