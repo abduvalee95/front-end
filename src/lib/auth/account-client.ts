@@ -1,5 +1,17 @@
 'use client';
 
+import { withSessionLock } from './session-lock';
+
+const credentialWrites = new Set([
+  '/api/auth/refresh',
+  '/api/auth/login',
+  '/api/auth/logout',
+  '/api/auth/accounts/login',
+  '/api/auth/accounts/logout',
+  '/api/auth/accounts/select-organization',
+  '/api/auth/accounts/reset-password',
+]);
+
 /** Only same-origin BFF routes are reachable through this browser helper. */
 export class AuthApiError extends Error {
   constructor(public readonly status: number, public readonly code: string, public readonly retryAfter?: string) {
@@ -61,5 +73,8 @@ export async function authRequest<T>(path: string, options: RequestInit = {}): P
     }
     return data as T;
   }
-  return send(true);
+  // Read the shared HttpOnly cookie only when fetch starts inside the lock.
+  // A waiting tab then rotates the latest token rather than replaying an old one.
+  // CSRF retries stay in this same lock and never acquire it recursively.
+  return method === 'POST' && credentialWrites.has(path) ? withSessionLock(() => send(true)) : send(true);
 }
