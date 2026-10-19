@@ -90,7 +90,12 @@ describe('Axios session refresh during account transitions', () => {
   });
 
   it('treats an aborted session request as cancellation without a toast, refresh or logout', async () => {
-    api.defaults.adapter = async config => { throw new CanceledError('Aborted session request', config, {}); };
+    api.defaults.adapter = async config => {
+      const error = new CanceledError('Aborted session request');
+      error.config = config;
+      error.request = {};
+      throw error;
+    };
 
     await expect(api.get('/auth/me')).rejects.toSatisfy(axios.isCancel);
 
