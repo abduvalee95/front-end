@@ -36,10 +36,15 @@ tests for bugs that actually shipped, so they gate merges.
 
 ```bash
 npm run build
+AUTH_APP_URL=http://localhost:3000 \
 JWT_ACCESS_SECRET=dev-secret ADMIN_SECRET=dev-admin npm run start &
-PLAYWRIGHT_SKIP_WEBSERVER=1 E2E_BASE_URL=http://127.0.0.1:3000 \
+PLAYWRIGHT_SKIP_WEBSERVER=1 E2E_BASE_URL=http://localhost:3000 \
 JWT_ACCESS_SECRET=dev-secret npm run test:e2e:local
 ```
+
+Keep `AUTH_APP_URL` and `E2E_BASE_URL` identical. Use `localhost` for these
+production-mode HTTP tests: Next normalizes loopback request URLs to it, and
+Playwright's cookie URL filter recognizes its Secure-cookie exception.
 
 `JWT_ACCESS_SECRET` must match the value the server was started with. When it
 is unset the signed-token cases **skip rather than fail**, so a green run with

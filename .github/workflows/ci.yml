@@ -80,12 +80,15 @@ jobs:
           JWT_ACCESS_SECRET: ci-e2e-secret-not-a-real-key
           ADMIN_SECRET: ci-e2e-admin-secret
           API_URL: http://127.0.0.1:59999
+          # Use the same localhost origin as the browser for exact-origin
+          # CSRF checks and Secure cookies in production-mode local tests.
+          AUTH_APP_URL: http://localhost:3000
 
       - name: E2E (no backend required)
         run: npm run test:e2e:local
         env:
           PLAYWRIGHT_SKIP_WEBSERVER: 1
-          E2E_BASE_URL: http://127.0.0.1:3000
+          E2E_BASE_URL: http://localhost:3000
           # Must match the value the server was started with, or every
           # signed-token case skips instead of running.
           JWT_ACCESS_SECRET: ci-e2e-secret-not-a-real-key
